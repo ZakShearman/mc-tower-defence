@@ -1,0 +1,5 @@
+{
+  "entrypoint": "pink.zak.minestom.towerdefence.TowerDefencePlugin",
+  "name": "TowerDefence",
+  "version": "1.0.0"
+}

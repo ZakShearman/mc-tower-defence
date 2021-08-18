@@ -1,0 +1,89 @@
+{
+  "towerPlaceMaterial": "minecraft:cyan_terracotta",
+  "pathWidth": 9,
+  "spectatorSpawn": {
+    "x": 12.02722923256059,
+    "y": 83.13859666726033,
+    "z": -0.6367367289154294,
+    "yaw": 89.70758,
+    "pitch": 13.206401
+  },
+  "redSpawn": {
+    "x": 53.81666380732597,
+    "y": 71.14426489419725,
+    "z": 20.31996768412233,
+    "yaw": 89.62697,
+    "pitch": -0.80530095
+  },
+  "blueSpawn": {
+    "x": -53.9260456120475,
+    "y": 69.64411554189878,
+    "z": -19.399659629040656,
+    "yaw": 269.92795,
+    "pitch": 1.3286557
+  },
+  "redArea": {
+    "minX": -59,
+    "maxX": 48,
+    "minZ": 8,
+    "maxZ": 58
+  },
+  "blueArea": {
+    "minX": -49,
+    "maxX": 58,
+    "minZ": -58,
+    "maxZ": -8
+  },
+  "redMobSpawn": {
+    "x": -63.5,
+    "y": 65,
+    "z": 20.5,
+    "yaw": -90,
+    "pitch": 0
+  },
+  "redCorners": [
+    {
+      "direction": "EAST",
+      "distance": 35
+    },
+    {
+      "direction": "SOUTH",
+      "distance": 26
+    },
+    {
+      "direction": "EAST",
+      "distance": 34
+    },
+    {
+      "direction": "NORTH",
+      "distance": 26
+    },
+    {
+      "direction": "EAST",
+      "distance": 17
+    },
+    {
+      "direction": "SOUTH",
+      "distance": 26
+    },
+    {
+      "direction": "EAST",
+      "distance": 14
+    },
+    {
+      "direction": "NORTH",
+      "distance": 26
+    },
+    {
+      "direction": "EAST",
+      "distance": 18
+    }
+  ],
+  "blueMobSpawn": {
+    "x": 63,
+    "y": 63,
+    "z": -19,
+    "yaw": 90,
+    "pitch": 0
+  }
+}
