@@ -16,7 +16,7 @@ import net.minestom.server.inventory.click.ClickType;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
-import pink.zak.minestom.towerdefence.api.event.TeamSwitchEvent;
+import pink.zak.minestom.towerdefence.api.event.player.PlayerTeamSwitchEvent;
 import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.enums.Team;
 
@@ -52,9 +52,9 @@ public class SpawnItemHandler {
             .addListener(PlayerDisconnectEvent.class, event -> {
                 Player player = event.getPlayer();
                 if (this.redPlayers.remove(player))
-                    this.globalEventHandler.call(new TeamSwitchEvent(null, Team.RED, player));
+                    this.globalEventHandler.call(new PlayerTeamSwitchEvent(null, Team.RED, player));
                 else if (this.bluePlayers.remove(player))
-                    this.globalEventHandler.call(new TeamSwitchEvent(null, Team.BLUE, player));
+                    this.globalEventHandler.call(new PlayerTeamSwitchEvent(null, Team.BLUE, player));
             })
             .addListener(InventoryPreClickEvent.class, event -> {
                 if (event.getClickType() == ClickType.START_DOUBLE_CLICK)
@@ -83,7 +83,7 @@ public class SpawnItemHandler {
                 if (contained)
                     this.updateTeamItem(Team.BLUE);
 
-                this.globalEventHandler.call(new TeamSwitchEvent(Team.RED, contained ? Team.BLUE : null, player));
+                this.globalEventHandler.call(new PlayerTeamSwitchEvent(Team.RED, contained ? Team.BLUE : null, player));
             }
         } else if (clickedMaterial.equals(Material.BLUE_WOOL)) {
             if (this.bluePlayers.contains(player)) {
@@ -97,7 +97,7 @@ public class SpawnItemHandler {
                 if (contained)
                     this.updateTeamItem(Team.RED);
 
-                this.globalEventHandler.call(new TeamSwitchEvent(Team.BLUE, contained ? Team.RED : null, player));
+                this.globalEventHandler.call(new PlayerTeamSwitchEvent(Team.BLUE, contained ? Team.RED : null, player));
             }
         }
     }

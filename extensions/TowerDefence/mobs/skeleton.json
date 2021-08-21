@@ -1,0 +1,22 @@
+{
+  "entityType": "minecraft:skeleton",
+  "displayItem": {
+    "material": "minecraft:skeleton_skull",
+    "displayName": "<yellow>Skeleton",
+    "lore": [
+      "",
+      "<yellow>idk",
+      "<yellow>just testing really"
+    ]
+  },
+  "flying": false,
+  "levels": [
+    {
+      "level": 1,
+      "price": 30,
+      "health": 40,
+      "damage": 2,
+      "movementSpeed": 2.5
+    }
+  ]
+}

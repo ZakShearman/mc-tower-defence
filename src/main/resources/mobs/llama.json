@@ -1,0 +1,12 @@
+{
+  "entityType": "minecraft:llama",
+  "levels": [
+    {
+      "level": 1,
+      "price": 150,
+      "health": 100,
+      "damage": 1,
+      "movementSpeed": 0.75
+    }
+  ]
+}

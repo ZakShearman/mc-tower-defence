@@ -11,8 +11,6 @@ public interface TowerScoreboard {
 
     boolean removeViewer(Player player);
 
-    void addViewer(Player player);
-
     enum Type {
         LOBBY,
         IN_GAME,

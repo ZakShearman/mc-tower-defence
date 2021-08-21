@@ -1,0 +1,12 @@
+{
+  "entityType": "minecraft:skeleton",
+  "levels": [
+    {
+      "level": 1,
+      "price": 30,
+      "health": 40,
+      "damage": 2,
+      "movementSpeed": 0.8
+    }
+  ]
+}

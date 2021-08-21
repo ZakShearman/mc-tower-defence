@@ -1,0 +1,12 @@
+{
+  "entityType": "minecraft:zombie",
+  "levels": [
+    {
+      "level": 1,
+      "price": 15,
+      "health": 20,
+      "damage": 1,
+      "movementSpeed": 1.0
+    }
+  ]
+}

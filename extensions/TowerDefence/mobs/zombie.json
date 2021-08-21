@@ -1,0 +1,22 @@
+{
+  "entityType": "minecraft:zombie",
+  "displayItem": {
+    "material": "minecraft:zombie_head",
+    "displayName": "<yellow>Zombie",
+    "lore": [
+      "",
+      "<yellow>idk",
+      "<yellow>just testing really"
+    ]
+  },
+  "flying": false,
+  "levels": [
+    {
+      "level": 1,
+      "price": 15,
+      "health": 20,
+      "damage": 1,
+      "movementSpeed": 2.5
+    }
+  ]
+}

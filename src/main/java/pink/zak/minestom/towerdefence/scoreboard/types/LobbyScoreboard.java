@@ -8,7 +8,7 @@ import net.minestom.server.event.player.PlayerDisconnectEvent;
 import net.minestom.server.event.player.PlayerSpawnEvent;
 import net.minestom.server.scoreboard.Sidebar;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
-import pink.zak.minestom.towerdefence.api.event.TeamSwitchEvent;
+import pink.zak.minestom.towerdefence.api.event.player.PlayerTeamSwitchEvent;
 import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.scoreboard.TowerScoreboard;
 
@@ -36,7 +36,7 @@ public class LobbyScoreboard implements TowerScoreboard {
             this.sidebar.addViewer(event.getPlayer());
         });
         plugin.getEventNode().addListener(PlayerDisconnectEvent.class, event -> this.sidebar.updateLineContent("online-players", this.createOnlinePlayers()));
-        plugin.getEventNode().addListener(TeamSwitchEvent.class, event -> {
+        plugin.getEventNode().addListener(PlayerTeamSwitchEvent.class, event -> {
             Team updateTeam;
             if (event.getJoinedTeam() == null)
                 updateTeam = event.getOldTeam();
@@ -74,7 +74,6 @@ public class LobbyScoreboard implements TowerScoreboard {
         return this.sidebar.removeViewer(player);
     }
 
-    @Override
     public void addViewer(Player player) {
         this.sidebar.addViewer(player);
     }

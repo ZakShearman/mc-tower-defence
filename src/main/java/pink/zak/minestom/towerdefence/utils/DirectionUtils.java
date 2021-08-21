@@ -1,8 +1,20 @@
 package pink.zak.minestom.towerdefence.utils;
 
+import net.minestom.server.coordinate.Pos;
 import net.minestom.server.utils.Direction;
 
 public class DirectionUtils {
+
+    public static Pos add(Pos pos, Direction direction, double amount) {
+        return switch (direction) {
+            case NORTH -> pos.sub(0, 0, amount);
+            case EAST -> pos.add(amount, 0, 0);
+            case SOUTH -> pos.add(0, 0, amount);
+            case WEST -> pos.sub(amount, 0, 0);
+            case UP -> pos.add(0, amount, 0);
+            case DOWN -> pos.sub(0, amount, 0);
+        };
+    }
 
     public static float getYaw(Direction direction) {
         return switch (direction) {
