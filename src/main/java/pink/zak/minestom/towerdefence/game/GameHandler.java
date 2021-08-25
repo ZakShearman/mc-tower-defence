@@ -1,50 +1,42 @@
 package pink.zak.minestom.towerdefence.game;
 
 import com.google.common.collect.Maps;
-import net.kyori.adventure.text.Component;
-import net.minestom.server.adventure.audience.Audiences;
 import net.minestom.server.coordinate.Pos;
-import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.player.PlayerDisconnectEvent;
 import net.minestom.server.instance.Instance;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.enums.Team;
+import pink.zak.minestom.towerdefence.game.listeners.MobMenuHandler;
 import pink.zak.minestom.towerdefence.model.GameUser;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
-import pink.zak.minestom.towerdefence.model.mob.EnemyMob;
-import pink.zak.minestom.towerdefence.model.mob.living.LivingEnemyMob;
 
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
 
 public class GameHandler {
     private final TowerDefencePlugin plugin;
+    private final MobMenuHandler mobMenuHandler;
     private final TowerMap map;
     private Map<Player, GameUser> users = Maps.newHashMap();
+    private Instance instance;
 
     public GameHandler(TowerDefencePlugin plugin) {
         this.plugin = plugin;
+        this.mobMenuHandler = new MobMenuHandler(plugin, this);
         this.map = plugin.getMapStorage().getMap();
         plugin.getEventNode().addListener(PlayerDisconnectEvent.class, event -> this.users.remove(event.getPlayer()));
+
     }
 
     public void start(Instance instance) {
         this.plugin.setGameState(GameState.IN_PROGRESS);
+        this.instance = instance;
         this.configureTeam(Team.RED, this.plugin.getRedPlayers());
         this.configureTeam(Team.BLUE, this.plugin.getBluePlayers());
         this.plugin.getScoreboardManager().startGame();
-
-        Audiences.all().sendMessage(Component.text("Red mob spawn: " + this.map.getRedMobSpawn()));
-        Map<EntityType, EnemyMob> mobs = this.plugin.getMobStorage().getEnemyMobs();
-        Executors.newScheduledThreadPool(2).scheduleAtFixedRate(() -> {
-            EnemyMob enemyMob = mobs.values().toArray(new EnemyMob[]{})[ThreadLocalRandom.current().nextInt(mobs.size())];
-            LivingEnemyMob.createMob(enemyMob, instance, this.map, Team.RED, 1);
-        }, 0, 400, TimeUnit.MILLISECONDS);
+        this.mobMenuHandler.startGame();
     }
 
     private void configureTeam(Team team, Set<Player> players) {
@@ -66,11 +58,19 @@ public class GameHandler {
         return this.users.containsKey(player);
     }
 
+    public TowerMap getMap() {
+        return this.map;
+    }
+
     public GameUser getGameUser(Player player) {
         return this.users.get(player);
     }
 
     public Map<Player, GameUser> getUsers() {
         return this.users;
+    }
+
+    public Instance getInstance() {
+        return this.instance;
     }
 }

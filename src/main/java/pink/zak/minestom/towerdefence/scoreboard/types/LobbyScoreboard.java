@@ -38,10 +38,10 @@ public class LobbyScoreboard implements TowerScoreboard {
         plugin.getEventNode().addListener(PlayerDisconnectEvent.class, event -> this.sidebar.updateLineContent("online-players", this.createOnlinePlayers()));
         plugin.getEventNode().addListener(PlayerTeamSwitchEvent.class, event -> {
             Team updateTeam;
-            if (event.getJoinedTeam() == null)
-                updateTeam = event.getOldTeam();
-            else if (event.getOldTeam() == null)
-                updateTeam = event.getJoinedTeam();
+            if (event.joinedTeam() == null)
+                updateTeam = event.oldTeam();
+            else if (event.oldTeam() == null)
+                updateTeam = event.joinedTeam();
             else {
                 this.sidebar.updateLineContent("red-players", this.createRedPlayers());
                 this.sidebar.updateLineContent("blue-players", this.createBluePlayers());

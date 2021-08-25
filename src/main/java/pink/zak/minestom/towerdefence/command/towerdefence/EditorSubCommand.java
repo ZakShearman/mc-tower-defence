@@ -50,7 +50,7 @@ public class EditorSubCommand implements CommandExecutor {
             .lore(
                 Component.text("Left-click for pos1", NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false),
                 Component.text("Right-click for pos2", NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false),
-                Component.text(""),
+                Component.empty(),
                 Component.text("Right-click the air to change team", NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false)
             );
 

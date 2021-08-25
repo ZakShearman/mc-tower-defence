@@ -1,23 +1,50 @@
 {
   "entityType": "minecraft:llama",
-  "displayItem": {
+  "commonName": "Llama",
+  "guiSlot": 1,
+  "flying": false,
+  "unownedItem": {
     "material": "minecraft:player_head",
-    "displayName": "<yellow>Llama",
+    "displayName": "<reset><yellow>Llama <gold>(<yellow>Not Owned<gold>)",
     "lore": [
       "",
-      "<yellow>idk",
-      "<yellow>just testing really"
+      "<reset><yellow>Price: <cost> mana",
+      "",
+      "<reset><yellow>Open the upgrades menu to purchase"
     ],
     "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODE4Y2Q0NTdmYmFmMzI3ZmEzOWYxMGI1YjM2MTY2ZmQwMTgyNjQwMzY4NjUxNjRjMDJkOWU1ZmY1M2Y0NSJ9fX0="
   },
-  "flying": false,
   "levels": [
     {
       "level": 1,
       "price": 150,
       "health": 100,
       "damage": 1,
-      "movementSpeed": 2.1
+      "movementSpeed": 2.1,
+      "manaCost": 200,
+      "sendItem": {
+        "material": "minecraft:player_head",
+        "displayName": "<yellow>Llama",
+        "lore": [
+          "",
+          "<yellow>idk",
+          "<yellow>just testing really"
+        ],
+        "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODE4Y2Q0NTdmYmFmMzI3ZmEzOWYxMGI1YjM2MTY2ZmQwMTgyNjQwMzY4NjUxNjRjMDJkOWU1ZmY1M2Y0NSJ9fX0="
+      },
+      "upgradeItem": {
+        "material": "minecraft:lime_stained_glass_pane",
+        "displayName": "<reset>Lvl. I",
+        "lore": [
+          "",
+          "<reset><gold>Mana Cost: <yellow><manaCost>",
+          "",
+          "<reset><gold>Send Cost: <yellow>$<price>",
+          "<reset><gold>Health: <yellow><health>",
+          "<reset><gold>Damage: <yellow><damage>",
+          "<reset><gold>Speed: <yellow><speed>"
+        ]
+      }
     }
   ]
 }

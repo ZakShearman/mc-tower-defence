@@ -61,6 +61,7 @@ public class TowerDefencePlugin extends Extension {
         this.towerStorage = new TowerStorage(this);
         this.scoreboardManager = new ScoreboardManager(this);
 
+
         this.gameHandler = new GameHandler(this);
 
         new TowerInteractionHandler(this);

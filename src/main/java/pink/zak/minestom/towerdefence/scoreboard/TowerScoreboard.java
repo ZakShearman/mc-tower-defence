@@ -7,7 +7,7 @@ import net.minestom.server.entity.Player;
 public interface TowerScoreboard {
 
     Component TITLE = Component.text("Zak's Tower Defence", NamedTextColor.YELLOW);
-    Component DOMAIN = Component.text("zakshearman.com", NamedTextColor.YELLOW);
+    Component DOMAIN = Component.text("uwu", NamedTextColor.YELLOW);
 
     boolean removeViewer(Player player);
 

@@ -1,22 +1,48 @@
 {
   "entityType": "minecraft:zombie",
-  "displayItem": {
+  "commonName": "Zombie",
+  "guiSlot": 3,
+  "flying": false,
+  "unownedItem": {
     "material": "minecraft:zombie_head",
-    "displayName": "<yellow>Zombie",
+    "displayName": "<reset><yellow>Zombie <gold>(<yellow>Not Owned<gold>)",
     "lore": [
       "",
-      "<yellow>idk",
-      "<yellow>just testing really"
+      "<reset><yellow>Price: <cost> mana",
+      "",
+      "<reset><yellow>Open the upgrades menu to purchase"
     ]
   },
-  "flying": false,
   "levels": [
     {
       "level": 1,
       "price": 15,
       "health": 20,
       "damage": 1,
-      "movementSpeed": 2.5
+      "movementSpeed": 2.5,
+      "manaCost": 0,
+      "sendItem": {
+        "material": "minecraft:zombie_head",
+        "displayName": "<yellow>Zombie",
+        "lore": [
+          "",
+          "<yellow>idk",
+          "<yellow>just testing really"
+        ]
+      },
+      "upgradeItem": {
+        "material": "minecraft:lime_stained_glass_pane",
+        "displayName": "<reset>Lvl. I",
+        "lore": [
+          "",
+          "<reset><gold>Mana Cost: <yellow><manaCost>",
+          "",
+          "<reset><gold>Send Cost: <yellow>$<price>",
+          "<reset><gold>Health: <yellow><health>",
+          "<reset><gold>Damage: <yellow><damage>",
+          "<reset><gold>Speed: <yellow><speed>"
+        ]
+      }
     }
   ]
 }

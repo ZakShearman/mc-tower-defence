@@ -17,6 +17,8 @@ import pink.zak.minestom.towerdefence.model.map.PathCorner;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
 import pink.zak.minestom.towerdefence.model.mob.EnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.EnemyMobLevel;
+import pink.zak.minestom.towerdefence.model.mob.QueuedEnemyMob;
+import pink.zak.minestom.towerdefence.model.mob.living.types.BeeLivingEnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.living.types.LlamaLivingEnemyMob;
 import pink.zak.minestom.towerdefence.utils.DirectionUtils;
 import pink.zak.minestom.towerdefence.utils.StringUtils;
@@ -66,9 +68,13 @@ public class LivingEnemyMob extends EntityCreature {
         this.task = this.scheduleMovements();
     }
 
-    public static LivingEnemyMob createMob(EnemyMob enemyMob, Instance instance, TowerMap map, Team team, int level) {
+    public static LivingEnemyMob createMob(QueuedEnemyMob queuedEnemyMob, Instance instance, TowerMap map, Team team) {
+        EnemyMob enemyMob = queuedEnemyMob.mob();
+        int level = queuedEnemyMob.level().level();
         if (enemyMob.entityType() == EntityType.LLAMA)
             return new LlamaLivingEnemyMob(enemyMob, instance, map, team, level);
+        else if (enemyMob.entityType() == EntityType.BEE)
+            return new BeeLivingEnemyMob(enemyMob, instance, map, team, level);
         else
             return new LivingEnemyMob(enemyMob, instance, map, team, level);
     }
@@ -132,7 +138,7 @@ public class LivingEnemyMob extends EntityCreature {
         this.swingOffHand();
     }
 
-    private void startAttackingCastle() {
+    protected void startAttackingCastle() {
         this.task = MinecraftServer.getSchedulerManager()
             .buildTask(this::attackCastle)
             .repeat(2, ChronoUnit.SECONDS)
