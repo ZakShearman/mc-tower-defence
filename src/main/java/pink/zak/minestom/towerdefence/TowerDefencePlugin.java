@@ -9,6 +9,7 @@ import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.player.PlayerLoginEvent;
 import net.minestom.server.extensions.Extension;
+import net.minestom.server.instance.Instance;
 import net.minestom.server.monitoring.BenchmarkManager;
 import net.minestom.server.monitoring.TickMonitor;
 import net.minestom.server.utils.MathUtils;
@@ -49,9 +50,10 @@ public class TowerDefencePlugin extends Extension {
         LOGGER = getLogger();
         this.startBenchmark();
 
+        Instance instance = MinecraftServer.getInstanceManager().createInstanceContainer();
         this.getEventNode().addListener(PlayerLoginEvent.class, event -> {
-            event.getPlayer().setRespawnPoint(new Pos(0, 100, 0));
-            event.setSpawningInstance(MinecraftServer.getInstanceManager().createInstanceContainer());
+            event.getPlayer().setRespawnPoint(new Pos(-1, 67, 4));
+            event.setSpawningInstance(instance);
 
             Audiences.all().sendMessage(Component.text(event.getPlayer().getUsername() + " logged in"));
         });
@@ -63,8 +65,6 @@ public class TowerDefencePlugin extends Extension {
 
 
         this.gameHandler = new GameHandler(this);
-
-        new TowerInteractionHandler(this);
 
         new ProtectionHandler(this);
         new SpawnItemHandler(this);

@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-public record TowerLevel(int level, int cost, String name, List<String> description, Set<RelativeBlock> relativeBlocks) {
+public record TowerLevel(String name, int level, int cost, double fireDelay, double range, List<String> description, Set<RelativeBlock> relativeBlocks) {
 
     public JsonObject toJsonObject() {
         JsonObject jsonObject = new JsonObject();
@@ -21,9 +21,11 @@ public record TowerLevel(int level, int cost, String name, List<String> descript
         for (String line : this.description)
             descriptionArray.add(line);
 
+        jsonObject.addProperty("name", this.name);
         jsonObject.addProperty("level", this.level);
         jsonObject.addProperty("cost", this.cost);
-        jsonObject.addProperty("name", this.name);
+        jsonObject.addProperty("fireDelay", this.fireDelay);
+        jsonObject.addProperty("range", this.range);
         jsonObject.add("description", descriptionArray);
         jsonObject.add("relativeBlocks", blockArray);
 
@@ -31,9 +33,12 @@ public record TowerLevel(int level, int cost, String name, List<String> descript
     }
 
     public static TowerLevel fromJsonObject(JsonObject jsonObject) {
+        String name = jsonObject.get("name").getAsString();
         int level = jsonObject.get("level").getAsInt();
         int cost = jsonObject.get("cost").getAsInt();
-        String name = jsonObject.get("name").getAsString();
+        double fireDelay = jsonObject.get("fireDelay").getAsDouble();
+        double range = jsonObject.get("range").getAsDouble();
+
         List<String> description = StreamSupport.stream(jsonObject.get("description").getAsJsonArray().spliterator(), true)
             .map(JsonElement::getAsString).toList();
         Set<RelativeBlock> relativeBlocks = StreamSupport.stream(jsonObject.get("relativeBlocks").getAsJsonArray().spliterator(), true)
@@ -41,6 +46,6 @@ public record TowerLevel(int level, int cost, String name, List<String> descript
             .map(RelativeBlock::fromJson)
             .collect(Collectors.toUnmodifiableSet());
 
-        return new TowerLevel(level, cost, name, description, relativeBlocks);
+        return new TowerLevel(name, level, cost, fireDelay, range, description, relativeBlocks);
     }
 }

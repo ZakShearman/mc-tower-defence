@@ -21,6 +21,7 @@ import pink.zak.minestom.towerdefence.api.event.player.PlayerCoinChangeEvent;
 import pink.zak.minestom.towerdefence.api.event.player.PlayerManaChangeEvent;
 import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.game.GameHandler;
+import pink.zak.minestom.towerdefence.game.MobHandler;
 import pink.zak.minestom.towerdefence.model.GameUser;
 import pink.zak.minestom.towerdefence.model.mob.EnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.EnemyMobLevel;
@@ -40,6 +41,7 @@ public class MobMenuHandler {
     private static final Map<EnemyMob, Component> MOB_UPGRADE_TITLES = Maps.newHashMap();
     private final TowerDefencePlugin plugin;
     private final GameHandler gameHandler;
+    private final MobHandler mobHandler;
     private final MobStorage mobStorage;
     private final ItemStack chestItem;
     private final ItemStack upgradeItem;
@@ -50,6 +52,7 @@ public class MobMenuHandler {
 
         this.plugin = plugin;
         this.gameHandler = gameHandler;
+        this.mobHandler = gameHandler.getMobHandler();
         this.mobStorage = plugin.getMobStorage();
         this.chestItem = ItemStack.builder(Material.CHEST)
             .displayName(Component.text("Send Troops", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
@@ -121,7 +124,7 @@ public class MobMenuHandler {
             loreLines.add(Component.text(count + "x " + currentTrackedMob.commonName(), NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false));
 
         return ItemStack.builder(Material.PAPER)
-            .displayName(Component.text("Current Queue", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
+            .displayName(Component.text("Current Queue (" + iterations + "/" + gameUser.getMaxQueueSize() + ")", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
             .lore(loreLines)
             .build();
     }
@@ -233,7 +236,8 @@ public class MobMenuHandler {
 
     private void convertToUpgradeGui(Inventory inventory) {
         inventory.setTitle(UPGRADE_TITLE);
-        inventory.setItemStack(31, ItemStack.AIR);
+        inventory.setItemStack(31, ItemStack.AIR); // todo Make upgrade just a right click on the mob
+        inventory.setItemStack(35, ItemStack.AIR);
     }
 
     private void convertToMobUpgradeGui(GameUser gameUser, EnemyMob clickedMob, int currentLevel) {
@@ -262,7 +266,7 @@ public class MobMenuHandler {
                 for (GameUser gameUser : this.gameHandler.getUsers().values()) {
                     QueuedEnemyMob enemyMob = gameUser.getQueuedMobs().poll();
                     if (enemyMob != null) {
-                        LivingEnemyMob.createMob(enemyMob, this.gameHandler.getInstance(), this.gameHandler.getMap(), gameUser.getTeam()); // todo invert the team. Only the same for testing
+                        this.mobHandler.spawnMob(enemyMob, gameUser);
                         Inventory inventory = gameUser.getPlayer().getOpenInventory();
                         if (inventory != null && inventory.getTitle() == SEND_TITLE)
                             inventory.setItemStack(35, this.createQueueItem(gameUser));

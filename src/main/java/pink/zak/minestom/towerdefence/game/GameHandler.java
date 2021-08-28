@@ -9,6 +9,7 @@ import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.game.listeners.MobMenuHandler;
+import pink.zak.minestom.towerdefence.game.listeners.TowerInteractionHandler;
 import pink.zak.minestom.towerdefence.model.GameUser;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
 
@@ -17,17 +18,25 @@ import java.util.Set;
 
 public class GameHandler {
     private final TowerDefencePlugin plugin;
-    private final MobMenuHandler mobMenuHandler;
     private final TowerMap map;
+
+    private final MobHandler mobHandler;
+    private final TowerHandler towerHandler;
+    private final MobMenuHandler mobMenuHandler;
+
     private Map<Player, GameUser> users = Maps.newHashMap();
     private Instance instance;
 
     public GameHandler(TowerDefencePlugin plugin) {
         this.plugin = plugin;
-        this.mobMenuHandler = new MobMenuHandler(plugin, this);
         this.map = plugin.getMapStorage().getMap();
-        plugin.getEventNode().addListener(PlayerDisconnectEvent.class, event -> this.users.remove(event.getPlayer()));
 
+        this.mobHandler = new MobHandler(this);
+        this.towerHandler = new TowerHandler(this);
+        this.mobMenuHandler = new MobMenuHandler(plugin, this);
+        new TowerInteractionHandler(plugin, this);
+
+        plugin.getEventNode().addListener(PlayerDisconnectEvent.class, event -> this.users.remove(event.getPlayer()));
     }
 
     public void start(Instance instance) {
@@ -54,12 +63,20 @@ public class GameHandler {
         this.users = Maps.newHashMap();
     }
 
-    public boolean isInGame(Player player) {
-        return this.users.containsKey(player);
-    }
-
     public TowerMap getMap() {
         return this.map;
+    }
+
+    public MobHandler getMobHandler() {
+        return this.mobHandler;
+    }
+
+    public TowerHandler getTowerHandler() {
+        return this.towerHandler;
+    }
+
+    public boolean isInGame(Player player) {
+        return this.users.containsKey(player);
     }
 
     public GameUser getGameUser(Player player) {

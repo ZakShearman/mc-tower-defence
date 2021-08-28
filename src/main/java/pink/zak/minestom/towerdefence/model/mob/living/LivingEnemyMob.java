@@ -13,6 +13,7 @@ import net.minestom.server.utils.Direction;
 import net.minestom.server.utils.time.TimeUnit;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.enums.Team;
+import pink.zak.minestom.towerdefence.model.GameUser;
 import pink.zak.minestom.towerdefence.model.map.PathCorner;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
 import pink.zak.minestom.towerdefence.model.mob.EnemyMob;
@@ -39,19 +40,20 @@ public class LivingEnemyMob extends EntityCreature {
     protected PathCorner currentCorner;
     protected PathCorner nextCorner;
     protected double moveDistance;
+    protected double totalDistanceMoved;
 
     protected AtomicInteger health;
 
     protected Task task;
 
-    protected LivingEnemyMob(@NotNull EnemyMob enemyMob, Instance instance, TowerMap map, Team team, int level) {
+    protected LivingEnemyMob(@NotNull EnemyMob enemyMob, Instance instance, TowerMap map, GameUser gameUser, int level) {
         super(enemyMob.entityType());
 
         this.enemyMob = enemyMob;
-        this.team = team;
+        this.team = gameUser.getTeam(); // todo invert the team. Only the same for testing
         this.level = enemyMob.level(level);
         this.positionModifier = ThreadLocalRandom.current().nextInt(-map.getRandomValue(), map.getRandomValue() + 1);
-        this.corners = map.getCorners(team);
+        this.corners = map.getCorners(gameUser.getTeam());
         this.currentCornerIndex = 0;
         this.currentCorner = this.corners.get(0);
         this.nextCorner = this.corners.get(1);
@@ -68,15 +70,13 @@ public class LivingEnemyMob extends EntityCreature {
         this.task = this.scheduleMovements();
     }
 
-    public static LivingEnemyMob createMob(QueuedEnemyMob queuedEnemyMob, Instance instance, TowerMap map, Team team) {
-        EnemyMob enemyMob = queuedEnemyMob.mob();
-        int level = queuedEnemyMob.level().level();
+    public static LivingEnemyMob createMob(EnemyMob enemyMob, int level, Instance instance, TowerMap map, GameUser gameUser) {
         if (enemyMob.entityType() == EntityType.LLAMA)
-            return new LlamaLivingEnemyMob(enemyMob, instance, map, team, level);
+            return new LlamaLivingEnemyMob(enemyMob, instance, map, gameUser, level);
         else if (enemyMob.entityType() == EntityType.BEE)
-            return new BeeLivingEnemyMob(enemyMob, instance, map, team, level);
+            return new BeeLivingEnemyMob(enemyMob, instance, map, gameUser, level);
         else
-            return new LivingEnemyMob(enemyMob, instance, map, team, level);
+            return new LivingEnemyMob(enemyMob, instance, map, gameUser, level);
     }
 
     private Component createCustomName() {
@@ -96,6 +96,7 @@ public class LivingEnemyMob extends EntityCreature {
         //this.getNavigator().moveTowards(this.modifyPosition(), this.mobType.getSpeed() * 3);
         this.refreshPosition(this.modifyPosition());
         this.moveDistance += this.level.movementSpeed();
+        this.totalDistanceMoved += this.level.movementSpeed();
         if (this.nextCorner == null) {
             if (this.moveDistance >= this.currentCorner.distance() - this.positionModifier)
                 this.nextCorner();

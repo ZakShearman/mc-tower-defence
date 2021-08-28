@@ -8,41 +8,37 @@ import net.minestom.server.coordinate.Point;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.inventory.InventoryPreClickEvent;
 import net.minestom.server.event.player.PlayerBlockInteractEvent;
-import net.minestom.server.instance.Instance;
 import net.minestom.server.inventory.Inventory;
 import net.minestom.server.inventory.InventoryType;
 import net.minestom.server.inventory.click.ClickType;
 import net.minestom.server.item.Material;
-import net.minestom.server.utils.Direction;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.enums.TowerType;
 import pink.zak.minestom.towerdefence.game.GameHandler;
+import pink.zak.minestom.towerdefence.game.TowerHandler;
 import pink.zak.minestom.towerdefence.model.GameUser;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
 import pink.zak.minestom.towerdefence.model.tower.Tower;
 import pink.zak.minestom.towerdefence.model.tower.TowerLevel;
-import pink.zak.minestom.towerdefence.model.tower.placed.PlacedTower;
 import pink.zak.minestom.towerdefence.storage.TowerStorage;
-
-import java.util.concurrent.atomic.AtomicReference;
 
 public class TowerInteractionHandler {
     private final TowerDefencePlugin plugin;
-    private final TowerStorage towerStorage;
-    private final Inventory towerPlaceGui;
-
     private final GameHandler gameHandler;
+    private final TowerHandler towerHandler;
+    private final TowerStorage towerStorage;
+
+    private final Inventory towerPlaceGui;
     private final TowerMap towerMap;
 
-    private final AtomicReference<Short> towerIdCounter = new AtomicReference<>(Short.MIN_VALUE);
-
-    public TowerInteractionHandler(TowerDefencePlugin plugin) {
+    public TowerInteractionHandler(TowerDefencePlugin plugin, GameHandler gameHandler) {
         this.plugin = plugin;
+        this.gameHandler = gameHandler;
+        this.towerHandler = gameHandler.getTowerHandler();
         this.towerStorage = plugin.getTowerStorage();
-        this.towerPlaceGui = this.createTowerPlaceGui();
 
-        this.gameHandler = plugin.getGameHandler();
+        this.towerPlaceGui = this.createTowerPlaceGui();
         this.towerMap = plugin.getMapStorage().getMap();
 
         plugin.getEventNode()
@@ -97,7 +93,6 @@ public class TowerInteractionHandler {
             player.sendMessage(Component.text("You do not have enough money to buy this tower", NamedTextColor.RED));
             return;
         }
-        Instance instance = player.getInstance();
         Point basePoint = gameUser.getLastClickedTowerBlock();
         Material placeMaterial = this.towerMap.getTowerPlaceMaterial();
         if (!tower.isSpaceClear(player.getInstance(), basePoint, placeMaterial)) {
@@ -105,10 +100,6 @@ public class TowerInteractionHandler {
             // todo handle - show an outline or something
             return;
         }
-        new PlacedTower(instance, tower, this.towerMap.getTowerPlaceMaterial(), this.generateTowerId(), basePoint, Direction.NORTH, 1);
-    }
-
-    private short generateTowerId() {
-        return this.towerIdCounter.getAndUpdate(aShort -> aShort++);
+        this.towerHandler.createTower(tower, gameUser);
     }
 }

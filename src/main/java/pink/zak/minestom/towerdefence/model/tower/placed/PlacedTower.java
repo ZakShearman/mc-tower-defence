@@ -6,6 +6,7 @@ import net.minestom.server.instance.block.Block;
 import net.minestom.server.item.Material;
 import net.minestom.server.tag.Tag;
 import net.minestom.server.utils.Direction;
+import pink.zak.minestom.towerdefence.enums.TowerType;
 import pink.zak.minestom.towerdefence.model.tower.RelativeBlock;
 import pink.zak.minestom.towerdefence.model.tower.Tower;
 import pink.zak.minestom.towerdefence.model.tower.TowerLevel;
@@ -21,7 +22,7 @@ public class PlacedTower {
     private final Direction facing;
     private int level;
 
-    public PlacedTower(Instance instance, Tower tower, Material towerPlaceMaterial, short id, Point baseBlock, Direction facing, int level) {
+    protected PlacedTower(Instance instance, Tower tower, Material towerPlaceMaterial, short id, Point baseBlock, Direction facing, int level) {
         this.instance = instance;
         this.tower = tower;
         this.id = id;
@@ -31,6 +32,14 @@ public class PlacedTower {
 
         this.placeLevel(1);
         this.placeBase(towerPlaceMaterial);
+    }
+
+    public static PlacedTower create(Instance instance, Tower tower, Material towerPlaceMaterial, short id, Point baseBlock, Direction facing) {
+        TowerType towerType = tower.getType();
+        if (towerType == TowerType.BOMBER) {
+
+        }
+        return new PlacedTower(instance, tower, towerPlaceMaterial, id, baseBlock, facing, 1);
     }
 
     public void upgrade() {
