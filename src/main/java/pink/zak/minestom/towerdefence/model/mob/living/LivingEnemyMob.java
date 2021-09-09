@@ -8,7 +8,6 @@ import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.EntityCreature;
 import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.damage.DamageType;
-import net.minestom.server.entity.hologram.Hologram;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.timer.Task;
 import net.minestom.server.utils.Direction;
@@ -124,7 +123,7 @@ public class LivingEnemyMob extends EntityCreature {
             case NORTH -> currentPos.sub(0, 0, this.level.movementSpeed());
             default -> throw new IllegalArgumentException("Direction must be NORTH, EAST, SOUTH or WEST. Provided direction was " + this.currentCorner.direction());
         };
-        return newPos.withView(DirectionUtils.getYaw(this.currentCorner.direction()), 0);
+        return newPos.withView(DirectionUtils.getYaw(this.currentCorner.direction()), 0); // todo this can be removed in the majority of cases to reduce pos creations
     }
 
     private void nextCorner() {
@@ -176,11 +175,12 @@ public class LivingEnemyMob extends EntityCreature {
     public boolean damage(@NotNull DamageType type, float value) {
         if (type != DamageType.VOID) // all damage will be labelled as void
             return false;
+
         boolean didDamage = super.damage(type, value);
-        if (didDamage && !super.isDead) {
-            Pos markerPos = this.position.add(0, this.entityType.height(), 0);
-            DamageIndicator.create(this, value);//new Hologram(this.instance, markerPos, Component.text("TEST")); // todo finish
-        }
+
+        if (didDamage && !super.isDead)
+            DamageIndicator.create(this, value);
+
         return didDamage;
     }
 

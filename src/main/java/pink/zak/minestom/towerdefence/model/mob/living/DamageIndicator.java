@@ -17,10 +17,7 @@ public class DamageIndicator extends Entity {
 
         ArmorStandMeta meta = (ArmorStandMeta) this.getEntityMeta();
 
-        //meta.setNotifyAboutChanges(false);
-
         meta.setSmall(true);
-
         meta.setCustomName(text);
         meta.setCustomNameVisible(true);
         meta.setInvisible(true);
