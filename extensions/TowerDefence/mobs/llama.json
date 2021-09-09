@@ -20,7 +20,7 @@
       "price": 150,
       "health": 100,
       "damage": 1,
-      "movementSpeed": 2.1,
+      "movementSpeed": 1.7,
       "manaCost": 200,
       "sendItem": {
         "material": "minecraft:player_head",

@@ -21,10 +21,12 @@ import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.game.listeners.TowerInteractionHandler;
 import pink.zak.minestom.towerdefence.listener.ProtectionHandler;
 import pink.zak.minestom.towerdefence.listener.SpawnItemHandler;
+import pink.zak.minestom.towerdefence.model.tower.placed.types.BomberTower;
 import pink.zak.minestom.towerdefence.scoreboard.ScoreboardManager;
 import pink.zak.minestom.towerdefence.storage.MapStorage;
 import pink.zak.minestom.towerdefence.storage.MobStorage;
 import pink.zak.minestom.towerdefence.storage.TowerStorage;
+import pink.zak.minestom.towerdefence.utils.mechanic.CustomExplosion;
 
 import java.time.Duration;
 import java.util.Collection;
@@ -51,6 +53,7 @@ public class TowerDefencePlugin extends Extension {
         this.startBenchmark();
 
         Instance instance = MinecraftServer.getInstanceManager().createInstanceContainer();
+        instance.setExplosionSupplier((centerX, centerY, centerZ, strength, additionalData) -> new CustomExplosion(centerX, centerY, centerZ, strength));
         this.getEventNode().addListener(PlayerLoginEvent.class, event -> {
             event.getPlayer().setRespawnPoint(new Pos(-1, 67, 4));
             event.setSpawningInstance(instance);

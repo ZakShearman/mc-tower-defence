@@ -14,10 +14,10 @@ repositories {
 }
 
 dependencies {
-    compileOnly("com.github.Minestom:Minestom:fa07d861a6")
+    compileOnly("com.github.Minestom:Minestom:6ab94bb778")
     implementation("net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT")
     //implementation("net.minestom.server:Minestom:1.0")
-    testImplementation("com.github.Minestom:Minestom:fa07d861a6")
+    testImplementation("com.github.Minestom:Minestom:6ab94bb778")
     //testImplementation("net.minestom.server:Minestom:1.0")
 }
 

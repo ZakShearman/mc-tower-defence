@@ -1,16 +1,18 @@
 package pink.zak.minestom.towerdefence.enums;
 
 public enum TowerType {
-    ARCHER(Size.THREE, 10),
-    BOMBER(Size.THREE, 11)
+    ARCHER(Size.THREE, 10, true),
+    BOMBER(Size.THREE, 11, false)
     /*CHARITY(Size.THREE, 11)*/;
 
     private final Size size;
     private final int guiSlot;
+    private final boolean targetAir;
 
-    TowerType(Size size, int guiSlot) {
+    TowerType(Size size, int guiSlot, boolean targetAir) {
         this.size = size;
         this.guiSlot = guiSlot;
+        this.targetAir = targetAir;
     }
 
     public Size getSize() {
@@ -19,6 +21,10 @@ public enum TowerType {
 
     public int getGuiSlot() {
         return this.guiSlot;
+    }
+
+    public boolean isTargetAir() {
+        return this.targetAir;
     }
 
     public static TowerType valueOf(int guiSlot) {

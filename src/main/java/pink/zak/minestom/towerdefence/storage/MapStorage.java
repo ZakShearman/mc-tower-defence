@@ -13,9 +13,9 @@ public class MapStorage {
 
     public MapStorage(TowerDefencePlugin plugin) {
         this.filePath = plugin.getDataDirectory().resolve("map.json");
-        if (Files.exists(this.filePath))
+        if (Files.exists(this.filePath)) {
             this.map = this.load();
-        else {
+        } else {
             this.map = new TowerMap();
         }
     }

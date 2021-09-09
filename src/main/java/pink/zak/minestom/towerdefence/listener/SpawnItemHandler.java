@@ -15,6 +15,7 @@ import net.minestom.server.event.player.PlayerUseItemOnBlockEvent;
 import net.minestom.server.inventory.click.ClickType;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
+import net.minestom.server.utils.time.TimeUnit;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 import pink.zak.minestom.towerdefence.api.event.player.PlayerTeamSwitchEvent;
 import pink.zak.minestom.towerdefence.enums.GameState;
@@ -48,6 +49,12 @@ public class SpawnItemHandler {
                 Player player = event.getPlayer();
                 player.getInventory().setItemStack(0, this.redItem);
                 player.getInventory().setItemStack(1, this.blueItem);
+
+                this.redPlayers.add(player);
+
+                MinecraftServer.getSchedulerManager().buildTask(() -> {
+                    this.plugin.getGameHandler().start(player.getInstance());
+                }).delay(5, TimeUnit.SECOND).schedule();
             })
             .addListener(PlayerDisconnectEvent.class, event -> {
                 Player player = event.getPlayer();

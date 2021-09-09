@@ -49,11 +49,11 @@ public class TowerInteractionHandler {
                 GameUser gameUser = this.gameHandler.getGameUser(player);
                 if (gameUser == null || event.getBlock().registry().material() != this.towerMap.getTowerPlaceMaterial())
                     return;
-                if (!this.towerMap.getArea(gameUser.getTeam()).isWithin(player)) {
+                gameUser.setLastClickedTowerBlock(event.getBlockPosition());
+                if (!this.towerMap.getArea(gameUser.getTeam()).isWithin(gameUser.getLastClickedTowerBlock())) {
                     player.sendMessage(Component.text("You can only place towers on your side of the map (" + gameUser.getTeam().name().toLowerCase() + ").", NamedTextColor.RED));
                     return;
                 }
-                gameUser.setLastClickedTowerBlock(event.getBlockPosition());
                 player.openInventory(this.towerPlaceGui);
                 // todo check if they clicked on a tower
             });

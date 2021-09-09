@@ -1,7 +1,9 @@
 package pink.zak.minestom.towerdefence.game;
 
 import com.google.common.collect.Maps;
+import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
+import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.player.PlayerDisconnectEvent;
 import net.minestom.server.instance.Instance;
@@ -12,6 +14,9 @@ import pink.zak.minestom.towerdefence.game.listeners.MobMenuHandler;
 import pink.zak.minestom.towerdefence.game.listeners.TowerInteractionHandler;
 import pink.zak.minestom.towerdefence.model.GameUser;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
+import pink.zak.minestom.towerdefence.model.mob.EnemyMob;
+import pink.zak.minestom.towerdefence.model.mob.EnemyMobLevel;
+import pink.zak.minestom.towerdefence.model.mob.QueuedEnemyMob;
 
 import java.util.Map;
 import java.util.Set;
@@ -31,8 +36,8 @@ public class GameHandler {
         this.plugin = plugin;
         this.map = plugin.getMapStorage().getMap();
 
-        this.mobHandler = new MobHandler(this);
         this.towerHandler = new TowerHandler(this);
+        this.mobHandler = new MobHandler(this, plugin);
         this.mobMenuHandler = new MobMenuHandler(plugin, this);
         new TowerInteractionHandler(plugin, this);
 
@@ -41,11 +46,24 @@ public class GameHandler {
 
     public void start(Instance instance) {
         this.plugin.setGameState(GameState.IN_PROGRESS);
+
         this.instance = instance;
+        this.mobHandler.setInstance(instance);
+        this.towerHandler.setInstance(instance);
+
         this.configureTeam(Team.RED, this.plugin.getRedPlayers());
         this.configureTeam(Team.BLUE, this.plugin.getBluePlayers());
         this.plugin.getScoreboardManager().startGame();
         this.mobMenuHandler.startGame();
+
+        /*EnemyMob enemyMob = this.plugin.getMobStorage().getTower(EntityType.LLAMA);
+        EnemyMobLevel enemyMobLevel = enemyMob.level(1);
+        QueuedEnemyMob queuedEnemyMob = new QueuedEnemyMob(enemyMob,enemyMobLevel);
+        for (int i = 0; i<100; i++) { // desired game count
+            for (int z = 0; z<5000; z++) {// estimated max mobs in a game
+                this.mobHandler.spawnMob(queuedEnemyMob, new GameUser(null, Team.RED));
+            }
+        }*/
     }
 
     private void configureTeam(Team team, Set<Player> players) {

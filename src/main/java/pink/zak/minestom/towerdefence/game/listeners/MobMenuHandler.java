@@ -2,12 +2,10 @@ package pink.zak.minestom.towerdefence.game.listeners;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.MinecraftServer;
-import net.minestom.server.adventure.audience.Audiences;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.inventory.InventoryPreClickEvent;
 import net.minestom.server.event.player.PlayerUseItemEvent;
@@ -16,6 +14,7 @@ import net.minestom.server.inventory.InventoryType;
 import net.minestom.server.inventory.click.ClickType;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
+import net.minestom.server.utils.time.TimeUnit;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 import pink.zak.minestom.towerdefence.api.event.player.PlayerCoinChangeEvent;
 import pink.zak.minestom.towerdefence.api.event.player.PlayerManaChangeEvent;
@@ -26,14 +25,12 @@ import pink.zak.minestom.towerdefence.model.GameUser;
 import pink.zak.minestom.towerdefence.model.mob.EnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.EnemyMobLevel;
 import pink.zak.minestom.towerdefence.model.mob.QueuedEnemyMob;
-import pink.zak.minestom.towerdefence.model.mob.living.LivingEnemyMob;
 import pink.zak.minestom.towerdefence.storage.MobStorage;
 
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 public class MobMenuHandler {
     private static final Component SEND_TITLE = Component.text("Send Troops", NamedTextColor.DARK_GRAY);
@@ -266,14 +263,16 @@ public class MobMenuHandler {
                 for (GameUser gameUser : this.gameHandler.getUsers().values()) {
                     QueuedEnemyMob enemyMob = gameUser.getQueuedMobs().poll();
                     if (enemyMob != null) {
-                        this.mobHandler.spawnMob(enemyMob, gameUser);
-                        Inventory inventory = gameUser.getPlayer().getOpenInventory();
-                        if (inventory != null && inventory.getTitle() == SEND_TITLE)
-                            inventory.setItemStack(35, this.createQueueItem(gameUser));
+                        for (int i = 0; i < 5; i++) {
+                            this.mobHandler.spawnMob(enemyMob, gameUser);
+                            Inventory inventory = gameUser.getPlayer().getOpenInventory();
+                            if (inventory != null && inventory.getTitle() == SEND_TITLE)
+                                inventory.setItemStack(35, this.createQueueItem(gameUser));
+                        }
                     }
                 }
             })
-            .repeat(500, ChronoUnit.MILLIS)
+            .repeat(50, TimeUnit.MILLISECOND)
             .schedule();
     }
 }

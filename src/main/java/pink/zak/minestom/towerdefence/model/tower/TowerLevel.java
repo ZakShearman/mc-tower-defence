@@ -9,7 +9,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-public record TowerLevel(String name, int level, int cost, double fireDelay, double range, List<String> description, Set<RelativeBlock> relativeBlocks) {
+public record TowerLevel(String name, int level, int cost, int fireDelay, double range, List<String> description,
+                         Set<RelativeBlock> relativeBlocks) {
 
     public JsonObject toJsonObject() {
         JsonObject jsonObject = new JsonObject();
@@ -36,7 +37,7 @@ public record TowerLevel(String name, int level, int cost, double fireDelay, dou
         String name = jsonObject.get("name").getAsString();
         int level = jsonObject.get("level").getAsInt();
         int cost = jsonObject.get("cost").getAsInt();
-        double fireDelay = jsonObject.get("fireDelay").getAsDouble();
+        int fireDelay = jsonObject.get("fireDelay").getAsInt();
         double range = jsonObject.get("range").getAsDouble();
 
         List<String> description = StreamSupport.stream(jsonObject.get("description").getAsJsonArray().spliterator(), true)
@@ -46,6 +47,6 @@ public record TowerLevel(String name, int level, int cost, double fireDelay, dou
             .map(RelativeBlock::fromJson)
             .collect(Collectors.toUnmodifiableSet());
 
-        return new TowerLevel(name, level, cost, fireDelay, range, description, relativeBlocks);
+        return new TowerLevel(name, level, cost, fireDelay, range * range, description, relativeBlocks);
     }
 }

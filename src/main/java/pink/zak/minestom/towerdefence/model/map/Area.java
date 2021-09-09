@@ -57,9 +57,7 @@ public class Area {
         this.maxZ = maxZ;
     }
 
-    public boolean isWithin(Entity entity) {
-        Pos pos = entity.getPosition();
-
+    public boolean isWithin(Point pos) {
         return pos.x() < this.maxX && pos.x() > this.minX
             && pos.z() < this.maxZ && pos.z() > this.minZ;
     }

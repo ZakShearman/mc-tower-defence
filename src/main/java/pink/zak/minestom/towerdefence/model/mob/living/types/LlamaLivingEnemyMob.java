@@ -8,7 +8,8 @@ import net.minestom.server.network.packet.server.play.ParticlePacket;
 import net.minestom.server.particle.Particle;
 import net.minestom.server.particle.ParticleCreator;
 import org.jetbrains.annotations.NotNull;
-import pink.zak.minestom.towerdefence.enums.Team;
+import pink.zak.minestom.towerdefence.game.MobHandler;
+import pink.zak.minestom.towerdefence.game.TowerHandler;
 import pink.zak.minestom.towerdefence.model.GameUser;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
 import pink.zak.minestom.towerdefence.model.mob.EnemyMob;
@@ -17,8 +18,8 @@ import pink.zak.minestom.towerdefence.utils.DirectionUtils;
 
 public class LlamaLivingEnemyMob extends LivingEnemyMob {
 
-    public LlamaLivingEnemyMob(@NotNull EnemyMob enemyMob, Instance instance, TowerMap map, GameUser gameUser, int level) {
-        super(enemyMob, instance, map, gameUser, level);
+    public LlamaLivingEnemyMob(TowerHandler towerHandler, MobHandler mobHandler, @NotNull EnemyMob enemyMob, Instance instance, TowerMap map, GameUser gameUser, int level) {
+        super(towerHandler, mobHandler, enemyMob, instance, map, gameUser, level);
     }
 
     @Override

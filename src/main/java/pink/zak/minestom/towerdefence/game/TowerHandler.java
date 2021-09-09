@@ -14,6 +14,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class TowerHandler {
     private final AtomicReference<Short> towerIdCounter = new AtomicReference<>(Short.MIN_VALUE);
+    private final GameHandler gameHandler;
     private final Set<PlacedTower> redTowers = Sets.newConcurrentHashSet();
     private final Set<PlacedTower> blueTowers = Sets.newConcurrentHashSet();
 
@@ -21,20 +22,21 @@ public class TowerHandler {
     private Instance instance;
 
     public TowerHandler(GameHandler gameHandler) {
+        this.gameHandler = gameHandler;
         this.map = gameHandler.getMap();
     }
 
-    public PlacedTower createTower(Tower tower, GameUser gameUser) {
-        PlacedTower placedTower = PlacedTower.create(this.instance, tower, this.map.getTowerPlaceMaterial(), this.generateTowerId(), gameUser.getLastClickedTowerBlock(), Direction.NORTH);
-        if (gameUser.getTeam() == Team.RED)
+    public void createTower(Tower tower, GameUser gameUser) {
+        Team team = gameUser.getTeam();
+        PlacedTower placedTower = PlacedTower.create(this.gameHandler, this.instance, tower, this.map.getTowerPlaceMaterial(), this.generateTowerId(), team, gameUser.getLastClickedTowerBlock(), Direction.NORTH);
+        if (team == Team.RED)
             this.redTowers.add(placedTower);
         else
             this.blueTowers.add(placedTower);
-        return placedTower;
     }
 
     private short generateTowerId() {
-        return this.towerIdCounter.getAndUpdate(aShort -> aShort++);
+        return this.towerIdCounter.getAndUpdate(aShort -> ++aShort);
     }
 
     public Set<PlacedTower> getRedTowers() {
