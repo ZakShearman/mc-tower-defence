@@ -15,6 +15,13 @@ public enum TowerType {
         this.targetAir = targetAir;
     }
 
+    public static TowerType valueOf(int guiSlot) {
+        for (TowerType towerType : TowerType.values())
+            if (towerType.getGuiSlot() == guiSlot)
+                return towerType;
+        return null;
+    }
+
     public Size getSize() {
         return this.size;
     }
@@ -25,13 +32,6 @@ public enum TowerType {
 
     public boolean isTargetAir() {
         return this.targetAir;
-    }
-
-    public static TowerType valueOf(int guiSlot) {
-        for (TowerType towerType : TowerType.values())
-            if (towerType.getGuiSlot() == guiSlot)
-                return towerType;
-        return null;
     }
 
     public enum Size {

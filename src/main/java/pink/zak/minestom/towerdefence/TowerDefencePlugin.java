@@ -86,12 +86,12 @@ public class TowerDefencePlugin extends Extension {
         return this.bluePlayers;
     }
 
-    public void setGameState(GameState gameState) {
-        this.gameState = gameState;
-    }
-
     public GameState getGameState() {
         return this.gameState;
+    }
+
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
     }
 
     public MobStorage getMobStorage() {

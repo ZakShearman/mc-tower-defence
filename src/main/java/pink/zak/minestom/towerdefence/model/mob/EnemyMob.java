@@ -1,10 +1,8 @@
 package pink.zak.minestom.towerdefence.model.mob;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.kyori.adventure.text.minimessage.Template;
 import net.minestom.server.entity.EntityType;
 import net.minestom.server.item.ItemStack;
 import pink.zak.minestom.towerdefence.utils.ItemUtils;
@@ -18,14 +16,6 @@ public record EnemyMob(EntityType entityType,
                        boolean flying,
                        ItemStack unownedItem,
                        Map<Integer, EnemyMobLevel> levels) {
-
-    public EnemyMobLevel level(int level) {
-        return this.levels.get(level);
-    }
-
-    public int maxLevel() {
-        return this.levels.keySet().stream().max(Integer::compareTo).orElseThrow();
-    }
 
     public static EnemyMob fromJsonObject(JsonObject jsonObject) {
         EntityType entityType = EntityType.fromNamespaceId(jsonObject.get("entityType").getAsString());
@@ -43,5 +33,13 @@ public record EnemyMob(EntityType entityType,
             ItemUtils.fromJsonObject(jsonObject.get("unownedItem").getAsJsonObject())
             : null;
         return new EnemyMob(entityType, commonName, slot, flying, unownedItem, levels);
+    }
+
+    public EnemyMobLevel level(int level) {
+        return this.levels.get(level);
+    }
+
+    public int maxLevel() {
+        return this.levels.keySet().stream().max(Integer::compareTo).orElseThrow();
     }
 }

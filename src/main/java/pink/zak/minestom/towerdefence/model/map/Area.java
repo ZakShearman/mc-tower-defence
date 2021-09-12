@@ -2,8 +2,6 @@ package pink.zak.minestom.towerdefence.model.map;
 
 import com.google.gson.JsonObject;
 import net.minestom.server.coordinate.Point;
-import net.minestom.server.coordinate.Pos;
-import net.minestom.server.entity.Entity;
 
 public class Area {
     private int minX;
@@ -23,6 +21,15 @@ public class Area {
         this.maxX = maxX;
         this.minZ = minZ;
         this.maxZ = maxZ;
+    }
+
+    public static Area fromJson(JsonObject jsonObject) {
+        int minX = jsonObject.get("minX").getAsInt();
+        int maxX = jsonObject.get("maxX").getAsInt();
+        int minZ = jsonObject.get("minZ").getAsInt();
+        int maxZ = jsonObject.get("maxZ").getAsInt();
+
+        return new Area(minX, maxX, minZ, maxZ);
     }
 
     public int getMinX() {
@@ -71,14 +78,5 @@ public class Area {
         jsonObject.addProperty("maxZ", this.maxZ);
 
         return jsonObject;
-    }
-
-    public static Area fromJson(JsonObject jsonObject) {
-        int minX = jsonObject.get("minX").getAsInt();
-        int maxX = jsonObject.get("maxX").getAsInt();
-        int minZ = jsonObject.get("minZ").getAsInt();
-        int maxZ = jsonObject.get("maxZ").getAsInt();
-
-        return new Area(minX, maxX, minZ, maxZ);
     }
 }

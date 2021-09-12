@@ -48,6 +48,70 @@ public class TowerMap {
         this.towerPlaceMaterial = towerPlaceMaterial;
     }
 
+    public static TowerMap fromJson(JsonObject jsonObject) {
+        Pos spectatorSpawn = null;
+        Pos redSpawn = null;
+        Pos blueSpawn = null;
+        Area redArea = null;
+        Area blueArea = null;
+
+        int pathWidth;
+
+        Pos redMobSpawn = null;
+        Pos blueMobSpawn = null;
+
+        List<PathCorner> redCorners = null;
+        List<PathCorner> blueCorners = null;
+
+        Material towerPlaceMaterial = null;
+
+        pathWidth = jsonObject.get("pathWidth").getAsInt();
+        if (jsonObject.has("spectatorSpawn"))
+            spectatorSpawn = jsonToPosition(jsonObject.getAsJsonObject("spectatorSpawn"));
+        if (jsonObject.has("redSpawn"))
+            redSpawn = jsonToPosition(jsonObject.getAsJsonObject("redSpawn"));
+        if (jsonObject.has("blueSpawn"))
+            blueSpawn = jsonToPosition(jsonObject.getAsJsonObject("blueSpawn"));
+        if (jsonObject.has("redArea"))
+            redArea = Area.fromJson(jsonObject.getAsJsonObject("redArea"));
+        if (jsonObject.has("blueArea"))
+            blueArea = Area.fromJson(jsonObject.getAsJsonObject("blueArea"));
+        if (jsonObject.has("redMobSpawn"))
+            redMobSpawn = jsonToPosition(jsonObject.getAsJsonObject("redMobSpawn"));
+        if (jsonObject.has("blueMobSpawn"))
+            blueMobSpawn = jsonToPosition(jsonObject.getAsJsonObject("blueMobSpawn"));
+        if (jsonObject.has("redCorners"))
+            redCorners = jsonToPathCorners(jsonObject.getAsJsonArray("redCorners"));
+        if (jsonObject.has("blueCorners"))
+            blueCorners = jsonToPathCorners(jsonObject.getAsJsonArray("blueCorners"));
+        if (jsonObject.has("towerPlaceMaterial"))
+            towerPlaceMaterial = Material.fromNamespaceId(jsonObject.get("towerPlaceMaterial").getAsString());
+
+        return new TowerMap(spectatorSpawn, redSpawn, blueSpawn,
+            redArea, blueArea,
+            redMobSpawn, blueMobSpawn,
+            pathWidth, redCorners, blueCorners,
+            towerPlaceMaterial);
+    }
+
+    private static List<PathCorner> jsonToPathCorners(JsonArray jsonElements) {
+        List<PathCorner> corners = Lists.newArrayList();
+        for (JsonElement jsonElement : jsonElements) {
+            corners.add(PathCorner.fromJson(jsonElement.getAsJsonObject()));
+        }
+        return corners;
+    }
+
+    private static Pos jsonToPosition(JsonObject jsonObject) {
+        double x = jsonObject.get("x").getAsDouble();
+        double y = jsonObject.get("y").getAsDouble();
+        double z = jsonObject.get("z").getAsDouble();
+        float yaw = jsonObject.get("yaw").getAsFloat();
+        float pitch = jsonObject.get("pitch").getAsFloat();
+
+        return new Pos(x, y, z, yaw, pitch);
+    }
+
     public Pos getSpectatorSpawn() {
         return this.spectatorSpawn;
     }
@@ -170,76 +234,12 @@ public class TowerMap {
         return jsonObject;
     }
 
-    public static TowerMap fromJson(JsonObject jsonObject) {
-        Pos spectatorSpawn = null;
-        Pos redSpawn = null;
-        Pos blueSpawn = null;
-        Area redArea = null;
-        Area blueArea = null;
-
-        int pathWidth;
-
-        Pos redMobSpawn = null;
-        Pos blueMobSpawn = null;
-
-        List<PathCorner> redCorners = null;
-        List<PathCorner> blueCorners = null;
-
-        Material towerPlaceMaterial = null;
-
-        pathWidth = jsonObject.get("pathWidth").getAsInt();
-        if (jsonObject.has("spectatorSpawn"))
-            spectatorSpawn = jsonToPosition(jsonObject.getAsJsonObject("spectatorSpawn"));
-        if (jsonObject.has("redSpawn"))
-            redSpawn = jsonToPosition(jsonObject.getAsJsonObject("redSpawn"));
-        if (jsonObject.has("blueSpawn"))
-            blueSpawn = jsonToPosition(jsonObject.getAsJsonObject("blueSpawn"));
-        if (jsonObject.has("redArea"))
-            redArea = Area.fromJson(jsonObject.getAsJsonObject("redArea"));
-        if (jsonObject.has("blueArea"))
-            blueArea = Area.fromJson(jsonObject.getAsJsonObject("blueArea"));
-        if (jsonObject.has("redMobSpawn"))
-            redMobSpawn = jsonToPosition(jsonObject.getAsJsonObject("redMobSpawn"));
-        if (jsonObject.has("blueMobSpawn"))
-            blueMobSpawn = jsonToPosition(jsonObject.getAsJsonObject("blueMobSpawn"));
-        if (jsonObject.has("redCorners"))
-            redCorners = jsonToPathCorners(jsonObject.getAsJsonArray("redCorners"));
-        if (jsonObject.has("blueCorners"))
-            blueCorners = jsonToPathCorners(jsonObject.getAsJsonArray("blueCorners"));
-        if (jsonObject.has("towerPlaceMaterial"))
-            towerPlaceMaterial = Material.fromNamespaceId(jsonObject.get("towerPlaceMaterial").getAsString());
-
-        return new TowerMap(spectatorSpawn, redSpawn, blueSpawn,
-            redArea, blueArea,
-            redMobSpawn, blueMobSpawn,
-            pathWidth, redCorners, blueCorners,
-            towerPlaceMaterial);
-    }
-
-    private static List<PathCorner> jsonToPathCorners(JsonArray jsonElements) {
-        List<PathCorner> corners = Lists.newArrayList();
-        for (JsonElement jsonElement : jsonElements) {
-            corners.add(PathCorner.fromJson(jsonElement.getAsJsonObject()));
-        }
-        return corners;
-    }
-
     private JsonArray cornersToJsonArray(List<PathCorner> corners) {
         JsonArray jsonElements = new JsonArray();
         for (PathCorner corner : corners) {
             jsonElements.add(corner.toJson());
         }
         return jsonElements;
-    }
-
-    private static Pos jsonToPosition(JsonObject jsonObject) {
-        double x = jsonObject.get("x").getAsDouble();
-        double y = jsonObject.get("y").getAsDouble();
-        double z = jsonObject.get("z").getAsDouble();
-        float yaw = jsonObject.get("yaw").getAsFloat();
-        float pitch = jsonObject.get("pitch").getAsFloat();
-
-        return new Pos(x, y, z, yaw, pitch);
     }
 
     private JsonObject posToJson(Pos position) {

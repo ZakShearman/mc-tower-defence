@@ -113,7 +113,7 @@ public class LivingEnemyMob extends EntityCreature {
             if (this.moveDistance >= this.currentCorner.distance() - this.positionModifier) {
                 this.nextCorner();
             }
-        } else if (this.moveDistance >= this.currentCorner.distance() + this.getLengthIncrease()) {
+        } else if (this.moveDistance >= this.currentCorner.distance() + this.getRandomLengthModifier()) {
             this.nextCorner();
         }
     }
@@ -187,17 +187,16 @@ public class LivingEnemyMob extends EntityCreature {
 
     @Override
     public boolean damage(@NotNull DamageType type, float value) {
-        if (type != DamageType.VOID || this.isImmune(type) || this.isInvulnerable() || this.isDead()) // all damage will be labelled as void
+        // all damage will be labelled as void - just a sanity check
+        if (type != DamageType.VOID || this.isImmune(type) || this.isInvulnerable() || this.isDead())
             return false;
 
         DamageIndicator.create(this, value);
 
-        // Set the last damage type
         this.lastDamageSource = type;
 
         this.sendPacketToViewersAndSelf(new EntityAnimationPacket(this.getEntityId(), EntityAnimationPacket.Animation.TAKE_DAMAGE));
 
-        // Set the final entity health
         this.setHealth(this.health - value);
 
         // play damage sound
@@ -214,7 +213,7 @@ public class LivingEnemyMob extends EntityCreature {
         return true;
     }
 
-    private int getLengthIncrease() {
+    private int getRandomLengthModifier() {
         if (this.positionModifier == 0)
             return 0;
         if (this.nextCorner.direction() == Direction.SOUTH) {

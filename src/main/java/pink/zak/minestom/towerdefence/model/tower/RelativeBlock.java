@@ -21,6 +21,35 @@ public class RelativeBlock {
         this.block = block;
     }
 
+    public static RelativeBlock fromJson(JsonObject jsonObject) {
+        int xOffset = jsonObject.get("xOffset").getAsInt();
+        int zOffset = jsonObject.get("zOffset").getAsInt();
+        int yOffset = jsonObject.get("yOffset").getAsInt();
+        Block block = getBlockFromJson(jsonObject.get("block").getAsJsonObject());
+
+        return new RelativeBlock(xOffset, zOffset, yOffset, block);
+    }
+
+    private static Block getBlockFromJson(JsonObject jsonObject) {
+        String id = jsonObject.get("material").getAsString();
+        Map<String, String> properties;
+        if (jsonObject.has("properties"))
+            properties = getPropertiesFromJson(jsonObject.get("properties").getAsJsonObject());
+        else
+            return Block.fromNamespaceId(id);
+
+        return Block.fromNamespaceId(id).withProperties(properties);
+    }
+
+    private static Map<String, String> getPropertiesFromJson(JsonObject jsonObject) {
+        Map<String, String> map = Maps.newHashMap();
+
+        for (String key : jsonObject.keySet())
+            map.put(key, jsonObject.get(key).getAsString());
+
+        return map;
+    }
+
     public int getXOffset(Direction facing) {
         return switch (facing) {
             case NORTH -> this.xOffset;
@@ -70,26 +99,6 @@ public class RelativeBlock {
         return jsonObject;
     }
 
-    public static RelativeBlock fromJson(JsonObject jsonObject) {
-        int xOffset = jsonObject.get("xOffset").getAsInt();
-        int zOffset = jsonObject.get("zOffset").getAsInt();
-        int yOffset = jsonObject.get("yOffset").getAsInt();
-        Block block = getBlockFromJson(jsonObject.get("block").getAsJsonObject());
-
-        return new RelativeBlock(xOffset, zOffset, yOffset, block);
-    }
-
-    private static Block getBlockFromJson(JsonObject jsonObject) {
-        String id = jsonObject.get("material").getAsString();
-        Map<String, String> properties;
-        if (jsonObject.has("properties"))
-            properties = getPropertiesFromJson(jsonObject.get("properties").getAsJsonObject());
-        else
-            return Block.fromNamespaceId(id);
-
-        return Block.fromNamespaceId(id).withProperties(properties);
-    }
-
     private JsonObject getPropertiesAsJson() {
         JsonObject jsonObject = new JsonObject();
 
@@ -97,14 +106,5 @@ public class RelativeBlock {
             jsonObject.addProperty(entry.getKey(), entry.getValue());
 
         return jsonObject;
-    }
-
-    private static Map<String, String> getPropertiesFromJson(JsonObject jsonObject) {
-        Map<String, String> map = Maps.newHashMap();
-
-        for (String key : jsonObject.keySet())
-            map.put(key, jsonObject.get(key).getAsString());
-
-        return map;
     }
 }
