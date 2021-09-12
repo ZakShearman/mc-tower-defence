@@ -1,14 +1,19 @@
 package pink.zak.minestom.towerdefence.model.mob.living;
 
 import com.google.common.collect.Sets;
+import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.MinecraftServer;
+import net.minestom.server.attribute.Attribute;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.EntityCreature;
 import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.damage.DamageType;
 import net.minestom.server.instance.Instance;
+import net.minestom.server.network.packet.server.play.EntityAnimationPacket;
+import net.minestom.server.network.packet.server.play.SoundEffectPacket;
+import net.minestom.server.sound.SoundEvent;
 import net.minestom.server.timer.Task;
 import net.minestom.server.utils.Direction;
 import org.jetbrains.annotations.NotNull;
@@ -30,7 +35,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class LivingEnemyMob extends EntityCreature {
     protected final TowerHandler towerHandler;
@@ -48,7 +52,7 @@ public class LivingEnemyMob extends EntityCreature {
     protected double totalDistanceMoved;
 
     protected Set<PlacedTower> attackingTowers = Sets.newConcurrentHashSet();
-    protected AtomicInteger health;
+    protected float health;
 
     private Task attackTask;
 
@@ -66,7 +70,8 @@ public class LivingEnemyMob extends EntityCreature {
         this.currentCorner = this.corners.get(0);
         this.nextCorner = this.corners.get(1);
 
-        this.health = new AtomicInteger(this.level.health());
+        this.getAttribute(Attribute.MAX_HEALTH).setBaseValue(this.level.health());
+        this.health = this.level.health();
 
         if (enemyMob.flying())
             this.setNoGravity(true);
@@ -88,7 +93,7 @@ public class LivingEnemyMob extends EntityCreature {
     private Component createCustomName() {
         return Component.text(StringUtils.namespaceToName(this.entityType.name()) + " " + StringUtils.integerToCardinal(this.level.level()), NamedTextColor.DARK_GREEN)
             .append(Component.text(" (", NamedTextColor.GREEN))
-            .append(Component.text((this.level.health() / this.health.get()) * 100 + "%", NamedTextColor.DARK_GREEN))
+            .append(Component.text((this.health / this.level.health()) * 100 + "%", NamedTextColor.DARK_GREEN))
             .append(Component.text(")", NamedTextColor.GREEN));
     }
 
@@ -101,7 +106,6 @@ public class LivingEnemyMob extends EntityCreature {
     }
 
     private void updatePos() {
-        //this.getNavigator().moveTowards(this.modifyPosition(), this.mobType.getSpeed() * 3);
         this.refreshPosition(this.modifyPosition());
         this.moveDistance += this.level.movementSpeed();
         this.totalDistanceMoved += this.level.movementSpeed();
@@ -172,16 +176,42 @@ public class LivingEnemyMob extends EntityCreature {
     }
 
     @Override
+    public void setHealth(float health) {
+        this.health = health;
+        if (this.health <= 0 && !isDead)
+            this.kill();
+
+        if (this.level != null)
+            this.setCustomName(this.createCustomName());
+    }
+
+    @Override
     public boolean damage(@NotNull DamageType type, float value) {
-        if (type != DamageType.VOID) // all damage will be labelled as void
+        if (type != DamageType.VOID || this.isImmune(type) || this.isInvulnerable() || this.isDead()) // all damage will be labelled as void
             return false;
 
-        boolean didDamage = super.damage(type, value);
+        DamageIndicator.create(this, value);
 
-        if (didDamage && !super.isDead)
-            DamageIndicator.create(this, value);
+        // Set the last damage type
+        this.lastDamageSource = type;
 
-        return didDamage;
+        this.sendPacketToViewersAndSelf(new EntityAnimationPacket(this.getEntityId(), EntityAnimationPacket.Animation.TAKE_DAMAGE));
+
+        // Set the final entity health
+        this.setHealth(this.health - value);
+
+        // play damage sound
+        final SoundEvent sound = type.getSound(this);
+        if (sound != null) {
+            Sound.Source soundCategory = Sound.Source.PLAYER;
+
+            SoundEffectPacket damageSoundPacket =
+                SoundEffectPacket.create(soundCategory, sound,
+                    this.getPosition(),
+                    1.0f, 1.0f);
+            this.sendPacketToViewersAndSelf(damageSoundPacket);
+        }
+        return true;
     }
 
     private int getLengthIncrease() {

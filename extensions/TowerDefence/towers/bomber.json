@@ -4,7 +4,6 @@
   "levels": [
     {
       "level": 1,
-      "name": "Bomber Tower",
       "cost": 250,
       "fireDelay": 60,
       "damage": 1,
@@ -47,7 +46,7 @@
           "zOffset": -1,
           "yOffset": 1,
           "block": {
-            "material": "minecraft:stone_bricks"
+            "material": "minecraft:cracked_stone_bricks"
           }
         },
         {
@@ -55,7 +54,7 @@
           "zOffset": -1,
           "yOffset": 2,
           "block": {
-            "material": "minecraft:stone_bricks"
+            "material": "minecraft:cracked_stone_bricks"
           }
         },
         {
@@ -75,7 +74,7 @@
           "zOffset": -1,
           "yOffset": 4,
           "block": {
-            "material": "minecraft:stone_bricks"
+            "material": "minecraft:cracked_stone_bricks"
           }
         },
         {
@@ -103,7 +102,7 @@
           "zOffset": -1,
           "yOffset": 3,
           "block": {
-            "material": "minecraft:stone_bricks"
+            "material": "minecraft:cracked_stone_bricks"
           }
         },
         {
@@ -123,7 +122,7 @@
           "zOffset": 0,
           "yOffset": 1,
           "block": {
-            "material": "minecraft:stone_bricks"
+            "material": "minecraft:cracked_stone_bricks"
           }
         },
         {
@@ -131,7 +130,7 @@
           "zOffset": 0,
           "yOffset": 2,
           "block": {
-            "material": "minecraft:stone_bricks"
+            "material": "minecraft:cracked_stone_bricks"
           }
         },
         {
@@ -151,7 +150,7 @@
           "zOffset": 0,
           "yOffset": 4,
           "block": {
-            "material": "minecraft:stone_bricks"
+            "material": "minecraft:cracked_stone_bricks"
           }
         },
         {
@@ -179,7 +178,7 @@
           "zOffset": 1,
           "yOffset": 3,
           "block": {
-            "material": "minecraft:stone_bricks"
+            "material": "minecraft:cracked_stone_bricks"
           }
         },
         {
@@ -199,7 +198,7 @@
           "zOffset": 1,
           "yOffset": 1,
           "block": {
-            "material": "minecraft:stone_bricks"
+            "material": "minecraft:cracked_stone_bricks"
           }
         },
         {
@@ -207,7 +206,7 @@
           "zOffset": 1,
           "yOffset": 2,
           "block": {
-            "material": "minecraft:stone_bricks"
+            "material": "minecraft:cracked_stone_bricks"
           }
         },
         {
@@ -227,7 +226,7 @@
           "zOffset": 1,
           "yOffset": 4,
           "block": {
-            "material": "minecraft:stone_bricks"
+            "material": "minecraft:cracked_stone_bricks"
           }
         },
         {
@@ -255,7 +254,7 @@
           "zOffset": 1,
           "yOffset": 3,
           "block": {
-            "material": "minecraft:stone_bricks"
+            "material": "minecraft:cracked_stone_bricks"
           }
         },
         {
@@ -275,7 +274,7 @@
           "zOffset": 0,
           "yOffset": 1,
           "block": {
-            "material": "minecraft:stone_bricks"
+            "material": "minecraft:cracked_stone_bricks"
           }
         },
         {
@@ -283,7 +282,7 @@
           "zOffset": 0,
           "yOffset": 2,
           "block": {
-            "material": "minecraft:stone_bricks"
+            "material": "minecraft:cracked_stone_bricks"
           }
         },
         {
@@ -303,7 +302,7 @@
           "zOffset": 0,
           "yOffset": 4,
           "block": {
-            "material": "minecraft:stone_bricks"
+            "material": "minecraft:cracked_stone_bricks"
           }
         },
         {
@@ -331,7 +330,7 @@
           "zOffset": -1,
           "yOffset": 3,
           "block": {
-            "material": "minecraft:stone_bricks"
+            "material": "minecraft:cracked_stone_bricks"
           }
         },
         {
@@ -352,6 +351,176 @@
           "yOffset": 1,
           "block": {
             "material": "minecraft:redstone_block"
+          }
+        }
+      ]
+    },
+    {
+      "level": 2,
+      "cost": 250,
+      "fireDelay": 10,
+      "damage": 1.5,
+      "range": 22,
+      "menuItem": {
+        "material": "minecraft:tnt",
+        "displayName": "<yellow>Bomber Lvl. II",
+        "lore": [
+          "",
+          "<yellow>Fires flying TNT at enemies",
+          "<yellow>Dealing splash damage to those near it",
+          "",
+          "<gold>Damage: <yellow>1.5",
+          "<gold>Range: <yellow>22",
+          "<gold>Fire Delay: <yellow>2.5 seconds",
+          "<gold>Explosion Radius: <yellow>4 blocks",
+          "",
+          "<red>Cannot shoot flying enemies"
+        ]
+      },
+      "upgradeItem": {
+        "material": "minecraft:lime_stained_glass_pane",
+        "displayName": "<yellow>Bomber Lvl. II",
+        "lore": [
+          "",
+          "<yellow>Fires flying TNT at enemies",
+          "<yellow>Dealing splash damage to those near it",
+          "",
+          "<gold>Cost: <yellow>$250",
+          "<gold>Damage: <yellow>1.5 (+0.5)",
+          "<gold>Range: <yellow>22 (+2)",
+          "<gold>Fire Delay: <yellow>2.5 seconds (-0.5)",
+          "<gold>Explosion Radius: <yellow>4 blocks",
+          "",
+          "<red>Cannot shoot flying enemies"
+        ]
+      },
+      "relativeBlocks": [
+        {
+          "xOffset": 0,
+          "zOffset": -1,
+          "yOffset": 1,
+          "block": {
+            "material": "minecraft:stone_bricks"
+          }
+        },
+        {
+          "xOffset": 0,
+          "zOffset": -1,
+          "yOffset": 2,
+          "block": {
+            "material": "minecraft:stone_bricks"
+          }
+        },
+        {
+          "xOffset": 0,
+          "zOffset": -1,
+          "yOffset": 4,
+          "block": {
+            "material": "minecraft:stone_bricks"
+          }
+        },
+        {
+          "xOffset": -1,
+          "zOffset": -1,
+          "yOffset": 3,
+          "block": {
+            "material": "minecraft:stone_bricks"
+          }
+        },
+        {
+          "xOffset": -1,
+          "zOffset": 0,
+          "yOffset": 1,
+          "block": {
+            "material": "minecraft:stone_bricks"
+          }
+        },
+        {
+          "xOffset": -1,
+          "zOffset": 0,
+          "yOffset": 2,
+          "block": {
+            "material": "minecraft:stone_bricks"
+          }
+        },
+        {
+          "xOffset": -1,
+          "zOffset": 0,
+          "yOffset": 4,
+          "block": {
+            "material": "minecraft:stone_bricks"
+          }
+        },
+        {
+          "xOffset": -1,
+          "zOffset": 1,
+          "yOffset": 3,
+          "block": {
+            "material": "minecraft:stone_bricks"
+          }
+        },
+        {
+          "xOffset": 0,
+          "zOffset": 1,
+          "yOffset": 1,
+          "block": {
+            "material": "minecraft:stone_bricks"
+          }
+        },
+        {
+          "xOffset": 0,
+          "zOffset": 1,
+          "yOffset": 2,
+          "block": {
+            "material": "minecraft:stone_bricks"
+          }
+        },
+        {
+          "xOffset": 0,
+          "zOffset": 1,
+          "yOffset": 4,
+          "block": {
+            "material": "minecraft:stone_bricks"
+          }
+        },
+        {
+          "xOffset": 1,
+          "zOffset": 1,
+          "yOffset": 3,
+          "block": {
+            "material": "minecraft:stone_bricks"
+          }
+        },
+        {
+          "xOffset": 1,
+          "zOffset": 0,
+          "yOffset": 1,
+          "block": {
+            "material": "minecraft:stone_bricks"
+          }
+        },
+        {
+          "xOffset": 1,
+          "zOffset": 0,
+          "yOffset": 2,
+          "block": {
+            "material": "minecraft:stone_bricks"
+          }
+        },
+        {
+          "xOffset": 1,
+          "zOffset": 0,
+          "yOffset": 4,
+          "block": {
+            "material": "minecraft:stone_bricks"
+          }
+        },
+        {
+          "xOffset": 1,
+          "zOffset": -1,
+          "yOffset": 3,
+          "block": {
+            "material": "minecraft:stone_bricks"
           }
         }
       ]

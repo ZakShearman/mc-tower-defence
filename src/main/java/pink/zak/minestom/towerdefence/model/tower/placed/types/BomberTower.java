@@ -19,7 +19,6 @@ import pink.zak.minestom.towerdefence.model.tower.Tower;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedTower;
 
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class BomberTower extends PlacedTower {
     private final Pos spawnPos;
@@ -43,7 +42,7 @@ public class BomberTower extends PlacedTower {
 
         for (LivingEnemyMob enemyMob : enemyMobs) {
             if (enemyMob.getDistance(center) <= 4) {
-                enemyMob.damage(DamageType.VOID, 1 /*this.level.damage()*/); // todo add damage vars
+                enemyMob.damage(DamageType.VOID, this.level.damage());
             }
         }
     }

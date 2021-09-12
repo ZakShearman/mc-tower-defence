@@ -13,6 +13,7 @@ import net.minestom.server.inventory.InventoryType;
 import net.minestom.server.inventory.click.ClickType;
 import net.minestom.server.item.Material;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
+import pink.zak.minestom.towerdefence.api.event.player.PlayerCoinChangeEvent;
 import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.enums.TowerType;
 import pink.zak.minestom.towerdefence.game.GameHandler;
@@ -55,7 +56,6 @@ public class TowerPlaceHandler {
                     return;
                 }
                 player.openInventory(this.towerPlaceGui);
-                // todo check if they clicked on a tower
             });
     }
 
@@ -96,9 +96,11 @@ public class TowerPlaceHandler {
         Point basePoint = gameUser.getLastClickedTowerBlock();
         Material placeMaterial = this.towerMap.getTowerPlaceMaterial();
         if (!tower.isSpaceClear(player.getInstance(), basePoint, placeMaterial)) {
-            Audiences.all().sendMessage(Component.text("Cannot place a tower as the area is not clear", NamedTextColor.RED));
+            player.sendMessage(Component.text("Cannot place a tower as the area is not clear", NamedTextColor.RED));
             return;
         }
+        int newCoins = gameUser.getCoins().updateAndGet(current -> current - level.cost());
+        this.plugin.getEventNode().call(new PlayerCoinChangeEvent(gameUser, newCoins));
         this.towerHandler.createTower(tower, gameUser);
     }
 }

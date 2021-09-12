@@ -71,8 +71,14 @@ public abstract class PlacedTower {
     protected abstract void fire();
 
     public void upgrade() {
+        TowerLevel oldLevel = this.level;
+        this.level = this.tower.level(++this.levelInt);
         this.placeLevel();
-        this.level = this.tower.level(this.levelInt);
+
+        if (oldLevel.fireDelay() != this.level.fireDelay()) {
+            this.attackTask.cancel();
+            this.startFiring();
+        }
     }
 
     private void placeLevel() {

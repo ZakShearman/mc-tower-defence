@@ -11,16 +11,15 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-public record TowerLevel(int level, String name, int cost, int fireDelay, double damage, double range,
+public record TowerLevel(int level, int cost, int fireDelay, float damage, double range,
                          ItemStack menuItem, ItemStack ownedUpgradeItem, ItemStack buyUpgradeItem,
                          ItemStack cantAffordUpgradeItem, Set<RelativeBlock> relativeBlocks) {
 
     public static TowerLevel fromJsonObject(JsonObject jsonObject) {
         int level = jsonObject.get("level").getAsInt();
-        String name = jsonObject.get("name").getAsString();
         int cost = jsonObject.get("cost").getAsInt();
         int fireDelay = jsonObject.get("fireDelay").getAsInt();
-        double damage = jsonObject.get("damage").getAsDouble();
+        float damage = jsonObject.get("damage").getAsFloat();
         double range = jsonObject.get("range").getAsDouble();
 
         ItemStack menuItem = ItemUtils.fromJsonObject(jsonObject.get("menuItem").getAsJsonObject());
@@ -40,7 +39,7 @@ public record TowerLevel(int level, String name, int cost, int fireDelay, double
             .map(RelativeBlock::fromJson)
             .collect(Collectors.toUnmodifiableSet());
 
-        return new TowerLevel(level, name, cost,
+        return new TowerLevel(level, cost,
             fireDelay, damage, range * range,
             menuItem, ownedUpgradeItem, buyUpgradeItem, cantAffordUpgradeItem, relativeBlocks);
     }
