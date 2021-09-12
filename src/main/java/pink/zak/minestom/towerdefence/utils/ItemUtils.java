@@ -10,13 +10,18 @@ import net.minestom.server.item.Material;
 import net.minestom.server.item.metadata.PlayerHeadMeta;
 import net.minestom.server.utils.mojang.MojangUtils;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public class ItemUtils {
 
-    public static ItemStack fromJsonObject(JsonObject jsonObject, Template... templates) {
+    public static ItemStack fromJsonObject(JsonObject jsonObject) {
+        return fromJsonObject(jsonObject, null);
+    }
+
+    public static ItemStack fromJsonObject(JsonObject jsonObject, List<Template> templates) {
         Material material = Material.fromNamespaceId(jsonObject.get("material").getAsString());
         ItemStackBuilder builder = ItemStack.builder(material);
 

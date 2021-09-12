@@ -1,9 +1,7 @@
 package pink.zak.minestom.towerdefence.game;
 
 import com.google.common.collect.Maps;
-import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
-import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.player.PlayerDisconnectEvent;
 import net.minestom.server.instance.Instance;
@@ -11,12 +9,9 @@ import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.game.listeners.MobMenuHandler;
-import pink.zak.minestom.towerdefence.game.listeners.TowerInteractionHandler;
+import pink.zak.minestom.towerdefence.game.listeners.TowerPlaceHandler;
 import pink.zak.minestom.towerdefence.model.GameUser;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
-import pink.zak.minestom.towerdefence.model.mob.EnemyMob;
-import pink.zak.minestom.towerdefence.model.mob.EnemyMobLevel;
-import pink.zak.minestom.towerdefence.model.mob.QueuedEnemyMob;
 
 import java.util.Map;
 import java.util.Set;
@@ -39,7 +34,7 @@ public class GameHandler {
         this.towerHandler = new TowerHandler(this);
         this.mobHandler = new MobHandler(this, plugin);
         this.mobMenuHandler = new MobMenuHandler(plugin, this);
-        new TowerInteractionHandler(plugin, this);
+        new TowerPlaceHandler(plugin, this);
 
         plugin.getEventNode().addListener(PlayerDisconnectEvent.class, event -> this.users.remove(event.getPlayer()));
     }

@@ -12,11 +12,11 @@ import java.util.StringJoiner;
 public class StringUtils {
     private static final MiniMessage MINI_MESSAGE = MiniMessage.get();
 
-    public static Component parseMessage(String message, Template... templates) {
+    public static Component parseMessage(String message, List<Template> templates) {
         return MINI_MESSAGE.parse(message, templates).decoration(TextDecoration.ITALIC, false);
     }
 
-    public static List<Component> parseMessages(List<String> messages, Template... templates) {
+    public static List<Component> parseMessages(List<String> messages, List<Template> templates) {
         List<Component> components = Lists.newArrayList();
         for (String message : messages)
             components.add(parseMessage(message, templates));

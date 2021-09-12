@@ -8,7 +8,7 @@
     "displayName": "<reset><yellow>Zombie <gold>(<yellow>Not Owned<gold>)",
     "lore": [
       "",
-      "<reset><yellow>Price: <cost> mana",
+      "<reset><yellow>Cost: <cost> mana",
       "",
       "<reset><yellow>Open the upgrades menu to purchase"
     ]
@@ -16,7 +16,7 @@
   "levels": [
     {
       "level": 1,
-      "price": 15,
+      "cost": 15,
       "health": 20,
       "damage": 1,
       "movementSpeed": 2.1,
@@ -37,7 +37,7 @@
           "",
           "<reset><gold>Mana Cost: <yellow><manaCost>",
           "",
-          "<reset><gold>Send Cost: <yellow>$<price>",
+          "<reset><gold>Send Cost: <yellow>$<cost>",
           "<reset><gold>Health: <yellow><health>",
           "<reset><gold>Damage: <yellow><damage>",
           "<reset><gold>Speed: <yellow><speed>"

@@ -39,6 +39,10 @@ public class TowerHandler {
         return this.towerIdCounter.getAndUpdate(aShort -> ++aShort);
     }
 
+    public PlacedTower getTower(GameUser gameUser, short id) {
+        return (gameUser.getTeam() == Team.RED ? this.redTowers : this.blueTowers).stream().filter(tower -> tower.getId() == id).findFirst().orElse(null);
+    }
+
     public Set<PlacedTower> getRedTowers() {
         return this.redTowers;
     }

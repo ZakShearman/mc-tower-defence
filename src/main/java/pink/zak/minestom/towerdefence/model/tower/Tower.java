@@ -87,25 +87,6 @@ public class Tower {
         return this.menuItem;
     }
 
-    // current unused, but take a look if you want to know how to format the json.
-    public JsonObject toJsonObject() {
-        JsonObject jsonObject = new JsonObject();
-
-        jsonObject.addProperty("type", this.type.toString());
-        jsonObject.addProperty("displayMaterial", this.displayMaterial.name()); // minecraft:xxxx
-
-        jsonObject.add("levels", this.levels.values().stream().map(TowerLevel::toJsonObject).collect(Collector.of(
-            JsonArray::new,
-            JsonArray::add,
-            (jsonElements, o) -> {
-                jsonElements.add(o);
-                return jsonElements;
-            }
-        )));
-
-        return jsonObject;
-    }
-
     public static Tower fromJsonObject(JsonObject jsonObject) {
         TowerType type = TowerType.valueOf(jsonObject.get("type").getAsString());
         String displayMaterial = jsonObject.get("displayMaterial").getAsString();

@@ -27,7 +27,6 @@ import pink.zak.minestom.towerdefence.model.mob.EnemyMobLevel;
 import pink.zak.minestom.towerdefence.model.mob.QueuedEnemyMob;
 import pink.zak.minestom.towerdefence.storage.MobStorage;
 
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -150,8 +149,8 @@ public class MobMenuHandler {
                 if (mobLevelInt == 0)
                     return;
                 EnemyMobLevel mobLevel = clickedMob.level(mobLevelInt);
-                if (gameUser.getCoins().get() >= mobLevel.price()) {
-                    int newCoins = gameUser.getCoins().updateAndGet(current -> current - mobLevel.price());
+                if (gameUser.getCoins().get() >= mobLevel.cost()) {
+                    int newCoins = gameUser.getCoins().updateAndGet(current -> current - mobLevel.cost());
                     this.plugin.getEventNode().call(new PlayerCoinChangeEvent(gameUser, newCoins));
 
                     this.sendTroops(gameUser, clickedMob, mobLevel);

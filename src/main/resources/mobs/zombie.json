@@ -3,7 +3,7 @@
   "levels": [
     {
       "level": 1,
-      "price": 15,
+      "cost": 15,
       "health": 20,
       "damage": 1,
       "movementSpeed": 1.0

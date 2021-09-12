@@ -8,6 +8,7 @@ import net.minestom.server.coordinate.Point;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.inventory.InventoryPreClickEvent;
 import net.minestom.server.event.player.PlayerBlockInteractEvent;
+import net.minestom.server.instance.block.Block;
 import net.minestom.server.inventory.Inventory;
 import net.minestom.server.inventory.InventoryType;
 import net.minestom.server.inventory.click.ClickType;
@@ -21,9 +22,10 @@ import pink.zak.minestom.towerdefence.model.GameUser;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
 import pink.zak.minestom.towerdefence.model.tower.Tower;
 import pink.zak.minestom.towerdefence.model.tower.TowerLevel;
+import pink.zak.minestom.towerdefence.model.tower.placed.PlacedTower;
 import pink.zak.minestom.towerdefence.storage.TowerStorage;
 
-public class TowerInteractionHandler {
+public class TowerUpgradeHandler {
     private final TowerDefencePlugin plugin;
     private final GameHandler gameHandler;
     private final TowerHandler towerHandler;
@@ -32,7 +34,7 @@ public class TowerInteractionHandler {
     private final Inventory towerPlaceGui;
     private final TowerMap towerMap;
 
-    public TowerInteractionHandler(TowerDefencePlugin plugin, GameHandler gameHandler) {
+    public TowerUpgradeHandler(TowerDefencePlugin plugin, GameHandler gameHandler) {
         this.plugin = plugin;
         this.gameHandler = gameHandler;
         this.towerHandler = gameHandler.getTowerHandler();
@@ -47,16 +49,17 @@ public class TowerInteractionHandler {
                 if (event.getHand() != Player.Hand.MAIN || plugin.getGameState() != GameState.IN_PROGRESS)
                     return;
                 GameUser gameUser = this.gameHandler.getGameUser(player);
-                if (gameUser == null || event.getBlock().registry().material() != this.towerMap.getTowerPlaceMaterial())
+                Short towerId = event.getBlock().getTag(PlacedTower.ID_TAG);
+                if (gameUser == null || towerId == null)
                     return;
-                gameUser.setLastClickedTowerBlock(event.getBlockPosition());
-                if (!this.towerMap.getArea(gameUser.getTeam()).isWithin(gameUser.getLastClickedTowerBlock())) {
-                    player.sendMessage(Component.text("You can only place towers on your side of the map (" + gameUser.getTeam().name().toLowerCase() + ").", NamedTextColor.RED));
-                    return;
-                }
-                player.openInventory(this.towerPlaceGui);
-                // todo check if they clicked on a tower
+                PlacedTower tower = this.towerHandler.getTower(gameUser, towerId);
+                this.openUpgradeGui(gameUser, tower);
             });
+    }
+
+    private void openUpgradeGui(GameUser gameUser, PlacedTower tower) {
+        TextComponent title = Component.text("Upgrade ").append(tower.getTower().getMenuItem().getDisplayName());
+        Inventory inventory = new Inventory(InventoryType.CHEST_3_ROW, title);
     }
 
     private Inventory createTowerPlaceGui() {

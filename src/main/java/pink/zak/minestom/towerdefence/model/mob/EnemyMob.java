@@ -1,5 +1,6 @@
 package pink.zak.minestom.towerdefence.model.mob;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -39,7 +40,7 @@ public record EnemyMob(EntityType entityType,
             .forEach(mobLevel -> levels.put(mobLevel.level(), mobLevel));
 
         ItemStack unownedItem = jsonObject.has("unownedItem") ?
-            ItemUtils.fromJsonObject(jsonObject.get("unownedItem").getAsJsonObject(), Template.of("cost", String.valueOf(levels.get(1).manaCost())))
+            ItemUtils.fromJsonObject(jsonObject.get("unownedItem").getAsJsonObject(), Lists.newArrayList(Template.of("cost", String.valueOf(levels.get(1).manaCost()))))
             : null;
         return new EnemyMob(entityType, commonName, slot, flying, unownedItem, levels);
     }
