@@ -49,7 +49,6 @@ public class BomberTower extends PlacedTower {
     }
 
     private static class BombTnt extends LivingEntity {
-        private final AtomicInteger ticks = new AtomicInteger();
         private final BomberTower tower;
         private double xVel;
         private double zVel;
@@ -76,7 +75,7 @@ public class BomberTower extends PlacedTower {
         public void tick(long time) {
             super.tick(time);
 
-            int ticks = this.ticks.incrementAndGet();
+            long ticks = super.getAliveTicks();
             if (ticks == 50) {
                 Pos pos = this.getPosition();
                 this.instance.explode(pos.blockX(), pos.blockY(), pos.blockZ(), 2);
@@ -86,7 +85,7 @@ public class BomberTower extends PlacedTower {
 
             if (this.getVelocity().y() <= 0) {
                 if (!this.set) {
-                    System.out.println("WOO IT TOOK THIS MANY TICKS: " + this.ticks.get());
+                    System.out.println("WOO IT TOOK THIS MANY TICKS: " + ticks);
                     Entity target = this.tower.target;
                     if (target != null) {
                         // takes 50 ticks to land, -14 for the initial upwards velocity.
@@ -104,7 +103,7 @@ public class BomberTower extends PlacedTower {
             }
 
             if (this.getPosition().y() < 65.5 && this.getPosition().y() > 64.5)
-                System.out.println("LESS THAN 60 " + this.ticks.get() + "  " + this.getPosition().y());
+                System.out.println("LESS THAN 60 " + ticks + "  " + this.getPosition().y());
         }
     }
 }

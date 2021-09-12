@@ -1,12 +1,17 @@
 package pink.zak.minestom.towerdefence.model.mob.living.types;
 
+import net.kyori.adventure.sound.Sound;
 import net.minestom.server.coordinate.Pos;
+import net.minestom.server.coordinate.Vec;
+import net.minestom.server.entity.Entity;
 import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.Player;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.network.packet.server.play.ParticlePacket;
 import net.minestom.server.particle.Particle;
 import net.minestom.server.particle.ParticleCreator;
+import net.minestom.server.utils.Direction;
+import net.minestom.server.utils.time.TimeUnit;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.game.MobHandler;
 import pink.zak.minestom.towerdefence.game.TowerHandler;
@@ -25,17 +30,11 @@ public class LlamaLivingEnemyMob extends LivingEnemyMob {
     @Override
     protected void attackCastle() {
         Pos position = this.getPosition();
-        for (int i = 1; i <= 3; i++) {
-            Pos particlePosition = DirectionUtils.add(position, this.currentCorner.direction(), i);
-            ParticlePacket particlePacket = ParticleCreator.createParticlePacket(
-                Particle.SPIT,
-                particlePosition.x(), particlePosition.y() + EntityType.LLAMA.height(), particlePosition.z(),
-                0.1f, 0.1f, 0.1f,
-                2
-            );
-            for (Player player : this.getViewers()) {
-                player.sendPacketToViewersAndSelf(particlePacket);
-            }
-        }
+        Entity spit = new Entity(EntityType.LLAMA_SPIT);
+        Direction direction = this.currentCorner.direction();
+        spit.setNoGravity(true);
+        spit.setInstance(this.instance, DirectionUtils.add(position.add(0, EntityType.LLAMA.height(), 0), direction, 1));
+        spit.setVelocity(DirectionUtils.createVec(direction, 7));
+        spit.scheduleRemove(10, TimeUnit.CLIENT_TICK);
     }
 }

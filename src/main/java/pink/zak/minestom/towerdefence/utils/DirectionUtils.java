@@ -1,6 +1,7 @@
 package pink.zak.minestom.towerdefence.utils;
 
 import net.minestom.server.coordinate.Pos;
+import net.minestom.server.coordinate.Vec;
 import net.minestom.server.utils.Direction;
 
 public class DirectionUtils {
@@ -13,6 +14,17 @@ public class DirectionUtils {
             case WEST -> pos.sub(amount, 0, 0);
             case UP -> pos.add(0, amount, 0);
             case DOWN -> pos.sub(0, amount, 0);
+        };
+    }
+
+    public static Vec createVec(Direction direction, double magnitude) {
+        return switch (direction) {
+            case NORTH -> new Vec(0, 0, -magnitude);
+            case EAST -> new Vec(magnitude, 0, 0);
+            case SOUTH -> new Vec(0, 0, magnitude);
+            case WEST -> new Vec(-magnitude, 0, 0);
+            case UP -> new Vec(0, magnitude, 0);
+            case DOWN -> new Vec(0, -magnitude, 0);
         };
     }
 
