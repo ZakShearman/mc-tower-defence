@@ -5,12 +5,9 @@
   "flying": false,
   "unownedItem": {
     "material": "minecraft:zombie_head",
-    "displayName": "<reset><yellow>Zombie <gold>(<yellow>Not Owned<gold>)",
+    "displayName": "<yellow>Zombie <gold>(<yellow>Not Owned<gold>)",
     "lore": [
-      "",
-      "<reset><yellow>Cost: <cost> mana",
-      "",
-      "<reset><yellow>Open the upgrades menu to purchase"
+      "<red>Oopsies you should've never seen this :|"
     ]
   },
   "levels": [
@@ -32,15 +29,13 @@
       },
       "upgradeItem": {
         "material": "minecraft:lime_stained_glass_pane",
-        "displayName": "<reset>Lvl. I",
+        "displayName": "Lvl. I",
         "lore": [
           "",
-          "<reset><gold>Mana Cost: <yellow><manaCost>",
-          "",
-          "<reset><gold>Send Cost: <yellow>$<cost>",
-          "<reset><gold>Health: <yellow><health>",
-          "<reset><gold>Damage: <yellow><damage>",
-          "<reset><gold>Speed: <yellow><speed>"
+          "<gold>Send Cost: <yellow>$15",
+          "<gold>Health: <yellow>20",
+          "<gold>Damage: <yellow>1",
+          "<gold>Speed: <yellow>2.1"
         ]
       }
     }

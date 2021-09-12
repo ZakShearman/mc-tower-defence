@@ -64,7 +64,7 @@ public class TowerPlaceHandler {
         Inventory inventory = new Inventory(InventoryType.CHEST_3_ROW, title);
 
         for (Tower tower : this.towerStorage.getTowers().values()) {
-            inventory.setItemStack(tower.getType().getGuiSlot(), tower.getMenuItem());
+            inventory.setItemStack(tower.type().getGuiSlot(), tower.baseMenuItem());
         }
 
         this.plugin.getEventNode().addListener(InventoryPreClickEvent.class, event -> {
@@ -86,7 +86,7 @@ public class TowerPlaceHandler {
     private void requestTowerBuy(Player player, TowerType towerType) {
         GameUser gameUser = this.gameHandler.getGameUser(player);
         Tower tower = this.towerStorage.getTower(towerType);
-        TowerLevel level = tower.getLevel(1);
+        TowerLevel level = tower.level(1);
 
         int coins = gameUser.getCoins().get();
         if (level.cost() > coins) {

@@ -1,16 +1,46 @@
 {
   "type": "BOMBER",
-  "displayMaterial": "minecraft:tnt",
+  "name": "bomber",
   "levels": [
     {
       "level": 1,
-      "cost": 250,
       "name": "Bomber Tower",
+      "cost": 250,
       "fireDelay": 60,
+      "damage": 1,
       "range": 20,
-      "description": [
-        "Boom boom launcher"
-      ],
+      "menuItem": {
+        "material": "minecraft:tnt",
+        "displayName": "<yellow>Bomber ($250)",
+        "lore": [
+          "",
+          "<yellow>Fires flying TNT at enemies",
+          "<yellow>Dealing splash damage to those near it",
+          "",
+          "<gold>Damage: <yellow>1",
+          "<gold>Range: <yellow>20",
+          "<gold>Fire Delay: <yellow>3 seconds",
+          "<gold>Explosion Radius: <yellow>4 blocks",
+          "",
+          "<red>Cannot shoot flying enemies"
+        ]
+      },
+      "upgradeItem": {
+        "material": "minecraft:tnt",
+        "displayName": "<yellow>Bomber Lvl. I",
+        "lore": [
+          "",
+          "<yellow>Fires flying TNT at enemies",
+          "<yellow>Dealing splash damage to those near it",
+          "",
+          "<gold>Damage: <yellow>1",
+          "<gold>Range: <yellow>20",
+          "<gold>Fire Delay: <yellow>3 seconds",
+          "<gold>Explosion Radius: <yellow>4 blocks",
+          "",
+          "<red>Cannot shoot flying enemies"
+        ]
+      },
       "relativeBlocks": [
         {
           "xOffset": 0,

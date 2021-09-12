@@ -35,7 +35,7 @@ public class TowerStorage {
             JsonObject jsonObject = FileUtils.fileToJsonObject(file);
             Tower tower = Tower.fromJsonObject(jsonObject);
 
-            this.towers.put(tower.getType(), tower);
+            this.towers.put(tower.type(), tower);
         }
     }
 

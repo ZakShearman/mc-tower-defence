@@ -10,6 +10,7 @@ import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.game.listeners.MobMenuHandler;
 import pink.zak.minestom.towerdefence.game.listeners.TowerPlaceHandler;
+import pink.zak.minestom.towerdefence.game.listeners.TowerUpgradeHandler;
 import pink.zak.minestom.towerdefence.model.GameUser;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
 
@@ -35,6 +36,7 @@ public class GameHandler {
         this.mobHandler = new MobHandler(this, plugin);
         this.mobMenuHandler = new MobMenuHandler(plugin, this);
         new TowerPlaceHandler(plugin, this);
+        new TowerUpgradeHandler(plugin, this);
 
         plugin.getEventNode().addListener(PlayerDisconnectEvent.class, event -> this.users.remove(event.getPlayer()));
     }

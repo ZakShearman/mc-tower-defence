@@ -5,12 +5,12 @@
   "flying": true,
   "unownedItem": {
     "material": "minecraft:player_head",
-    "displayName": "<reset><yellow>Bee <gold>(<yellow>Not Owned<gold>)",
+    "displayName": "<yellow>Bee <gold>(<yellow>Not Owned<gold>)",
     "lore": [
       "",
-      "<reset><yellow>Cost: <cost> mana",
+      "<yellow>Cost: 500 mana",
       "",
-      "<reset><yellow>Open the upgrades menu to purchase"
+      "<yellow>Open the upgrades menu to purchase"
     ],
     "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTI3MjRhOWE0Y2RkNjhiYTQ5NDE1NTYwZTViZTQwYjRhMWM0N2NiNWJlMWQ2NmFlZGI1MmEzMGU2MmVmMmQ0NyJ9fX0="
   },
@@ -24,25 +24,25 @@
       "manaCost": 500,
       "sendItem": {
         "material": "minecraft:player_head",
-        "displayName": "<reset><yellow>Bee <gold>(<yellow>Lvl. I<gold>)",
+        "displayName": "<yellow>Bee <gold>(<yellow>Lvl. I<gold>)",
         "lore": [
           "",
-          "<reset><yellow>idk",
-          "<reset><yellow>just testing really"
+          "<yellow>idk",
+          "<yellow>just testing really"
         ],
         "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTI3MjRhOWE0Y2RkNjhiYTQ5NDE1NTYwZTViZTQwYjRhMWM0N2NiNWJlMWQ2NmFlZGI1MmEzMGU2MmVmMmQ0NyJ9fX0="
       },
       "upgradeItem": {
         "material": "minecraft:lime_stained_glass_pane",
-        "displayName": "<reset>Lvl. I",
+        "displayName": "Lvl. I",
         "lore": [
           "",
-          "<reset><gold>Mana Cost: <yellow><manaCost>",
+          "<gold>Mana Cost: <yellow>500",
           "",
-          "<reset><gold>Send Cost: <yellow>$<cost>",
-          "<reset><gold>Health: <yellow><health>",
-          "<reset><gold>Damage: <yellow><damage>",
-          "<reset><gold>Speed: <yellow><speed>"
+          "<gold>Send Cost: <yellow>$150",
+          "<gold>Health: <yellow>100",
+          "<gold>Damage: <yellow>1",
+          "<gold>Speed: <yellow>3"
         ]
       }
     },
@@ -55,25 +55,25 @@
       "manaCost": 750,
       "sendItem": {
         "material": "minecraft:player_head",
-        "displayName": "<reset><yellow>Bee <gold>(<yellow>Lvl. II<gold>)",
+        "displayName": "<yellow>Bee <gold>(<yellow>Lvl. II<gold>)",
         "lore": [
           "",
-          "<reset><yellow>idk",
-          "<reset><yellow>just testing really"
+          "<yellow>idk",
+          "<yellow>just testing really"
         ],
         "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTI3MjRhOWE0Y2RkNjhiYTQ5NDE1NTYwZTViZTQwYjRhMWM0N2NiNWJlMWQ2NmFlZGI1MmEzMGU2MmVmMmQ0NyJ9fX0="
       },
       "upgradeItem": {
         "material": "minecraft:lime_stained_glass_pane",
-        "displayName": "<reset>Lvl. II",
+        "displayName": "Lvl. II",
         "lore": [
           "",
-          "<reset><gold>Mana Cost: <yellow><manaCost>",
+          "<gold>Mana Cost: <yellow>750",
           "",
-          "<reset><gold>Send Cost: <yellow>$<cost>",
-          "<reset><gold>Health: <yellow><health>",
-          "<reset><gold>Damage: <yellow><damage>",
-          "<reset><gold>Speed: <yellow><speed>"
+          "<gold>Send Cost: <yellow>$170",
+          "<gold>Health: <yellow>150",
+          "<gold>Damage: <yellow>1",
+          "<gold>Speed: <yellow>3.2"
         ]
       }
     },
@@ -86,25 +86,25 @@
       "manaCost": 1000,
       "sendItem": {
         "material": "minecraft:player_head",
-        "displayName": "<reset><yellow>Bee <gold>(<yellow>Lvl. III<gold>)",
+        "displayName": "<yellow>Bee <gold>(<yellow>Lvl. III<gold>)",
         "lore": [
           "",
-          "<reset><yellow>idk",
-          "<reset><yellow>just testing really"
+          "<yellow>idk",
+          "<yellow>just testing really"
         ],
         "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTI3MjRhOWE0Y2RkNjhiYTQ5NDE1NTYwZTViZTQwYjRhMWM0N2NiNWJlMWQ2NmFlZGI1MmEzMGU2MmVmMmQ0NyJ9fX0="
       },
       "upgradeItem": {
         "material": "minecraft:lime_stained_glass_pane",
-        "displayName": "<reset>Lvl. III",
+        "displayName": "Lvl. III",
         "lore": [
           "",
-          "<reset><gold>Mana Cost: <yellow><manaCost>",
+          "<gold>Mana Cost: <yellow>1000",
           "",
-          "<reset><gold>Send Cost: <yellow>$<cost>",
-          "<reset><gold>Health: <yellow><health>",
-          "<reset><gold>Damage: <yellow><damage>",
-          "<reset><gold>Speed: <yellow><speed>"
+          "<gold>Send Cost: <yellow>$200",
+          "<gold>Health: <yellow>200",
+          "<gold>Damage: <yellow>1",
+          "<gold>Speed: <yellow>3.4"
         ]
       }
     },
@@ -117,25 +117,25 @@
       "manaCost": 1500,
       "sendItem": {
         "material": "minecraft:player_head",
-        "displayName": "<reset><yellow>Bee <gold>(<yellow>Lvl. IV<gold>)",
+        "displayName": "<yellow>Bee <gold>(<yellow>Lvl. IV<gold>)",
         "lore": [
           "",
-          "<reset><yellow>idk",
-          "<reset><yellow>just testing really"
+          "<yellow>idk",
+          "<yellow>just testing really"
         ],
         "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTI3MjRhOWE0Y2RkNjhiYTQ5NDE1NTYwZTViZTQwYjRhMWM0N2NiNWJlMWQ2NmFlZGI1MmEzMGU2MmVmMmQ0NyJ9fX0="
       },
       "upgradeItem": {
         "material": "minecraft:lime_stained_glass_pane",
-        "displayName": "<reset>Lvl. IV",
+        "displayName": "Lvl. IV",
         "lore": [
           "",
-          "<reset><gold>Mana Cost: <yellow><manaCost>",
+          "<gold>Mana Cost: <yellow>1500",
           "",
-          "<reset><gold>Send Cost: <yellow>$<cost>",
-          "<reset><gold>Health: <yellow><health>",
-          "<reset><gold>Damage: <yellow><damage>",
-          "<reset><gold>Speed: <yellow><speed>"
+          "<gold>Send Cost: <yellow>$250",
+          "<gold>Health: <yellow>300",
+          "<gold>Damage: <yellow>1",
+          "<gold>Speed: <yellow>3.8"
         ]
       }
     },
@@ -148,25 +148,25 @@
       "manaCost": 2000,
       "sendItem": {
         "material": "minecraft:player_head",
-        "displayName": "<reset><yellow>Bee <gold>(<yellow>Lvl. V<gold>)",
+        "displayName": "<yellow>Bee <gold>(<yellow>Lvl. V<gold>)",
         "lore": [
           "",
-          "<reset><yellow>idk",
-          "<reset><yellow>just testing really"
+          "<yellow>idk",
+          "<yellow>just testing really"
         ],
         "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTI3MjRhOWE0Y2RkNjhiYTQ5NDE1NTYwZTViZTQwYjRhMWM0N2NiNWJlMWQ2NmFlZGI1MmEzMGU2MmVmMmQ0NyJ9fX0="
       },
       "upgradeItem": {
         "material": "minecraft:lime_stained_glass_pane",
-        "displayName": "<reset>Lvl. V",
+        "displayName": "Lvl. V",
         "lore": [
           "",
-          "<reset><gold>Mana Cost: <yellow><manaCost>",
+          "<gold>Mana Cost: <yellow>2000",
           "",
-          "<reset><gold>Send Cost: <yellow>$<cost>",
-          "<reset><gold>Health: <yellow><health>",
-          "<reset><gold>Damage: <yellow><damage>",
-          "<reset><gold>Speed: <yellow><speed>"
+          "<gold>Send Cost: <yellow>$350",
+          "<gold>Health: <yellow>600",
+          "<gold>Damage: <yellow>1",
+          "<gold>Speed: <yellow>4.2"
         ]
       }
     }

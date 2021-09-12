@@ -3,8 +3,6 @@ package pink.zak.minestom.towerdefence.game;
 import com.google.common.collect.Sets;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
-import net.minestom.server.entity.Entity;
-import net.minestom.server.event.entity.EntityDeathEvent;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.timer.Task;
 import net.minestom.server.utils.time.TimeUnit;
@@ -71,7 +69,7 @@ public class MobHandler {
             for (PlacedTower tower : enemyMob.getAttackingTowers()) {
                 if (
                     (tower.getTarget() == null || tower.getTarget().isDead() || enemyMob.getTotalDistanceMoved() > tower.getTarget().getTotalDistanceMoved())
-                        && (!enemyMob.getEnemyMob().flying() || tower.getTower().getType().isTargetAir())
+                        && (!enemyMob.getEnemyMob().flying() || tower.getTower().type().isTargetAir())
                 ) {
                     tower.setTarget(enemyMob);
                 }

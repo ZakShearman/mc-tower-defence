@@ -38,7 +38,7 @@ public abstract class PlacedTower {
     protected PlacedTower(Instance instance, Tower tower, Material towerPlaceMaterial, short id, Team team, Point baseBlock, Direction facing, int level) {
         this.instance = instance;
         this.tower = tower;
-        this.level = tower.getLevel(level);
+        this.level = tower.level(level);
         this.id = id;
         this.team = team;
         this.basePoint = baseBlock;
@@ -51,7 +51,7 @@ public abstract class PlacedTower {
     }
 
     public static PlacedTower create(GameHandler gameHandler, Instance instance, Tower tower, Material towerPlaceMaterial, short id, Team team, Point baseBlock, Direction facing) {
-        TowerType towerType = tower.getType();
+        TowerType towerType = tower.type();
         if (towerType == TowerType.BOMBER) {
             return new BomberTower(gameHandler, instance, tower, towerPlaceMaterial, id, team, baseBlock, facing, 1);
         }
@@ -72,7 +72,7 @@ public abstract class PlacedTower {
 
     public void upgrade() {
         this.placeLevel();
-        this.level = this.tower.getLevel(this.levelInt);
+        this.level = this.tower.level(this.levelInt);
     }
 
     private void placeLevel() {
@@ -87,7 +87,7 @@ public abstract class PlacedTower {
     }
 
     private void placeBase(Material towerPlaceMaterial) {
-        int checkDistance = this.tower.getType().getSize().getCheckDistance();
+        int checkDistance = this.tower.type().getSize().getCheckDistance();
         for (int x = this.basePoint.blockX() - checkDistance; x <= this.basePoint.blockX() + checkDistance; x++) {
             for (int z = this.basePoint.blockZ() - checkDistance; z <= this.basePoint.blockZ() + checkDistance; z++) {
                 this.instance.setBlock(x, this.basePoint.blockY(), z, towerPlaceMaterial.block().withTag(ID_TAG, this.id));

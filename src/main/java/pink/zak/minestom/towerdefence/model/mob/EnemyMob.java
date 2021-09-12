@@ -40,7 +40,7 @@ public record EnemyMob(EntityType entityType,
             .forEach(mobLevel -> levels.put(mobLevel.level(), mobLevel));
 
         ItemStack unownedItem = jsonObject.has("unownedItem") ?
-            ItemUtils.fromJsonObject(jsonObject.get("unownedItem").getAsJsonObject(), Lists.newArrayList(Template.of("cost", String.valueOf(levels.get(1).manaCost()))))
+            ItemUtils.fromJsonObject(jsonObject.get("unownedItem").getAsJsonObject())
             : null;
         return new EnemyMob(entityType, commonName, slot, flying, unownedItem, levels);
     }

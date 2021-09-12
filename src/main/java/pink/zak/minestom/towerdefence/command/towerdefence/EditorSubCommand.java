@@ -98,14 +98,6 @@ public class EditorSubCommand implements CommandExecutor {
                     player.sendMessage(Component.text("Changed team to " + newTeam.name().toLowerCase(Locale.ROOT), newTeam.getColor()));
                 }
             });
-
-        plugin.getEventNode()
-            //.addListener(PlayerBlockInteractEvent.class, event -> Audiences.players().sendMessage(Component.text("Block interact")))
-            .addListener(PlayerHandAnimationEvent.class, event -> Audiences.players().sendMessage(Component.text("Hand animation")))
-            .addListener(PlayerItemAnimationEvent.class, event -> Audiences.players().sendMessage(Component.text("Item animation")))
-            //.addListener(PlayerStartDiggingEvent.class, event -> Audiences.players().sendMessage(Component.text("Start digging")))
-            //.addListener(PlayerUseItemEvent.class, event -> Audiences.players().sendMessage(Component.text("Use item")))
-            .addListener(PlayerUseItemOnBlockEvent.class, event -> Audiences.players().sendMessage(Component.text("Use item on block")));
     }
 
     @Override

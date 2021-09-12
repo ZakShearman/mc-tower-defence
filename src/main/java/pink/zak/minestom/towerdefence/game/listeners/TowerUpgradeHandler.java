@@ -3,45 +3,28 @@ package pink.zak.minestom.towerdefence.game.listeners;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.minestom.server.adventure.audience.Audiences;
-import net.minestom.server.coordinate.Point;
+import net.kyori.adventure.text.format.TextColor;
 import net.minestom.server.entity.Player;
-import net.minestom.server.event.inventory.InventoryPreClickEvent;
 import net.minestom.server.event.player.PlayerBlockInteractEvent;
-import net.minestom.server.instance.block.Block;
 import net.minestom.server.inventory.Inventory;
 import net.minestom.server.inventory.InventoryType;
-import net.minestom.server.inventory.click.ClickType;
-import net.minestom.server.item.Material;
+import net.minestom.server.item.ItemStack;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 import pink.zak.minestom.towerdefence.enums.GameState;
-import pink.zak.minestom.towerdefence.enums.TowerType;
 import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.game.TowerHandler;
 import pink.zak.minestom.towerdefence.model.GameUser;
-import pink.zak.minestom.towerdefence.model.map.TowerMap;
 import pink.zak.minestom.towerdefence.model.tower.Tower;
 import pink.zak.minestom.towerdefence.model.tower.TowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedTower;
-import pink.zak.minestom.towerdefence.storage.TowerStorage;
 
 public class TowerUpgradeHandler {
-    private final TowerDefencePlugin plugin;
     private final GameHandler gameHandler;
     private final TowerHandler towerHandler;
-    private final TowerStorage towerStorage;
-
-    private final Inventory towerPlaceGui;
-    private final TowerMap towerMap;
 
     public TowerUpgradeHandler(TowerDefencePlugin plugin, GameHandler gameHandler) {
-        this.plugin = plugin;
         this.gameHandler = gameHandler;
         this.towerHandler = gameHandler.getTowerHandler();
-        this.towerStorage = plugin.getTowerStorage();
-
-        this.towerPlaceGui = this.createTowerPlaceGui();
-        this.towerMap = plugin.getMapStorage().getMap();
 
         plugin.getEventNode()
             .addListener(PlayerBlockInteractEvent.class, event -> {
@@ -57,52 +40,25 @@ public class TowerUpgradeHandler {
             });
     }
 
-    private void openUpgradeGui(GameUser gameUser, PlacedTower tower) {
-        TextComponent title = Component.text("Upgrade ").append(tower.getTower().getMenuItem().getDisplayName());
-        Inventory inventory = new Inventory(InventoryType.CHEST_3_ROW, title);
-    }
+    private void openUpgradeGui(GameUser gameUser, PlacedTower placeTower) {
+        TowerLevel currentLevel = placeTower.getLevel();
+        Tower tower = placeTower.getTower();
 
-    private Inventory createTowerPlaceGui() {
-        TextComponent title = Component.text("Place a Tower", NamedTextColor.DARK_GRAY);
+        TextComponent title = Component.text("Upgrade " + tower.name());
         Inventory inventory = new Inventory(InventoryType.CHEST_3_ROW, title);
 
-        for (Tower tower : this.towerStorage.getTowers().values()) {
-            inventory.setItemStack(tower.getType().getGuiSlot(), tower.getMenuItem());
+        inventory.setItemStack(0, currentLevel.menuItem());
+
+        inventory.setItemStack(11, tower.level(1).ownedUpgradeItem());
+        for (int i = 2; i <= tower.maxLevel(); i++) {
+            TowerLevel towerLevel = tower.level(i);
+            boolean purchased = i <= currentLevel.level();
+            boolean canAfford = gameUser.getCoins().get() >= towerLevel.cost();
+
+            ItemStack itemStack = purchased ? towerLevel.ownedUpgradeItem() : canAfford ? towerLevel.buyUpgradeItem() : towerLevel.cantAffordUpgradeItem();
+            inventory.setItemStack(10 + i, itemStack);
         }
 
-        this.plugin.getEventNode().addListener(InventoryPreClickEvent.class, event -> {
-            Inventory checkInventory = event.getInventory();
-            if (event.getClickType() == ClickType.START_DOUBLE_CLICK || checkInventory == null || checkInventory.getTitle() != title)
-                return;
-            event.setCancelled(true);
-            TowerType clickedTower = TowerType.valueOf(event.getSlot());
-            if (clickedTower == null)
-                return;
-            Player player = event.getPlayer();
-            player.closeInventory();
-            this.requestTowerBuy(player, clickedTower);
-        });
-
-        return inventory;
-    }
-
-    private void requestTowerBuy(Player player, TowerType towerType) {
-        GameUser gameUser = this.gameHandler.getGameUser(player);
-        Tower tower = this.towerStorage.getTower(towerType);
-        TowerLevel level = tower.getLevel(1);
-
-        int coins = gameUser.getCoins().get();
-        if (level.cost() > coins) {
-            player.sendMessage(Component.text("You do not have enough money to buy this tower", NamedTextColor.RED));
-            return;
-        }
-        Point basePoint = gameUser.getLastClickedTowerBlock();
-        Material placeMaterial = this.towerMap.getTowerPlaceMaterial();
-        if (!tower.isSpaceClear(player.getInstance(), basePoint, placeMaterial)) {
-            Audiences.all().sendMessage(Component.text("Cannot place a tower as the area is not clear", NamedTextColor.RED));
-            // todo handle - show an outline or something
-            return;
-        }
-        this.towerHandler.createTower(tower, gameUser);
+        gameUser.getPlayer().openInventory(inventory);
     }
 }

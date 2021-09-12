@@ -5,12 +5,12 @@
   "flying": false,
   "unownedItem": {
     "material": "minecraft:skeleton_skull",
-    "displayName": "<reset><yellow>Skeleton <gold>(<yellow>Not Owned<gold>)",
+    "displayName": "<yellow>Skeleton <gold>(<yellow>Not Owned<gold>)",
     "lore": [
       "",
-      "<reset><yellow>Cost: <cost> mana",
+      "<yellow>Cost: 250 mana",
       "",
-      "<reset><yellow>Open the upgrades menu to purchase"
+      "<yellow>Open the upgrades menu to purchase"
     ]
   },
   "levels": [
@@ -32,15 +32,15 @@
       },
       "upgradeItem": {
         "material": "minecraft:lime_stained_glass_pane",
-        "displayName": "<reset>Lvl. I",
+        "displayName": "Lvl. I",
         "lore": [
           "",
-          "<reset><gold>Mana Cost: <yellow><manaCost>",
+          "<gold>Mana Cost: <yellow>250",
           "",
-          "<reset><gold>Send Cost: <yellow>$<cost>",
-          "<reset><gold>Health: <yellow><health>",
-          "<reset><gold>Damage: <yellow><damage>",
-          "<reset><gold>Speed: <yellow><speed>"
+          "<gold>Send Cost: <yellow>$30",
+          "<gold>Health: <yellow>40",
+          "<gold>Damage: <yellow>2",
+          "<gold>Speed: <yellow>2.1"
         ]
       }
     }

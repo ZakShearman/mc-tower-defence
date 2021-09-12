@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.minimessage.Template;
 
 import java.util.List;
 import java.util.StringJoiner;
@@ -12,14 +11,14 @@ import java.util.StringJoiner;
 public class StringUtils {
     private static final MiniMessage MINI_MESSAGE = MiniMessage.get();
 
-    public static Component parseMessage(String message, List<Template> templates) {
-        return MINI_MESSAGE.parse(message, templates).decoration(TextDecoration.ITALIC, false);
+    public static Component parseMessage(String message) {
+        return MINI_MESSAGE.parse(message).decoration(TextDecoration.ITALIC, false);
     }
 
-    public static List<Component> parseMessages(List<String> messages, List<Template> templates) {
+    public static List<Component> parseMessages(List<String> messages) {
         List<Component> components = Lists.newArrayList();
         for (String message : messages)
-            components.add(parseMessage(message, templates));
+            components.add(parseMessage(message));
 
         return components;
     }

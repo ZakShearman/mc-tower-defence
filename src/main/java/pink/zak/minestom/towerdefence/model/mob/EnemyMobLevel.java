@@ -1,9 +1,7 @@
 package pink.zak.minestom.towerdefence.model.mob;
 
-import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.minimessage.Template;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import pink.zak.minestom.towerdefence.utils.ItemUtils;
@@ -20,14 +18,7 @@ public record EnemyMobLevel(int level, int cost, int health, int damage, double 
         double movementSpeed = jsonObject.get("movementSpeed").getAsDouble() / 20;
         int manaCost = jsonObject.get("manaCost").getAsInt();
         ItemStack sendItem = ItemUtils.fromJsonObject(jsonObject.get("sendItem").getAsJsonObject());
-        ItemStack ownedUpgradeItem = ItemUtils.fromJsonObject(
-            jsonObject.get("upgradeItem").getAsJsonObject(), Lists.newArrayList(
-            Template.of("cost", String.valueOf(cost)),
-            Template.of("health", String.valueOf(health)),
-            Template.of("damage", String.valueOf(damage)),
-            Template.of("speed", String.valueOf(Math.ceil(movementSpeed * 20))),
-            Template.of("manaCost", String.valueOf(manaCost)))
-        );
+        ItemStack ownedUpgradeItem = ItemUtils.fromJsonObject(jsonObject.get("upgradeItem").getAsJsonObject());
 
         ownedUpgradeItem = ownedUpgradeItem.withDisplayName(ownedUpgradeItem.getDisplayName().color(NamedTextColor.GREEN));
         ItemStack buyUpgradeItem = ItemUtils.withMaterialBuilder(ownedUpgradeItem, Material.ORANGE_STAINED_GLASS_PANE)

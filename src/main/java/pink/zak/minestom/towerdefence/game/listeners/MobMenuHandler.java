@@ -239,7 +239,7 @@ public class MobMenuHandler {
     private void convertToMobUpgradeGui(GameUser gameUser, EnemyMob clickedMob, int currentLevel) {
         Inventory inventory = new Inventory(InventoryType.CHEST_3_ROW, MOB_UPGRADE_TITLES.get(clickedMob));
 
-        inventory.setItemStack(0, currentLevel <= 0 ? clickedMob.unownedItem() : clickedMob.level(currentLevel).sendItem()); // todo add item for not owning a mob
+        inventory.setItemStack(0, currentLevel <= 0 ? clickedMob.unownedItem() : clickedMob.level(currentLevel).sendItem());
 
         int maxLevel = clickedMob.maxLevel();
         for (int i = 1; i <= maxLevel; i++) {
