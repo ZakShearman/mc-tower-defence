@@ -13,7 +13,9 @@ import net.minestom.server.instance.Instance;
 import net.minestom.server.monitoring.BenchmarkManager;
 import net.minestom.server.monitoring.TickMonitor;
 import net.minestom.server.utils.MathUtils;
+import net.minestom.server.utils.NamespaceID;
 import net.minestom.server.utils.time.TimeUnit;
+import net.minestom.server.world.DimensionType;
 import org.slf4j.Logger;
 import pink.zak.minestom.towerdefence.command.towerdefence.TowerDefenceCommand;
 import pink.zak.minestom.towerdefence.enums.GameState;
@@ -50,13 +52,17 @@ public class TowerDefencePlugin extends Extension {
         LOGGER = getLogger();
         this.startBenchmark();
 
-        Instance instance = MinecraftServer.getInstanceManager().createInstanceContainer();
+        DimensionType dimensionType = DimensionType.builder(NamespaceID.from("towerdefence:main"))
+            .fixedTime(1000L)
+            .skylightEnabled(true)
+            .build();
+        MinecraftServer.getDimensionTypeManager().addDimension(dimensionType);
+        Instance instance = MinecraftServer.getInstanceManager().createInstanceContainer(dimensionType);
+
         instance.setExplosionSupplier((centerX, centerY, centerZ, strength, additionalData) -> new CustomExplosion(centerX, centerY, centerZ, strength));
         this.getEventNode().addListener(PlayerLoginEvent.class, event -> {
             event.getPlayer().setRespawnPoint(new Pos(-1, 67, 4));
             event.setSpawningInstance(instance);
-
-            Audiences.all().sendMessage(Component.text(event.getPlayer().getUsername() + " logged in"));
         });
 
         this.mobStorage = new MobStorage(this);

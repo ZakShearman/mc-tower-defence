@@ -46,7 +46,7 @@ public class MobStorage {
         );
 
         for (String towerName : enemyMobNames) {
-            System.out.println("Saving packaged resource mobs\\" + towerName); // todo use logger
+            TowerDefencePlugin.LOGGER.info("Saving packaged resource mobs\\" + towerName);
             this.plugin.savePackagedResource(Path.of("mobs").resolve(towerName));
         }
     }

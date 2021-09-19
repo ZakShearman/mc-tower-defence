@@ -5,6 +5,7 @@ import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.MinecraftServer;
+import net.minestom.server.adventure.audience.Audiences;
 import net.minestom.server.attribute.Attribute;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.EntityCreature;
@@ -62,10 +63,10 @@ public class LivingEnemyMob extends EntityCreature {
         this.towerHandler = towerHandler;
         this.mobHandler = mobHandler;
         this.enemyMob = enemyMob;
-        this.team = gameUser.getTeam(); // todo invert the team. Only the same for testing
+        this.team = gameUser.getTeam() == Team.RED ? Team.BLUE : Team.RED; // todo invert the team. Only the same for testing (should be done)
         this.level = enemyMob.level(level);
         this.positionModifier = ThreadLocalRandom.current().nextInt(-map.getRandomValue(), map.getRandomValue() + 1);
-        this.corners = map.getCorners(gameUser.getTeam());
+        this.corners = map.getCorners(this.team);
         this.currentCornerIndex = 0;
         this.currentCorner = this.corners.get(0);
         this.nextCorner = this.corners.get(1);
@@ -78,7 +79,8 @@ public class LivingEnemyMob extends EntityCreature {
 
         this.setCustomName(this.createCustomName());
         this.setCustomNameVisible(true);
-        this.setInstance(instance, (team == Team.RED ? map.getRedMobSpawn() : map.getBlueMobSpawn()).add(this.positionModifier, enemyMob.flying() ? 5 : 0, this.positionModifier));
+
+        this.setInstance(instance, (this.team == Team.RED ? map.getRedMobSpawn() : map.getBlueMobSpawn()).add(this.positionModifier, enemyMob.flying() ? 5 : 0, this.positionModifier));
     }
 
     public static LivingEnemyMob create(TowerHandler towerHandler, MobHandler mobHandler, EnemyMob enemyMob, int level, Instance instance, TowerMap map, GameUser gameUser) {
