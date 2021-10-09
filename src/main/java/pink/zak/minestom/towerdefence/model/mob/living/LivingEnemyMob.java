@@ -5,7 +5,6 @@ import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.MinecraftServer;
-import net.minestom.server.adventure.audience.Audiences;
 import net.minestom.server.attribute.Attribute;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.EntityCreature;
@@ -63,7 +62,7 @@ public class LivingEnemyMob extends EntityCreature {
         this.towerHandler = towerHandler;
         this.mobHandler = mobHandler;
         this.enemyMob = enemyMob;
-        this.team = gameUser.getTeam() == Team.RED ? Team.BLUE : Team.RED; // todo invert the team. Only the same for testing (should be done)
+        this.team = gameUser.getTeam() /*gameUser.getTeam() == Team.RED ? Team.BLUE : Team.RED*/;
         this.level = enemyMob.level(level);
         this.positionModifier = ThreadLocalRandom.current().nextInt(-map.getRandomValue(), map.getRandomValue() + 1);
         this.corners = map.getCorners(this.team);
@@ -80,7 +79,8 @@ public class LivingEnemyMob extends EntityCreature {
         this.setCustomName(this.createCustomName());
         this.setCustomNameVisible(true);
 
-        this.setInstance(instance, (this.team == Team.RED ? map.getRedMobSpawn() : map.getBlueMobSpawn()).add(this.positionModifier, enemyMob.flying() ? 5 : 0, this.positionModifier));
+        Pos spawnPos = this.team == Team.RED ? map.getRedMobSpawn() : map.getBlueMobSpawn();
+        this.setInstance(instance, spawnPos.add(this.positionModifier, enemyMob.flying() ? 5 : 0, this.positionModifier));
     }
 
     public static LivingEnemyMob create(TowerHandler towerHandler, MobHandler mobHandler, EnemyMob enemyMob, int level, Instance instance, TowerMap map, GameUser gameUser) {
@@ -216,15 +216,14 @@ public class LivingEnemyMob extends EntityCreature {
     }
 
     private int getRandomLengthModifier() {
-        if (this.positionModifier == 0)
+        if (this.positionModifier == 0 || !this.currentCorner.modify())
             return 0;
-        if (this.nextCorner.direction() == Direction.SOUTH) {
-            return -this.positionModifier * 2;
-        } else if (this.nextCorner.direction() == Direction.EAST) {
-            return 0;
-        } else {
-            return this.positionModifier * 2;
-        }
+        int value = this.positionModifier;
+        if (this.currentCorner.multiplyModifier())
+            value *= 2;
+        if (this.currentCorner.negativeModifier())
+            value = -value;
+        return value;
     }
 
     public double getTotalDistanceMoved() {

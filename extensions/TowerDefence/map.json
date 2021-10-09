@@ -44,77 +44,131 @@
   "redCorners": [
     {
       "direction": "EAST",
-      "distance": 35
+      "distance": 35,
+      "modify": true,
+      "multiplyModifier": true,
+      "negativeModifier": true
     },
     {
       "direction": "SOUTH",
-      "distance": 26
+      "distance": 26,
+      "modify": false,
+      "multiplyModifier": false,
+      "negativeModifier": false
     },
     {
       "direction": "EAST",
-      "distance": 34
+      "distance": 34,
+      "modify": true,
+      "multiplyModifier": true,
+      "negativeModifier": false
     },
     {
       "direction": "NORTH",
-      "distance": 26
+      "distance": 26,
+      "modify": false,
+      "multiplyModifier": true,
+      "negativeModifier": true
     },
     {
       "direction": "EAST",
-      "distance": 17
+      "distance": 17,
+      "modify": true,
+      "multiplyModifier": true,
+      "negativeModifier": true
     },
     {
       "direction": "SOUTH",
-      "distance": 26
+      "distance": 26,
+      "modify": false,
+      "multiplyModifier": false,
+      "negativeModifier": true
     },
     {
       "direction": "EAST",
-      "distance": 14
+      "distance": 14,
+      "modify": true,
+      "multiplyModifier": true,
+      "negativeModifier": false
     },
     {
       "direction": "NORTH",
-      "distance": 26
+      "distance": 26,
+      "modify": false,
+      "multiplyModifier": false,
+      "negativeModifier": false
     },
     {
       "direction": "EAST",
-      "distance": 18
+      "distance": 18,
+      "modify": true,
+      "multiplyModifier": true,
+      "negativeModifier": false
     }
   ],
   "blueCorners": [
     {
       "direction": "WEST",
-      "distance": 35
+      "distance": 35,
+      "modify": true,
+      "multiplyModifier": true,
+      "negativeModifier": true
     },
     {
       "direction": "NORTH",
-      "distance": 26
+      "distance": 26,
+      "modify": true,
+      "multiplyModifier": true,
+      "negativeModifier": true
     },
     {
       "direction": "WEST",
-      "distance": 34
+      "distance": 34,
+      "modify": true,
+      "multiplyModifier": true,
+      "negativeModifier": true
     },
     {
       "direction": "SOUTH",
-      "distance": 26
+      "distance": 26,
+      "modify": true,
+      "multiplyModifier": true,
+      "negativeModifier": true
     },
     {
       "direction": "WEST",
-      "distance": 17
+      "distance": 17,
+      "modify": true,
+      "multiplyModifier": true,
+      "negativeModifier": true
     },
     {
       "direction": "NORTH",
-      "distance": 26
+      "distance": 26,
+      "modify": true,
+      "multiplyModifier": true,
+      "negativeModifier": true
     },
     {
       "direction": "WEST",
-      "distance": 14
+      "distance": 14,
+      "modify": true,
+      "multiplyModifier": true,
+      "negativeModifier": true
     },
     {
       "direction": "SOUTH",
-      "distance": 26
+      "distance": 26,
+      "modify": true,
+      "multiplyModifier": true,
+      "negativeModifier": true
     },
     {
       "direction": "WEST",
-      "distance": 18
+      "distance": 18,
+      "modify": true,
+      "multiplyModifier": true,
+      "negativeModifier": true
     }
   ],
   "blueMobSpawn": {

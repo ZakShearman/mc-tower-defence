@@ -138,9 +138,7 @@ public class TowerDefencePlugin extends Extension {
             TickMonitor tickMonitor = lastTick.get();
             final Component header = Component.text("RAM USAGE: " + ramUsage + " MB")
                 .append(Component.newline())
-                .append(Component.text("TICK TIME: " + MathUtils.round(tickMonitor.getTickTime(), 2) + "ms"))
-                .append(Component.newline())
-                .append(Component.text("ACQ TIME: " + MathUtils.round(tickMonitor.getAcquisitionTime(), 2) + "ms"));
+                .append(Component.text("TICK TIME: " + MathUtils.round(tickMonitor.getTickTime(), 2) + "ms"));
             final Component footer = benchmarkManager.getCpuMonitoringMessage();
             Audiences.players().sendPlayerListHeaderAndFooter(header, footer);
         }).repeat(10, TimeUnit.SERVER_TICK).schedule();

@@ -37,15 +37,4 @@ public class DirectionUtils {
             default -> throw new IllegalArgumentException("Direction must be NORTH, EAST, SOUTH or WEST. Provided direction was " + direction);
         };
     }
-
-    public static Direction opposite(Direction direction) {
-        return switch (direction) {
-            case NORTH -> Direction.SOUTH;
-            case EAST -> Direction.WEST;
-            case SOUTH -> Direction.NORTH;
-            case WEST -> Direction.EAST;
-            case UP -> Direction.DOWN;
-            case DOWN -> Direction.UP;
-        };
-    }
 }
