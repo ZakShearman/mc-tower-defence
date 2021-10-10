@@ -15,7 +15,6 @@ import net.minestom.server.network.packet.server.play.EntityAnimationPacket;
 import net.minestom.server.network.packet.server.play.SoundEffectPacket;
 import net.minestom.server.sound.SoundEvent;
 import net.minestom.server.timer.Task;
-import net.minestom.server.utils.Direction;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.game.MobHandler;
@@ -48,6 +47,7 @@ public class LivingEnemyMob extends EntityCreature {
     protected int currentCornerIndex;
     protected PathCorner currentCorner;
     protected PathCorner nextCorner;
+    protected int currentCornerLengthModifier;
     protected double moveDistance;
     protected double totalDistanceMoved;
 
@@ -115,7 +115,7 @@ public class LivingEnemyMob extends EntityCreature {
             if (this.moveDistance >= this.currentCorner.distance() - this.positionModifier) {
                 this.nextCorner();
             }
-        } else if (this.moveDistance >= this.currentCorner.distance() + this.getRandomLengthModifier()) {
+        } else if (this.moveDistance >= this.currentCorner.distance() + this.currentCornerLengthModifier) {
             this.nextCorner();
         }
     }
@@ -146,6 +146,7 @@ public class LivingEnemyMob extends EntityCreature {
         else
             this.nextCorner = this.corners.get(newCornerIndex);
 
+        this.currentCornerLengthModifier = this.getRandomLengthModifier();
         this.moveDistance = 0;
     }
 

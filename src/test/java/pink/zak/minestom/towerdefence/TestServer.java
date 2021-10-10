@@ -11,7 +11,7 @@ public class TestServer {
     public static void main(String[] args) {
         MinecraftServer server = MinecraftServer.init();
         OptifineSupport.enable();
-        MojangAuth.init();
+        // MojangAuth.init();
 
         MinecraftServer.getSchedulerManager().buildShutdownTask(TestServer::shutdown);
 

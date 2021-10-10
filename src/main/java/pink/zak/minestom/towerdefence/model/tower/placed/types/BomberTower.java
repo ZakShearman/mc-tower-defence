@@ -1,5 +1,7 @@
 package pink.zak.minestom.towerdefence.model.tower.placed.types;
 
+import net.kyori.adventure.text.Component;
+import net.minestom.server.adventure.audience.Audiences;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.coordinate.Vec;
@@ -74,21 +76,23 @@ public class BomberTower extends PlacedTower {
         public void tick(long time) {
             super.tick(time);
 
-            long ticks = super.getAliveTicks();
-            if (ticks == 50) {
+
+            long aliveTicks = super.getAliveTicks();
+            Audiences.all().sendMessage(Component.text(System.currentTimeMillis() + " ticking is removed? " + this.isRemoved() + " (alive ticks " + aliveTicks + ")"));
+            if (aliveTicks == 50) {
                 Pos pos = this.getPosition();
                 this.instance.explode(pos.blockX(), pos.blockY(), pos.blockZ(), 2);
                 this.tower.damageTroops(this);
+                this.remove();
                 return;
             }
 
             if (this.getVelocity().y() <= 0) {
                 if (!this.set) {
-                    System.out.println("WOO IT TOOK THIS MANY TICKS: " + ticks);
                     Entity target = this.tower.target;
                     if (target != null) {
                         // takes 50 ticks to land, -14 for the initial upwards velocity.
-                        // When vertical maps are supported, this cannot be hardcoded or weird explosion behaviour will be experienced
+                        // When vertical maps are supported, we'll have to do projectile motion calculations or weird explosion behaviour will be experienced
                         this.xVel = (target.getPosition().x() - this.tower.spawnPos.x()) * (20.0 / 36);
                         this.zVel = (target.getPosition().z() - this.tower.spawnPos.z()) * (20.0 / 36);
                     }
@@ -97,12 +101,8 @@ public class BomberTower extends PlacedTower {
                     this.set = true;
                 }
             }
-            if (this.set) {
+            if (this.set)
                 this.setVelocity(new Vec(this.xVel, this.getVelocity().y(), this.zVel));
-            }
-
-            if (this.getPosition().y() < 65.5 && this.getPosition().y() > 64.5)
-                System.out.println("LESS THAN 60 " + ticks + "  " + this.getPosition().y());
         }
     }
 }
