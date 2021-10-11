@@ -9,14 +9,17 @@ import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.metadata.other.ArmorStandMeta;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.utils.time.TimeUnit;
+import pink.zak.minestom.towerdefence.game.MobHandler;
+
+import java.util.List;
 
 public class DamageIndicator extends Entity {
+    private final List<Vec> vectors = MobHandler.DAMAGE_INDICATOR_CACHE.getPreCalculatedVelocity();
 
-    private DamageIndicator(Instance instance, Pos spawnPosition, Component text, Vec velocity) {
+    private DamageIndicator(Instance instance, Pos spawnPosition, Component text) {
         super(EntityType.ARMOR_STAND);
 
         ArmorStandMeta meta = (ArmorStandMeta) this.getEntityMeta();
-
         meta.setSmall(true);
         meta.setCustomName(text);
         meta.setCustomNameVisible(true);
@@ -25,15 +28,23 @@ public class DamageIndicator extends Entity {
         this.setInstance(instance, spawnPosition.add(0, -0.9875f, 0));
 
         this.position = spawnPosition;
-        this.setVelocity(new Vec(0, 3, 0));
-        this.setGravity(0.4, 0.05);
 
         this.scheduleRemove(15, TimeUnit.CLIENT_TICK);
+    }
+
+    @Override
+    protected void velocityTick() {
+        this.velocity = this.vectors.get((int) this.getAliveTicks());
+
+        Pos newPosition = this.position.add(this.velocity.div(20));
+
+        this.refreshPosition(newPosition, true);
+        this.sendPacketToViewers(this.getVelocityPacket());
     }
 
     public static void create(LivingEnemyMob enemyMob, double damage) {
         Component text = Component.text(damage, NamedTextColor.RED);
 
-        new DamageIndicator(enemyMob.getInstance(), enemyMob.getPosition().add(0, enemyMob.getEntityType().height(), 0), text, null);
+        new DamageIndicator(enemyMob.getInstance(), enemyMob.getPosition().add(0, enemyMob.getEntityType().height(), 0), text);
     }
 }

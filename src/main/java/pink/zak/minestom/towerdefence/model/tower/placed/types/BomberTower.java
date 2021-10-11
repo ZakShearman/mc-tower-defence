@@ -1,7 +1,5 @@
 package pink.zak.minestom.towerdefence.model.tower.placed.types;
 
-import net.kyori.adventure.text.Component;
-import net.minestom.server.adventure.audience.Audiences;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.coordinate.Vec;
@@ -76,9 +74,7 @@ public class BomberTower extends PlacedTower {
         public void tick(long time) {
             super.tick(time);
 
-
             long aliveTicks = super.getAliveTicks();
-            Audiences.all().sendMessage(Component.text(System.currentTimeMillis() + " ticking is removed? " + this.isRemoved() + " (alive ticks " + aliveTicks + ")"));
             if (aliveTicks == 50) {
                 Pos pos = this.getPosition();
                 this.instance.explode(pos.blockX(), pos.blockY(), pos.blockZ(), 2);

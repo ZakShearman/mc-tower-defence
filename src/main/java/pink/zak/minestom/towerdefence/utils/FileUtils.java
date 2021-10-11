@@ -3,12 +3,16 @@ package pink.zak.minestom.towerdefence.utils;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonReader;
+import net.minestom.server.extensions.Extension;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Writer;
 import java.net.URL;
 import java.nio.file.Files;
@@ -24,6 +28,15 @@ public class FileUtils {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static JsonObject resourceToJsonObject(Extension extension, String resource) {
+        try (InputStream inputStream = extension.getPackagedResource(resource)) {
+            return JsonParser.parseReader(new InputStreamReader(inputStream)).getAsJsonObject();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public static JsonObject fileToJsonObject(File file) {

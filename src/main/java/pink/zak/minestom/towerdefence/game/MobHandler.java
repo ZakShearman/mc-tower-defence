@@ -7,6 +7,7 @@ import net.minestom.server.instance.Instance;
 import net.minestom.server.timer.Task;
 import net.minestom.server.utils.time.TimeUnit;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
+import pink.zak.minestom.towerdefence.cache.DamageIndicatorCache;
 import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.model.GameUser;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
@@ -17,6 +18,8 @@ import pink.zak.minestom.towerdefence.model.tower.placed.PlacedTower;
 import java.util.Set;
 
 public class MobHandler {
+    public static DamageIndicatorCache DAMAGE_INDICATOR_CACHE; // todo spend time to not use static here.
+
     private final Set<LivingEnemyMob> redSideMobs = Sets.newConcurrentHashSet();
     private final Set<LivingEnemyMob> blueSideMobs = Sets.newConcurrentHashSet();
 
@@ -31,6 +34,8 @@ public class MobHandler {
         this.plugin = plugin;
         this.towerHandler = gameHandler.getTowerHandler();
         this.map = gameHandler.getMap();
+
+        DAMAGE_INDICATOR_CACHE = new DamageIndicatorCache(plugin);
 
         this.startUpdatingAttackingTowers();
     }

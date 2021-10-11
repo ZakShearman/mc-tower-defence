@@ -70,6 +70,8 @@ public class LivingEnemyMob extends EntityCreature {
         this.currentCorner = this.corners.get(0);
         this.nextCorner = this.corners.get(1);
 
+        this.currentCornerLengthModifier = this.getRandomLengthModifier();
+
         this.getAttribute(Attribute.MAX_HEALTH).setBaseValue(this.level.health());
         this.health = this.level.health();
 
