@@ -6,13 +6,15 @@ import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import pink.zak.minestom.towerdefence.utils.ItemUtils;
 
-public record EnemyMobLevel(int level, int cost, int health, int damage, double movementSpeed, int manaCost,
+public record EnemyMobLevel(int level, int cost, int killReward, int health, int damage, double movementSpeed,
+                            int manaCost,
                             ItemStack sendItem,
                             ItemStack ownedUpgradeItem, ItemStack buyUpgradeItem, ItemStack cantAffordUpgradeItem) {
 
     public static EnemyMobLevel fromJsonObject(JsonObject jsonObject) {
         int level = jsonObject.get("level").getAsInt();
         int cost = jsonObject.get("cost").getAsInt();
+        int killReward = cost / 4; // todo balance
         int health = jsonObject.get("health").getAsInt();
         int damage = jsonObject.get("damage").getAsInt();
         double movementSpeed = jsonObject.get("movementSpeed").getAsDouble() / 20;
@@ -28,6 +30,6 @@ public record EnemyMobLevel(int level, int cost, int health, int damage, double 
             .displayName(ownedUpgradeItem.getDisplayName().color(NamedTextColor.RED))
             .build();
 
-        return new EnemyMobLevel(level, cost, health, damage, movementSpeed, manaCost, sendItem, ownedUpgradeItem, buyUpgradeItem, cantAffordUpgradeItem);
+        return new EnemyMobLevel(level, cost, killReward, health, damage, movementSpeed, manaCost, sendItem, ownedUpgradeItem, buyUpgradeItem, cantAffordUpgradeItem);
     }
 }

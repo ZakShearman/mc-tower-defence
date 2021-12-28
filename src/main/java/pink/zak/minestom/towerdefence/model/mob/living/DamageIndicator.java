@@ -6,6 +6,7 @@ import net.minestom.server.coordinate.Pos;
 import net.minestom.server.coordinate.Vec;
 import net.minestom.server.entity.Entity;
 import net.minestom.server.entity.EntityType;
+import net.minestom.server.entity.metadata.other.AreaEffectCloudMeta;
 import net.minestom.server.entity.metadata.other.ArmorStandMeta;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.utils.time.TimeUnit;
@@ -14,18 +15,20 @@ import pink.zak.minestom.towerdefence.game.MobHandler;
 import java.util.List;
 
 public class DamageIndicator extends Entity {
+    private static final float OFFSET_Y = -0.5f;
+
     private final List<Vec> vectors = MobHandler.DAMAGE_INDICATOR_CACHE.getPreCalculatedVelocity();
 
     private DamageIndicator(Instance instance, Pos spawnPosition, Component text) {
-        super(EntityType.ARMOR_STAND);
+        super(EntityType.AREA_EFFECT_CLOUD);
 
-        ArmorStandMeta meta = (ArmorStandMeta) this.getEntityMeta();
-        meta.setSmall(true);
+        AreaEffectCloudMeta meta = (AreaEffectCloudMeta) this.getEntityMeta();
+        meta.setRadius(0f);
+        meta.setNotifyAboutChanges(false);
         meta.setCustomName(text);
         meta.setCustomNameVisible(true);
-        meta.setInvisible(true);
 
-        this.setInstance(instance, spawnPosition.add(0, -0.9875f, 0));
+        this.setInstance(instance, spawnPosition.add(0, OFFSET_Y, 0));
 
         this.position = spawnPosition;
 

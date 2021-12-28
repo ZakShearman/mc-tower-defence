@@ -42,6 +42,8 @@ public class LivingEnemyMob extends EntityCreature {
     protected final EnemyMobLevel level;
     protected final Team team;
 
+    protected final GameUser sender;
+
     protected final int positionModifier;
     protected final List<PathCorner> corners;
     protected int currentCornerIndex;
@@ -62,8 +64,11 @@ public class LivingEnemyMob extends EntityCreature {
         this.towerHandler = towerHandler;
         this.mobHandler = mobHandler;
         this.enemyMob = enemyMob;
-        this.team = gameUser.getTeam() /*gameUser.getTeam() == Team.RED ? Team.BLUE : Team.RED*/;
         this.level = enemyMob.level(level);
+        this.team = gameUser.getTeam() /*gameUser.getTeam() == Team.RED ? Team.BLUE : Team.RED*/;
+
+        this.sender = gameUser;
+
         this.positionModifier = ThreadLocalRandom.current().nextInt(-map.getRandomValue(), map.getRandomValue() + 1);
         this.corners = map.getCorners(this.team);
         this.currentCornerIndex = 0;
@@ -209,10 +214,9 @@ public class LivingEnemyMob extends EntityCreature {
         if (sound != null) {
             Sound.Source soundCategory = Sound.Source.PLAYER;
 
-            SoundEffectPacket damageSoundPacket =
-                SoundEffectPacket.create(soundCategory, sound,
-                    this.getPosition(),
-                    1.0f, 1.0f);
+            SoundEffectPacket damageSoundPacket = new SoundEffectPacket(sound, soundCategory,
+                this.getPosition(),
+                1.0f, 1.0f);
             this.sendPacketToViewersAndSelf(damageSoundPacket);
         }
         return true;

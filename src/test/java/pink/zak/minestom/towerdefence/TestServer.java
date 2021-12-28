@@ -2,10 +2,7 @@ package pink.zak.minestom.towerdefence;
 
 import net.kyori.adventure.text.Component;
 import net.minestom.server.MinecraftServer;
-import net.minestom.server.extras.MojangAuth;
 import net.minestom.server.extras.optifine.OptifineSupport;
-import net.minestom.server.instance.InstanceManager;
-import net.minestom.server.timer.SchedulerManager;
 
 public class TestServer {
     public static void main(String[] args) {
@@ -14,7 +11,7 @@ public class TestServer {
         // MojangAuth.init();
 
         MinecraftServer.getSchedulerManager().buildShutdownTask(TestServer::shutdown);
-
+        System.out.println("Creating server with IP " + System.getenv("minestom.address") + ":" + System.getenv("minestom.port"));
         server.start(System.getenv("minestom.address"), Integer.parseInt(System.getenv("minestom.port")));
     }
 

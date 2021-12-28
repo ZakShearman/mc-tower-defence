@@ -51,7 +51,6 @@ public class TowerDefencePlugin extends Extension {
     public void initialize() {
         LOGGER = getLogger();
         this.startBenchmark();
-        MinecraftServer.setChunkViewDistance(24); // todo let's be nice and make this configurable, or disable it so their server software can have the fun :)
 
         DimensionType dimensionType = DimensionType.builder(NamespaceID.from("towerdefence:main"))
             .fixedTime(1000L)
