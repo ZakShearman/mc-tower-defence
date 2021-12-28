@@ -20,6 +20,7 @@ import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.game.MobHandler;
 import pink.zak.minestom.towerdefence.game.TowerHandler;
 import pink.zak.minestom.towerdefence.model.GameUser;
+import pink.zak.minestom.towerdefence.model.OwnedEntity;
 import pink.zak.minestom.towerdefence.model.map.PathCorner;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
 import pink.zak.minestom.towerdefence.model.mob.EnemyMob;
@@ -195,31 +196,30 @@ public class LivingEnemyMob extends EntityCreature {
             this.setCustomName(this.createCustomName());
     }
 
-    @Override
-    public boolean damage(@NotNull DamageType type, float value) {
-        // all damage will be labelled as void - just a sanity check
-        if (type != DamageType.VOID || this.isImmune(type) || this.isInvulnerable() || this.isDead())
-            return false;
+    public void towerDamage(@NotNull OwnedEntity entity, float value) {
+        if (this.isDead)
+            return;
 
         DamageIndicator.create(this, value);
-
-        this.lastDamageSource = type;
-
         this.sendPacketToViewersAndSelf(new EntityAnimationPacket(this.getEntityId(), EntityAnimationPacket.Animation.TAKE_DAMAGE));
-
         this.setHealth(this.health - value);
 
-        // play damage sound
-        final SoundEvent sound = type.getSound(this);
+        if (this.isDead) {
+            entity.getOwningUser().updateAndGetCoins(current -> current + this.level.killReward()); // todo charity
+        }
+
+        final SoundEvent sound = DamageType.VOID.getSound(this);
         if (sound != null) {
             Sound.Source soundCategory = Sound.Source.PLAYER;
 
-            SoundEffectPacket damageSoundPacket = new SoundEffectPacket(sound, soundCategory,
-                this.getPosition(),
-                1.0f, 1.0f);
+            SoundEffectPacket damageSoundPacket = new SoundEffectPacket(sound, soundCategory, this.getPosition(), 1.0f, 1.0f);
             this.sendPacketToViewersAndSelf(damageSoundPacket);
         }
-        return true;
+    }
+
+    @Override
+    public boolean damage(@NotNull DamageType type, float value) {
+        return false;
     }
 
     private int getRandomLengthModifier() {

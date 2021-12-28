@@ -149,9 +149,8 @@ public class MobMenuHandler {
                 if (mobLevelInt == 0)
                     return;
                 EnemyMobLevel mobLevel = clickedMob.level(mobLevelInt);
-                if (gameUser.getCoins().get() >= mobLevel.cost()) {
-                    int newCoins = gameUser.getCoins().updateAndGet(current -> current - mobLevel.cost());
-                    this.plugin.getEventNode().call(new PlayerCoinChangeEvent(gameUser, newCoins));
+                if (gameUser.getCoins() >= mobLevel.cost()) {
+                    gameUser.updateAndGetCoins(current -> current - mobLevel.cost());
 
                     this.sendTroops(gameUser, clickedMob, mobLevel);
                     inventory.setItemStack(35, this.createQueueItem(gameUser));
@@ -215,17 +214,15 @@ public class MobMenuHandler {
 
             EnemyMobLevel clickedLevel = mob.level(clickedLevelInt);
 
-            if (gameUser.getMana().get() >= manaCost) {
+            if (gameUser.getMana() >= manaCost) {
                 int finalManaCost = manaCost;
-                int newMana = gameUser.getMana().updateAndGet(current -> current - finalManaCost);
+                gameUser.updateAndGetMana(current -> current - finalManaCost);
                 gameUser.getMobLevels().put(mob, clickedLevelInt);
 
                 // update inventory items
                 inventory.setItemStack(0, clickedLevel.sendItem());
                 for (int i = currentLevel + 1; i <= clickedLevelInt; i++)
                     inventory.setItemStack(10 + i, clickedLevel.ownedUpgradeItem());
-
-                MinecraftServer.getGlobalEventHandler().call(new PlayerManaChangeEvent(gameUser, newMana));
             }
         });
     }
@@ -245,7 +242,7 @@ public class MobMenuHandler {
         for (int i = 1; i <= maxLevel; i++) {
             EnemyMobLevel enemyMobLevel = clickedMob.level(i);
             boolean purchased = i <= currentLevel;
-            boolean canAfford = gameUser.getMana().get() >= enemyMobLevel.manaCost();
+            boolean canAfford = gameUser.getMana() >= enemyMobLevel.manaCost();
             ItemStack itemStack = purchased ? enemyMobLevel.ownedUpgradeItem() : canAfford ? enemyMobLevel.buyUpgradeItem() : enemyMobLevel.cantAffordUpgradeItem();
             inventory.setItemStack(10 + i, itemStack);
         }

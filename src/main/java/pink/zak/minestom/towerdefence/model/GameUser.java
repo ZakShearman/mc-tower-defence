@@ -4,6 +4,9 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Queues;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.entity.Player;
+import pink.zak.minestom.towerdefence.TowerDefencePlugin;
+import pink.zak.minestom.towerdefence.api.event.player.PlayerCoinChangeEvent;
+import pink.zak.minestom.towerdefence.api.event.player.PlayerManaChangeEvent;
 import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.model.mob.EnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.QueuedEnemyMob;
@@ -11,6 +14,7 @@ import pink.zak.minestom.towerdefence.model.mob.QueuedEnemyMob;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.IntUnaryOperator;
 
 public class GameUser {
     private final Player player;
@@ -50,12 +54,24 @@ public class GameUser {
         return this.queuedMobs;
     }
 
-    public AtomicInteger getCoins() {
-        return this.coins;
+    public int getCoins() {
+        return this.coins.get();
     }
 
-    public AtomicInteger getMana() {
-        return this.mana;
+    public int updateAndGetCoins(IntUnaryOperator intOperator) {
+        int newCoins = this.coins.updateAndGet(intOperator);
+        TowerDefencePlugin.EVENT_NODE.call(new PlayerCoinChangeEvent(this, newCoins));
+        return newCoins;
+    }
+
+    public int updateAndGetMana(IntUnaryOperator intOperator) {
+        int newMana = this.mana.updateAndGet(intOperator);
+        TowerDefencePlugin.EVENT_NODE.call(new PlayerManaChangeEvent(this, newMana));
+        return newMana;
+    }
+
+    public int getMana() {
+        return this.mana.get();
     }
 
     public AtomicInteger getMaxQueueSize() {

@@ -11,22 +11,29 @@ import net.minestom.server.entity.metadata.other.PrimedTntMeta;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.item.Material;
 import net.minestom.server.utils.Direction;
+import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.game.MobHandler;
+import pink.zak.minestom.towerdefence.model.GameUser;
+import pink.zak.minestom.towerdefence.model.OwnedEntity;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingEnemyMob;
 import pink.zak.minestom.towerdefence.model.tower.Tower;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedTower;
 
 import java.util.Set;
 
-public class BomberTower extends PlacedTower {
+public class BomberTower extends PlacedTower implements OwnedEntity {
+    public static final DamageType DAMAGE_TYPE = new DamageType("attack.tower.bomber"); // todo remove?
+
     private final Pos spawnPos;
     private final MobHandler mobHandler;
+    private final GameUser owner;
 
-    public BomberTower(GameHandler gameHandler, Instance instance, Tower tower, Material towerPlaceMaterial, short id, Team team, Point baseBlock, Direction facing, int level) {
-        super(instance, tower, towerPlaceMaterial, id, team, baseBlock, facing, level);
+    public BomberTower(GameHandler gameHandler, Instance instance, Tower tower, Material towerPlaceMaterial, short id, GameUser owner, Point baseBlock, Direction facing, int level) {
+        super(instance, tower, towerPlaceMaterial, id, owner, baseBlock, facing, level);
         this.mobHandler = gameHandler.getMobHandler();
+        this.owner = owner;
 
         this.spawnPos = new Pos(baseBlock.add(0.5, 2.5, 0.5));
     }
@@ -42,9 +49,14 @@ public class BomberTower extends PlacedTower {
 
         for (LivingEnemyMob enemyMob : enemyMobs) {
             if (enemyMob.getDistance(center) <= 4) {
-                enemyMob.damage(DamageType.VOID, this.level.damage());
+                enemyMob.towerDamage(this, this.level.damage());
             }
         }
+    }
+
+    @Override
+    public @NotNull GameUser getOwningUser() {
+        return this.owner;
     }
 
     private static class BombTnt extends LivingEntity {

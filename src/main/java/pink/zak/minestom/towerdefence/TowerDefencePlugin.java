@@ -7,6 +7,8 @@ import net.minestom.server.adventure.audience.Audiences;
 import net.minestom.server.command.CommandManager;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
+import net.minestom.server.event.Event;
+import net.minestom.server.event.EventNode;
 import net.minestom.server.event.player.PlayerLoginEvent;
 import net.minestom.server.extensions.Extension;
 import net.minestom.server.instance.Instance;
@@ -35,6 +37,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class TowerDefencePlugin extends Extension {
     public static Logger LOGGER;
+    public static EventNode<Event> EVENT_NODE;
 
     private final Set<Player> redPlayers = Sets.newConcurrentHashSet();
     private final Set<Player> bluePlayers = Sets.newConcurrentHashSet();
@@ -50,6 +53,7 @@ public class TowerDefencePlugin extends Extension {
     @Override
     public void initialize() {
         LOGGER = getLogger();
+        EVENT_NODE = this.getEventNode();
         this.startBenchmark();
 
         DimensionType dimensionType = DimensionType.builder(NamespaceID.from("towerdefence:main"))

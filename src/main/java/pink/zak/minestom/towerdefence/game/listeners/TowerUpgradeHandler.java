@@ -65,7 +65,7 @@ public class TowerUpgradeHandler {
         for (int i = 2; i <= tower.maxLevel(); i++) {
             TowerLevel towerLevel = tower.level(i);
             boolean purchased = i <= currentLevel.level();
-            boolean canAfford = gameUser.getCoins().get() >= towerLevel.cost();
+            boolean canAfford = gameUser.getCoins() >= towerLevel.cost();
 
             ItemStack itemStack = purchased ? towerLevel.ownedUpgradeItem() : canAfford ? towerLevel.buyUpgradeItem() : towerLevel.cantAffordUpgradeItem();
             inventory.setItemStack(10 + i, itemStack);
@@ -97,15 +97,13 @@ public class TowerUpgradeHandler {
 
             int cost = tower.level(clickedLevelInt).cost();
 
-            if (gameUser.getMana().get() >= cost) {
-                int newCoins = gameUser.getCoins().updateAndGet(current -> current - cost);
+            if (gameUser.getMana() >= cost) {
+                gameUser.updateAndGetCoins(current -> current - cost);
                 placedTower.upgrade();
                 TowerLevel towerLevel = placedTower.getLevel();
                 // update inventory items
                 inventory.setItemStack(0, towerLevel.menuItem());
                 inventory.setItemStack(10 + clickedLevelInt, towerLevel.ownedUpgradeItem());
-
-                MinecraftServer.getGlobalEventHandler().call(new PlayerCoinChangeEvent(gameUser, newCoins));
             }
         });
     }

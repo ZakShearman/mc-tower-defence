@@ -2,6 +2,7 @@ package pink.zak.minestom.towerdefence.model.tower.placed;
 
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Point;
+import net.minestom.server.entity.damage.DamageType;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.item.Material;
@@ -12,6 +13,7 @@ import net.minestom.server.utils.time.TimeUnit;
 import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.enums.TowerType;
 import pink.zak.minestom.towerdefence.game.GameHandler;
+import pink.zak.minestom.towerdefence.model.GameUser;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingEnemyMob;
 import pink.zak.minestom.towerdefence.model.tower.RelativeBlock;
 import pink.zak.minestom.towerdefence.model.tower.Tower;
@@ -28,6 +30,7 @@ public abstract class PlacedTower {
     protected final Team team;
     protected final Point basePoint;
     protected final Direction facing;
+    protected final GameUser owner;
 
     protected TowerLevel level;
     protected int levelInt;
@@ -35,14 +38,17 @@ public abstract class PlacedTower {
     protected LivingEnemyMob target;
     protected Task attackTask;
 
-    protected PlacedTower(Instance instance, Tower tower, Material towerPlaceMaterial, short id, Team team, Point baseBlock, Direction facing, int level) {
+    protected PlacedTower(Instance instance, Tower tower, Material towerPlaceMaterial, short id, GameUser owner, Point baseBlock, Direction facing, int level) {
         this.instance = instance;
+
         this.tower = tower;
-        this.level = tower.level(level);
         this.id = id;
-        this.team = team;
+        this.team = owner.getTeam();
         this.basePoint = baseBlock;
         this.facing = facing;
+        this.owner = owner;
+
+        this.level = tower.level(level);
         this.levelInt = level;
 
         this.placeLevel();
@@ -50,10 +56,10 @@ public abstract class PlacedTower {
         this.startFiring();
     }
 
-    public static PlacedTower create(GameHandler gameHandler, Instance instance, Tower tower, Material towerPlaceMaterial, short id, Team team, Point baseBlock, Direction facing) {
+    public static PlacedTower create(GameHandler gameHandler, Instance instance, Tower tower, Material towerPlaceMaterial, short id, GameUser owner, Point baseBlock, Direction facing) {
         TowerType towerType = tower.type();
         if (towerType == TowerType.BOMBER) {
-            return new BomberTower(gameHandler, instance, tower, towerPlaceMaterial, id, team, baseBlock, facing, 1);
+            return new BomberTower(gameHandler, instance, tower, towerPlaceMaterial, id, owner, baseBlock, facing, 1);
         }
         return null;
     }
@@ -115,6 +121,10 @@ public abstract class PlacedTower {
 
     public Direction getFacing() {
         return this.facing;
+    }
+
+    public GameUser getOwner() {
+        return this.owner;
     }
 
     public TowerLevel getLevel() {

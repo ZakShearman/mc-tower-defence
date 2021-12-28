@@ -87,7 +87,7 @@ public class TowerPlaceHandler {
         Tower tower = this.towerStorage.getTower(towerType);
         TowerLevel level = tower.level(1);
 
-        int coins = gameUser.getCoins().get();
+        int coins = gameUser.getCoins();
         if (level.cost() > coins) {
             player.sendMessage(Component.text("You do not have enough money to buy this tower", NamedTextColor.RED));
             return;
@@ -98,8 +98,7 @@ public class TowerPlaceHandler {
             player.sendMessage(Component.text("Cannot place a tower as the area is not clear", NamedTextColor.RED));
             return;
         }
-        int newCoins = gameUser.getCoins().updateAndGet(current -> current - level.cost());
-        this.plugin.getEventNode().call(new PlayerCoinChangeEvent(gameUser, newCoins));
+        gameUser.updateAndGetCoins(current -> current - level.cost());
         this.towerHandler.createTower(tower, gameUser);
     }
 }

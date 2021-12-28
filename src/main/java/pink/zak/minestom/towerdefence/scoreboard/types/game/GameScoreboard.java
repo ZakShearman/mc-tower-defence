@@ -48,12 +48,12 @@ public class GameScoreboard {
 
     private Component createCoins() {
         return Component.text("Coins: ", NamedTextColor.WHITE)
-            .append(Component.text(this.gameUser.getCoins().get(), NamedTextColor.YELLOW));
+            .append(Component.text(this.gameUser.getCoins(), NamedTextColor.YELLOW));
     }
 
     private Component createMana() {
         return Component.text("Mana: ", NamedTextColor.WHITE)
-            .append(Component.text(this.gameUser.getMana().get(), NamedTextColor.AQUA));
+            .append(Component.text(this.gameUser.getMana(), NamedTextColor.AQUA));
     }
 
     private Component createRedHealth(TowerDamageEvent event) {
