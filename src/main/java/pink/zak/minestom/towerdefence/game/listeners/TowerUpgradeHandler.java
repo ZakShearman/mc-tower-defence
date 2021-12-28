@@ -15,6 +15,7 @@ import net.minestom.server.item.Material;
 import net.minestom.server.network.packet.server.SendablePacket;
 import net.minestom.server.particle.Particle;
 import net.minestom.server.particle.ParticleCreator;
+import net.minestom.server.timer.Task;
 import net.minestom.server.utils.time.TimeUnit;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 import pink.zak.minestom.towerdefence.enums.GameState;
@@ -142,7 +143,7 @@ public class TowerUpgradeHandler {
         double radius = tower.getLevel().getRange();
 
         Set<SendablePacket> packets = new HashSet<>();
-        for (double i = 1; i <= 360; i += 1.5) {
+        for (int i = 1; i <= 360; i += 3) {
             double c1 = radius * Math.cos(i);
             double c2 = radius * Math.sin(i);
 
@@ -156,13 +157,17 @@ public class TowerUpgradeHandler {
                 }));
         }
         player.sendPackets(packets);
-        //circle.iterator(ShapeOptions.builder(Particle.DUST).build()).draw(player);
 
-        MinecraftServer.getSchedulerManager() // todo cancel
+        Task task = MinecraftServer.getSchedulerManager()
             .buildTask(() -> {
                 player.sendPackets(packets);
             })
             .repeat(750, TimeUnit.MILLISECOND)
+            .schedule();
+
+        MinecraftServer.getSchedulerManager()
+            .buildTask(task::cancel)
+            .delay(5, TimeUnit.SECOND)
             .schedule();
     }
 }

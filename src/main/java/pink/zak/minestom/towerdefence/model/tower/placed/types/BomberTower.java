@@ -77,7 +77,7 @@ public class BomberTower extends PlacedAttackingTower<AttackingTowerLevel> imple
             this.zVel = (target.getPosition().z() - this.tower.spawnPos.z());
 
             super.hasPhysics = false;
-            ((PrimedTntMeta) this.getEntityMeta()).setFuseTime(35);
+            ((PrimedTntMeta) this.getEntityMeta()).setFuseTime(34);
 
             this.setInstance(tower.instance, tower.spawnPos);
             this.setVelocity(new Vec(0, 12, 0));
@@ -88,7 +88,7 @@ public class BomberTower extends PlacedAttackingTower<AttackingTowerLevel> imple
             super.tick(time);
 
             long aliveTicks = super.getAliveTicks();
-            if (aliveTicks == 35) {
+            if (aliveTicks == 34) {
                 Pos pos = this.getPosition();
                 this.instance.explode(pos.blockX(), pos.blockY(), pos.blockZ(), 2);
                 this.tower.damageTroops(this);
