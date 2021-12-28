@@ -6,6 +6,7 @@
       "level": 1,
       "cost": 500,
       "range": 20,
+      "multiplier": 1.25,
       "menuItem": {
         "material": "minecraft:gold_ingot",
         "displayName": "<yellow>Charity ($500)",

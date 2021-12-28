@@ -1,4 +1,4 @@
-package pink.zak.minestom.towerdefence.model.tower;
+package pink.zak.minestom.towerdefence.model.tower.config;
 
 import com.google.common.collect.Maps;
 import com.google.gson.JsonArray;
@@ -88,35 +88,5 @@ public class RelativeBlock {
 
     public Block getBlock() {
         return this.block;
-    }
-
-    public JsonObject toJsonObject() {
-        JsonObject jsonObject = new JsonObject();
-
-        jsonObject.addProperty("xOffset", this.xOffset);
-        jsonObject.addProperty("zOffset", this.zOffset);
-        jsonObject.addProperty("yOffset", this.yOffset);
-        jsonObject.add("block", this.getBlockAsJson());
-
-        return jsonObject;
-    }
-
-    private JsonObject getBlockAsJson() {
-        JsonObject jsonObject = new JsonObject();
-
-        jsonObject.addProperty("material", this.block.name());
-        if (!this.block.properties().isEmpty())
-            jsonObject.add("properties", this.getPropertiesAsJson());
-
-        return jsonObject;
-    }
-
-    private JsonObject getPropertiesAsJson() {
-        JsonObject jsonObject = new JsonObject();
-
-        for (Map.Entry<String, String> entry : this.block.properties().entrySet())
-            jsonObject.addProperty(entry.getKey(), entry.getValue());
-
-        return jsonObject;
     }
 }

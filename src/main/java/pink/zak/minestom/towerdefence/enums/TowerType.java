@@ -1,18 +1,30 @@
 package pink.zak.minestom.towerdefence.enums;
 
+import com.google.gson.JsonObject;
+import pink.zak.minestom.towerdefence.model.tower.config.AttackingTowerLevel;
+import pink.zak.minestom.towerdefence.model.tower.config.Tower;
+import pink.zak.minestom.towerdefence.model.tower.config.TowerLevel;
+import pink.zak.minestom.towerdefence.model.tower.config.towers.CharityTowerLevel;
+
+import java.util.function.Function;
+
 public enum TowerType {
-    ARCHER(Size.THREE, 10, true),
-    BOMBER(Size.THREE, 11, false),
-    CHARITY(Size.THREE, 12, false);
+    ARCHER(Size.THREE, 10, true, Tower::new, AttackingTowerLevel::new),
+    BOMBER(Size.THREE, 11, false, Tower::new, AttackingTowerLevel::new),
+    CHARITY(Size.THREE, 12, false, Tower::new, CharityTowerLevel::new);
 
     private final Size size;
     private final int guiSlot;
     private final boolean targetAir;
+    private final Function<JsonObject, ? extends Tower> towerFunction;
+    private final Function<JsonObject, ? extends TowerLevel> towerLevelFunction;
 
-    TowerType(Size size, int guiSlot, boolean targetAir) {
+    TowerType(Size size, int guiSlot, boolean targetAir, Function<JsonObject, ? extends Tower> towerFunction, Function<JsonObject, ? extends TowerLevel> towerLevelFunction) {
         this.size = size;
         this.guiSlot = guiSlot;
         this.targetAir = targetAir;
+        this.towerFunction = towerFunction;
+        this.towerLevelFunction = towerLevelFunction;
     }
 
     public static TowerType valueOf(int guiSlot) {
@@ -32,6 +44,14 @@ public enum TowerType {
 
     public boolean isTargetAir() {
         return this.targetAir;
+    }
+
+    public Function<JsonObject, ? extends Tower> getTowerFunction() {
+        return this.towerFunction;
+    }
+
+    public Function<JsonObject, ? extends TowerLevel> getTowerLevelFunction() {
+        return this.towerLevelFunction;
     }
 
     public enum Size {

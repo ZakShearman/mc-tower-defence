@@ -18,12 +18,13 @@ import pink.zak.minestom.towerdefence.game.MobHandler;
 import pink.zak.minestom.towerdefence.model.GameUser;
 import pink.zak.minestom.towerdefence.model.OwnedEntity;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingEnemyMob;
-import pink.zak.minestom.towerdefence.model.tower.Tower;
+import pink.zak.minestom.towerdefence.model.tower.config.AttackingTowerLevel;
+import pink.zak.minestom.towerdefence.model.tower.config.Tower;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
 
 import java.util.Set;
 
-public class BomberTower extends PlacedAttackingTower implements OwnedEntity {
+public class BomberTower extends PlacedAttackingTower<AttackingTowerLevel> implements OwnedEntity {
     public static final DamageType DAMAGE_TYPE = new DamageType("attack.tower.bomber"); // todo remove?
 
     private final Pos spawnPos;
@@ -49,7 +50,7 @@ public class BomberTower extends PlacedAttackingTower implements OwnedEntity {
 
         for (LivingEnemyMob enemyMob : enemyMobs) {
             if (enemyMob.getDistance(center) <= 4) {
-                enemyMob.towerDamage(this, this.level.damage());
+                enemyMob.towerDamage(this, this.level.getDamage());
             }
         }
     }

@@ -9,10 +9,10 @@ import net.minestom.server.utils.Direction;
 import net.minestom.server.utils.time.TimeUnit;
 import pink.zak.minestom.towerdefence.model.GameUser;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingEnemyMob;
-import pink.zak.minestom.towerdefence.model.tower.Tower;
-import pink.zak.minestom.towerdefence.model.tower.TowerLevel;
+import pink.zak.minestom.towerdefence.model.tower.config.AttackingTowerLevel;
+import pink.zak.minestom.towerdefence.model.tower.config.Tower;
 
-public abstract class PlacedAttackingTower extends PlacedTower {
+public abstract class PlacedAttackingTower<T extends AttackingTowerLevel> extends PlacedTower<T> {
 
     protected LivingEnemyMob target;
     protected Task attackTask;
@@ -28,7 +28,7 @@ public abstract class PlacedAttackingTower extends PlacedTower {
                 if (this.target != null)
                     this.fire();
             })
-            .repeat(this.level.fireDelay(), TimeUnit.CLIENT_TICK)
+            .repeat(this.level.getFireDelay(), TimeUnit.CLIENT_TICK)
             .schedule();
     }
 
@@ -36,9 +36,9 @@ public abstract class PlacedAttackingTower extends PlacedTower {
 
     @Override
     public void upgrade() {
-        TowerLevel oldLevel = this.level;
+        AttackingTowerLevel oldLevel = this.level;
         super.upgrade();
-        if (oldLevel.fireDelay() != this.level.fireDelay()) {
+        if (oldLevel.getFireDelay() != this.level.getFireDelay()) {
             this.attackTask.cancel();
             this.startFiring();
         }

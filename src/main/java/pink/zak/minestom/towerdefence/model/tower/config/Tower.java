@@ -1,4 +1,4 @@
-package pink.zak.minestom.towerdefence.model.tower;
+package pink.zak.minestom.towerdefence.model.tower.config;
 
 import com.google.common.collect.Maps;
 import com.google.gson.JsonElement;
@@ -15,24 +15,28 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-public record Tower(TowerType type,
-                    String name,
-                    Map<Integer, TowerLevel> levels) {
+public class Tower {
+    private final TowerType type;
+    private final String name;
+    private final Map<Integer, ? extends TowerLevel> levels;
+    private final int maxLevel;
 
-    public static Tower fromJsonObject(JsonObject jsonObject) {
-        TowerType type = TowerType.valueOf(jsonObject.get("type").getAsString());
-        String name = jsonObject.get("name").getAsString();
+    public Tower(JsonObject jsonObject) {
+        this.type = TowerType.valueOf(jsonObject.get("type").getAsString());
+        this.name = jsonObject.get("name").getAsString();
 
-        Set<TowerLevel> levels = StreamSupport.stream(jsonObject.get("levels").getAsJsonArray().spliterator(), true)
+        Set<? extends TowerLevel> levels = StreamSupport.stream(jsonObject.get("levels").getAsJsonArray().spliterator(), true)
             .map(JsonElement::getAsJsonObject)
-            .map(TowerLevel::fromJsonObject)
+            .map(o -> this.type.getTowerLevelFunction().apply(o))
             .collect(Collectors.toUnmodifiableSet());
         Map<Integer, TowerLevel> levelMap = Maps.newHashMap();
 
         for (TowerLevel level : levels)
-            levelMap.put(level.level(), level);
+            levelMap.put(level.getLevel(), level);
 
-        return new Tower(type, name, levelMap);
+        this.levels = levelMap;
+
+        this.maxLevel = this.levels.keySet().stream().max(Integer::compareTo).orElseThrow();
     }
 
     public boolean isSpaceClear(Instance instance, Point baseBlock, Material towerPlaceMaterial) {
@@ -50,15 +54,27 @@ public record Tower(TowerType type,
         return true;
     }
 
-    public int maxLevel() {
-        return this.levels.keySet().stream().max(Integer::compareTo).orElseThrow();
+    public ItemStack getBaseMenuItem() {
+        return this.levels.get(1).getMenuItem();
     }
 
-    public TowerLevel level(int level) {
+    public TowerType getType() {
+        return this.type;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public Map<Integer, ? extends TowerLevel> getLevels() {
+        return this.levels;
+    }
+
+    public TowerLevel getLevel(int level) {
         return this.levels.get(level);
     }
 
-    public ItemStack baseMenuItem() {
-        return this.level(1).menuItem();
+    public int getMaxLevel() {
+        return this.maxLevel;
     }
 }

@@ -1,27 +1,22 @@
 package pink.zak.minestom.towerdefence.model.tower.placed;
 
-import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Point;
-import net.minestom.server.entity.damage.DamageType;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.item.Material;
 import net.minestom.server.tag.Tag;
-import net.minestom.server.timer.Task;
 import net.minestom.server.utils.Direction;
-import net.minestom.server.utils.time.TimeUnit;
 import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.enums.TowerType;
 import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.model.GameUser;
-import pink.zak.minestom.towerdefence.model.mob.living.LivingEnemyMob;
-import pink.zak.minestom.towerdefence.model.tower.RelativeBlock;
-import pink.zak.minestom.towerdefence.model.tower.Tower;
-import pink.zak.minestom.towerdefence.model.tower.TowerLevel;
+import pink.zak.minestom.towerdefence.model.tower.config.RelativeBlock;
+import pink.zak.minestom.towerdefence.model.tower.config.Tower;
+import pink.zak.minestom.towerdefence.model.tower.config.TowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.placed.types.BomberTower;
 import pink.zak.minestom.towerdefence.model.tower.placed.types.CharityTower;
 
-public abstract class PlacedTower {
+public abstract class PlacedTower<T extends TowerLevel> {
     public static final Tag<Short> ID_TAG = Tag.Short("towerId");
 
     protected final Instance instance;
@@ -33,7 +28,7 @@ public abstract class PlacedTower {
     protected final Direction facing;
     protected final GameUser owner;
 
-    protected TowerLevel level;
+    protected T level;
     protected int levelInt;
 
     protected PlacedTower(Instance instance, Tower tower, Material towerPlaceMaterial, short id, GameUser owner, Point baseBlock, Direction facing, int level) {
@@ -46,15 +41,15 @@ public abstract class PlacedTower {
         this.facing = facing;
         this.owner = owner;
 
-        this.level = tower.level(level);
+        this.level = (T) tower.getLevel(level);
         this.levelInt = level;
 
         this.placeLevel();
         this.placeBase(towerPlaceMaterial);
     }
 
-    public static PlacedTower create(GameHandler gameHandler, Instance instance, Tower tower, Material towerPlaceMaterial, short id, GameUser owner, Point baseBlock, Direction facing) {
-        TowerType towerType = tower.type();
+    public static PlacedTower<?> create(GameHandler gameHandler, Instance instance, Tower tower, Material towerPlaceMaterial, short id, GameUser owner, Point baseBlock, Direction facing) {
+        TowerType towerType = tower.getType();
         return switch (towerType) {
             case BOMBER -> new BomberTower(gameHandler, instance, tower, towerPlaceMaterial, id, owner, baseBlock, facing, 1);
             case CHARITY -> new CharityTower(instance, tower, towerPlaceMaterial, id, owner, baseBlock, facing, 1);
@@ -63,12 +58,12 @@ public abstract class PlacedTower {
     }
 
     public void upgrade() {
-        this.level = this.tower.level(++this.levelInt);
+        this.level = (T) this.tower.getLevel(++this.levelInt);
         this.placeLevel();
     }
 
     private void placeLevel() {
-        for (RelativeBlock relativeBlock : this.level.relativeBlocks()) {
+        for (RelativeBlock relativeBlock : this.level.getRelativeBlocks()) {
             int x = this.basePoint.blockX() + relativeBlock.getXOffset(this.facing);
             int z = this.basePoint.blockZ() + relativeBlock.getZOffset(this.facing);
             int y = this.basePoint.blockY() + relativeBlock.getYOffset();
@@ -79,7 +74,7 @@ public abstract class PlacedTower {
     }
 
     private void placeBase(Material towerPlaceMaterial) {
-        int checkDistance = this.tower.type().getSize().getCheckDistance();
+        int checkDistance = this.tower.getType().getSize().getCheckDistance();
         for (int x = this.basePoint.blockX() - checkDistance; x <= this.basePoint.blockX() + checkDistance; x++) {
             for (int z = this.basePoint.blockZ() - checkDistance; z <= this.basePoint.blockZ() + checkDistance; z++) {
                 this.instance.setBlock(x, this.basePoint.blockY(), z, towerPlaceMaterial.block().withTag(ID_TAG, this.id));
@@ -107,7 +102,7 @@ public abstract class PlacedTower {
         return this.owner;
     }
 
-    public TowerLevel getLevel() {
+    public T getLevel() {
         return this.level;
     }
 

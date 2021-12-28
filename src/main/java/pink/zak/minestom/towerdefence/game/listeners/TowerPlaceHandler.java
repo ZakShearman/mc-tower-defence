@@ -12,15 +12,14 @@ import net.minestom.server.inventory.InventoryType;
 import net.minestom.server.inventory.click.ClickType;
 import net.minestom.server.item.Material;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
-import pink.zak.minestom.towerdefence.api.event.player.PlayerCoinChangeEvent;
 import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.enums.TowerType;
 import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.game.TowerHandler;
 import pink.zak.minestom.towerdefence.model.GameUser;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
-import pink.zak.minestom.towerdefence.model.tower.Tower;
-import pink.zak.minestom.towerdefence.model.tower.TowerLevel;
+import pink.zak.minestom.towerdefence.model.tower.config.Tower;
+import pink.zak.minestom.towerdefence.model.tower.config.TowerLevel;
 import pink.zak.minestom.towerdefence.storage.TowerStorage;
 
 public class TowerPlaceHandler {
@@ -63,7 +62,7 @@ public class TowerPlaceHandler {
         Inventory inventory = new Inventory(InventoryType.CHEST_3_ROW, title);
 
         for (Tower tower : this.towerStorage.getTowers().values()) {
-            inventory.setItemStack(tower.type().getGuiSlot(), tower.baseMenuItem());
+            inventory.setItemStack(tower.getType().getGuiSlot(), tower.getBaseMenuItem());
         }
 
         this.plugin.getEventNode().addListener(InventoryPreClickEvent.class, event -> {
@@ -85,10 +84,10 @@ public class TowerPlaceHandler {
     private void requestTowerBuy(Player player, TowerType towerType) {
         GameUser gameUser = this.gameHandler.getGameUser(player);
         Tower tower = this.towerStorage.getTower(towerType);
-        TowerLevel level = tower.level(1);
+        TowerLevel level = tower.getLevel(1);
 
         int coins = gameUser.getCoins();
-        if (level.cost() > coins) {
+        if (level.getCost() > coins) {
             player.sendMessage(Component.text("You do not have enough money to buy this tower", NamedTextColor.RED));
             return;
         }
@@ -98,7 +97,7 @@ public class TowerPlaceHandler {
             player.sendMessage(Component.text("Cannot place a tower as the area is not clear", NamedTextColor.RED));
             return;
         }
-        gameUser.updateAndGetCoins(current -> current - level.cost());
+        gameUser.updateAndGetCoins(current -> current - level.getCost());
         this.towerHandler.createTower(tower, gameUser);
     }
 }

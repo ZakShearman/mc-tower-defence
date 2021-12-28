@@ -4,7 +4,7 @@ import com.google.common.collect.Maps;
 import com.google.gson.JsonObject;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 import pink.zak.minestom.towerdefence.enums.TowerType;
-import pink.zak.minestom.towerdefence.model.tower.Tower;
+import pink.zak.minestom.towerdefence.model.tower.config.Tower;
 import pink.zak.minestom.towerdefence.utils.FileUtils;
 
 import java.io.File;
@@ -33,9 +33,11 @@ public class TowerStorage {
     private void load() {
         for (File file : this.folderPath.toFile().listFiles()) {
             JsonObject jsonObject = FileUtils.fileToJsonObject(file);
-            Tower tower = Tower.fromJsonObject(jsonObject);
+            TowerType towerType = TowerType.valueOf(jsonObject.get("type").getAsString());
 
-            this.towers.put(tower.type(), tower);
+            Tower tower = towerType.getTowerFunction().apply(jsonObject);
+
+            this.towers.put(towerType, tower);
         }
     }
 

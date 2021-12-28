@@ -28,8 +28,10 @@ import pink.zak.minestom.towerdefence.model.mob.EnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.EnemyMobLevel;
 import pink.zak.minestom.towerdefence.model.mob.living.types.BeeLivingEnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.living.types.LlamaLivingEnemyMob;
+import pink.zak.minestom.towerdefence.model.tower.config.towers.CharityTowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedTower;
+import pink.zak.minestom.towerdefence.model.tower.placed.types.CharityTower;
 import pink.zak.minestom.towerdefence.utils.DirectionUtils;
 import pink.zak.minestom.towerdefence.utils.StringUtils;
 
@@ -56,7 +58,7 @@ public class LivingEnemyMob extends EntityCreature {
     protected double moveDistance;
     protected double totalDistanceMoved;
 
-    protected Set<PlacedAttackingTower> attackingTowers = Sets.newConcurrentHashSet();
+    protected Set<PlacedAttackingTower<?>> attackingTowers = Sets.newConcurrentHashSet();
     protected float health;
 
     private Task attackTask;
@@ -177,7 +179,7 @@ public class LivingEnemyMob extends EntityCreature {
         if (this.attackTask != null)
             this.attackTask.cancel();
 
-        for (PlacedAttackingTower tower : this.attackingTowers)
+        for (PlacedAttackingTower<?> tower : this.attackingTowers)
             tower.setTarget(null);
 
         if (this.team == Team.RED)
@@ -207,11 +209,11 @@ public class LivingEnemyMob extends EntityCreature {
         this.setHealth(this.health - value);
 
         if (this.isDead) {
-            Set<PlacedTower> towers = this.team == Team.BLUE ? this.towerHandler.getBlueTowers() : this.towerHandler.getRedTowers();
+            Set<PlacedTower<?>> towers = this.team == Team.BLUE ? this.towerHandler.getBlueTowers() : this.towerHandler.getRedTowers();
             double multiplier = 1;
-            for (PlacedTower tower : towers) {
-                if (tower.getTower().type() == TowerType.CHARITY && tower.getBasePoint().distance(this.position) <= tower.getLevel().range()) { // todo custom charity multiplier
-                    multiplier = 1.25;
+            for (PlacedTower<?> tower : towers) {
+                if (tower instanceof CharityTower charityTower && tower.getBasePoint().distance(this.position) <= tower.getLevel().getRange()) { // todo custom charity multiplier
+                    multiplier = charityTower.getLevel().getMultiplier();
                 }
             }
             double finalMultiplier = multiplier;
@@ -247,11 +249,11 @@ public class LivingEnemyMob extends EntityCreature {
         return this.totalDistanceMoved;
     }
 
-    public Set<PlacedAttackingTower> getAttackingTowers() {
+    public Set<PlacedAttackingTower<?>> getAttackingTowers() {
         return this.attackingTowers;
     }
 
-    public void setAttackingTowers(Set<PlacedAttackingTower> attackingTowers) {
+    public void setAttackingTowers(Set<PlacedAttackingTower<?>> attackingTowers) {
         this.attackingTowers = attackingTowers;
     }
 

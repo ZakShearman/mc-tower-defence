@@ -3,7 +3,6 @@ package pink.zak.minestom.towerdefence.game.listeners;
 import com.google.common.collect.Maps;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.MinecraftServer;
-import net.minestom.server.adventure.audience.Audiences;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.inventory.InventoryPreClickEvent;
@@ -22,8 +21,8 @@ import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.game.TowerHandler;
 import pink.zak.minestom.towerdefence.model.GameUser;
-import pink.zak.minestom.towerdefence.model.tower.Tower;
-import pink.zak.minestom.towerdefence.model.tower.TowerLevel;
+import pink.zak.minestom.towerdefence.model.tower.config.Tower;
+import pink.zak.minestom.towerdefence.model.tower.config.TowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedTower;
 import pink.zak.minestom.towerdefence.utils.StringUtils;
 
@@ -51,7 +50,7 @@ public class TowerUpgradeHandler {
 
     public TowerUpgradeHandler(TowerDefencePlugin plugin, GameHandler gameHandler) {
         for (Tower tower : plugin.getTowerStorage().getTowers().values())
-            TOWER_UPGRADE_TITLES.put(tower, Component.text("Upgrade " + tower.name()));
+            TOWER_UPGRADE_TITLES.put(tower, Component.text("Upgrade " + tower.getName()));
 
 
         this.plugin = plugin;
@@ -67,28 +66,28 @@ public class TowerUpgradeHandler {
                 Short towerId = event.getBlock().getTag(PlacedTower.ID_TAG);
                 if (gameUser == null || towerId == null)
                     return;
-                PlacedTower tower = this.towerHandler.getTower(gameUser, towerId);
+                PlacedTower<?> tower = this.towerHandler.getTower(gameUser, towerId);
                 this.openUpgradeGui(gameUser, tower);
             });
 
         this.startTowerUpgradeGuiListener();
     }
 
-    private void openUpgradeGui(GameUser gameUser, PlacedTower placedTower) {
+    private void openUpgradeGui(GameUser gameUser, PlacedTower<?> placedTower) {
         TowerLevel currentLevel = placedTower.getLevel();
         Tower tower = placedTower.getTower();
 
         Inventory inventory = new Inventory(InventoryType.CHEST_3_ROW, TOWER_UPGRADE_TITLES.get(tower));
         inventory.setTag(PlacedTower.ID_TAG, placedTower.getId());
-        inventory.setItemStack(0, currentLevel.menuItem());
+        inventory.setItemStack(0, currentLevel.getMenuItem());
 
-        inventory.setItemStack(11, tower.level(1).ownedUpgradeItem());
-        for (int i = 2; i <= tower.maxLevel(); i++) {
-            TowerLevel towerLevel = tower.level(i);
-            boolean purchased = i <= currentLevel.level();
-            boolean canAfford = gameUser.getCoins() >= towerLevel.cost();
+        inventory.setItemStack(11, tower.getLevel(1).getOwnedUpgradeItem());
+        for (int i = 2; i <= tower.getMaxLevel(); i++) {
+            TowerLevel towerLevel = tower.getLevel(i);
+            boolean purchased = i <= currentLevel.getLevel();
+            boolean canAfford = gameUser.getCoins() >= towerLevel.getCost();
 
-            ItemStack itemStack = purchased ? towerLevel.ownedUpgradeItem() : canAfford ? towerLevel.buyUpgradeItem() : towerLevel.cantAffordUpgradeItem();
+            ItemStack itemStack = purchased ? towerLevel.getOwnedUpgradeItem() : canAfford ? towerLevel.getBuyUpgradeItem() : towerLevel.getCantAffordUpgradeItem();
             inventory.setItemStack(10 + i, itemStack);
         }
 
@@ -107,7 +106,7 @@ public class TowerUpgradeHandler {
                 return;
             Player player = event.getPlayer();
             GameUser gameUser = this.gameHandler.getGameUser(player);
-            PlacedTower placedTower = this.towerHandler.getTower(gameUser, inventory.getTag(PlacedTower.ID_TAG));
+            PlacedTower<?> placedTower = this.towerHandler.getTower(gameUser, inventory.getTag(PlacedTower.ID_TAG));
 
             event.setCancelled(true);
             int slot = event.getSlot();
@@ -122,25 +121,25 @@ public class TowerUpgradeHandler {
             Tower tower = placedTower.getTower();
             int level = placedTower.getLevelInt();
 
-            if (clickedLevelInt < 0 || clickedLevelInt > tower.maxLevel() || level + 1 != clickedLevelInt)
+            if (clickedLevelInt < 0 || clickedLevelInt > tower.getMaxLevel() || level + 1 != clickedLevelInt)
                 return;
 
-            int cost = tower.level(clickedLevelInt).cost();
+            int cost = tower.getLevel(clickedLevelInt).getCost();
 
             if (gameUser.getMana() >= cost) {
                 gameUser.updateAndGetCoins(current -> current - cost);
                 placedTower.upgrade();
                 TowerLevel towerLevel = placedTower.getLevel();
                 // update inventory items
-                inventory.setItemStack(0, towerLevel.menuItem());
-                inventory.setItemStack(10 + clickedLevelInt, towerLevel.ownedUpgradeItem());
+                inventory.setItemStack(0, towerLevel.getMenuItem());
+                inventory.setItemStack(10 + clickedLevelInt, towerLevel.getOwnedUpgradeItem());
             }
         });
     }
 
-    private void showTowerRadius(Player player, PlacedTower tower) {
+    private void showTowerRadius(Player player, PlacedTower<?> tower) {
         Point center = tower.getBasePoint();
-        double radius = tower.getLevel().range();
+        double radius = tower.getLevel().getRange();
 
         Set<SendablePacket> packets = new HashSet<>();
         for (double i = 1; i <= 360; i += 1.5) {
