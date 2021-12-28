@@ -54,7 +54,7 @@ public class SpawnItemHandler {
 
                 MinecraftServer.getSchedulerManager().buildTask(() -> {
                     this.plugin.getGameHandler().start(player.getInstance());
-                }).delay(5, TimeUnit.SECOND).schedule();
+                }).delay(3, TimeUnit.SECOND).schedule();
             })
             .addListener(PlayerDisconnectEvent.class, event -> {
                 Player player = event.getPlayer();

@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.StringJoiner;
 
 public class StringUtils {
-    private static final MiniMessage MINI_MESSAGE = MiniMessage.get();
+    private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
 
     public static Component parseMessage(String message) {
         return MINI_MESSAGE.parse(message).decoration(TextDecoration.ITALIC, false);

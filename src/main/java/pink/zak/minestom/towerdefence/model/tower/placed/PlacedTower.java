@@ -19,6 +19,7 @@ import pink.zak.minestom.towerdefence.model.tower.RelativeBlock;
 import pink.zak.minestom.towerdefence.model.tower.Tower;
 import pink.zak.minestom.towerdefence.model.tower.TowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.placed.types.BomberTower;
+import pink.zak.minestom.towerdefence.model.tower.placed.types.CharityTower;
 
 public abstract class PlacedTower {
     public static final Tag<Short> ID_TAG = Tag.Short("towerId");
@@ -35,9 +36,6 @@ public abstract class PlacedTower {
     protected TowerLevel level;
     protected int levelInt;
 
-    protected LivingEnemyMob target;
-    protected Task attackTask;
-
     protected PlacedTower(Instance instance, Tower tower, Material towerPlaceMaterial, short id, GameUser owner, Point baseBlock, Direction facing, int level) {
         this.instance = instance;
 
@@ -53,38 +51,20 @@ public abstract class PlacedTower {
 
         this.placeLevel();
         this.placeBase(towerPlaceMaterial);
-        this.startFiring();
     }
 
     public static PlacedTower create(GameHandler gameHandler, Instance instance, Tower tower, Material towerPlaceMaterial, short id, GameUser owner, Point baseBlock, Direction facing) {
         TowerType towerType = tower.type();
-        if (towerType == TowerType.BOMBER) {
-            return new BomberTower(gameHandler, instance, tower, towerPlaceMaterial, id, owner, baseBlock, facing, 1);
-        }
-        return null;
+        return switch (towerType) {
+            case BOMBER -> new BomberTower(gameHandler, instance, tower, towerPlaceMaterial, id, owner, baseBlock, facing, 1);
+            case CHARITY -> new CharityTower(instance, tower, towerPlaceMaterial, id, owner, baseBlock, facing, 1);
+            default -> null;
+        };
     }
-
-    private void startFiring() {
-        this.attackTask = MinecraftServer.getSchedulerManager()
-            .buildTask(() -> {
-                if (this.target != null)
-                    this.fire();
-            })
-            .repeat(this.level.fireDelay(), TimeUnit.CLIENT_TICK)
-            .schedule();
-    }
-
-    protected abstract void fire();
 
     public void upgrade() {
-        TowerLevel oldLevel = this.level;
         this.level = this.tower.level(++this.levelInt);
         this.placeLevel();
-
-        if (oldLevel.fireDelay() != this.level.fireDelay()) {
-            this.attackTask.cancel();
-            this.startFiring();
-        }
     }
 
     private void placeLevel() {
@@ -133,13 +113,5 @@ public abstract class PlacedTower {
 
     public int getLevelInt() {
         return this.levelInt;
-    }
-
-    public LivingEnemyMob getTarget() {
-        return this.target;
-    }
-
-    public void setTarget(LivingEnemyMob target) {
-        this.target = target;
     }
 }

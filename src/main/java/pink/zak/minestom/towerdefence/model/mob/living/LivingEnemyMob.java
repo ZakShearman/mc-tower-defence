@@ -17,6 +17,7 @@ import net.minestom.server.sound.SoundEvent;
 import net.minestom.server.timer.Task;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.enums.Team;
+import pink.zak.minestom.towerdefence.enums.TowerType;
 import pink.zak.minestom.towerdefence.game.MobHandler;
 import pink.zak.minestom.towerdefence.game.TowerHandler;
 import pink.zak.minestom.towerdefence.model.GameUser;
@@ -27,6 +28,7 @@ import pink.zak.minestom.towerdefence.model.mob.EnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.EnemyMobLevel;
 import pink.zak.minestom.towerdefence.model.mob.living.types.BeeLivingEnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.living.types.LlamaLivingEnemyMob;
+import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedTower;
 import pink.zak.minestom.towerdefence.utils.DirectionUtils;
 import pink.zak.minestom.towerdefence.utils.StringUtils;
@@ -54,7 +56,7 @@ public class LivingEnemyMob extends EntityCreature {
     protected double moveDistance;
     protected double totalDistanceMoved;
 
-    protected Set<PlacedTower> attackingTowers = Sets.newConcurrentHashSet();
+    protected Set<PlacedAttackingTower> attackingTowers = Sets.newConcurrentHashSet();
     protected float health;
 
     private Task attackTask;
@@ -175,7 +177,7 @@ public class LivingEnemyMob extends EntityCreature {
         if (this.attackTask != null)
             this.attackTask.cancel();
 
-        for (PlacedTower tower : this.attackingTowers)
+        for (PlacedAttackingTower tower : this.attackingTowers)
             tower.setTarget(null);
 
         if (this.team == Team.RED)
@@ -205,7 +207,15 @@ public class LivingEnemyMob extends EntityCreature {
         this.setHealth(this.health - value);
 
         if (this.isDead) {
-            entity.getOwningUser().updateAndGetCoins(current -> current + this.level.killReward()); // todo charity
+            Set<PlacedTower> towers = this.team == Team.BLUE ? this.towerHandler.getBlueTowers() : this.towerHandler.getRedTowers();
+            double multiplier = 1;
+            for (PlacedTower tower : towers) {
+                if (tower.getTower().type() == TowerType.CHARITY && tower.getBasePoint().distance(this.position) <= tower.getLevel().range()) { // todo custom charity multiplier
+                    multiplier = 1.25;
+                }
+            }
+            double finalMultiplier = multiplier;
+            entity.getOwningUser().updateAndGetCoins(current -> (int) Math.floor(current + (this.level.killReward() * finalMultiplier)));
         }
 
         final SoundEvent sound = DamageType.VOID.getSound(this);
@@ -237,11 +247,11 @@ public class LivingEnemyMob extends EntityCreature {
         return this.totalDistanceMoved;
     }
 
-    public Set<PlacedTower> getAttackingTowers() {
+    public Set<PlacedAttackingTower> getAttackingTowers() {
         return this.attackingTowers;
     }
 
-    public void setAttackingTowers(Set<PlacedTower> attackingTowers) {
+    public void setAttackingTowers(Set<PlacedAttackingTower> attackingTowers) {
         this.attackingTowers = attackingTowers;
     }
 

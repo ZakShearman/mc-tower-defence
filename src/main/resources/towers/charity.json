@@ -1,0 +1,304 @@
+{
+  "type": "CHARITY",
+  "displayMaterial": "minecraft:gold_ingot",
+  "levels": [
+    {
+      "level": 1,
+      "cost": 500,
+      "name": "Charity Tower",
+      "description": [
+        "Gain more money"
+      ],
+      "relativeBlocks": [
+        {
+          "xOffset": 0,
+          "zOffset": 0,
+          "yOffset": 1,
+          "block": {
+            "material": "minecraft:gold_block"
+          }
+        },
+        {
+          "xOffset": 0,
+          "zOffset": 0,
+          "yOffset": 2,
+          "block": {
+            "material": "minecraft:gold_block"
+          }
+        },
+        {
+          "xOffset": 0,
+          "zOffset": 0,
+          "yOffset": 3,
+          "block": {
+            "material": "minecraft:gold_block"
+          }
+        },
+        {
+          "xOffset": 0,
+          "zOffset": 0,
+          "yOffset": 4,
+          "block": {
+            "material": "minecraft:gold_block"
+          }
+        },
+        {
+          "xOffset": 1,
+          "zOffset": 0,
+          "yOffset": 1,
+          "block": {
+            "material": "minecraft:smooth_quartz"
+          }
+        },
+        {
+          "xOffset": 1,
+          "zOffset": 1,
+          "yOffset": 1,
+          "block": {
+            "material": "minecraft:smooth_quartz"
+          }
+        },
+        {
+          "xOffset": 1,
+          "zOffset": -1,
+          "yOffset": 1,
+          "block": {
+            "material": "minecraft:smooth_quartz"
+          }
+        },
+        {
+          "xOffset": 0,
+          "zOffset": 1,
+          "yOffset": 1,
+          "block": {
+            "material": "minecraft:smooth_quartz"
+          }
+        },
+        {
+          "xOffset": 0,
+          "zOffset": -1,
+          "yOffset": 1,
+          "block": {
+            "material": "minecraft:smooth_quartz"
+          }
+        },
+        {
+          "xOffset": -1,
+          "zOffset": 0,
+          "yOffset": 1,
+          "block": {
+            "material": "minecraft:smooth_quartz"
+          }
+        },
+        {
+          "xOffset": -1,
+          "zOffset": 1,
+          "yOffset": 1,
+          "block": {
+            "material": "minecraft:smooth_quartz"
+          }
+        },
+        {
+          "xOffset": -1,
+          "zOffset": -1,
+          "yOffset": 1,
+          "block": {
+            "material": "minecraft:smooth_quartz"
+          }
+        },
+        {
+          "xOffset": 1,
+          "zOffset": 0,
+          "yOffset": 4,
+          "block": {
+            "material": "minecraft:smooth_quartz"
+          }
+        },
+        {
+          "xOffset": 1,
+          "zOffset": 1,
+          "yOffset": 4,
+          "block": {
+            "material": "minecraft:smooth_quartz"
+          }
+        },
+        {
+          "xOffset": 1,
+          "zOffset": -1,
+          "yOffset": 4,
+          "block": {
+            "material": "minecraft:smooth_quartz"
+          }
+        },
+        {
+          "xOffset": 0,
+          "zOffset": 1,
+          "yOffset": 4,
+          "block": {
+            "material": "minecraft:smooth_quartz"
+          }
+        },
+        {
+          "xOffset": 0,
+          "zOffset": -1,
+          "yOffset": 4,
+          "block": {
+            "material": "minecraft:smooth_quartz"
+          }
+        },
+        {
+          "xOffset": -1,
+          "zOffset": 0,
+          "yOffset": 4,
+          "block": {
+            "material": "minecraft:smooth_quartz"
+          }
+        },
+        {
+          "xOffset": -1,
+          "zOffset": 1,
+          "yOffset": 4,
+          "block": {
+            "material": "minecraft:smooth_quartz"
+          }
+        },
+        {
+          "xOffset": -1,
+          "zOffset": -1,
+          "yOffset": 4,
+          "block": {
+            "material": "minecraft:smooth_quartz"
+          }
+        },
+        {
+          "xOffset": 1,
+          "zOffset": 0,
+          "yOffset": 3,
+          "block": {
+            "material": "minecraft:yellow_stained_glass"
+          }
+        },
+        {
+          "xOffset": 1,
+          "zOffset": 1,
+          "yOffset": 3,
+          "block": {
+            "material": "minecraft:yellow_stained_glass"
+          }
+        },
+        {
+          "xOffset": 1,
+          "zOffset": -1,
+          "yOffset": 3,
+          "block": {
+            "material": "minecraft:yellow_stained_glass"
+          }
+        },
+        {
+          "xOffset": 0,
+          "zOffset": 1,
+          "yOffset": 3,
+          "block": {
+            "material": "minecraft:yellow_stained_glass"
+          }
+        },
+        {
+          "xOffset": 0,
+          "zOffset": -1,
+          "yOffset": 3,
+          "block": {
+            "material": "minecraft:yellow_stained_glass"
+          }
+        },
+        {
+          "xOffset": -1,
+          "zOffset": 0,
+          "yOffset": 3,
+          "block": {
+            "material": "minecraft:yellow_stained_glass"
+          }
+        },
+        {
+          "xOffset": -1,
+          "zOffset": 1,
+          "yOffset": 3,
+          "block": {
+            "material": "minecraft:yellow_stained_glass"
+          }
+        },
+        {
+          "xOffset": -1,
+          "zOffset": -1,
+          "yOffset": 3,
+          "block": {
+            "material": "minecraft:yellow_stained_glass"
+          }
+        },
+        {
+          "xOffset": 1,
+          "zOffset": 0,
+          "yOffset": 2,
+          "block": {
+            "material": "minecraft:yellow_stained_glass"
+          }
+        },
+        {
+          "xOffset": 1,
+          "zOffset": 1,
+          "yOffset": 2,
+          "block": {
+            "material": "minecraft:yellow_stained_glass"
+          }
+        },
+        {
+          "xOffset": 1,
+          "zOffset": -1,
+          "yOffset": 2,
+          "block": {
+            "material": "minecraft:yellow_stained_glass"
+          }
+        },
+        {
+          "xOffset": 0,
+          "zOffset": 1,
+          "yOffset": 2,
+          "block": {
+            "material": "minecraft:yellow_stained_glass"
+          }
+        },
+        {
+          "xOffset": 0,
+          "zOffset": -1,
+          "yOffset": 2,
+          "block": {
+            "material": "minecraft:yellow_stained_glass"
+          }
+        },
+        {
+          "xOffset": -1,
+          "zOffset": 0,
+          "yOffset": 2,
+          "block": {
+            "material": "minecraft:yellow_stained_glass"
+          }
+        },
+        {
+          "xOffset": -1,
+          "zOffset": 1,
+          "yOffset": 2,
+          "block": {
+            "material": "minecraft:yellow_stained_glass"
+          }
+        },
+        {
+          "xOffset": -1,
+          "zOffset": -1,
+          "yOffset": 2,
+          "block": {
+            "material": "minecraft:yellow_stained_glass"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,11 +1,16 @@
 package pink.zak.minestom.towerdefence.model.tower;
 
 import com.google.common.collect.Maps;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.utils.Direction;
 
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public class RelativeBlock {
     // treated as if the tower is facing north
@@ -19,6 +24,13 @@ public class RelativeBlock {
         this.zOffset = zOffset;
         this.yOffset = yOffset;
         this.block = block;
+    }
+
+    public static Set<RelativeBlock> setFromJson(JsonArray jsonArray) {
+        return StreamSupport.stream(jsonArray.spliterator(), true)
+            .map(JsonElement::getAsJsonObject)
+            .map(RelativeBlock::fromJson)
+            .collect(Collectors.toUnmodifiableSet());
     }
 
     public static RelativeBlock fromJson(JsonObject jsonObject) {

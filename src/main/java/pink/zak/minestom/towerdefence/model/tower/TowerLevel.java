@@ -1,6 +1,5 @@
 package pink.zak.minestom.towerdefence.model.tower;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.item.ItemStack;
@@ -8,8 +7,6 @@ import net.minestom.server.item.Material;
 import pink.zak.minestom.towerdefence.utils.ItemUtils;
 
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 public record TowerLevel(int level, int cost, int fireDelay, float damage, double range,
                          ItemStack menuItem, ItemStack ownedUpgradeItem, ItemStack buyUpgradeItem,
@@ -18,9 +15,9 @@ public record TowerLevel(int level, int cost, int fireDelay, float damage, doubl
     public static TowerLevel fromJsonObject(JsonObject jsonObject) {
         int level = jsonObject.get("level").getAsInt();
         int cost = jsonObject.get("cost").getAsInt();
-        int fireDelay = jsonObject.get("fireDelay").getAsInt();
-        float damage = jsonObject.get("damage").getAsFloat();
-        double range = jsonObject.get("range").getAsDouble();
+        int fireDelay = jsonObject.has("fireDelay") ? jsonObject.get("fireDelay").getAsInt() : -1;
+        float damage = jsonObject.has("damage") ? jsonObject.get("damage").getAsFloat() : -1;
+        double range = jsonObject.has("range") ? jsonObject.get("range").getAsDouble() : -1;
 
         ItemStack menuItem = ItemUtils.fromJsonObject(jsonObject.get("menuItem").getAsJsonObject());
 
@@ -34,13 +31,10 @@ public record TowerLevel(int level, int cost, int fireDelay, float damage, doubl
             .displayName(ownedUpgradeItem.getDisplayName().color(NamedTextColor.RED))
             .build();
 
-        Set<RelativeBlock> relativeBlocks = StreamSupport.stream(jsonObject.get("relativeBlocks").getAsJsonArray().spliterator(), true)
-            .map(JsonElement::getAsJsonObject)
-            .map(RelativeBlock::fromJson)
-            .collect(Collectors.toUnmodifiableSet());
+        Set<RelativeBlock> relativeBlocks = RelativeBlock.setFromJson(jsonObject.get("relativeBlocks").getAsJsonArray());
 
         return new TowerLevel(level, cost,
-            fireDelay, damage, range * range,
+            fireDelay, damage, range,
             menuItem, ownedUpgradeItem, buyUpgradeItem, cantAffordUpgradeItem, relativeBlocks);
     }
 }

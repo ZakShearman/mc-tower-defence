@@ -2,8 +2,8 @@ package pink.zak.minestom.towerdefence.enums;
 
 public enum TowerType {
     ARCHER(Size.THREE, 10, true),
-    BOMBER(Size.THREE, 11, false)
-    /*CHARITY(Size.THREE, 11)*/;
+    BOMBER(Size.THREE, 11, false),
+    CHARITY(Size.THREE, 12, false);
 
     private final Size size;
     private final int guiSlot;

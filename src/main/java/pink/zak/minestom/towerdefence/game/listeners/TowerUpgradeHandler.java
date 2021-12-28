@@ -3,6 +3,8 @@ package pink.zak.minestom.towerdefence.game.listeners;
 import com.google.common.collect.Maps;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.MinecraftServer;
+import net.minestom.server.adventure.audience.Audiences;
+import net.minestom.server.coordinate.Point;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.inventory.InventoryPreClickEvent;
 import net.minestom.server.event.player.PlayerBlockInteractEvent;
@@ -10,8 +12,12 @@ import net.minestom.server.inventory.Inventory;
 import net.minestom.server.inventory.InventoryType;
 import net.minestom.server.inventory.click.ClickType;
 import net.minestom.server.item.ItemStack;
+import net.minestom.server.item.Material;
+import net.minestom.server.network.packet.server.SendablePacket;
+import net.minestom.server.particle.Particle;
+import net.minestom.server.particle.ParticleCreator;
+import net.minestom.server.utils.time.TimeUnit;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
-import pink.zak.minestom.towerdefence.api.event.player.PlayerCoinChangeEvent;
 import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.game.TowerHandler;
@@ -19,14 +25,29 @@ import pink.zak.minestom.towerdefence.model.GameUser;
 import pink.zak.minestom.towerdefence.model.tower.Tower;
 import pink.zak.minestom.towerdefence.model.tower.TowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedTower;
+import pink.zak.minestom.towerdefence.utils.StringUtils;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class TowerUpgradeHandler {
     private static final Map<Tower, Component> TOWER_UPGRADE_TITLES = Maps.newHashMap();
+    private static final ItemStack RADIUS_MENU_ITEM;
     private final TowerDefencePlugin plugin;
     private final GameHandler gameHandler;
     private final TowerHandler towerHandler;
+
+    static {
+        RADIUS_MENU_ITEM = ItemStack.builder(Material.REDSTONE)
+            .displayName(StringUtils.parseMessage("<red>Preview Tower Radius"))
+            .lore(StringUtils.parseMessages(List.of(
+                "",
+                "<red>Shows a particle outline of the tower's radius"
+            )))
+            .build();
+    }
 
     public TowerUpgradeHandler(TowerDefencePlugin plugin, GameHandler gameHandler) {
         for (Tower tower : plugin.getTowerStorage().getTowers().values())
@@ -71,6 +92,8 @@ public class TowerUpgradeHandler {
             inventory.setItemStack(10 + i, itemStack);
         }
 
+        inventory.setItemStack(26, RADIUS_MENU_ITEM);
+
         gameUser.getPlayer().openInventory(inventory);
     }
 
@@ -82,13 +105,20 @@ public class TowerUpgradeHandler {
 
             if (!inventory.hasTag(PlacedTower.ID_TAG))
                 return;
+            Player player = event.getPlayer();
+            GameUser gameUser = this.gameHandler.getGameUser(player);
+            PlacedTower placedTower = this.towerHandler.getTower(gameUser, inventory.getTag(PlacedTower.ID_TAG));
 
             event.setCancelled(true);
             int slot = event.getSlot();
+
+            if (slot == 26) {
+                this.showTowerRadius(player, placedTower);
+                return;
+            }
+
             int clickedLevelInt = slot - 10;
 
-            GameUser gameUser = this.gameHandler.getGameUser(event.getPlayer());
-            PlacedTower placedTower = this.towerHandler.getTower(gameUser, inventory.getTag(PlacedTower.ID_TAG));
             Tower tower = placedTower.getTower();
             int level = placedTower.getLevelInt();
 
@@ -106,5 +136,34 @@ public class TowerUpgradeHandler {
                 inventory.setItemStack(10 + clickedLevelInt, towerLevel.ownedUpgradeItem());
             }
         });
+    }
+
+    private void showTowerRadius(Player player, PlacedTower tower) {
+        Point center = tower.getBasePoint();
+        double radius = tower.getLevel().range();
+
+        Set<SendablePacket> packets = new HashSet<>();
+        for (double i = 1; i <= 360; i += 1.5) {
+            double c1 = radius * Math.cos(i);
+            double c2 = radius * Math.sin(i);
+
+            packets.add(ParticleCreator.createParticlePacket(Particle.DUST, true,
+                center.x() + c1, center.y() + 1.5, center.z() + c2,
+                0, 0, 0, 0f, 10, binaryWriter -> {
+                    binaryWriter.writeFloat(1);
+                    binaryWriter.writeFloat(0);
+                    binaryWriter.writeFloat(0);
+                    binaryWriter.writeFloat(1.5f);
+                }));
+        }
+        player.sendPackets(packets);
+        //circle.iterator(ShapeOptions.builder(Particle.DUST).build()).draw(player);
+
+        MinecraftServer.getSchedulerManager() // todo cancel
+            .buildTask(() -> {
+                player.sendPackets(packets);
+            })
+            .repeat(750, TimeUnit.MILLISECOND)
+            .schedule();
     }
 }

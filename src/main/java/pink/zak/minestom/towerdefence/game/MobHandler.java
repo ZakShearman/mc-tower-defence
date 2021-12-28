@@ -13,9 +13,10 @@ import pink.zak.minestom.towerdefence.model.GameUser;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
 import pink.zak.minestom.towerdefence.model.mob.QueuedEnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingEnemyMob;
-import pink.zak.minestom.towerdefence.model.tower.placed.PlacedTower;
+import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class MobHandler {
     public static DamageIndicatorCache DAMAGE_INDICATOR_CACHE; // todo spend time to not use static here.
@@ -59,11 +60,15 @@ public class MobHandler {
     private void updateAttackingTowers() {
         for (LivingEnemyMob enemyMob : this.redSideMobs) {
             Pos position = enemyMob.getPosition();
-            Set<PlacedTower> newTowersInRange = Sets.newConcurrentHashSet();
-            Set<PlacedTower> oldTowersInRange = enemyMob.getAttackingTowers();
-            for (PlacedTower tower : this.towerHandler.getRedTowers()) {
-                double squaredDistance = tower.getBasePoint().distanceSquared(position);
-                if (squaredDistance < tower.getLevel().range())
+            Set<PlacedAttackingTower> newTowersInRange = Sets.newConcurrentHashSet();
+            Set<PlacedAttackingTower> oldTowersInRange = enemyMob.getAttackingTowers();
+            for (PlacedAttackingTower tower : this.towerHandler.getRedTowers().stream()
+                .filter(tower -> tower instanceof PlacedAttackingTower)
+                .map(tower -> (PlacedAttackingTower) tower)
+                .collect(Collectors.toSet())
+            ) {
+                double distance = tower.getBasePoint().distance(position);
+                if (distance < tower.getLevel().range())
                     newTowersInRange.add(tower);
                 else if (oldTowersInRange.contains(tower) && tower.getTarget() == enemyMob)
                     tower.setTarget(null);
@@ -71,7 +76,7 @@ public class MobHandler {
             enemyMob.setAttackingTowers(newTowersInRange);
         }
         for (LivingEnemyMob enemyMob : this.redSideMobs) {
-            for (PlacedTower tower : enemyMob.getAttackingTowers()) {
+            for (PlacedAttackingTower tower : enemyMob.getAttackingTowers()) {
                 if (
                     (tower.getTarget() == null || tower.getTarget().isDead() || enemyMob.getTotalDistanceMoved() > tower.getTarget().getTotalDistanceMoved())
                         && (!enemyMob.getEnemyMob().flying() || tower.getTower().type().isTargetAir())

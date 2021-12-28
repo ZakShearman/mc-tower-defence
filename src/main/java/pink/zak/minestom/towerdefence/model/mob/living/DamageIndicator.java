@@ -17,7 +17,7 @@ import java.util.List;
 public class DamageIndicator extends Entity {
     private static final float OFFSET_Y = -0.5f;
 
-    private final List<Vec> vectors = MobHandler.DAMAGE_INDICATOR_CACHE.getPreCalculatedVelocity();
+    private final Vec[] vectors = MobHandler.DAMAGE_INDICATOR_CACHE.getPreCalculatedVelocity();
 
     private DamageIndicator(Instance instance, Pos spawnPosition, Component text) {
         super(EntityType.AREA_EFFECT_CLOUD);
@@ -37,7 +37,7 @@ public class DamageIndicator extends Entity {
 
     @Override
     protected void velocityTick() {
-        this.velocity = this.vectors.get((int) this.getAliveTicks());
+        this.velocity = this.vectors[(int) this.getAliveTicks()];
 
         Pos newPosition = this.position.add(this.velocity.div(20));
 

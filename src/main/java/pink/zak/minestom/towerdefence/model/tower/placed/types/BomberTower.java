@@ -19,11 +19,11 @@ import pink.zak.minestom.towerdefence.model.GameUser;
 import pink.zak.minestom.towerdefence.model.OwnedEntity;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingEnemyMob;
 import pink.zak.minestom.towerdefence.model.tower.Tower;
-import pink.zak.minestom.towerdefence.model.tower.placed.PlacedTower;
+import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
 
 import java.util.Set;
 
-public class BomberTower extends PlacedTower implements OwnedEntity {
+public class BomberTower extends PlacedAttackingTower implements OwnedEntity {
     public static final DamageType DAMAGE_TYPE = new DamageType("attack.tower.bomber"); // todo remove?
 
     private final Pos spawnPos;
@@ -72,11 +72,11 @@ public class BomberTower extends PlacedTower implements OwnedEntity {
             // takes 50 ticks to land, -14 for the initial upwards velocity
             // When vertical maps are supported, this cannot be hardcoded or weird explosion behaviour will be experienced
             Entity target = tower.target;
-            this.xVel = (target.getPosition().x() - this.tower.spawnPos.x()) * (20.0 / 36);
-            this.zVel = (target.getPosition().z() - this.tower.spawnPos.z()) * (20.0 / 36);
+            this.xVel = (target.getPosition().x() - this.tower.spawnPos.x());
+            this.zVel = (target.getPosition().z() - this.tower.spawnPos.z());
 
             super.hasPhysics = false;
-            ((PrimedTntMeta) this.getEntityMeta()).setFuseTime(49);
+            ((PrimedTntMeta) this.getEntityMeta()).setFuseTime(35);
 
             this.setInstance(tower.instance, tower.spawnPos);
             this.setVelocity(new Vec(0, 12, 0));
@@ -87,22 +87,25 @@ public class BomberTower extends PlacedTower implements OwnedEntity {
             super.tick(time);
 
             long aliveTicks = super.getAliveTicks();
-            if (aliveTicks == 50) {
+            if (aliveTicks == 35) {
                 Pos pos = this.getPosition();
                 this.instance.explode(pos.blockX(), pos.blockY(), pos.blockZ(), 2);
                 this.tower.damageTroops(this);
                 this.remove();
                 return;
             }
+            if (this.position.y() < 65.5)
+                System.out.println("A " + aliveTicks);
 
             if (this.getVelocity().y() <= 0) {
                 if (!this.set) {
                     Entity target = this.tower.target;
+                    this.setGravity(0, 0.0777777778);
                     if (target != null) {
-                        // takes 50 ticks to land, -14 for the initial upwards velocity.
-                        // When vertical maps are supported, we'll have to do projectile motion calculations or weird explosion behaviour will be experienced
-                        this.xVel = (target.getPosition().x() - this.tower.spawnPos.x()) * (20.0 / 36);
-                        this.zVel = (target.getPosition().z() - this.tower.spawnPos.z()) * (20.0 / 36);
+                        // takes 40 ticks to land, -14 for the initial upwards velocity.
+                        // When vertical maps are supported, we'll have to do projectile motion calculations live or weird explosion behaviour will be experienced
+                        this.xVel = (target.getPosition().x() - this.tower.spawnPos.x());
+                        this.zVel = (target.getPosition().z() - this.tower.spawnPos.z());
                     }
 
                     this.setVelocity(new Vec(this.xVel, 10, this.zVel));

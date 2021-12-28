@@ -17,8 +17,8 @@ public class DamageIndicatorCache {
         this.preCalculatedVelocity = this.parseVelocity(jsonObject);
     }
 
-    public List<Vec> getPreCalculatedVelocity() {
-        return this.preCalculatedVelocity;
+    public Vec[] getPreCalculatedVelocity() {
+        return this.preCalculatedVelocity.toArray(new Vec[0]);
     }
 
     private List<Vec> parseVelocity(JsonObject jsonObject) {
