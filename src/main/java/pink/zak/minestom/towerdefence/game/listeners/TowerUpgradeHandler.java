@@ -143,13 +143,14 @@ public class TowerUpgradeHandler {
         double radius = tower.getLevel().getRange();
 
         Set<SendablePacket> packets = new HashSet<>();
-        for (int i = 1; i <= 360; i += 3) {
+        for (int i = 0; i <= 360; i += 3) {
             double c1 = radius * Math.cos(i);
             double c2 = radius * Math.sin(i);
 
             packets.add(ParticleCreator.createParticlePacket(Particle.DUST, true,
                 center.x() + c1, center.y() + 1.5, center.z() + c2,
-                0, 0, 0, 0f, 10, binaryWriter -> {
+                0, 0, 0, 0f, 10,
+                binaryWriter -> {
                     binaryWriter.writeFloat(1);
                     binaryWriter.writeFloat(0);
                     binaryWriter.writeFloat(0);

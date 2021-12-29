@@ -3,6 +3,7 @@
   "commonName": "Llama",
   "guiSlot": 1,
   "flying": false,
+  "unitCost": 1.0,
   "unownedItem": {
     "material": "minecraft:player_head",
     "displayName": "<yellow>Llama <gold>(<yellow>Not Owned<gold>)",

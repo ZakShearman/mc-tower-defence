@@ -43,7 +43,7 @@ public class MobHandler {
     }
 
     public void spawnMob(QueuedEnemyMob queuedEnemyMob, GameUser spawner) {
-        LivingEnemyMob mob = LivingEnemyMob.create(this.towerHandler, this, queuedEnemyMob.mob(), queuedEnemyMob.level().level(), this.instance, this.map, spawner);
+        LivingEnemyMob mob = LivingEnemyMob.create(this.towerHandler, this, queuedEnemyMob.mob(), queuedEnemyMob.level().getLevel(), this.instance, this.map, spawner);
         if (spawner.getTeam() == Team.RED)
             this.redSideMobs.add(mob); // todo change later
         else
@@ -80,7 +80,7 @@ public class MobHandler {
             for (PlacedAttackingTower<?> tower : enemyMob.getAttackingTowers()) {
                 if (
                     (tower.getTarget() == null || tower.getTarget().isDead() || enemyMob.getTotalDistanceMoved() > tower.getTarget().getTotalDistanceMoved())
-                        && (!enemyMob.getEnemyMob().flying() || tower.getTower().getType().isTargetAir())
+                        && (!enemyMob.getEnemyMob().isFlying() || tower.getTower().getType().isTargetAir())
                 ) {
                     tower.setTarget(enemyMob);
                 }

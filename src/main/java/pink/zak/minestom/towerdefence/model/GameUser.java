@@ -54,6 +54,13 @@ public class GameUser {
         return this.queuedMobs;
     }
 
+    public double getQueuedMobsUnitSize() {
+        double size = 0;
+        for (QueuedEnemyMob queuedMob : this.queuedMobs)
+            size += queuedMob.mob().getUnitCost();
+        return size;
+    }
+
     public int getCoins() {
         return this.coins.get();
     }

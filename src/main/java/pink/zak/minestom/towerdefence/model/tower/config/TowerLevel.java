@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
+import pink.zak.minestom.towerdefence.model.tower.config.relative.RelativeBlock;
 import pink.zak.minestom.towerdefence.utils.ItemUtils;
 
 import java.util.Set;

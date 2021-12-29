@@ -3,6 +3,7 @@
   "commonName": "Bee",
   "guiSlot": 0,
   "flying": true,
+  "unitCost": 0.25,
   "unownedItem": {
     "material": "minecraft:player_head",
     "displayName": "<yellow>Bee <gold>(<yellow>Not Owned<gold>)",

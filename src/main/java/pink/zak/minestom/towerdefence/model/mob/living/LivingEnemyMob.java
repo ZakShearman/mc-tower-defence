@@ -17,7 +17,6 @@ import net.minestom.server.sound.SoundEvent;
 import net.minestom.server.timer.Task;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.enums.Team;
-import pink.zak.minestom.towerdefence.enums.TowerType;
 import pink.zak.minestom.towerdefence.game.MobHandler;
 import pink.zak.minestom.towerdefence.game.TowerHandler;
 import pink.zak.minestom.towerdefence.model.GameUser;
@@ -28,7 +27,6 @@ import pink.zak.minestom.towerdefence.model.mob.EnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.EnemyMobLevel;
 import pink.zak.minestom.towerdefence.model.mob.living.types.BeeLivingEnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.living.types.LlamaLivingEnemyMob;
-import pink.zak.minestom.towerdefence.model.tower.config.towers.CharityTowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedTower;
 import pink.zak.minestom.towerdefence.model.tower.placed.types.CharityTower;
@@ -64,12 +62,12 @@ public class LivingEnemyMob extends EntityCreature {
     private Task attackTask;
 
     protected LivingEnemyMob(TowerHandler towerHandler, MobHandler mobHandler, EnemyMob enemyMob, Instance instance, TowerMap map, GameUser gameUser, int level) {
-        super(enemyMob.entityType());
+        super(enemyMob.getEntityType());
 
         this.towerHandler = towerHandler;
         this.mobHandler = mobHandler;
         this.enemyMob = enemyMob;
-        this.level = enemyMob.level(level);
+        this.level = enemyMob.getLevel(level);
         this.team = gameUser.getTeam() /*gameUser.getTeam() == Team.RED ? Team.BLUE : Team.RED*/;
 
         this.sender = gameUser;
@@ -82,35 +80,34 @@ public class LivingEnemyMob extends EntityCreature {
 
         this.currentCornerLengthModifier = this.getRandomLengthModifier();
 
-        this.getAttribute(Attribute.MAX_HEALTH).setBaseValue(this.level.health());
-        this.health = this.level.health();
+        this.getAttribute(Attribute.MAX_HEALTH).setBaseValue(this.level.getHealth());
+        this.health = this.level.getHealth();
 
-        if (enemyMob.flying())
+        if (enemyMob.isFlying())
             this.setNoGravity(true);
 
         this.setCustomName(this.createCustomName());
         this.setCustomNameVisible(true);
 
         Pos spawnPos = this.team == Team.RED ? map.getRedMobSpawn() : map.getBlueMobSpawn();
-        this.setInstance(instance, spawnPos.add(this.positionModifier, enemyMob.flying() ? 5 : 0, this.positionModifier));
+        this.setInstance(instance, spawnPos.add(this.positionModifier, enemyMob.isFlying() ? 5 : 0, this.positionModifier));
     }
 
     public static LivingEnemyMob create(TowerHandler towerHandler, MobHandler mobHandler, EnemyMob enemyMob, int level, Instance instance, TowerMap map, GameUser gameUser) {
-        if (enemyMob.entityType() == EntityType.LLAMA)
+        if (enemyMob.getEntityType() == EntityType.LLAMA)
             return new LlamaLivingEnemyMob(towerHandler, mobHandler, enemyMob, instance, map, gameUser, level);
-        else if (enemyMob.entityType() == EntityType.BEE)
+        else if (enemyMob.getEntityType() == EntityType.BEE)
             return new BeeLivingEnemyMob(towerHandler, mobHandler, enemyMob, instance, map, gameUser, level);
         else
             return new LivingEnemyMob(towerHandler, mobHandler, enemyMob, instance, map, gameUser, level);
     }
 
     private Component createCustomName() {
-        return Component.text(StringUtils.namespaceToName(this.entityType.name()) + " " + StringUtils.integerToCardinal(this.level.level()), NamedTextColor.DARK_GREEN)
+        return Component.text(StringUtils.namespaceToName(this.entityType.name()) + " " + StringUtils.integerToCardinal(this.level.getLevel()), NamedTextColor.DARK_GREEN)
             .append(Component.text(" (", NamedTextColor.GREEN))
-            .append(Component.text((this.health / this.level.health()) * 100 + "%", NamedTextColor.DARK_GREEN))
+            .append(Component.text(((int) Math.ceil(this.health / this.level.getHealth() * 100)) + "%", NamedTextColor.DARK_GREEN))
             .append(Component.text(")", NamedTextColor.GREEN));
     }
-
 
     @Override
     public void tick(long time) {
@@ -121,8 +118,8 @@ public class LivingEnemyMob extends EntityCreature {
 
     private void updatePos() {
         this.refreshPosition(this.modifyPosition());
-        this.moveDistance += this.level.movementSpeed();
-        this.totalDistanceMoved += this.level.movementSpeed();
+        this.moveDistance += this.level.getMovementSpeed();
+        this.totalDistanceMoved += this.level.getMovementSpeed();
         if (this.nextCorner == null) {
             if (this.moveDistance >= this.currentCorner.distance() - this.positionModifier) {
                 this.nextCorner();
@@ -135,10 +132,10 @@ public class LivingEnemyMob extends EntityCreature {
     private Pos modifyPosition() {
         Pos currentPos = this.getPosition();
         Pos newPos = switch (this.currentCorner.direction()) {
-            case EAST -> currentPos.add(this.level.movementSpeed(), 0, 0);
-            case SOUTH -> currentPos.add(0, 0, this.level.movementSpeed());
-            case WEST -> currentPos.sub(this.level.movementSpeed(), 0, 0);
-            case NORTH -> currentPos.sub(0, 0, this.level.movementSpeed());
+            case EAST -> currentPos.add(this.level.getMovementSpeed(), 0, 0);
+            case SOUTH -> currentPos.add(0, 0, this.level.getMovementSpeed());
+            case WEST -> currentPos.sub(this.level.getMovementSpeed(), 0, 0);
+            case NORTH -> currentPos.sub(0, 0, this.level.getMovementSpeed());
             default -> throw new IllegalArgumentException("Direction must be NORTH, EAST, SOUTH or WEST. Provided direction was " + this.currentCorner.direction());
         };
         return newPos.withView(DirectionUtils.getYaw(this.currentCorner.direction()), 0); // todo this can be removed in the majority of cases to reduce pos creations
@@ -217,7 +214,7 @@ public class LivingEnemyMob extends EntityCreature {
                 }
             }
             double finalMultiplier = multiplier;
-            entity.getOwningUser().updateAndGetCoins(current -> (int) Math.floor(current + (this.level.killReward() * finalMultiplier)));
+            entity.getOwningUser().updateAndGetCoins(current -> (int) Math.floor(current + (this.level.getKillReward() * finalMultiplier)));
         }
 
         final SoundEvent sound = DamageType.VOID.getSound(this);

@@ -5,13 +5,15 @@ import pink.zak.minestom.towerdefence.model.tower.config.AttackingTowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.config.Tower;
 import pink.zak.minestom.towerdefence.model.tower.config.TowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.config.towers.CharityTowerLevel;
+import pink.zak.minestom.towerdefence.model.tower.config.towers.LightningTowerLevel;
 
 import java.util.function.Function;
 
 public enum TowerType {
     ARCHER(Size.THREE, 10, true, Tower::new, AttackingTowerLevel::new),
     BOMBER(Size.THREE, 11, false, Tower::new, AttackingTowerLevel::new),
-    CHARITY(Size.THREE, 12, false, Tower::new, CharityTowerLevel::new);
+    LIGHTNING(Size.THREE, 12, false, Tower::new, LightningTowerLevel::new),
+    CHARITY(Size.THREE, 13, false, Tower::new, CharityTowerLevel::new);
 
     private final Size size;
     private final int guiSlot;

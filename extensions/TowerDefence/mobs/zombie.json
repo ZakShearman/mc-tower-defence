@@ -3,6 +3,7 @@
   "commonName": "Zombie",
   "guiSlot": 3,
   "flying": false,
+  "unitCost": 1.0,
   "unownedItem": {
     "material": "minecraft:zombie_head",
     "displayName": "<yellow>Zombie <gold>(<yellow>Not Owned<gold>)",

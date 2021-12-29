@@ -1,4 +1,4 @@
-package pink.zak.minestom.towerdefence.model.tower.config;
+package pink.zak.minestom.towerdefence.model.tower.config.relative;
 
 import com.google.common.collect.Maps;
 import com.google.gson.JsonArray;
@@ -19,27 +19,18 @@ public class RelativeBlock {
     private final int yOffset;
     private final Block block;
 
-    public RelativeBlock(int xOffset, int zOffset, int yOffset, Block block) {
-        this.xOffset = xOffset;
-        this.zOffset = zOffset;
-        this.yOffset = yOffset;
-        this.block = block;
+    public RelativeBlock(JsonObject jsonObject) {
+        this.xOffset = jsonObject.get("xOffset").getAsInt();
+        this.yOffset = jsonObject.get("yOffset").getAsInt();
+        this.zOffset = jsonObject.get("zOffset").getAsInt();
+        this.block = getBlockFromJson(jsonObject.get("block").getAsJsonObject());;
     }
 
     public static Set<RelativeBlock> setFromJson(JsonArray jsonArray) {
         return StreamSupport.stream(jsonArray.spliterator(), true)
             .map(JsonElement::getAsJsonObject)
-            .map(RelativeBlock::fromJson)
+            .map(RelativeBlock::new)
             .collect(Collectors.toUnmodifiableSet());
-    }
-
-    public static RelativeBlock fromJson(JsonObject jsonObject) {
-        int xOffset = jsonObject.get("xOffset").getAsInt();
-        int zOffset = jsonObject.get("zOffset").getAsInt();
-        int yOffset = jsonObject.get("yOffset").getAsInt();
-        Block block = getBlockFromJson(jsonObject.get("block").getAsJsonObject());
-
-        return new RelativeBlock(xOffset, zOffset, yOffset, block);
     }
 
     private static Block getBlockFromJson(JsonObject jsonObject) {

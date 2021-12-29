@@ -16,8 +16,6 @@ import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import net.minestom.server.utils.time.TimeUnit;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
-import pink.zak.minestom.towerdefence.api.event.player.PlayerCoinChangeEvent;
-import pink.zak.minestom.towerdefence.api.event.player.PlayerManaChangeEvent;
 import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.game.MobHandler;
@@ -44,7 +42,7 @@ public class MobMenuHandler {
 
     public MobMenuHandler(TowerDefencePlugin plugin, GameHandler gameHandler) {
         for (EnemyMob enemyMob : plugin.getMobStorage().getEnemyMobs().values())
-            MOB_UPGRADE_TITLES.put(enemyMob, Component.text("Upgrade " + enemyMob.commonName()));
+            MOB_UPGRADE_TITLES.put(enemyMob, Component.text("Upgrade " + enemyMob.getCommonName()));
 
         this.plugin = plugin;
         this.gameHandler = gameHandler;
@@ -84,8 +82,8 @@ public class MobMenuHandler {
         Map<EnemyMob, Integer> levels = gameUser.getMobLevels();
         for (EnemyMob enemyMob : this.mobStorage.getEnemyMobs().values()) {
             Integer userLevel = levels.get(enemyMob);
-            ItemStack itemStack = userLevel == null ? enemyMob.unownedItem() : enemyMob.level(userLevel).sendItem().withAmount(userLevel);
-            inventory.setItemStack(enemyMob.slot(), itemStack);
+            ItemStack itemStack = userLevel == null ? enemyMob.getUnownedItem() : enemyMob.getLevel(userLevel).getSendItem().withAmount(userLevel);
+            inventory.setItemStack(enemyMob.getSlot(), itemStack);
         }
         inventory.setItemStack(31, this.upgradeItem);
         inventory.setItemStack(35, this.createQueueItem(gameUser));
@@ -97,13 +95,13 @@ public class MobMenuHandler {
         List<Component> loreLines = Lists.newArrayList(Component.empty());
 
         EnemyMob currentTrackedMob = null;
-        int count = 0;
-        int iterations = 0;
+        int count = 0; // count of the current iterated mob
+        int iterations = 0; // total iterations
         for (QueuedEnemyMob queuedMob : gameUser.getQueuedMobs()) {
             EnemyMob enemyMob = queuedMob.mob();
             if (currentTrackedMob != enemyMob) {
                 if (currentTrackedMob != null) {
-                    loreLines.add(Component.text(count + "x " + currentTrackedMob.commonName(), NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false));
+                    loreLines.add(Component.text(count + "x " + currentTrackedMob.getCommonName(), NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false));
                     count = 0;
                 }
 
@@ -117,10 +115,11 @@ public class MobMenuHandler {
             iterations++;
         }
         if (currentTrackedMob != null && loreLines.size() < 6)
-            loreLines.add(Component.text(count + "x " + currentTrackedMob.commonName(), NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false));
+            loreLines.add(Component.text(count + "x " + currentTrackedMob.getCommonName(), NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false));
 
+        double size = gameUser.getQueuedMobsUnitSize(); // unit size applied
         return ItemStack.builder(Material.PAPER)
-            .displayName(Component.text("Current Queue (" + iterations + "/" + gameUser.getMaxQueueSize() + ")", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
+            .displayName(Component.text("Current Queue (" + size + "/" + gameUser.getMaxQueueSize() + ")", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
             .lore(loreLines)
             .build();
     }
@@ -140,7 +139,7 @@ public class MobMenuHandler {
 
             Optional<EnemyMob> optionalClickedMob = this.mobStorage.getEnemyMobs().values()
                 .stream()
-                .filter(enemyMob -> enemyMob.slot() == slot)
+                .filter(enemyMob -> enemyMob.getSlot() == slot)
                 .findFirst();
             optionalClickedMob.ifPresent(clickedMob -> {
                 GameUser gameUser = this.gameHandler.getGameUser(event.getPlayer());
@@ -148,9 +147,9 @@ public class MobMenuHandler {
                 int mobLevelInt = gameUser.getMobLevel(clickedMob);
                 if (mobLevelInt == 0)
                     return;
-                EnemyMobLevel mobLevel = clickedMob.level(mobLevelInt);
-                if (gameUser.getCoins() >= mobLevel.cost()) {
-                    gameUser.updateAndGetCoins(current -> current - mobLevel.cost());
+                EnemyMobLevel mobLevel = clickedMob.getLevel(mobLevelInt);
+                if (gameUser.getCoins() >= mobLevel.getCost()) {
+                    gameUser.updateAndGetCoins(current -> current - mobLevel.getCost());
 
                     this.sendTroops(gameUser, clickedMob, mobLevel);
                     inventory.setItemStack(35, this.createQueueItem(gameUser));
@@ -169,7 +168,7 @@ public class MobMenuHandler {
 
             Optional<EnemyMob> optionalClickedMob = this.mobStorage.getEnemyMobs().values()
                 .stream()
-                .filter(enemyMob -> enemyMob.slot() == slot)
+                .filter(enemyMob -> enemyMob.getSlot() == slot)
                 .findFirst();
             if (optionalClickedMob.isEmpty())
                 return;
@@ -198,7 +197,7 @@ public class MobMenuHandler {
             int slot = event.getSlot();
             int clickedLevelInt = slot - 10;
 
-            if (clickedLevelInt < 0 || clickedLevelInt > mob.maxLevel())
+            if (clickedLevelInt < 0 || clickedLevelInt > mob.getMaxLevel())
                 return;
 
             GameUser gameUser = this.gameHandler.getGameUser(event.getPlayer());
@@ -209,10 +208,10 @@ public class MobMenuHandler {
 
             int manaCost = 0;
             for (int i = currentLevel + 1; i <= clickedLevelInt; i++) {
-                manaCost += mob.level(i).manaCost();
+                manaCost += mob.getLevel(i).getManaCost();
             }
 
-            EnemyMobLevel clickedLevel = mob.level(clickedLevelInt);
+            EnemyMobLevel clickedLevel = mob.getLevel(clickedLevelInt);
 
             if (gameUser.getMana() >= manaCost) {
                 int finalManaCost = manaCost;
@@ -220,9 +219,9 @@ public class MobMenuHandler {
                 gameUser.getMobLevels().put(mob, clickedLevelInt);
 
                 // update inventory items
-                inventory.setItemStack(0, clickedLevel.sendItem());
+                inventory.setItemStack(0, clickedLevel.getSendItem());
                 for (int i = currentLevel + 1; i <= clickedLevelInt; i++)
-                    inventory.setItemStack(10 + i, clickedLevel.ownedUpgradeItem());
+                    inventory.setItemStack(10 + i, clickedLevel.getOwnedUpgradeItem());
             }
         });
     }
@@ -236,14 +235,14 @@ public class MobMenuHandler {
     private void convertToMobUpgradeGui(GameUser gameUser, EnemyMob clickedMob, int currentLevel) {
         Inventory inventory = new Inventory(InventoryType.CHEST_3_ROW, MOB_UPGRADE_TITLES.get(clickedMob));
 
-        inventory.setItemStack(0, currentLevel <= 0 ? clickedMob.unownedItem() : clickedMob.level(currentLevel).sendItem());
+        inventory.setItemStack(0, currentLevel <= 0 ? clickedMob.getUnownedItem() : clickedMob.getLevel(currentLevel).getSendItem());
 
-        int maxLevel = clickedMob.maxLevel();
+        int maxLevel = clickedMob.getMaxLevel();
         for (int i = 1; i <= maxLevel; i++) {
-            EnemyMobLevel enemyMobLevel = clickedMob.level(i);
+            EnemyMobLevel enemyMobLevel = clickedMob.getLevel(i);
             boolean purchased = i <= currentLevel;
-            boolean canAfford = gameUser.getMana() >= enemyMobLevel.manaCost();
-            ItemStack itemStack = purchased ? enemyMobLevel.ownedUpgradeItem() : canAfford ? enemyMobLevel.buyUpgradeItem() : enemyMobLevel.cantAffordUpgradeItem();
+            boolean canAfford = gameUser.getMana() >= enemyMobLevel.getManaCost();
+            ItemStack itemStack = purchased ? enemyMobLevel.getOwnedUpgradeItem() : canAfford ? enemyMobLevel.getBuyUpgradeItem() : enemyMobLevel.getCantAffordUpgradeItem();
             inventory.setItemStack(10 + i, itemStack);
         }
 
@@ -259,16 +258,14 @@ public class MobMenuHandler {
                 for (GameUser gameUser : this.gameHandler.getUsers().values()) {
                     QueuedEnemyMob enemyMob = gameUser.getQueuedMobs().poll();
                     if (enemyMob != null) {
-                        for (int i = 0; i < 5; i++) {
-                            this.mobHandler.spawnMob(enemyMob, gameUser);
-                            Inventory inventory = gameUser.getPlayer().getOpenInventory();
-                            if (inventory != null && inventory.getTitle() == SEND_TITLE)
-                                inventory.setItemStack(35, this.createQueueItem(gameUser));
-                        }
+                        this.mobHandler.spawnMob(enemyMob, gameUser);
+                        Inventory inventory = gameUser.getPlayer().getOpenInventory();
+                        if (inventory != null && inventory.getTitle() == SEND_TITLE)
+                            inventory.setItemStack(35, this.createQueueItem(gameUser));
                     }
                 }
             })
-            .repeat(50, TimeUnit.MILLISECOND)
+            .repeat(1, TimeUnit.SECOND)
             .schedule();
     }
 }

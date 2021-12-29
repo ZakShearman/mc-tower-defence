@@ -6,17 +6,20 @@ import net.minestom.server.instance.block.Block;
 import net.minestom.server.item.Material;
 import net.minestom.server.tag.Tag;
 import net.minestom.server.utils.Direction;
+import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.enums.TowerType;
 import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.model.GameUser;
-import pink.zak.minestom.towerdefence.model.tower.config.RelativeBlock;
+import pink.zak.minestom.towerdefence.model.OwnedEntity;
 import pink.zak.minestom.towerdefence.model.tower.config.Tower;
 import pink.zak.minestom.towerdefence.model.tower.config.TowerLevel;
+import pink.zak.minestom.towerdefence.model.tower.config.relative.RelativeBlock;
 import pink.zak.minestom.towerdefence.model.tower.placed.types.BomberTower;
 import pink.zak.minestom.towerdefence.model.tower.placed.types.CharityTower;
+import pink.zak.minestom.towerdefence.model.tower.placed.types.LightningTower;
 
-public abstract class PlacedTower<T extends TowerLevel> {
+public abstract class PlacedTower<T extends TowerLevel> implements OwnedEntity {
     public static final Tag<Short> ID_TAG = Tag.Short("towerId");
 
     protected final Instance instance;
@@ -53,7 +56,8 @@ public abstract class PlacedTower<T extends TowerLevel> {
         return switch (towerType) {
             case BOMBER -> new BomberTower(gameHandler, instance, tower, towerPlaceMaterial, id, owner, baseBlock, facing, 1);
             case CHARITY -> new CharityTower(instance, tower, towerPlaceMaterial, id, owner, baseBlock, facing, 1);
-            default -> null;
+            case LIGHTNING -> new LightningTower(gameHandler, instance, tower, towerPlaceMaterial, id, owner, baseBlock, facing, 1);
+            default -> throw new RuntimeException("Missing tower - " + towerType + " is not coded in but was created");
         };
     }
 
@@ -98,7 +102,8 @@ public abstract class PlacedTower<T extends TowerLevel> {
         return this.facing;
     }
 
-    public GameUser getOwner() {
+    @Override
+    public @NotNull GameUser getOwningUser() {
         return this.owner;
     }
 

@@ -48,7 +48,7 @@ public class TowerPlaceHandler {
                 GameUser gameUser = this.gameHandler.getGameUser(player);
                 if (gameUser == null || event.getBlock().registry().material() != this.towerMap.getTowerPlaceMaterial())
                     return;
-                gameUser.setLastClickedTowerBlock(event.getBlockPosition());
+                gameUser.setLastClickedTowerBlock(event.getBlockPosition().add(0.5, 0.5, 0.5));
                 if (!this.towerMap.getArea(gameUser.getTeam()).isWithin(gameUser.getLastClickedTowerBlock())) {
                     player.sendMessage(Component.text("You can only place towers on your side of the map (" + gameUser.getTeam().name().toLowerCase() + ").", NamedTextColor.RED));
                     return;

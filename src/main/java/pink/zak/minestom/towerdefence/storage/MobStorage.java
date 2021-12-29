@@ -32,9 +32,9 @@ public class MobStorage {
     private void load() {
         for (File file : this.folderPath.toFile().listFiles()) {
             JsonObject jsonObject = FileUtils.fileToJsonObject(file);
-            EnemyMob enemyMob = EnemyMob.fromJsonObject(jsonObject);
+            EnemyMob enemyMob = new EnemyMob(jsonObject);
 
-            this.enemyMobs.put(enemyMob.entityType(), enemyMob);
+            this.enemyMobs.put(enemyMob.getEntityType(), enemyMob);
         }
     }
 

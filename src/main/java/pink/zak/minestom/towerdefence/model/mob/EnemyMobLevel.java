@@ -6,30 +6,81 @@ import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import pink.zak.minestom.towerdefence.utils.ItemUtils;
 
-public record EnemyMobLevel(int level, int cost, int killReward, int health, int damage, double movementSpeed,
-                            int manaCost,
-                            ItemStack sendItem,
-                            ItemStack ownedUpgradeItem, ItemStack buyUpgradeItem, ItemStack cantAffordUpgradeItem) {
+public class EnemyMobLevel {
+    private final int level;
+    private final int cost;
+    private final int killReward;
+    private final int health;
+    private final int damage;
+    private final double movementSpeed;
+    private final int manaCost;
+    private final ItemStack sendItem;
+    private final ItemStack ownedUpgradeItem;
+    private final ItemStack buyUpgradeItem;
+    private final ItemStack cantAffordUpgradeItem;
 
-    public static EnemyMobLevel fromJsonObject(JsonObject jsonObject) {
-        int level = jsonObject.get("level").getAsInt();
-        int cost = jsonObject.get("cost").getAsInt();
-        int killReward = cost / 4; // todo balance
-        int health = jsonObject.get("health").getAsInt();
-        int damage = jsonObject.get("damage").getAsInt();
-        double movementSpeed = jsonObject.get("movementSpeed").getAsDouble() / 20;
-        int manaCost = jsonObject.get("manaCost").getAsInt();
-        ItemStack sendItem = ItemUtils.fromJsonObject(jsonObject.get("sendItem").getAsJsonObject());
+    public EnemyMobLevel(JsonObject jsonObject) {
+        this.level = jsonObject.get("level").getAsInt();
+        this.cost = jsonObject.get("cost").getAsInt();
+        this.killReward = cost / 4; // todo balance
+        this.health = jsonObject.get("health").getAsInt();
+        this.damage = jsonObject.get("damage").getAsInt();
+        this.movementSpeed = jsonObject.get("movementSpeed").getAsDouble() / 20;
+        this.manaCost = jsonObject.get("manaCost").getAsInt();
+        this.sendItem = ItemUtils.fromJsonObject(jsonObject.get("sendItem").getAsJsonObject());
         ItemStack ownedUpgradeItem = ItemUtils.fromJsonObject(jsonObject.get("upgradeItem").getAsJsonObject());
 
-        ownedUpgradeItem = ownedUpgradeItem.withDisplayName(ownedUpgradeItem.getDisplayName().color(NamedTextColor.GREEN));
-        ItemStack buyUpgradeItem = ItemUtils.withMaterialBuilder(ownedUpgradeItem, Material.ORANGE_STAINED_GLASS_PANE)
-            .displayName(ownedUpgradeItem.getDisplayName().color(NamedTextColor.GOLD))
+        this.ownedUpgradeItem = ownedUpgradeItem.withDisplayName(ownedUpgradeItem.getDisplayName().color(NamedTextColor.GREEN));
+        this.buyUpgradeItem = ItemUtils.withMaterialBuilder(this.ownedUpgradeItem, Material.ORANGE_STAINED_GLASS_PANE)
+            .displayName(this.ownedUpgradeItem.getDisplayName().color(NamedTextColor.GOLD))
             .build();
-        ItemStack cantAffordUpgradeItem = ItemUtils.withMaterialBuilder(ownedUpgradeItem, Material.RED_STAINED_GLASS_PANE)
-            .displayName(ownedUpgradeItem.getDisplayName().color(NamedTextColor.RED))
+        this.cantAffordUpgradeItem = ItemUtils.withMaterialBuilder(ownedUpgradeItem, Material.RED_STAINED_GLASS_PANE)
+            .displayName(this.ownedUpgradeItem.getDisplayName().color(NamedTextColor.RED))
             .build();
 
-        return new EnemyMobLevel(level, cost, killReward, health, damage, movementSpeed, manaCost, sendItem, ownedUpgradeItem, buyUpgradeItem, cantAffordUpgradeItem);
+    }
+
+    public int getLevel() {
+        return this.level;
+    }
+
+    public int getCost() {
+        return this.cost;
+    }
+
+    public int getKillReward() {
+        return this.killReward;
+    }
+
+    public int getHealth() {
+        return this.health;
+    }
+
+    public int getDamage() {
+        return this.damage;
+    }
+
+    public double getMovementSpeed() {
+        return this.movementSpeed;
+    }
+
+    public int getManaCost() {
+        return this.manaCost;
+    }
+
+    public ItemStack getSendItem() {
+        return this.sendItem;
+    }
+
+    public ItemStack getOwnedUpgradeItem() {
+        return this.ownedUpgradeItem;
+    }
+
+    public ItemStack getBuyUpgradeItem() {
+        return this.buyUpgradeItem;
+    }
+
+    public ItemStack getCantAffordUpgradeItem() {
+        return this.cantAffordUpgradeItem;
     }
 }
