@@ -12,7 +12,7 @@ import java.util.function.Function;
 public enum TowerType {
     ARCHER(Size.THREE, 10, true, Tower::new, AttackingTowerLevel::new),
     BOMBER(Size.THREE, 11, false, Tower::new, AttackingTowerLevel::new),
-    LIGHTNING(Size.THREE, 12, false, Tower::new, LightningTowerLevel::new),
+    LIGHTNING(Size.THREE, 12, true, Tower::new, LightningTowerLevel::new),
     CHARITY(Size.THREE, 13, false, Tower::new, CharityTowerLevel::new);
 
     private final Size size;

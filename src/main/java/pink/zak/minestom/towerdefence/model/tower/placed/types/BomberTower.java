@@ -40,6 +40,11 @@ public class BomberTower extends PlacedAttackingTower<AttackingTowerLevel> imple
     }
 
     @Override
+    public int getMaxTargets() {
+        return 1;
+    }
+
+    @Override
     protected void fire() {
         new BombTnt(this);
     }
@@ -62,6 +67,7 @@ public class BomberTower extends PlacedAttackingTower<AttackingTowerLevel> imple
 
     private static class BombTnt extends LivingEntity {
         private final BomberTower tower;
+        private final LivingEntity target;
         private double xVel;
         private double zVel;
         private boolean set;
@@ -72,9 +78,10 @@ public class BomberTower extends PlacedAttackingTower<AttackingTowerLevel> imple
 
             // takes 50 ticks to land, -14 for the initial upwards velocity
             // When vertical maps are supported, this cannot be hardcoded or weird explosion behaviour will be experienced
-            Entity target = tower.target;
-            this.xVel = (target.getPosition().x() - this.tower.spawnPos.x());
-            this.zVel = (target.getPosition().z() - this.tower.spawnPos.z());
+            this.target = tower.getTargets().get(0);
+            Pos targetPos = this.target.getPosition();
+            this.xVel = (targetPos.x() - this.tower.spawnPos.x());
+            this.zVel = (targetPos.z() - this.tower.spawnPos.z());
 
             super.hasPhysics = false;
             ((PrimedTntMeta) this.getEntityMeta()).setFuseTime(34);
@@ -100,9 +107,10 @@ public class BomberTower extends PlacedAttackingTower<AttackingTowerLevel> imple
 
             if (this.getVelocity().y() <= 0) {
                 if (!this.set) {
-                    Entity target = this.tower.target;
                     this.setGravity(0, 0.0777777778);
-                    if (target != null) {
+                    // update the velocity if the target isn't dead yet
+                    if (!this.target.isDead()) {
+                        Entity target = this.tower.getTargets().get(0);
                         // takes 40 ticks to land, -14 for the initial upwards velocity.
                         // When vertical maps are supported, we'll have to do projectile motion calculations live or weird explosion behaviour will be experienced
                         this.xVel = (target.getPosition().x() - this.tower.spawnPos.x());

@@ -12,9 +12,11 @@ import pink.zak.minestom.towerdefence.model.mob.living.LivingEnemyMob;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.config.Tower;
 
-public abstract class PlacedAttackingTower<T extends AttackingTowerLevel> extends PlacedTower<T> {
+import java.util.ArrayList;
+import java.util.List;
 
-    protected LivingEnemyMob target;
+public abstract class PlacedAttackingTower<T extends AttackingTowerLevel> extends PlacedTower<T> {
+    protected List<LivingEnemyMob> targets = new ArrayList<>();
     protected Task attackTask;
 
     protected PlacedAttackingTower(Instance instance, Tower tower, Material towerPlaceMaterial, short id, GameUser owner, Point baseBlock, Direction facing, int level) {
@@ -25,7 +27,7 @@ public abstract class PlacedAttackingTower<T extends AttackingTowerLevel> extend
     private void startFiring() {
         this.attackTask = MinecraftServer.getSchedulerManager()
             .buildTask(() -> {
-                if (this.target != null)
+                if (!this.targets.isEmpty())
                     this.fire();
             })
             .repeat(this.level.getFireDelay(), TimeUnit.CLIENT_TICK)
@@ -33,6 +35,8 @@ public abstract class PlacedAttackingTower<T extends AttackingTowerLevel> extend
     }
 
     protected abstract void fire();
+
+    public abstract int getMaxTargets();
 
     @Override
     public void upgrade() {
@@ -44,11 +48,11 @@ public abstract class PlacedAttackingTower<T extends AttackingTowerLevel> extend
         }
     }
 
-    public LivingEnemyMob getTarget() {
-        return this.target;
+    public List<LivingEnemyMob> getTargets() {
+        return this.targets;
     }
 
-    public void setTarget(LivingEnemyMob target) {
-        this.target = target;
+    public void setTargets(List<LivingEnemyMob> targets) {
+        this.targets = targets;
     }
 }

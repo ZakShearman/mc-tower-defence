@@ -2,7 +2,6 @@ package pink.zak.minestom.towerdefence.game;
 
 import com.google.common.collect.Sets;
 import net.minestom.server.MinecraftServer;
-import net.minestom.server.coordinate.Pos;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.timer.Task;
 import net.minestom.server.utils.time.TimeUnit;
@@ -13,9 +12,11 @@ import pink.zak.minestom.towerdefence.model.GameUser;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
 import pink.zak.minestom.towerdefence.model.mob.QueuedEnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingEnemyMob;
-import pink.zak.minestom.towerdefence.model.tower.config.AttackingTowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -58,43 +59,30 @@ public class MobHandler {
     }
 
     // todo support both sides
+    // todo is there a way other than recalculating every time? Sure this is easy, but not great on performance
     private void updateAttackingTowers() {
-        for (LivingEnemyMob enemyMob : this.redSideMobs) {
-            Pos position = enemyMob.getPosition();
-            Set<PlacedAttackingTower<?>> newTowersInRange = Sets.newConcurrentHashSet();
-            Set<PlacedAttackingTower<?>> oldTowersInRange = enemyMob.getAttackingTowers();
-            for (PlacedAttackingTower<?> tower : this.towerHandler.getRedTowers().stream()
-                .filter(tower -> tower instanceof PlacedAttackingTower)
-                .map(tower -> (PlacedAttackingTower<?>) tower)
-                .collect(Collectors.toSet())
-            ) {
-                double distance = tower.getBasePoint().distance(position);
-                if (distance < tower.getLevel().getRange())
-                    newTowersInRange.add(tower);
-                else if (oldTowersInRange.contains(tower) && tower.getTarget() == enemyMob)
-                    tower.setTarget(null);
+        List<LivingEnemyMob> distanceSortedMobs = new ArrayList<>(this.redSideMobs);
+        distanceSortedMobs.sort(Comparator.comparingDouble(LivingEnemyMob::getTotalDistanceMoved).reversed());
+
+        for (PlacedAttackingTower<?> tower : this.towerHandler.getRedTowers().stream()
+            .filter(tower -> tower instanceof PlacedAttackingTower)
+            .map(tower -> (PlacedAttackingTower<?>) tower)
+            .collect(Collectors.toSet())
+        ) {
+            List<LivingEnemyMob> newTargets = new ArrayList<>();
+            int i = 0;
+            while (newTargets.size() < tower.getMaxTargets() && i < distanceSortedMobs.size()) {
+                LivingEnemyMob enemyMob = distanceSortedMobs.get(i);
+                double distance = tower.getBasePoint().distance(enemyMob.getPosition());
+
+                if (distance < tower.getLevel().getRange() && (tower.getTower().getType().isTargetAir() || !enemyMob.getEnemyMob().isFlying()))
+                    newTargets.add(enemyMob);
+
+                i++;
             }
-            enemyMob.setAttackingTowers(newTowersInRange);
+
+            tower.setTargets(newTargets);
         }
-        for (LivingEnemyMob enemyMob : this.redSideMobs) {
-            for (PlacedAttackingTower<?> tower : enemyMob.getAttackingTowers()) {
-                if (
-                    (tower.getTarget() == null || tower.getTarget().isDead() || enemyMob.getTotalDistanceMoved() > tower.getTarget().getTotalDistanceMoved())
-                        && (!enemyMob.getEnemyMob().isFlying() || tower.getTower().getType().isTargetAir())
-                ) {
-                    tower.setTarget(enemyMob);
-                }
-            }
-        }
-        /*
-         * for every mob
-         *   -> calculate the towers that can shoot it
-         *   -> compare towers that can shoot it to towers that could shoot it before
-         *   -> if new tower is added
-         *     -> recalculate tower target
-         *   -> if tower is removed
-         *     -> recalculate tower target
-         * */
     }
 
     public void setInstance(Instance instance) {

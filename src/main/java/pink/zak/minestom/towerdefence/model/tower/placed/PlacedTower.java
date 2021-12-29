@@ -56,7 +56,7 @@ public abstract class PlacedTower<T extends TowerLevel> implements OwnedEntity {
         return switch (towerType) {
             case BOMBER -> new BomberTower(gameHandler, instance, tower, towerPlaceMaterial, id, owner, baseBlock, facing, 1);
             case CHARITY -> new CharityTower(instance, tower, towerPlaceMaterial, id, owner, baseBlock, facing, 1);
-            case LIGHTNING -> new LightningTower(gameHandler, instance, tower, towerPlaceMaterial, id, owner, baseBlock, facing, 1);
+            case LIGHTNING -> new LightningTower(instance, tower, towerPlaceMaterial, id, owner, baseBlock, facing, 1);
             default -> throw new RuntimeException("Missing tower - " + towerType + " is not coded in but was created");
         };
     }

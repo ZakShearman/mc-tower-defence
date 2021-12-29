@@ -26,56 +26,38 @@ import java.util.Optional;
 import java.util.Set;
 
 public class LightningTower extends PlacedAttackingTower<LightningTowerLevel> {
-    private final MobHandler mobHandler; // todo just allow multi target in placed attacking tower?
     private Point castPoint;
 
-    public LightningTower(GameHandler gameHandler, Instance instance, Tower tower, Material towerPlaceMaterial, short id, GameUser owner, Point basePoint, Direction facing, int level) {
+    public LightningTower(Instance instance, Tower tower, Material towerPlaceMaterial, short id, GameUser owner, Point basePoint, Direction facing, int level) {
         super(instance, tower, towerPlaceMaterial, id, owner, basePoint, facing, level);
-        this.mobHandler = gameHandler.getMobHandler();
         this.castPoint = this.getLevel().getRelativeCastPoint().apply(basePoint);
     }
 
     @Override
+    public int getMaxTargets() {
+        return this.level.getMaxTargets();
+    }
+
+    @Override
     protected void fire() {
-        LivingEnemyMob rootTarget = this.target;
-        int maxTargets = this.level.getMaxTargets();
-
-        List<LivingEnemyMob> targets = Lists.newArrayList(rootTarget);
-        Set<LivingEnemyMob> possibleTargets = new HashSet<>(this.team == Team.BLUE ? this.mobHandler.getBlueSideMobs() : this.mobHandler.getRedSideMobs());
-        possibleTargets.remove(rootTarget);
-
-        while (targets.size() < maxTargets) { // todo this should be replaced with a multi selector tower - also this fires at the closest
-            Optional<LivingEnemyMob> optionalClosest = possibleTargets.stream()
-                .min(Comparator.comparingDouble(mob -> mob.getPosition().distance(this.basePoint)));
-
-            if (optionalClosest.isPresent()) {
-                LivingEnemyMob closest = optionalClosest.get();
-                targets.add(closest);
-                possibleTargets.remove(closest);
-            } else {
-                break;
-            }
-        }
-        this.drawParticles(this.castPoint, targets);
-
+        this.drawParticles();
         for (LivingEnemyMob enemyMob : targets) {
             enemyMob.towerDamage(this, this.level.getDamage());
         }
     }
 
-    private void drawParticles(Point castPoint, List<LivingEnemyMob> points) { // todo do height by entity height
+    private void drawParticles() { // todo do height by entity height
         Set<SendablePacket> packets = new HashSet<>();
-        for (int i = 0; i < points.size(); i++) {
-            LivingEnemyMob enemyMob = points.get(i);
+        for (LivingEnemyMob enemyMob : super.targets) {
             Point point = enemyMob.getPosition();
 
-            double x = castPoint.x();
-            double y = castPoint.y();
-            double z = castPoint.z();
+            double x = this.castPoint.x();
+            double y = this.castPoint.y();
+            double z = this.castPoint.z();
 
-            double dx = point.x() - castPoint.x();
-            double dy = point.y() - castPoint.y();
-            double dz = point.z() - castPoint.z();
+            double dx = point.x() - this.castPoint.x();
+            double dy = point.y() - this.castPoint.y();
+            double dz = point.z() - this.castPoint.z();
             double length = Math.sqrt(dx * dx + dy * dy + dz * dz);
 
             double distanceBetween = 0.2;
@@ -86,15 +68,6 @@ public class LightningTower extends PlacedAttackingTower<LightningTowerLevel> {
             double changeZ = dz / particleCount;
 
             for (double thing = 0; thing <= length; thing += distanceBetween) {
-//                packets.add(ParticleCreator.createParticlePacket(Particle.DUST, true,
-//                    x, y + 1.8, z,
-//                    0, 0, 0, 0f, 3,
-//                    binaryWriter -> {
-//                        binaryWriter.writeFloat(1);
-//                        binaryWriter.writeFloat(1);
-//                        binaryWriter.writeFloat(1);
-//                        binaryWriter.writeFloat(1.5f);
-//                    }));
                 packets.add(
                     ParticleCreator.createParticlePacket(Particle.SOUL_FIRE_FLAME,
                         x, y + enemyMob.getEyeHeight(), z,

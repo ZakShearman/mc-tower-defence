@@ -177,7 +177,7 @@ public class LivingEnemyMob extends EntityCreature {
             this.attackTask.cancel();
 
         for (PlacedAttackingTower<?> tower : this.attackingTowers)
-            tower.setTarget(null);
+            tower.getTargets().remove(this);
 
         if (this.team == Team.RED)
             this.mobHandler.getRedSideMobs().remove(this);
