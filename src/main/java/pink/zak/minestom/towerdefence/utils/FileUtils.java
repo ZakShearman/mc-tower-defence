@@ -1,9 +1,9 @@
 package pink.zak.minestom.towerdefence.utils;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.stream.JsonReader;
 import net.minestom.server.extensions.Extension;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 
@@ -13,11 +13,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.Writer;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.function.UnaryOperator;
 
 public class FileUtils {
     private static final Gson GSON = new Gson();
@@ -28,6 +30,27 @@ public class FileUtils {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static JsonElement getLocalOrResourceJson(Extension extension, UnaryOperator<Path> pathOperator) {
+        Path fullPath = pathOperator.apply(extension.getDataDirectory().resolve("TowerDefence"));
+        File systemFile = fullPath.toFile();
+        if (systemFile.exists()) {
+            try {
+                return JsonParser.parseReader(new FileReader(systemFile));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        } else {
+            Path hollowPath = pathOperator.apply(Path.of(""));
+            try (InputStream inputStream = extension.getPackagedResource(hollowPath)) {
+                return JsonParser.parseReader(new InputStreamReader(inputStream));
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 
     public static JsonObject resourceToJsonObject(Extension extension, String resource) {

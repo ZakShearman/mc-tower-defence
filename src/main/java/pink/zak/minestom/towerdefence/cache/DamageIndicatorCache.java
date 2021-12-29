@@ -3,17 +3,20 @@ package pink.zak.minestom.towerdefence.cache;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import net.minestom.server.coordinate.Vec;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 import pink.zak.minestom.towerdefence.utils.FileUtils;
 
+import java.io.IOException;
+import java.io.Reader;
 import java.util.List;
 
 public class DamageIndicatorCache {
     private final List<Vec> preCalculatedVelocity;
 
     public DamageIndicatorCache(TowerDefencePlugin plugin) {
-        JsonObject jsonObject = FileUtils.resourceToJsonObject(plugin, "precalculated/damageindicators.json");
+        JsonObject jsonObject = FileUtils.getLocalOrResourceJson(plugin, path -> path.resolve("precalculated").resolve("damageindicators.json")).getAsJsonObject();
         this.preCalculatedVelocity = this.parseVelocity(jsonObject);
     }
 
