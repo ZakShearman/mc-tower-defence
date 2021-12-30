@@ -60,7 +60,7 @@ public class LightningTower extends PlacedAttackingTower<LightningTowerLevel> {
             double dz = point.z() - this.castPoint.z();
             double length = Math.sqrt(dx * dx + dy * dy + dz * dz);
 
-            double distanceBetween = 0.2;
+            double distanceBetween = 0.25;
             int particleCount = (int) Math.round(length / distanceBetween);
 
             double changeX = dx / particleCount;
