@@ -22,7 +22,7 @@
           ""
         ]
       },
-      "maxTargets": 5,
+      "maxTargets": 1,
       "relativeCastPoint": {
         "xOffset": 0,
         "yOffset": 4,
@@ -158,6 +158,118 @@
           }
         }
       ]
+    },
+    {
+      "level": 2,
+      "cost": 200,
+      "fireDelay": 40,
+      "damage": 2.5,
+      "range": 100,
+      "menuItem": {
+        "material": "minecraft:end_rod",
+        "displayName": "<yellow>Lightning Lvl. II",
+        "lore": [
+          ""
+        ]
+      },
+      "upgradeItem": {
+        "material": "minecraft:end_rod",
+        "displayName": "<yellow>Lightning Lvl. II",
+        "lore": [
+          ""
+        ]
+      },
+      "maxTargets": 2,
+      "relativeCastPoint": {
+        "xOffset": 0,
+        "yOffset": 4,
+        "zOffset": 0
+      },
+      "relativeBlocks": []
+    },
+    {
+      "level": 3,
+      "cost": 200,
+      "fireDelay": 30,
+      "damage": 2.5,
+      "range": 100,
+      "menuItem": {
+        "material": "minecraft:end_rod",
+        "displayName": "<yellow>Lightning Lvl. III",
+        "lore": [
+          ""
+        ]
+      },
+      "upgradeItem": {
+        "material": "minecraft:end_rod",
+        "displayName": "<yellow>Lightning Lvl. III",
+        "lore": [
+          ""
+        ]
+      },
+      "maxTargets": 3,
+      "relativeCastPoint": {
+        "xOffset": 0,
+        "yOffset": 4,
+        "zOffset": 0
+      },
+      "relativeBlocks": []
+    },
+    {
+      "level": 4,
+      "cost": 200,
+      "fireDelay": 40,
+      "damage": 2.5,
+      "range": 100,
+      "menuItem": {
+        "material": "minecraft:end_rod",
+        "displayName": "<yellow>Lightning Lvl. IV",
+        "lore": [
+          ""
+        ]
+      },
+      "upgradeItem": {
+        "material": "minecraft:end_rod",
+        "displayName": "<yellow>Lightning Lvl. IV",
+        "lore": [
+          ""
+        ]
+      },
+      "maxTargets": 4,
+      "relativeCastPoint": {
+        "xOffset": 0,
+        "yOffset": 4,
+        "zOffset": 0
+      },
+      "relativeBlocks": []
+    },
+    {
+      "level": 5,
+      "cost": 200,
+      "fireDelay": 40,
+      "damage": 2.5,
+      "range": 100,
+      "menuItem": {
+        "material": "minecraft:end_rod",
+        "displayName": "<yellow>Lightning Lvl. V",
+        "lore": [
+          ""
+        ]
+      },
+      "upgradeItem": {
+        "material": "minecraft:end_rod",
+        "displayName": "<yellow>Lightning Lvl. V",
+        "lore": [
+          ""
+        ]
+      },
+      "maxTargets": 5,
+      "relativeCastPoint": {
+        "xOffset": 0,
+        "yOffset": 4,
+        "zOffset": 0
+      },
+      "relativeBlocks": []
     }
   ]
 }
