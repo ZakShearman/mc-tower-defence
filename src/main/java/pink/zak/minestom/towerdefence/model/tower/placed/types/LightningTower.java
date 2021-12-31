@@ -28,24 +28,25 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class LightningTower extends PlacedAttackingTower<LightningTowerLevel> {
     private final List<LivingEntity> guardians = new CopyOnWriteArrayList<>();
-    private Point castPoint;
+    private List<Point> castPoints;
 
     public LightningTower(Instance instance, Tower tower, Material towerPlaceMaterial, short id, GameUser owner, Point basePoint, Direction facing, int level) {
         super(instance, tower, towerPlaceMaterial, id, owner, basePoint, facing, level);
-        this.castPoint = this.getLevel().getRelativeCastPoint().apply(basePoint);
+        this.castPoints = this.getLevel().getRelativeCastPoints().stream()
+            .map(castPoint -> castPoint.apply(basePoint)).toList();
     }
 
     @Override
     public int getMaxTargets() {
-        return this.level.getMaxTargets();
+        return this.castPoints.size();
     }
 
     @Override
     protected void fire() {
-        if (this.level.getLevel() > 2)
-            this.drawGuardianBeams();
-        else
-            this.drawParticles();
+//        if (this.level.getLevel() > 2)
+//            this.drawGuardianBeams();
+//        else
+        this.drawParticles();
 
         for (LivingEnemyMob enemyMob : this.targets)
             enemyMob.towerDamage(this, this.level.getDamage());
@@ -62,16 +63,18 @@ public class LightningTower extends PlacedAttackingTower<LightningTowerLevel> {
 
     private void drawParticles() { // todo do height by entity height
         Set<SendablePacket> packets = new HashSet<>();
-        for (LivingEnemyMob enemyMob : super.targets) {
+        for (int i = 0; i < super.targets.size(); i++) {
+            LivingEnemyMob enemyMob = super.targets.get(i);
+            Point castPoint = this.castPoints.get(i);
             Point point = enemyMob.getPosition();
 
-            double x = this.castPoint.x();
-            double y = this.castPoint.y();
-            double z = this.castPoint.z();
+            double x = castPoint.x();
+            double y = castPoint.y();
+            double z = castPoint.z();
 
-            double dx = point.x() - this.castPoint.x();
-            double dy = point.y() - this.castPoint.y();
-            double dz = point.z() - this.castPoint.z();
+            double dx = point.x() - castPoint.x();
+            double dy = point.y() - castPoint.y();
+            double dz = point.z() - castPoint.z();
             double length = Math.sqrt(dx * dx + dy * dy + dz * dz);
 
             double distanceBetween = 0.25;
@@ -105,13 +108,14 @@ public class LightningTower extends PlacedAttackingTower<LightningTowerLevel> {
         LightningTowerLevel oldLevel = this.getLevel();
 
         super.upgrade();
-        this.castPoint = this.getLevel().getRelativeCastPoint().apply(this.getBasePoint());
-        this.updateGuardianBeams(oldLevel);
+        this.castPoints = this.getLevel().getRelativeCastPoints().stream()
+            .map(castPoint -> castPoint.apply(basePoint)).toList();
+//        this.updateGuardianBeams(oldLevel);
     }
 
     private void updateGuardianBeams(LightningTowerLevel oldLevel) {
         if (this.level.getLevel() > 2) {
-            int beamDifference = this.level.getMaxTargets() - this.guardians.size();
+            int beamDifference = this.getMaxTargets() - this.guardians.size();
             if (beamDifference > 0) {
                 for (int i = 0; i < beamDifference; i++) {
                     EntityCreature guardian = new EntityCreature(EntityType.GUARDIAN);
@@ -119,7 +123,7 @@ public class LightningTower extends PlacedAttackingTower<LightningTowerLevel> {
                     this.guardians.add(guardian);
                 }
             } else if (beamDifference < 0) { // maybe someone will configure it to do this, probably not but let's just handle it.
-                LivingEntity removedGuardian = this.guardians.remove(oldLevel.getMaxTargets() - 1);
+                LivingEntity removedGuardian = this.guardians.remove(oldLevel.getRelativeCastPoints().size() - 1);
                 removedGuardian.kill();
             }
         }

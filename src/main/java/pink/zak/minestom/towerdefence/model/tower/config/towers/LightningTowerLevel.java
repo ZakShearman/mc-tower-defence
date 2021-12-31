@@ -1,24 +1,27 @@
 package pink.zak.minestom.towerdefence.model.tower.config.towers;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.config.relative.RelativePoint;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
 public class LightningTowerLevel extends AttackingTowerLevel {
-    private final int maxTargets;
-    private final RelativePoint relativeCastPoint;
+    private final Set<RelativePoint> relativeCastPoints;
 
     public LightningTowerLevel(JsonObject jsonObject) {
         super(jsonObject);
-        this.maxTargets = jsonObject.get("maxTargets").getAsInt();
-        this.relativeCastPoint = new RelativePoint(jsonObject.get("relativeCastPoint").getAsJsonObject());
+        this.relativeCastPoints = StreamSupport.stream(jsonObject.get("relativeCastPoints")
+                .getAsJsonArray().spliterator(), true)
+            .map(JsonElement::getAsJsonObject)
+            .map(RelativePoint::new)
+            .collect(Collectors.toSet());
     }
 
-    public int getMaxTargets() {
-        return this.maxTargets;
-    }
-
-    public RelativePoint getRelativeCastPoint() {
-        return this.relativeCastPoint;
+    public Set<RelativePoint> getRelativeCastPoints() {
+        return this.relativeCastPoints;
     }
 }

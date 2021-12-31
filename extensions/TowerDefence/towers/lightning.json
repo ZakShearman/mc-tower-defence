@@ -22,139 +22,119 @@
           ""
         ]
       },
-      "maxTargets": 1,
-      "relativeCastPoint": {
-        "xOffset": 0,
-        "yOffset": 4,
-        "zOffset": 0
-      },
+      "relativeCastPoints": [
+        {
+          "xOffset": 0,
+          "yOffset": 1,
+          "zOffset": 0
+        }
+      ],
       "relativeBlocks": [
         {
           "xOffset": 0,
-          "zOffset": -1,
           "yOffset": 1,
-          "block": {
-            "material": "minecraft:prismarine_bricks"
-          }
-        },
-        {
-          "xOffset": 0,
-          "zOffset": -1,
-          "yOffset": 2,
-          "block": {
-            "material": "minecraft:prismarine_bricks"
-          }
-        },
-        {
-          "xOffset": 0,
-          "zOffset": -1,
-          "yOffset": 4,
-          "block": {
-            "material": "minecraft:prismarine_bricks"
-          }
-        },
-        {
-          "xOffset": -1,
-          "zOffset": -1,
-          "yOffset": 3,
-          "block": {
-            "material": "minecraft:prismarine_bricks"
-          }
-        },
-        {
-          "xOffset": -1,
           "zOffset": 0,
+          "block": {
+            "material": "minecraft:smooth_stone"
+          }
+        },
+        {
+          "xOffset": 1,
           "yOffset": 1,
-          "block": {
-            "material": "minecraft:prismarine_bricks"
-          }
-        },
-        {
-          "xOffset": -1,
           "zOffset": 0,
-          "yOffset": 2,
           "block": {
-            "material": "minecraft:prismarine_bricks"
+            "material": "minecraft:smooth_stone_slab",
+            "properties": {
+              "type": "bottom"
+            }
           }
         },
         {
-          "xOffset": -1,
-          "zOffset": 0,
-          "yOffset": 4,
-          "block": {
-            "material": "minecraft:prismarine_bricks"
-          }
-        },
-        {
-          "xOffset": -1,
-          "zOffset": 1,
-          "yOffset": 3,
-          "block": {
-            "material": "minecraft:prismarine_bricks"
-          }
-        },
-        {
-          "xOffset": 0,
-          "zOffset": 1,
+          "xOffset": 1,
           "yOffset": 1,
+          "zOffset": 1,
           "block": {
-            "material": "minecraft:prismarine_bricks"
+            "material": "minecraft:smooth_stone_slab",
+            "properties": {
+              "type": "bottom"
+            }
           }
         },
         {
           "xOffset": 0,
-          "zOffset": 1,
-          "yOffset": 2,
-          "block": {
-            "material": "minecraft:prismarine_bricks"
-          }
-        },
-        {
-          "xOffset": 0,
-          "zOffset": 1,
-          "yOffset": 4,
-          "block": {
-            "material": "minecraft:prismarine_bricks"
-          }
-        },
-        {
-          "xOffset": 1,
-          "zOffset": 1,
-          "yOffset": 3,
-          "block": {
-            "material": "minecraft:prismarine_bricks"
-          }
-        },
-        {
-          "xOffset": 1,
-          "zOffset": 0,
           "yOffset": 1,
+          "zOffset": 1,
           "block": {
-            "material": "minecraft:prismarine_bricks"
+            "material": "minecraft:smooth_stone_slab",
+            "properties": {
+              "type": "bottom"
+            }
           }
         },
         {
-          "xOffset": 1,
+          "xOffset": -1,
+          "yOffset": 1,
+          "zOffset": 1,
+          "block": {
+            "material": "minecraft:smooth_stone_slab",
+            "properties": {
+              "type": "bottom"
+            }
+          }
+        },
+        {
+          "xOffset": -1,
+          "yOffset": 1,
           "zOffset": 0,
-          "yOffset": 2,
           "block": {
-            "material": "minecraft:prismarine_bricks"
+            "material": "minecraft:smooth_stone_slab",
+            "properties": {
+              "type": "bottom"
+            }
           }
         },
         {
-          "xOffset": 1,
-          "zOffset": 0,
-          "yOffset": 4,
-          "block": {
-            "material": "minecraft:prismarine_bricks"
-          }
-        },
-        {
-          "xOffset": 1,
+          "xOffset": -1,
+          "yOffset": 1,
           "zOffset": -1,
-          "yOffset": 3,
           "block": {
-            "material": "minecraft:prismarine_bricks"
+            "material": "minecraft:smooth_stone_slab",
+            "properties": {
+              "type": "bottom"
+            }
+          }
+        },
+        {
+          "xOffset": 0,
+          "yOffset": 1,
+          "zOffset": -1,
+          "block": {
+            "material": "minecraft:smooth_stone_slab",
+            "properties": {
+              "type": "bottom"
+            }
+          }
+        },
+        {
+          "xOffset": 1,
+          "yOffset": 1,
+          "zOffset": -1,
+          "block": {
+            "material": "minecraft:smooth_stone_slab",
+            "properties": {
+              "type": "bottom"
+            }
+          }
+        },
+        {
+          "xOffset": 0,
+          "yOffset": 2,
+          "zOffset": 0,
+          "block": {
+            "material": "minecraft:lightning_rod",
+            "properties": {
+              "facing": "up"
+            }
           }
         }
       ]
@@ -179,13 +159,47 @@
           ""
         ]
       },
-      "maxTargets": 2,
-      "relativeCastPoint": {
-        "xOffset": 0,
-        "yOffset": 4,
-        "zOffset": 0
-      },
-      "relativeBlocks": []
+      "relativeCastPoints": [
+        {
+          "xOffset": 0,
+          "yOffset": 1,
+          "zOffset": 0
+        }
+      ],
+      "relativeBlocks": [
+        {
+          "xOffset": 1,
+          "yOffset": 1,
+          "zOffset": 0,
+          "block": {
+            "material": "minecraft:waxed_exposed_copper"
+          }
+        },
+        {
+          "xOffset": -1,
+          "yOffset": 1,
+          "zOffset": 0,
+          "block": {
+            "material": "minecraft:waxed_exposed_copper"
+          }
+        },
+        {
+          "xOffset": 0,
+          "yOffset": 1,
+          "zOffset": 1,
+          "block": {
+            "material": "minecraft:waxed_exposed_copper"
+          }
+        },
+        {
+          "xOffset": 0,
+          "yOffset": 1,
+          "zOffset": -1,
+          "block": {
+            "material": "minecraft:waxed_exposed_copper"
+          }
+        }
+      ]
     },
     {
       "level": 3,
@@ -207,13 +221,150 @@
           ""
         ]
       },
-      "maxTargets": 3,
-      "relativeCastPoint": {
-        "xOffset": 0,
-        "yOffset": 4,
-        "zOffset": 0
-      },
-      "relativeBlocks": []
+      "relativeCastPoints": [
+        {
+          "xOffset": 0,
+          "yOffset": 3,
+          "zOffset": 0
+        }
+      ],
+      "relativeBlocks": [
+        {
+          "xOffset": 1,
+          "yOffset": 1,
+          "zOffset": 1,
+          "block": {
+            "material": "minecraft:waxed_cut_copper"
+          }
+        },
+        {
+          "xOffset": -1,
+          "yOffset": 1,
+          "zOffset": 1,
+          "block": {
+            "material": "minecraft:waxed_cut_copper"
+          }
+        },
+        {
+          "xOffset": 1,
+          "yOffset": 1,
+          "zOffset": -1,
+          "block": {
+            "material": "minecraft:waxed_cut_copper"
+          }
+        },
+        {
+          "xOffset": -1,
+          "yOffset": 1,
+          "zOffset": -1,
+          "block": {
+            "material": "minecraft:waxed_cut_copper"
+          }
+        },
+        {
+          "xOffset": 1,
+          "yOffset": 1,
+          "zOffset": 0,
+          "block": {
+            "material": "minecraft:smooth_quartz"
+          }
+        },
+        {
+          "xOffset": -1,
+          "yOffset": 1,
+          "zOffset": 0,
+          "block": {
+            "material": "minecraft:smooth_quartz"
+          }
+        },
+        {
+          "xOffset": 0,
+          "yOffset": 1,
+          "zOffset": 1,
+          "block": {
+            "material": "minecraft:smooth_quartz"
+          }
+        },
+        {
+          "xOffset": 0,
+          "yOffset": 1,
+          "zOffset": -1,
+          "block": {
+            "material": "minecraft:smooth_quartz"
+          }
+        },
+        {
+          "xOffset": 0,
+          "yOffset": 2,
+          "zOffset": 0,
+          "block": {
+            "material": "minecraft:iron_block"
+          }
+        },
+        {
+          "xOffset": 1,
+          "yOffset": 2,
+          "zOffset": 1,
+          "block": {
+            "material": "minecraft:smooth_quartz_slab",
+            "properties": {
+              "type": "bottom"
+            }
+          }
+        },
+        {
+          "xOffset": -1,
+          "yOffset": 2,
+          "zOffset": 1,
+          "block": {
+            "material": "minecraft:smooth_quartz_slab",
+            "properties": {
+              "type": "bottom"
+            }
+          }
+        },
+        {
+          "xOffset": 1,
+          "yOffset": 2,
+          "zOffset": -1,
+          "block": {
+            "material": "minecraft:smooth_quartz_slab",
+            "properties": {
+              "type": "bottom"
+            }
+          }
+        },
+        {
+          "xOffset": -1,
+          "yOffset": 2,
+          "zOffset": -1,
+          "block": {
+            "material": "minecraft:smooth_quartz_slab",
+            "properties": {
+              "type": "bottom"
+            }
+          }
+        },
+        {
+          "xOffset": 0,
+          "yOffset": 3,
+          "zOffset": 0,
+          "block": {
+            "material": "minecraft:waxed_copper_block"
+          }
+        },
+        {
+          "xOffset": 0,
+          "yOffset": 4,
+          "zOffset": 0,
+          "block": {
+            "material": "minecraft:lightning_rod",
+            "properties": {
+              "facing": "up"
+            }
+          }
+        }
+      ]
     },
     {
       "level": 4,
@@ -235,13 +386,286 @@
           ""
         ]
       },
-      "maxTargets": 4,
-      "relativeCastPoint": {
-        "xOffset": 0,
-        "yOffset": 4,
-        "zOffset": 0
-      },
-      "relativeBlocks": []
+      "relativeCastPoints": [
+        {
+          "xOffset": 0,
+          "yOffset": 4,
+          "zOffset": 0
+        },
+        {
+          "xOffset": 1,
+          "yOffset": 3,
+          "zOffset": 0
+        },
+        {
+          "xOffset": 0,
+          "yOffset": 3,
+          "zOffset": 1
+        },
+        {
+          "xOffset": -1,
+          "yOffset": 3,
+          "zOffset": 0
+        },
+        {
+          "xOffset": 0,
+          "yOffset": 3,
+          "zOffset": -1
+        }
+      ],
+      "relativeBlocks": [
+        {
+          "xOffset": 0,
+          "yOffset": 1,
+          "zOffset": 0,
+          "block": {
+            "material": "minecraft:iron_block"
+          }
+        },
+        {
+          "xOffset": 1,
+          "yOffset": 1,
+          "zOffset": 1,
+          "block": {
+            "material": "minecraft:iron_block"
+          }
+        },
+        {
+          "xOffset": 1,
+          "yOffset": 1,
+          "zOffset": -1,
+          "block": {
+            "material": "minecraft:iron_block"
+          }
+        },
+        {
+          "xOffset": -1,
+          "yOffset": 1,
+          "zOffset": 1,
+          "block": {
+            "material": "minecraft:iron_block"
+          }
+        },
+        {
+          "xOffset": -1,
+          "yOffset": 1,
+          "zOffset": -1,
+          "block": {
+            "material": "minecraft:iron_block"
+          }
+        },
+        {
+          "xOffset": 1,
+          "yOffset": 1,
+          "zOffset": 0,
+          "block": {
+            "material": "minecraft:smooth_quartz_slab",
+            "properties": {
+              "type": "bottom"
+            }
+          }
+        },
+        {
+          "xOffset": 0,
+          "yOffset": 1,
+          "zOffset": 1,
+          "block": {
+            "material": "minecraft:smooth_quartz_slab",
+            "properties": {
+              "type": "bottom"
+            }
+          }
+        },
+        {
+          "xOffset": -1,
+          "yOffset": 1,
+          "zOffset": 0,
+          "block": {
+            "material": "minecraft:smooth_quartz_slab",
+            "properties": {
+              "type": "bottom"
+            }
+          }
+        },
+        {
+          "xOffset": 0,
+          "yOffset": 1,
+          "zOffset": -1,
+          "block": {
+            "material": "minecraft:smooth_quartz_slab",
+            "properties": {
+              "type": "bottom"
+            }
+          }
+        },
+        {
+          "xOffset": 0,
+          "yOffset": 2,
+          "zOffset": 0,
+          "block": {
+            "material": "minecraft:smooth_quartz"
+          }
+        },
+        {
+          "xOffset": 1,
+          "yOffset": 2,
+          "zOffset": 1,
+          "block": {
+            "material": "minecraft:lightning_rod",
+            "properties": {
+              "facing": "up"
+            }
+          }
+        },
+        {
+          "xOffset": -1,
+          "yOffset": 2,
+          "zOffset": 1,
+          "block": {
+            "material": "minecraft:lightning_rod",
+            "properties": {
+              "facing": "up"
+            }
+          }
+        },
+        {
+          "xOffset": -1,
+          "yOffset": 2,
+          "zOffset": -1,
+          "block": {
+            "material": "minecraft:lightning_rod",
+            "properties": {
+              "facing": "up"
+            }
+          }
+        },
+        {
+          "xOffset": 1,
+          "yOffset": 2,
+          "zOffset": -1,
+          "block": {
+            "material": "minecraft:lightning_rod",
+            "properties": {
+              "facing": "up"
+            }
+          }
+        },
+        {
+          "xOffset": 0,
+          "yOffset": 3,
+          "zOffset": 0,
+          "block": {
+            "material": "minecraft:gold_block"
+          }
+        },
+        {
+          "xOffset": 1,
+          "yOffset": 3,
+          "zOffset": 0,
+          "block": {
+            "material": "minecraft:yellow_stained_glass_pane",
+            "properties": {
+              "west": "true"
+            }
+          }
+        },
+        {
+          "xOffset": 0,
+          "yOffset": 3,
+          "zOffset": -1,
+          "block": {
+            "material": "minecraft:yellow_stained_glass_pane",
+            "properties": {
+              "south": "true"
+            }
+          }
+        },
+        {
+          "xOffset": -1,
+          "yOffset": 3,
+          "zOffset": 0,
+          "block": {
+            "material": "minecraft:yellow_stained_glass_pane",
+            "properties": {
+              "east": "true"
+            }
+          }
+        },
+        {
+          "xOffset": 0,
+          "yOffset": 3,
+          "zOffset": 1,
+          "block": {
+            "material": "minecraft:yellow_stained_glass_pane",
+            "properties": {
+              "north": "true"
+            }
+          }
+        },
+        {
+          "xOffset": 0,
+          "yOffset": 4,
+          "zOffset": 0,
+          "block": {
+            "material": "minecraft:copper_block"
+          }
+        },
+        {
+          "xOffset": 1,
+          "yOffset": 4,
+          "zOffset": 0,
+          "block": {
+            "material": "minecraft:lightning_rod",
+            "properties": {
+              "facing": "up"
+            }
+          }
+        },
+        {
+          "xOffset": -1,
+          "yOffset": 4,
+          "zOffset": 0,
+          "block": {
+            "material": "minecraft:lightning_rod",
+            "properties": {
+              "facing": "up"
+            }
+          }
+        },
+        {
+          "xOffset": 0,
+          "yOffset": 4,
+          "zOffset": 1,
+          "block": {
+            "material": "minecraft:lightning_rod",
+            "properties": {
+              "facing": "up"
+            }
+          }
+        },
+        {
+          "xOffset": 0,
+          "yOffset": 4,
+          "zOffset": -1,
+          "block": {
+            "material": "minecraft:lightning_rod",
+            "properties": {
+              "facing": "up"
+            }
+          }
+        },
+        {
+          "xOffset": 0,
+          "yOffset": 5,
+          "zOffset": 0,
+          "block": {
+            "material": "minecraft:lightning_rod",
+            "properties": {
+              "facing": "up"
+            }
+          }
+        }
+      ]
     },
     {
       "level": 5,
@@ -263,13 +687,374 @@
           ""
         ]
       },
-      "maxTargets": 5,
-      "relativeCastPoint": {
-        "xOffset": 0,
-        "yOffset": 4,
-        "zOffset": 0
-      },
-      "relativeBlocks": []
+      "relativeCastPoints": [
+        {
+          "xOffset": 0,
+          "yOffset": 6,
+          "zOffset": 0
+        },
+        {
+          "xOffset": 1,
+          "yOffset": 4,
+          "zOffset": 1
+        },
+        {
+          "xOffset": -1,
+          "yOffset": 4,
+          "zOffset": 1
+        },
+        {
+          "xOffset": -1,
+          "yOffset": 4,
+          "zOffset": -1
+        },
+        {
+          "xOffset": 1,
+          "yOffset": 4,
+          "zOffset": -1
+        }
+      ],
+      "relativeBlocks": [
+        {
+          "xOffset": 1,
+          "yOffset": 1,
+          "zOffset": 1,
+          "block": {
+            "material": "minecraft:smooth_quartz"
+          }
+        },
+        {
+          "xOffset": 1,
+          "yOffset": 1,
+          "zOffset": -1,
+          "block": {
+            "material": "minecraft:smooth_quartz"
+          }
+        },
+        {
+          "xOffset": -1,
+          "yOffset": 1,
+          "zOffset": 1,
+          "block": {
+            "material": "minecraft:smooth_quartz"
+          }
+        },
+        {
+          "xOffset": -1,
+          "yOffset": 1,
+          "zOffset": -1,
+          "block": {
+            "material": "minecraft:smooth_quartz"
+          }
+        },
+        {
+          "xOffset": 0,
+          "yOffset": 2,
+          "zOffset": 0,
+          "block": {
+            "material": "minecraft:gold_block"
+          }
+        },
+        {
+          "xOffset": 1,
+          "yOffset": 2,
+          "zOffset": 0,
+          "block": {
+            "material": "minecraft:grindstone",
+            "properties": {
+              "face": "wall",
+              "facing": "east"
+            }
+          }
+        },
+        {
+          "xOffset": 0,
+          "yOffset": 2,
+          "zOffset": -1,
+          "block": {
+            "material": "minecraft:grindstone",
+            "properties": {
+              "face": "wall",
+              "facing": "north"
+            }
+          }
+        },
+        {
+          "xOffset": -1,
+          "yOffset": 2,
+          "zOffset": 0,
+          "block": {
+            "material": "minecraft:grindstone",
+            "properties": {
+              "face": "wall",
+              "facing": "west"
+            }
+          }
+        },
+        {
+          "xOffset": 0,
+          "yOffset": 2,
+          "zOffset": 1,
+          "block": {
+            "material": "minecraft:grindstone",
+            "properties": {
+              "face": "wall",
+              "facing": "south"
+            }
+          }
+        },
+        {
+          "xOffset": 1,
+          "yOffset": 2,
+          "zOffset": 1,
+          "block": {
+            "material": "minecraft:yellow_stained_glass_pane"
+          }
+        },
+        {
+          "xOffset": 1,
+          "yOffset": 2,
+          "zOffset": -1,
+          "block": {
+            "material": "minecraft:yellow_stained_glass_pane"
+          }
+        },
+        {
+          "xOffset": -1,
+          "yOffset": 2,
+          "zOffset": 1,
+          "block": {
+            "material": "minecraft:yellow_stained_glass_pane"
+          }
+        },
+        {
+          "xOffset": -1,
+          "yOffset": 2,
+          "zOffset": -1,
+          "block": {
+            "material": "minecraft:yellow_stained_glass_pane"
+          }
+        },
+        {
+          "xOffset": 1,
+          "yOffset": 3,
+          "zOffset": 1,
+          "block": {
+            "material": "minecraft:gold_block"
+          }
+        },
+        {
+          "xOffset": 1,
+          "yOffset": 3,
+          "zOffset": -1,
+          "block": {
+            "material": "minecraft:gold_block"
+          }
+        },
+        {
+          "xOffset": -1,
+          "yOffset": 3,
+          "zOffset": 1,
+          "block": {
+            "material": "minecraft:gold_block"
+          }
+        },
+        {
+          "xOffset": -1,
+          "yOffset": 3,
+          "zOffset": -1,
+          "block": {
+            "material": "minecraft:gold_block"
+          }
+        },
+        {
+          "xOffset": 1,
+          "yOffset": 3,
+          "zOffset": 0,
+          "block": {
+            "material": "minecraft:iron_block"
+          }
+        },
+        {
+          "xOffset": -1,
+          "yOffset": 3,
+          "zOffset": 0,
+          "block": {
+            "material": "minecraft:iron_block"
+          }
+        },
+        {
+          "xOffset": 0,
+          "yOffset": 3,
+          "zOffset": 1,
+          "block": {
+            "material": "minecraft:iron_block"
+          }
+        },
+        {
+          "xOffset": 0,
+          "yOffset": 3,
+          "zOffset": -1,
+          "block": {
+            "material": "minecraft:iron_block"
+          }
+        },
+        {
+          "xOffset": 0,
+          "yOffset": 4,
+          "zOffset": 0,
+          "block": {
+            "material": "minecraft:iron_block"
+          }
+        },
+        {
+          "xOffset": 1,
+          "yOffset": 4,
+          "zOffset": 1,
+          "block": {
+            "material": "minecraft:end_rod",
+            "properties": {
+              "facing": "up"
+            }
+          }
+        },
+        {
+          "xOffset": 1,
+          "yOffset": 4,
+          "zOffset": -1,
+          "block": {
+            "material": "minecraft:end_rod",
+            "properties": {
+              "facing": "up"
+            }
+          }
+        },
+        {
+          "xOffset": -1,
+          "yOffset": 4,
+          "zOffset": 1,
+          "block": {
+            "material": "minecraft:end_rod",
+            "properties": {
+              "facing": "up"
+            }
+          }
+        },
+        {
+          "xOffset": -1,
+          "yOffset": 4,
+          "zOffset": -1,
+          "block": {
+            "material": "minecraft:end_rod",
+            "properties": {
+              "facing": "up"
+            }
+          }
+        },
+        {
+          "xOffset": 1,
+          "yOffset": 4,
+          "zOffset": 0,
+          "block": {
+            "material": "minecraft:smooth_quartz_slab",
+            "properties": {
+              "type": "bottom"
+            }
+          }
+        },
+        {
+          "xOffset": -1,
+          "yOffset": 4,
+          "zOffset": 0,
+          "block": {
+            "material": "minecraft:smooth_quartz_slab",
+            "properties": {
+              "type": "bottom"
+            }
+          }
+        },
+        {
+          "xOffset": 0,
+          "yOffset": 4,
+          "zOffset": 1,
+          "block": {
+            "material": "minecraft:smooth_quartz_slab",
+            "properties": {
+              "type": "bottom"
+            }
+          }
+        },
+        {
+          "xOffset": 0,
+          "yOffset": 4,
+          "zOffset": -1,
+          "block": {
+            "material": "minecraft:smooth_quartz_slab",
+            "properties": {
+              "type": "bottom"
+            }
+          }
+        },
+        {
+          "xOffset": 0,
+          "yOffset": 5,
+          "zOffset": 0,
+          "block": {
+            "material": "minecraft:iron_block"
+          }
+        },
+        {
+          "xOffset": 1,
+          "yOffset": 5,
+          "zOffset": 1,
+          "block": {
+            "material": "minecraft:yellow_stained_glass_pane"
+          }
+        },
+        {
+          "xOffset": 1,
+          "yOffset": 5,
+          "zOffset": -1,
+          "block": {
+            "material": "minecraft:yellow_stained_glass_pane"
+          }
+        },
+        {
+          "xOffset": -1,
+          "yOffset": 5,
+          "zOffset": 1,
+          "block": {
+            "material": "minecraft:yellow_stained_glass_pane"
+          }
+        },
+        {
+          "xOffset": -1,
+          "yOffset": 5,
+          "zOffset": -1,
+          "block": {
+            "material": "minecraft:yellow_stained_glass_pane"
+          }
+        },
+        {
+          "xOffset": 0,
+          "yOffset": 6,
+          "zOffset": 0,
+          "block": {
+            "material": "minecraft:waxed_copper_block"
+          }
+        },
+        {
+          "xOffset": 0,
+          "yOffset": 7,
+          "zOffset": 0,
+          "block": {
+            "material": "minecraft:lightning_rod",
+            "properties": {
+              "facing": "up"
+            }
+          }
+        }
+      ]
     }
   ]
 }
