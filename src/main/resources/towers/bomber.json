@@ -1,14 +1,399 @@
 {
   "type": "BOMBER",
-  "displayMaterial": "minecraft:tnt",
+  "name": "bomber",
   "levels": [
     {
       "level": 1,
       "cost": 250,
-      "name": "Bomber Tower",
-      "description": [
-        "Boom boom launcher"
-      ],
+      "fireDelay": 20,
+      "damage": 1,
+      "range": 100,
+      "menuItem": {
+        "material": "minecraft:tnt",
+        "displayName": "<yellow>Bomber ($250)",
+        "lore": [
+          "",
+          "<yellow>Fires flying TNT at enemies",
+          "<yellow>Dealing splash damage to those near it",
+          "",
+          "<gold>Damage: <yellow>1",
+          "<gold>Range: <yellow>20",
+          "<gold>Fire Delay: <yellow>3 seconds",
+          "<gold>Explosion Radius: <yellow>4 blocks",
+          "",
+          "<red>Cannot shoot flying enemies"
+        ]
+      },
+      "upgradeItem": {
+        "material": "minecraft:tnt",
+        "displayName": "<yellow>Bomber Lvl. I",
+        "lore": [
+          "",
+          "<yellow>Fires flying TNT at enemies",
+          "<yellow>Dealing splash damage to those near it",
+          "",
+          "<gold>Damage: <yellow>1",
+          "<gold>Range: <yellow>20",
+          "<gold>Fire Delay: <yellow>3 seconds",
+          "<gold>Explosion Radius: <yellow>4 blocks",
+          "",
+          "<red>Cannot shoot flying enemies"
+        ]
+      },
+      "relativeBlocks": [
+        {
+          "xOffset": 0,
+          "zOffset": -1,
+          "yOffset": 1,
+          "block": {
+            "material": "minecraft:cracked_stone_bricks"
+          }
+        },
+        {
+          "xOffset": 0,
+          "zOffset": -1,
+          "yOffset": 2,
+          "block": {
+            "material": "minecraft:cracked_stone_bricks"
+          }
+        },
+        {
+          "xOffset": 0,
+          "zOffset": -1,
+          "yOffset": 3,
+          "block": {
+            "material": "minecraft:cobblestone_wall",
+            "properties": {
+              "west": "low",
+              "east": "low"
+            }
+          }
+        },
+        {
+          "xOffset": 0,
+          "zOffset": -1,
+          "yOffset": 4,
+          "block": {
+            "material": "minecraft:cracked_stone_bricks"
+          }
+        },
+        {
+          "xOffset": -1,
+          "zOffset": -1,
+          "yOffset": 1,
+          "block": {
+            "material": "minecraft:redstone_block"
+          }
+        },
+        {
+          "xOffset": -1,
+          "zOffset": -1,
+          "yOffset": 2,
+          "block": {
+            "material": "minecraft:cobblestone_wall",
+            "properties": {
+              "east": "low",
+              "south": "low"
+            }
+          }
+        },
+        {
+          "xOffset": -1,
+          "zOffset": -1,
+          "yOffset": 3,
+          "block": {
+            "material": "minecraft:cracked_stone_bricks"
+          }
+        },
+        {
+          "xOffset": -1,
+          "zOffset": -1,
+          "yOffset": 4,
+          "block": {
+            "material": "minecraft:cobblestone_wall",
+            "properties": {
+              "east": "low",
+              "south": "low"
+            }
+          }
+        },
+        {
+          "xOffset": -1,
+          "zOffset": 0,
+          "yOffset": 1,
+          "block": {
+            "material": "minecraft:cracked_stone_bricks"
+          }
+        },
+        {
+          "xOffset": -1,
+          "zOffset": 0,
+          "yOffset": 2,
+          "block": {
+            "material": "minecraft:cracked_stone_bricks"
+          }
+        },
+        {
+          "xOffset": -1,
+          "zOffset": 0,
+          "yOffset": 3,
+          "block": {
+            "material": "minecraft:cobblestone_wall",
+            "properties": {
+              "north": "low",
+              "south": "low"
+            }
+          }
+        },
+        {
+          "xOffset": -1,
+          "zOffset": 0,
+          "yOffset": 4,
+          "block": {
+            "material": "minecraft:cracked_stone_bricks"
+          }
+        },
+        {
+          "xOffset": -1,
+          "zOffset": 1,
+          "yOffset": 1,
+          "block": {
+            "material": "minecraft:redstone_block"
+          }
+        },
+        {
+          "xOffset": -1,
+          "zOffset": 1,
+          "yOffset": 2,
+          "block": {
+            "material": "minecraft:cobblestone_wall",
+            "properties": {
+              "north": "low",
+              "east": "low"
+            }
+          }
+        },
+        {
+          "xOffset": -1,
+          "zOffset": 1,
+          "yOffset": 3,
+          "block": {
+            "material": "minecraft:cracked_stone_bricks"
+          }
+        },
+        {
+          "xOffset": -1,
+          "zOffset": 1,
+          "yOffset": 4,
+          "block": {
+            "material": "minecraft:cobblestone_wall",
+            "properties": {
+              "north": "low",
+              "east": "low"
+            }
+          }
+        },
+        {
+          "xOffset": 0,
+          "zOffset": 1,
+          "yOffset": 1,
+          "block": {
+            "material": "minecraft:cracked_stone_bricks"
+          }
+        },
+        {
+          "xOffset": 0,
+          "zOffset": 1,
+          "yOffset": 2,
+          "block": {
+            "material": "minecraft:cracked_stone_bricks"
+          }
+        },
+        {
+          "xOffset": 0,
+          "zOffset": 1,
+          "yOffset": 3,
+          "block": {
+            "material": "minecraft:cobblestone_wall",
+            "properties": {
+              "east": "low",
+              "west": "low"
+            }
+          }
+        },
+        {
+          "xOffset": 0,
+          "zOffset": 1,
+          "yOffset": 4,
+          "block": {
+            "material": "minecraft:cracked_stone_bricks"
+          }
+        },
+        {
+          "xOffset": 1,
+          "zOffset": 1,
+          "yOffset": 1,
+          "block": {
+            "material": "minecraft:redstone_block"
+          }
+        },
+        {
+          "xOffset": 1,
+          "zOffset": 1,
+          "yOffset": 2,
+          "block": {
+            "material": "minecraft:cobblestone_wall",
+            "properties": {
+              "west": "low",
+              "north": "low"
+            }
+          }
+        },
+        {
+          "xOffset": 1,
+          "zOffset": 1,
+          "yOffset": 3,
+          "block": {
+            "material": "minecraft:cracked_stone_bricks"
+          }
+        },
+        {
+          "xOffset": 1,
+          "zOffset": 1,
+          "yOffset": 4,
+          "block": {
+            "material": "minecraft:cobblestone_wall",
+            "properties": {
+              "west": "low",
+              "north": "low"
+            }
+          }
+        },
+        {
+          "xOffset": 1,
+          "zOffset": 0,
+          "yOffset": 1,
+          "block": {
+            "material": "minecraft:cracked_stone_bricks"
+          }
+        },
+        {
+          "xOffset": 1,
+          "zOffset": 0,
+          "yOffset": 2,
+          "block": {
+            "material": "minecraft:cracked_stone_bricks"
+          }
+        },
+        {
+          "xOffset": 1,
+          "zOffset": 0,
+          "yOffset": 3,
+          "block": {
+            "material": "minecraft:cobblestone_wall",
+            "properties": {
+              "west": "low",
+              "east": "low"
+            }
+          }
+        },
+        {
+          "xOffset": 1,
+          "zOffset": 0,
+          "yOffset": 4,
+          "block": {
+            "material": "minecraft:cracked_stone_bricks"
+          }
+        },
+        {
+          "xOffset": 1,
+          "zOffset": -1,
+          "yOffset": 1,
+          "block": {
+            "material": "minecraft:redstone_block"
+          }
+        },
+        {
+          "xOffset": 1,
+          "zOffset": -1,
+          "yOffset": 2,
+          "block": {
+            "material": "minecraft:cobblestone_wall",
+            "properties": {
+              "south": "low",
+              "west": "low"
+            }
+          }
+        },
+        {
+          "xOffset": 1,
+          "zOffset": -1,
+          "yOffset": 3,
+          "block": {
+            "material": "minecraft:cracked_stone_bricks"
+          }
+        },
+        {
+          "xOffset": 1,
+          "zOffset": -1,
+          "yOffset": 4,
+          "block": {
+            "material": "minecraft:cobblestone_wall",
+            "properties": {
+              "south": "low",
+              "west": "low"
+            }
+          }
+        },
+        {
+          "xOffset": 0,
+          "zOffset": 0,
+          "yOffset": 1,
+          "block": {
+            "material": "minecraft:redstone_block"
+          }
+        }
+      ]
+    },
+    {
+      "level": 2,
+      "cost": 250,
+      "fireDelay": 10,
+      "damage": 150,
+      "range": 22,
+      "menuItem": {
+        "material": "minecraft:tnt",
+        "displayName": "<yellow>Bomber Lvl. II",
+        "lore": [
+          "",
+          "<yellow>Fires flying TNT at enemies",
+          "<yellow>Dealing splash damage to those near it",
+          "",
+          "<gold>Damage: <yellow>1.5",
+          "<gold>Range: <yellow>22",
+          "<gold>Fire Delay: <yellow>2.5 seconds",
+          "<gold>Explosion Radius: <yellow>4 blocks",
+          "",
+          "<red>Cannot shoot flying enemies"
+        ]
+      },
+      "upgradeItem": {
+        "material": "minecraft:lime_stained_glass_pane",
+        "displayName": "<yellow>Bomber Lvl. II",
+        "lore": [
+          "",
+          "<yellow>Fires flying TNT at enemies",
+          "<yellow>Dealing splash damage to those near it",
+          "",
+          "<gold>Cost: <yellow>$250",
+          "<gold>Damage: <yellow>1.5 (+0.5)",
+          "<gold>Range: <yellow>22 (+2)",
+          "<gold>Fire Delay: <yellow>2.5 seconds (-0.5)",
+          "<gold>Explosion Radius: <yellow>4 blocks",
+          "",
+          "<red>Cannot shoot flying enemies"
+        ]
+      },
       "relativeBlocks": [
         {
           "xOffset": 0,
@@ -29,18 +414,6 @@
         {
           "xOffset": 0,
           "zOffset": -1,
-          "yOffset": 3,
-          "block": {
-            "material": "minecraft:cobblestone_wall",
-            "properties": {
-              "west": "low",
-              "east": "low"
-            }
-          }
-        },
-        {
-          "xOffset": 0,
-          "zOffset": -1,
           "yOffset": 4,
           "block": {
             "material": "minecraft:stone_bricks"
@@ -49,41 +422,9 @@
         {
           "xOffset": -1,
           "zOffset": -1,
-          "yOffset": 1,
-          "block": {
-            "material": "minecraft:redstone_block"
-          }
-        },
-        {
-          "xOffset": -1,
-          "zOffset": -1,
-          "yOffset": 2,
-          "block": {
-            "material": "minecraft:cobblestone_wall",
-            "properties": {
-              "east": "low",
-              "south": "low"
-            }
-          }
-        },
-        {
-          "xOffset": -1,
-          "zOffset": -1,
           "yOffset": 3,
           "block": {
             "material": "minecraft:stone_bricks"
-          }
-        },
-        {
-          "xOffset": -1,
-          "zOffset": -1,
-          "yOffset": 4,
-          "block": {
-            "material": "minecraft:cobblestone_wall",
-            "properties": {
-              "east": "low",
-              "south": "low"
-            }
           }
         },
         {
@@ -105,18 +446,6 @@
         {
           "xOffset": -1,
           "zOffset": 0,
-          "yOffset": 3,
-          "block": {
-            "material": "minecraft:cobblestone_wall",
-            "properties": {
-              "north": "low",
-              "south": "low"
-            }
-          }
-        },
-        {
-          "xOffset": -1,
-          "zOffset": 0,
           "yOffset": 4,
           "block": {
             "material": "minecraft:stone_bricks"
@@ -125,41 +454,9 @@
         {
           "xOffset": -1,
           "zOffset": 1,
-          "yOffset": 1,
-          "block": {
-            "material": "minecraft:redstone_block"
-          }
-        },
-        {
-          "xOffset": -1,
-          "zOffset": 1,
-          "yOffset": 2,
-          "block": {
-            "material": "minecraft:cobblestone_wall",
-            "properties": {
-              "north": "low",
-              "east": "low"
-            }
-          }
-        },
-        {
-          "xOffset": -1,
-          "zOffset": 1,
           "yOffset": 3,
           "block": {
             "material": "minecraft:stone_bricks"
-          }
-        },
-        {
-          "xOffset": -1,
-          "zOffset": 1,
-          "yOffset": 4,
-          "block": {
-            "material": "minecraft:cobblestone_wall",
-            "properties": {
-              "north": "low",
-              "east": "low"
-            }
           }
         },
         {
@@ -181,18 +478,6 @@
         {
           "xOffset": 0,
           "zOffset": 1,
-          "yOffset": 3,
-          "block": {
-            "material": "minecraft:cobblestone_wall",
-            "properties": {
-              "east": "low",
-              "west": "low"
-            }
-          }
-        },
-        {
-          "xOffset": 0,
-          "zOffset": 1,
           "yOffset": 4,
           "block": {
             "material": "minecraft:stone_bricks"
@@ -201,41 +486,9 @@
         {
           "xOffset": 1,
           "zOffset": 1,
-          "yOffset": 1,
-          "block": {
-            "material": "minecraft:redstone_block"
-          }
-        },
-        {
-          "xOffset": 1,
-          "zOffset": 1,
-          "yOffset": 2,
-          "block": {
-            "material": "minecraft:cobblestone_wall",
-            "properties": {
-              "west": "low",
-              "north": "low"
-            }
-          }
-        },
-        {
-          "xOffset": 1,
-          "zOffset": 1,
           "yOffset": 3,
           "block": {
             "material": "minecraft:stone_bricks"
-          }
-        },
-        {
-          "xOffset": 1,
-          "zOffset": 1,
-          "yOffset": 4,
-          "block": {
-            "material": "minecraft:cobblestone_wall",
-            "properties": {
-              "west": "low",
-              "north": "low"
-            }
           }
         },
         {
@@ -257,18 +510,6 @@
         {
           "xOffset": 1,
           "zOffset": 0,
-          "yOffset": 3,
-          "block": {
-            "material": "minecraft:cobblestone_wall",
-            "properties": {
-              "west": "low",
-              "east": "low"
-            }
-          }
-        },
-        {
-          "xOffset": 1,
-          "zOffset": 0,
           "yOffset": 4,
           "block": {
             "material": "minecraft:stone_bricks"
@@ -277,49 +518,9 @@
         {
           "xOffset": 1,
           "zOffset": -1,
-          "yOffset": 1,
-          "block": {
-            "material": "minecraft:redstone_block"
-          }
-        },
-        {
-          "xOffset": 1,
-          "zOffset": -1,
-          "yOffset": 2,
-          "block": {
-            "material": "minecraft:cobblestone_wall",
-            "properties": {
-              "south": "low",
-              "west": "low"
-            }
-          }
-        },
-        {
-          "xOffset": 1,
-          "zOffset": -1,
           "yOffset": 3,
           "block": {
             "material": "minecraft:stone_bricks"
-          }
-        },
-        {
-          "xOffset": 1,
-          "zOffset": -1,
-          "yOffset": 4,
-          "block": {
-            "material": "minecraft:cobblestone_wall",
-            "properties": {
-              "south": "low",
-              "west": "low"
-            }
-          }
-        },
-        {
-          "xOffset": 0,
-          "zOffset": 0,
-          "yOffset": 1,
-          "block": {
-            "material": "minecraft:redstone_block"
           }
         }
       ]

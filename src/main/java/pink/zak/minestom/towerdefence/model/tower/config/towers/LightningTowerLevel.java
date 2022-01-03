@@ -10,18 +10,25 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public class LightningTowerLevel extends AttackingTowerLevel {
-    private final Set<RelativePoint> relativeCastPoints;
+    private final RelativePoint relativeCastPoint; // Where the particles will connect to and then fire from
+    private final Set<RelativePoint> relativeSpawnPoints; // Where the particles will spawn from
 
     public LightningTowerLevel(JsonObject jsonObject) {
         super(jsonObject);
-        this.relativeCastPoints = StreamSupport.stream(jsonObject.get("relativeCastPoints")
+        this.relativeSpawnPoints = StreamSupport.stream(jsonObject.get("relativeSpawnPoints")
                 .getAsJsonArray().spliterator(), true)
             .map(JsonElement::getAsJsonObject)
             .map(RelativePoint::new)
             .collect(Collectors.toSet());
+
+        this.relativeCastPoint = new RelativePoint(jsonObject.get("relativeCastPoint").getAsJsonObject());
     }
 
-    public Set<RelativePoint> getRelativeCastPoints() {
-        return this.relativeCastPoints;
+    public RelativePoint getRelativeCastPoint() {
+        return this.relativeCastPoint;
+    }
+
+    public Set<RelativePoint> getRelativeSpawnPoints() {
+        return this.relativeSpawnPoints;
     }
 }

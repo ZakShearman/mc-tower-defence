@@ -1,12 +1,49 @@
 {
   "entityType": "minecraft:skeleton",
+  "commonName": "Skeleton",
+  "guiSlot": 2,
+  "flying": false,
+  "unitCost": 1.0,
+  "unownedItem": {
+    "material": "minecraft:skeleton_skull",
+    "displayName": "<yellow>Skeleton <gold>(<yellow>Not Owned<gold>)",
+    "lore": [
+      "",
+      "<yellow>Cost: 250 mana",
+      "",
+      "<yellow>Open the upgrades menu to purchase"
+    ]
+  },
   "levels": [
     {
       "level": 1,
       "cost": 30,
       "health": 40,
       "damage": 2,
-      "movementSpeed": 0.8
+      "movementSpeed": 2.1,
+      "manaCost": 250,
+      "sendItem": {
+        "material": "minecraft:skeleton_skull",
+        "displayName": "<yellow>Skeleton",
+        "lore": [
+          "",
+          "<yellow>idk",
+          "<yellow>just testing really"
+        ]
+      },
+      "upgradeItem": {
+        "material": "minecraft:lime_stained_glass_pane",
+        "displayName": "Lvl. I",
+        "lore": [
+          "",
+          "<gold>Mana Cost: <yellow>250",
+          "",
+          "<gold>Send Cost: <yellow>$30",
+          "<gold>Health: <yellow>40",
+          "<gold>Damage: <yellow>2",
+          "<gold>Speed: <yellow>2.1"
+        ]
+      }
     }
   ]
 }

@@ -1,12 +1,44 @@
 {
   "entityType": "minecraft:zombie",
+  "commonName": "Zombie",
+  "guiSlot": 3,
+  "flying": false,
+  "unitCost": 1.0,
+  "unownedItem": {
+    "material": "minecraft:zombie_head",
+    "displayName": "<yellow>Zombie <gold>(<yellow>Not Owned<gold>)",
+    "lore": [
+      "<red>Oopsies you should've never seen this :|"
+    ]
+  },
   "levels": [
     {
       "level": 1,
       "cost": 15,
       "health": 20,
       "damage": 1,
-      "movementSpeed": 1.0
+      "movementSpeed": 2.1,
+      "manaCost": 0,
+      "sendItem": {
+        "material": "minecraft:zombie_head",
+        "displayName": "<yellow>Zombie",
+        "lore": [
+          "",
+          "<yellow>idk",
+          "<yellow>just testing really"
+        ]
+      },
+      "upgradeItem": {
+        "material": "minecraft:lime_stained_glass_pane",
+        "displayName": "Lvl. I",
+        "lore": [
+          "",
+          "<gold>Send Cost: <yellow>$15",
+          "<gold>Health: <yellow>20",
+          "<gold>Damage: <yellow>1",
+          "<gold>Speed: <yellow>2.1"
+        ]
+      }
     }
   ]
 }
