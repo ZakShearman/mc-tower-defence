@@ -17,6 +17,7 @@ dependencies {
     //compileOnly("com.github.Minestom:Minestom:6e16fb7b13")
     compileOnly("com.github.ZakShearman:Minestom:12bc35f89")
     implementation("net.kyori:adventure-text-minimessage:4.2.0-SNAPSHOT")
+    implementation("com.github.ben-manes.caffeine:caffeine:3.0.5")
     //testImplementation("com.github.Minestom:Minestom:6e16fb7b13")
     testImplementation("com.github.ZakShearman:Minestom:12bc35f89")
 
