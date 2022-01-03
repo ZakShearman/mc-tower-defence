@@ -1,11 +1,13 @@
 package pink.zak.minestom.towerdefence.game;
 
 import com.google.common.collect.Maps;
+import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.player.PlayerDisconnectEvent;
 import net.minestom.server.instance.Instance;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
+import pink.zak.minestom.towerdefence.api.event.game.TowerDamageEvent;
 import pink.zak.minestom.towerdefence.cache.TDUserCache;
 import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.enums.Team;
@@ -13,11 +15,11 @@ import pink.zak.minestom.towerdefence.game.listeners.MobMenuHandler;
 import pink.zak.minestom.towerdefence.game.listeners.TowerPlaceHandler;
 import pink.zak.minestom.towerdefence.game.listeners.TowerUpgradeHandler;
 import pink.zak.minestom.towerdefence.model.GameUser;
-import pink.zak.minestom.towerdefence.model.TDUser;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class GameHandler {
     private final TowerDefencePlugin plugin;
@@ -30,6 +32,9 @@ public class GameHandler {
 
     private Map<Player, GameUser> users = Maps.newHashMap();
     private Instance instance;
+
+    private final AtomicInteger redTowerHealth = new AtomicInteger(1000);
+    private final AtomicInteger blueTowerHealth = new AtomicInteger(1000);
 
     public GameHandler(TowerDefencePlugin plugin) {
         this.plugin = plugin;
@@ -111,5 +116,15 @@ public class GameHandler {
 
     public Instance getInstance() {
         return this.instance;
+    }
+
+    public void damageRedTower(int damage) {
+        int newHealth = this.redTowerHealth.updateAndGet(current -> current - damage);
+        MinecraftServer.getGlobalEventHandler().call(new TowerDamageEvent(Team.RED, damage, newHealth));
+    }
+
+    public void damageBlueTower(int damage) {
+        int newHealth = this.blueTowerHealth.updateAndGet(current -> current - damage);
+        MinecraftServer.getGlobalEventHandler().call(new TowerDamageEvent(Team.BLUE, damage, newHealth));
     }
 }

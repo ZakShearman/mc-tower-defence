@@ -43,6 +43,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class LivingEnemyMob extends EntityCreature {
     private final TDUserCache userCache;
+    private final GameHandler gameHandler;
 
     protected final TowerHandler towerHandler;
     protected final MobHandler mobHandler;
@@ -70,6 +71,8 @@ public class LivingEnemyMob extends EntityCreature {
         super(enemyMob.getEntityType());
 
         this.userCache = plugin.getUserCache();
+        this.gameHandler = gameHandler;
+
         this.towerHandler = gameHandler.getTowerHandler();
         this.mobHandler = gameHandler.getMobHandler();
         this.enemyMob = enemyMob;
@@ -168,6 +171,14 @@ public class LivingEnemyMob extends EntityCreature {
     protected void attackCastle() {
         this.swingMainHand();
         this.swingOffHand();
+        this.damageCastle();
+    }
+
+    protected void damageCastle() {
+        if (this.team == Team.RED)
+            this.gameHandler.damageRedTower(this.level.getDamage());
+        else
+            this.gameHandler.damageBlueTower(this.level.getDamage());
     }
 
     protected void startAttackingCastle() {

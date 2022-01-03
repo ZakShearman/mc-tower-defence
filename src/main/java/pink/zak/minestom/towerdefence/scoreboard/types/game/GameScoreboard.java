@@ -2,6 +2,7 @@ package pink.zak.minestom.towerdefence.scoreboard.types.game;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.minestom.server.adventure.audience.Audiences;
 import net.minestom.server.scoreboard.Sidebar;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 import pink.zak.minestom.towerdefence.api.event.game.TowerDamageEvent;
@@ -14,7 +15,7 @@ import pink.zak.minestom.towerdefence.scoreboard.TowerScoreboard;
 public class GameScoreboard {
     private final Sidebar sidebar = new Sidebar(TowerScoreboard.TITLE);
     private final GameUser gameUser;
-    private final int maxHealth = 1000;
+    private final double maxHealth = 1000;
 
     public GameScoreboard(TowerDefencePlugin plugin, GameUser gameUser) {
         this.gameUser = gameUser;
@@ -23,8 +24,8 @@ public class GameScoreboard {
         this.sidebar.createLine(new Sidebar.ScoreboardLine("coins", this.createCoins(), 6));
         this.sidebar.createLine(new Sidebar.ScoreboardLine("mana", this.createMana(), 5));
         this.sidebar.createLine(new Sidebar.ScoreboardLine("empty-4", Component.empty(), 4));
-        this.sidebar.createLine(new Sidebar.ScoreboardLine("red-health", this.createRedHealth(new TowerDamageEvent(Team.RED, 0, this.maxHealth)), 3));
-        this.sidebar.createLine(new Sidebar.ScoreboardLine("blue-health", this.createBlueHealth(new TowerDamageEvent(Team.BLUE, 0, this.maxHealth)), 2));
+        this.sidebar.createLine(new Sidebar.ScoreboardLine("red-health", this.createRedHealth(new TowerDamageEvent(Team.RED, 0, (int) this.maxHealth)), 3));
+        this.sidebar.createLine(new Sidebar.ScoreboardLine("blue-health", this.createBlueHealth(new TowerDamageEvent(Team.BLUE, 0, (int) this.maxHealth)), 2));
         this.sidebar.createLine(new Sidebar.ScoreboardLine("empty-1", Component.empty(), 1));
         this.sidebar.createLine(new Sidebar.ScoreboardLine("website", TowerScoreboard.DOMAIN, 0));
 

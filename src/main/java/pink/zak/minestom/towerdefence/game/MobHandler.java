@@ -72,7 +72,8 @@ public class MobHandler {
         List<LivingEnemyMob> distanceSortedMobs = new ArrayList<>(team == Team.RED ? this.redSideMobs : this.blueSideMobs);
         distanceSortedMobs.sort(Comparator.comparingDouble(LivingEnemyMob::getTotalDistanceMoved).reversed());
 
-        for (PlacedAttackingTower<?> tower : this.towerHandler.getRedTowers().stream()
+        for (PlacedAttackingTower<?> tower : (team == Team.RED ? this.towerHandler.getRedTowers() : this.towerHandler.getBlueTowers())
+            .stream()
             .filter(tower -> tower instanceof PlacedAttackingTower)
             .map(tower -> (PlacedAttackingTower<?>) tower)
             .collect(Collectors.toSet())

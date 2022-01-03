@@ -25,7 +25,7 @@
       "relativeSpawnPoints": [],
       "relativeCastPoint": {
         "xOffset": 0,
-        "yOffset": 1,
+        "yOffset": 2.5,
         "zOffset": 0
       },
       "relativeBlocks": [
@@ -161,7 +161,7 @@
       "relativeSpawnPoints": [],
       "relativeCastPoint": {
         "xOffset": 0,
-        "yOffset": 1,
+        "yOffset": 2.5,
         "zOffset": 0
       },
       "relativeBlocks": [
@@ -222,7 +222,7 @@
       "relativeSpawnPoints": [],
       "relativeCastPoint": {
         "xOffset": 0,
-        "yOffset": 3,
+        "yOffset": 4.5,
         "zOffset": 0
       },
       "relativeBlocks": [
