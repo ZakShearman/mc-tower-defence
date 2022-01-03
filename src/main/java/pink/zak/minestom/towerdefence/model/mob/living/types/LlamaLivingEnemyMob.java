@@ -7,6 +7,8 @@ import net.minestom.server.instance.Instance;
 import net.minestom.server.utils.Direction;
 import net.minestom.server.utils.time.TimeUnit;
 import org.jetbrains.annotations.NotNull;
+import pink.zak.minestom.towerdefence.TowerDefencePlugin;
+import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.game.MobHandler;
 import pink.zak.minestom.towerdefence.game.TowerHandler;
 import pink.zak.minestom.towerdefence.model.GameUser;
@@ -17,8 +19,8 @@ import pink.zak.minestom.towerdefence.utils.DirectionUtils;
 
 public class LlamaLivingEnemyMob extends LivingEnemyMob {
 
-    public LlamaLivingEnemyMob(TowerHandler towerHandler, MobHandler mobHandler, @NotNull EnemyMob enemyMob, Instance instance, TowerMap map, GameUser gameUser, int level) {
-        super(towerHandler, mobHandler, enemyMob, instance, map, gameUser, level);
+    public LlamaLivingEnemyMob(TowerDefencePlugin plugin, GameHandler gameHandler, @NotNull EnemyMob enemyMob, Instance instance, TowerMap map, GameUser gameUser, int level) {
+        super(plugin, gameHandler, enemyMob, instance, map, gameUser, level);
     }
 
     @Override

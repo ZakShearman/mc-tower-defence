@@ -2,6 +2,7 @@ package pink.zak.minestom.towerdefence.cache;
 
 import net.minestom.server.event.player.PlayerDisconnectEvent;
 import net.minestom.server.event.player.PlayerLoginEvent;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 import pink.zak.minestom.towerdefence.model.TDUser;
@@ -28,7 +29,7 @@ public class TDUserCache {
         return this.tdUsers.values();
     }
 
-    public @Nullable TDUser getUser(UUID uuid) {
+    public @NotNull TDUser getUser(UUID uuid) {
         TDUser user = this.tdUsers.get(uuid);
         if (user == null) {
             Optional<TDUser> optionalUser = this.load(uuid);

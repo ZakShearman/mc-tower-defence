@@ -16,7 +16,10 @@ import net.minestom.server.network.packet.server.play.SoundEffectPacket;
 import net.minestom.server.sound.SoundEvent;
 import net.minestom.server.timer.Task;
 import org.jetbrains.annotations.NotNull;
+import pink.zak.minestom.towerdefence.TowerDefencePlugin;
+import pink.zak.minestom.towerdefence.cache.TDUserCache;
 import pink.zak.minestom.towerdefence.enums.Team;
+import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.game.MobHandler;
 import pink.zak.minestom.towerdefence.game.TowerHandler;
 import pink.zak.minestom.towerdefence.model.GameUser;
@@ -39,6 +42,8 @@ import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class LivingEnemyMob extends EntityCreature {
+    private final TDUserCache userCache;
+
     protected final TowerHandler towerHandler;
     protected final MobHandler mobHandler;
     protected final EnemyMob enemyMob;
@@ -61,11 +66,12 @@ public class LivingEnemyMob extends EntityCreature {
 
     private Task attackTask;
 
-    protected LivingEnemyMob(TowerHandler towerHandler, MobHandler mobHandler, EnemyMob enemyMob, Instance instance, TowerMap map, GameUser gameUser, int level) {
+    protected LivingEnemyMob(TowerDefencePlugin plugin, GameHandler gameHandler, EnemyMob enemyMob, Instance instance, TowerMap map, GameUser gameUser, int level) {
         super(enemyMob.getEntityType());
 
-        this.towerHandler = towerHandler;
-        this.mobHandler = mobHandler;
+        this.userCache = plugin.getUserCache();
+        this.towerHandler = gameHandler.getTowerHandler();
+        this.mobHandler = gameHandler.getMobHandler();
         this.enemyMob = enemyMob;
         this.level = enemyMob.getLevel(level);
         this.team = gameUser.getTeam() /*gameUser.getTeam() == Team.RED ? Team.BLUE : Team.RED*/;
@@ -93,13 +99,13 @@ public class LivingEnemyMob extends EntityCreature {
         this.setInstance(instance, spawnPos.add(this.positionModifier, enemyMob.isFlying() ? 5 : 0, this.positionModifier));
     }
 
-    public static LivingEnemyMob create(TowerHandler towerHandler, MobHandler mobHandler, EnemyMob enemyMob, int level, Instance instance, TowerMap map, GameUser gameUser) {
+    public static LivingEnemyMob create(TowerDefencePlugin plugin, GameHandler gameHandler, EnemyMob enemyMob, int level, Instance instance, TowerMap map, GameUser gameUser) {
         if (enemyMob.getEntityType() == EntityType.LLAMA)
-            return new LlamaLivingEnemyMob(towerHandler, mobHandler, enemyMob, instance, map, gameUser, level);
+            return new LlamaLivingEnemyMob(plugin, gameHandler, enemyMob, instance, map, gameUser, level);
         else if (enemyMob.getEntityType() == EntityType.BEE)
-            return new BeeLivingEnemyMob(towerHandler, mobHandler, enemyMob, instance, map, gameUser, level);
+            return new BeeLivingEnemyMob(plugin, gameHandler, enemyMob, instance, map, gameUser, level);
         else
-            return new LivingEnemyMob(towerHandler, mobHandler, enemyMob, instance, map, gameUser, level);
+            return new LivingEnemyMob(plugin, gameHandler, enemyMob, instance, map, gameUser, level);
     }
 
     private Component createCustomName() {
@@ -201,7 +207,7 @@ public class LivingEnemyMob extends EntityCreature {
         if (this.isDead)
             return;
 
-        DamageIndicator.create(this, value);
+        DamageIndicator.create(this.userCache, this, value);
         this.sendPacketToViewersAndSelf(new EntityAnimationPacket(this.getEntityId(), EntityAnimationPacket.Animation.TAKE_DAMAGE));
         this.setHealth(this.health - value);
 

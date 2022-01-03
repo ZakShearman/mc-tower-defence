@@ -27,6 +27,8 @@ public class MobHandler {
     private final Set<LivingEnemyMob> blueSideMobs = Sets.newConcurrentHashSet();
 
     private final TowerDefencePlugin plugin;
+    private final GameHandler gameHandler;
+
     private final TowerHandler towerHandler;
     private final TowerMap map;
     private Instance instance;
@@ -35,6 +37,8 @@ public class MobHandler {
 
     public MobHandler(GameHandler gameHandler, TowerDefencePlugin plugin) {
         this.plugin = plugin;
+        this.gameHandler = gameHandler;
+
         this.towerHandler = gameHandler.getTowerHandler();
         this.map = gameHandler.getMap();
 
@@ -44,7 +48,7 @@ public class MobHandler {
     }
 
     public void spawnMob(QueuedEnemyMob queuedEnemyMob, GameUser spawner) {
-        LivingEnemyMob mob = LivingEnemyMob.create(this.towerHandler, this, queuedEnemyMob.mob(), queuedEnemyMob.level().getLevel(), this.instance, this.map, spawner);
+        LivingEnemyMob mob = LivingEnemyMob.create(this.plugin, this.gameHandler, queuedEnemyMob.mob(), queuedEnemyMob.level().getLevel(), this.instance, this.map, spawner);
         if (spawner.getTeam() == Team.RED)
             this.redSideMobs.add(mob); // todo change later
         else

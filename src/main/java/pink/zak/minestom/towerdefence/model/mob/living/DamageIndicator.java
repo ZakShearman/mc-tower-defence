@@ -4,19 +4,20 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.minestom.server.adventure.audience.Audiences;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.coordinate.Vec;
 import net.minestom.server.entity.Entity;
 import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.Player;
 import net.minestom.server.entity.metadata.other.AreaEffectCloudMeta;
-import net.minestom.server.entity.metadata.other.ArmorStandMeta;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.utils.time.TimeUnit;
+import pink.zak.minestom.towerdefence.cache.TDUserCache;
 import pink.zak.minestom.towerdefence.game.MobHandler;
+import pink.zak.minestom.towerdefence.model.TDUser;
 
 import java.time.Duration;
-import java.util.List;
 import java.util.function.Predicate;
 
 public class DamageIndicator extends Entity {
@@ -27,7 +28,7 @@ public class DamageIndicator extends Entity {
 
     private final Vec[] vectors = MobHandler.DAMAGE_INDICATOR_CACHE.getPreCalculatedVelocity();
 
-    private DamageIndicator(Instance instance, Pos spawnPosition, Component text) {
+    private DamageIndicator(TDUserCache userCache, Instance instance, Pos spawnPosition, Component text) {
         super(EntityType.AREA_EFFECT_CLOUD);
 
         AreaEffectCloudMeta meta = (AreaEffectCloudMeta) this.getEntityMeta();
@@ -35,6 +36,12 @@ public class DamageIndicator extends Entity {
         meta.setNotifyAboutChanges(false);
         meta.setCustomName(text);
         meta.setCustomNameVisible(true);
+
+        this.setAutoViewable(false);
+
+        for (TDUser user : userCache.getAllUsers())
+            if (user.isDamageIndicators() && user.getPlayer() != null)
+                this.addViewer(user.getPlayer());
 
         this.setInstance(instance, spawnPosition.add(0, OFFSET_Y, 0));
 
@@ -54,8 +61,8 @@ public class DamageIndicator extends Entity {
         this.sendPacketToViewers(this.getVelocityPacket());
     }
 
-    public static void create(LivingEnemyMob enemyMob, double damage) {
+    public static void create(TDUserCache userCache, LivingEnemyMob enemyMob, double damage) {
         Component text = NAME_CACHE.get(damage, key -> Component.text(damage, NamedTextColor.RED));
-        new DamageIndicator(enemyMob.getInstance(), enemyMob.getPosition().add(0, enemyMob.getEntityType().height(), 0), text);
+        new DamageIndicator(userCache, enemyMob.getInstance(), enemyMob.getPosition().add(0, enemyMob.getEntityType().height(), 0), text);
     }
 }
