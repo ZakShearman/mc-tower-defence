@@ -62,10 +62,14 @@ public class MobHandler {
             .schedule();
     }
 
-    // todo support both sides
-    // todo is there a way other than recalculating every time? Sure this is easy, but not great on performance
     private void updateAttackingTowers() {
-        List<LivingEnemyMob> distanceSortedMobs = new ArrayList<>(this.redSideMobs);
+        this.updateAttackingTowers(Team.RED);
+        this.updateAttackingTowers(Team.BLUE);
+    }
+
+    // todo is there a way other than recalculating every time? Sure this is easy, but not great on performance
+    private void updateAttackingTowers(Team team) {
+        List<LivingEnemyMob> distanceSortedMobs = new ArrayList<>(team == Team.RED ? this.redSideMobs : this.blueSideMobs);
         distanceSortedMobs.sort(Comparator.comparingDouble(LivingEnemyMob::getTotalDistanceMoved).reversed());
 
         for (PlacedAttackingTower<?> tower : this.towerHandler.getRedTowers().stream()

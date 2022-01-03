@@ -215,7 +215,7 @@ public class LivingEnemyMob extends EntityCreature {
             Set<PlacedTower<?>> towers = this.team == Team.BLUE ? this.towerHandler.getBlueTowers() : this.towerHandler.getRedTowers();
             double multiplier = 1;
             for (PlacedTower<?> tower : towers) {
-                if (tower instanceof CharityTower charityTower && tower.getBasePoint().distance(this.position) <= tower.getLevel().getRange()) { // todo custom charity multiplier
+                if (tower instanceof CharityTower charityTower && tower.getBasePoint().distance(this.position) <= tower.getLevel().getRange()) {
                     multiplier = charityTower.getLevel().getMultiplier();
                 }
             }

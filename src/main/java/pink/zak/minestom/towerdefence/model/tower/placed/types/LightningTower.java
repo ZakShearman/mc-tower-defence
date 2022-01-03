@@ -44,7 +44,7 @@ public class LightningTower extends PlacedAttackingTower<LightningTowerLevel> {
             enemyMob.towerDamage(this, this.level.getDamage());
     }
 
-    private void drawParticles() { // todo do height by entity height
+    private void drawParticles() {
         Set<SendablePacket> packets = new HashSet<>();
 
         LivingEnemyMob target = this.targets.get(0);

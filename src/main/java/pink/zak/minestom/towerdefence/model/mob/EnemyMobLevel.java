@@ -22,7 +22,7 @@ public class EnemyMobLevel {
     public EnemyMobLevel(JsonObject jsonObject) {
         this.level = jsonObject.get("level").getAsInt();
         this.cost = jsonObject.get("cost").getAsInt();
-        this.killReward = cost / 4; // todo balance
+        this.killReward = this.cost / 4; // todo balance
         this.health = jsonObject.get("health").getAsInt();
         this.damage = jsonObject.get("damage").getAsInt();
         this.movementSpeed = jsonObject.get("movementSpeed").getAsDouble() / 20;

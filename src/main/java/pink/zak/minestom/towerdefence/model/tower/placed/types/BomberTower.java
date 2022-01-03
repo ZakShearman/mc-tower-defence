@@ -25,8 +25,6 @@ import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
 import java.util.Set;
 
 public class BomberTower extends PlacedAttackingTower<AttackingTowerLevel> implements OwnedEntity {
-    public static final DamageType DAMAGE_TYPE = new DamageType("attack.tower.bomber"); // todo remove?
-
     private final Pos spawnPos;
     private final MobHandler mobHandler;
     private final GameUser owner;
