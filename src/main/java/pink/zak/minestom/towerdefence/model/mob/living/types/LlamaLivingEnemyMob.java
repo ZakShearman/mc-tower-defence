@@ -33,4 +33,10 @@ public class LlamaLivingEnemyMob extends LivingEnemyMob {
         spit.setVelocity(DirectionUtils.createVec(direction, 7));
         spit.scheduleRemove(10, TimeUnit.CLIENT_TICK);
     }
+
+    @Override
+    public void remove() { // damage the castle when the projectile hits
+        super.damageCastle();
+        super.remove();
+    }
 }
