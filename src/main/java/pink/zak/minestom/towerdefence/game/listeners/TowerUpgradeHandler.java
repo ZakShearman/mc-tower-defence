@@ -120,20 +120,25 @@ public class TowerUpgradeHandler {
             int clickedLevelInt = slot - 10;
 
             Tower tower = placedTower.getTower();
-            int level = placedTower.getLevelInt();
+            int currentLevel = placedTower.getLevelInt();
 
-            if (clickedLevelInt < 0 || clickedLevelInt > tower.getMaxLevel() || level + 1 != clickedLevelInt)
+            if (clickedLevelInt < 0 || clickedLevelInt > tower.getMaxLevel() || currentLevel >= clickedLevelInt)
                 return;
 
-            int cost = tower.getLevel(clickedLevelInt).getCost();
+            int cost = 0;
+            for (int i = currentLevel + 1; i <= clickedLevelInt; i++)
+                cost += tower.getLevel(i).getCost();
 
-            if (gameUser.getMana() >= cost) {
-                gameUser.updateAndGetCoins(current -> current - cost);
-                placedTower.upgrade();
+            if (gameUser.getCoins() >= cost) {
+                int finalCost = cost;
+                gameUser.updateAndGetCoins(current -> current - finalCost);
+                for (int i = currentLevel; i < clickedLevelInt; i++)
+                    placedTower.upgrade(); // todo better way lol
                 TowerLevel towerLevel = placedTower.getLevel();
                 // update inventory items
                 inventory.setItemStack(0, towerLevel.getMenuItem());
-                inventory.setItemStack(10 + clickedLevelInt, towerLevel.getOwnedUpgradeItem());
+                for (int i = currentLevel + 1; i <= clickedLevelInt; i++)
+                    inventory.setItemStack(10 + i, towerLevel.getOwnedUpgradeItem());
             }
         });
     }

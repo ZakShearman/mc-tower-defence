@@ -152,7 +152,7 @@
         ]
       },
       "upgradeItem": {
-        "material": "minecraft:end_rod",
+        "material": "minecraft:lime_stained_glass_pane",
         "displayName": "<yellow>Lightning Lvl. II",
         "lore": [
           ""
@@ -213,7 +213,7 @@
         ]
       },
       "upgradeItem": {
-        "material": "minecraft:end_rod",
+        "material": "minecraft:lime_stained_glass_pane",
         "displayName": "<yellow>Lightning Lvl. III",
         "lore": [
           ""
@@ -377,7 +377,7 @@
         ]
       },
       "upgradeItem": {
-        "material": "minecraft:end_rod",
+        "material": "minecraft:lime_stained_glass_pane",
         "displayName": "<yellow>Lightning Lvl. IV",
         "lore": [
           ""
@@ -678,7 +678,7 @@
         ]
       },
       "upgradeItem": {
-        "material": "minecraft:end_rod",
+        "material": "minecraft:lime_stained_glass_pane",
         "displayName": "<yellow>Lightning Lvl. V",
         "lore": [
           ""
