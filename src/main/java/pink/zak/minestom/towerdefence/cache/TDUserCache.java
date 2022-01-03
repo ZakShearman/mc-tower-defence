@@ -1,11 +1,13 @@
 package pink.zak.minestom.towerdefence.cache;
 
 import net.minestom.server.event.player.PlayerDisconnectEvent;
+import net.minestom.server.event.player.PlayerLoginEvent;
 import org.jetbrains.annotations.Nullable;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 import pink.zak.minestom.towerdefence.model.TDUser;
 import pink.zak.minestom.towerdefence.storage.dynamic.repository.JsonUserRepository;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -18,7 +20,12 @@ public class TDUserCache {
     public TDUserCache(TowerDefencePlugin plugin) {
         this.userRepository = plugin.getUserRepository();
 
+        plugin.getEventNode().addListener(PlayerLoginEvent.class, event -> this.load(event.getPlayer().getUuid()));
         plugin.getEventNode().addListener(PlayerDisconnectEvent.class, event -> this.invalidate(event.getPlayer().getUuid()));
+    }
+
+    public Collection<TDUser> getAllUsers() {
+        return this.tdUsers.values();
     }
 
     public @Nullable TDUser getUser(UUID uuid) {

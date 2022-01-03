@@ -13,6 +13,7 @@ import pink.zak.minestom.towerdefence.game.listeners.MobMenuHandler;
 import pink.zak.minestom.towerdefence.game.listeners.TowerPlaceHandler;
 import pink.zak.minestom.towerdefence.game.listeners.TowerUpgradeHandler;
 import pink.zak.minestom.towerdefence.model.GameUser;
+import pink.zak.minestom.towerdefence.model.TDUser;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
 
 import java.util.Map;
@@ -69,16 +70,19 @@ public class GameHandler {
     private void configureTeam(Team team, Set<Player> players) {
         Pos spawnPoint = this.map.getSpawn(team);
         for (Player player : players) {
-            this.users.put(player, new GameUser(player, this.userCache.getUser(player.getUuid()), team));
+            GameUser gameUser = new GameUser(player, this.userCache.getUser(player.getUuid()), team);
+            this.users.put(player, gameUser);
 
             player.setAllowFlying(true);
             player.setFlying(true);
+            player.setFlyingSpeed(gameUser.getUser().getFlySpeed());
             player.teleport(spawnPoint);
         }
     }
 
     public void end() {
         this.users = Maps.newHashMap();
+        // todo properly clean up
     }
 
     public TowerMap getMap() {
