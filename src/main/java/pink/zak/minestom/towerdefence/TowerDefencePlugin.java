@@ -19,6 +19,7 @@ import net.minestom.server.utils.NamespaceID;
 import net.minestom.server.utils.time.TimeUnit;
 import net.minestom.server.world.DimensionType;
 import org.slf4j.Logger;
+import pink.zak.minestom.towerdefence.cache.TDUserCache;
 import pink.zak.minestom.towerdefence.command.towerdefence.TowerDefenceCommand;
 import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.game.GameHandler;
@@ -28,8 +29,10 @@ import pink.zak.minestom.towerdefence.scoreboard.ScoreboardManager;
 import pink.zak.minestom.towerdefence.storage.MapStorage;
 import pink.zak.minestom.towerdefence.storage.MobStorage;
 import pink.zak.minestom.towerdefence.storage.TowerStorage;
+import pink.zak.minestom.towerdefence.storage.dynamic.repository.JsonUserRepository;
 import pink.zak.minestom.towerdefence.utils.mechanic.CustomExplosion;
 
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.Set;
@@ -42,6 +45,10 @@ public class TowerDefencePlugin extends Extension {
     private final Set<Player> redPlayers = Sets.newConcurrentHashSet();
     private final Set<Player> bluePlayers = Sets.newConcurrentHashSet();
     private GameState gameState = GameState.LOBBY;
+
+    private Path dataPath;
+    private JsonUserRepository userRepository;
+    private TDUserCache userCache;
 
     private MobStorage mobStorage;
     private MapStorage mapStorage;
@@ -69,6 +76,10 @@ public class TowerDefencePlugin extends Extension {
             event.setSpawningInstance(instance);
         });
 
+        this.dataPath = super.getDataDirectory().resolve("data");
+        this.userRepository = new JsonUserRepository(this.dataPath.resolve("users"));
+        this.userCache = new TDUserCache(this);
+
         this.mobStorage = new MobStorage(this);
         this.mapStorage = new MapStorage(this);
         this.towerStorage = new TowerStorage(this);
@@ -86,6 +97,7 @@ public class TowerDefencePlugin extends Extension {
 
     @Override
     public void terminate() {
+        this.userCache.invalidateAll();
     }
 
     public Set<Player> getRedPlayers() {
@@ -102,6 +114,18 @@ public class TowerDefencePlugin extends Extension {
 
     public void setGameState(GameState gameState) {
         this.gameState = gameState;
+    }
+
+    public Path getDataPath() {
+        return this.dataPath;
+    }
+
+    public JsonUserRepository getUserRepository() {
+        return this.userRepository;
+    }
+
+    public TDUserCache getUserCache() {
+        return this.userCache;
     }
 
     public MobStorage getMobStorage() {

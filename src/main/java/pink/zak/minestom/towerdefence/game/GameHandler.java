@@ -6,6 +6,7 @@ import net.minestom.server.entity.Player;
 import net.minestom.server.event.player.PlayerDisconnectEvent;
 import net.minestom.server.instance.Instance;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
+import pink.zak.minestom.towerdefence.cache.TDUserCache;
 import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.game.listeners.MobMenuHandler;
@@ -19,6 +20,7 @@ import java.util.Set;
 
 public class GameHandler {
     private final TowerDefencePlugin plugin;
+    private final TDUserCache userCache;
     private final TowerMap map;
 
     private final MobHandler mobHandler;
@@ -30,6 +32,7 @@ public class GameHandler {
 
     public GameHandler(TowerDefencePlugin plugin) {
         this.plugin = plugin;
+        this.userCache = plugin.getUserCache();
         this.map = plugin.getMapStorage().getMap();
 
         this.towerHandler = new TowerHandler(this);
@@ -66,7 +69,7 @@ public class GameHandler {
     private void configureTeam(Team team, Set<Player> players) {
         Pos spawnPoint = this.map.getSpawn(team);
         for (Player player : players) {
-            this.users.put(player, new GameUser(player, team));
+            this.users.put(player, new GameUser(player, this.userCache.getUser(player.getUuid()), team));
 
             player.setAllowFlying(true);
             player.setFlying(true);

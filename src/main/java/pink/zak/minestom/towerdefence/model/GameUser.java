@@ -18,6 +18,7 @@ import java.util.function.IntUnaryOperator;
 
 public class GameUser {
     private final Player player;
+    private final TDUser user;
     private final Team team;
 
     private final Map<EnemyMob, Integer> mobLevels = Maps.newConcurrentMap();
@@ -29,13 +30,18 @@ public class GameUser {
 
     private Point lastClickedTowerBlock;
 
-    public GameUser(Player player, Team team) {
+    public GameUser(Player player, TDUser user, Team team) {
         this.player = player;
+        this.user = user;
         this.team = team;
     }
 
     public Player getPlayer() {
         return this.player;
+    }
+
+    public TDUser getUser() {
+        return this.user;
     }
 
     public Team getTeam() {
