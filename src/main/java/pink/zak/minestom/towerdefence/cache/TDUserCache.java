@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 import pink.zak.minestom.towerdefence.model.TDUser;
 import pink.zak.minestom.towerdefence.storage.dynamic.repository.JsonUserRepository;
+import pink.zak.minestom.towerdefence.utils.storage.Repository;
 
 import java.util.Collection;
 import java.util.Map;
@@ -16,13 +17,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class TDUserCache {
     private final Map<UUID, TDUser> tdUsers = new ConcurrentHashMap<>();
-    private final JsonUserRepository userRepository;
+    private final Repository<UUID, TDUser> userRepository;
 
     public TDUserCache(TowerDefencePlugin plugin) {
         this.userRepository = plugin.getUserRepository();
 
-        plugin.getEventNode().addListener(PlayerLoginEvent.class, event -> this.load(event.getPlayer().getUuid()));
-        plugin.getEventNode().addListener(PlayerDisconnectEvent.class, event -> this.invalidate(event.getPlayer().getUuid()));
+        plugin.eventNode().addListener(PlayerLoginEvent.class, event -> this.load(event.getPlayer().getUuid()));
+        plugin.eventNode().addListener(PlayerDisconnectEvent.class, event -> this.invalidate(event.getPlayer().getUuid()));
     }
 
     public Collection<TDUser> getAllUsers() {

@@ -19,7 +19,8 @@
     ],
     "artifacts": [
       "net.kyori:adventure-text-minimessage:4.2.0-SNAPSHOT",
-      "com.github.ben-manes.caffeine:caffeine:3.0.5"
+      "com.github.ben-manes.caffeine:caffeine:3.0.5",
+      "com.typesafe:config:1.4.1"
     ]
   }
 }

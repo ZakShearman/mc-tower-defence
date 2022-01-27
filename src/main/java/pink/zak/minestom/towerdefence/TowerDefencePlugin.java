@@ -27,17 +27,21 @@ import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.listener.ProtectionHandler;
 import pink.zak.minestom.towerdefence.listener.SpawnItemHandler;
+import pink.zak.minestom.towerdefence.model.TDUser;
 import pink.zak.minestom.towerdefence.scoreboard.ScoreboardManager;
 import pink.zak.minestom.towerdefence.storage.MapStorage;
 import pink.zak.minestom.towerdefence.storage.MobStorage;
 import pink.zak.minestom.towerdefence.storage.TowerStorage;
+import pink.zak.minestom.towerdefence.storage.dynamic.RepositoryCreator;
 import pink.zak.minestom.towerdefence.storage.dynamic.repository.JsonUserRepository;
 import pink.zak.minestom.towerdefence.utils.mechanic.CustomExplosion;
+import pink.zak.minestom.towerdefence.utils.storage.Repository;
 
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class TowerDefencePlugin extends Extension {
@@ -47,8 +51,7 @@ public class TowerDefencePlugin extends Extension {
     private final Set<Player> bluePlayers = Sets.newConcurrentHashSet();
     private GameState gameState = GameState.LOBBY;
 
-    private Path dataPath;
-    private JsonUserRepository userRepository;
+    private Repository<UUID, TDUser> userRepository;
     private TDUserCache userCache;
 
     private MobStorage mobStorage;
@@ -76,15 +79,14 @@ public class TowerDefencePlugin extends Extension {
             event.setSpawningInstance(instance);
         });
 
-        this.dataPath = super.dataDirectory().resolve("data");
-        this.userRepository = new JsonUserRepository(this.dataPath.resolve("users"));
+        RepositoryCreator repositoryCreator = new RepositoryCreator(this);
+        this.userRepository = repositoryCreator.createUserRepository();
         this.userCache = new TDUserCache(this);
 
         this.mobStorage = new MobStorage(this);
         this.mapStorage = new MapStorage(this);
         this.towerStorage = new TowerStorage(this);
         this.scoreboardManager = new ScoreboardManager(this);
-
 
         this.gameHandler = new GameHandler(this);
 
@@ -118,11 +120,7 @@ public class TowerDefencePlugin extends Extension {
         this.gameState = gameState;
     }
 
-    public Path getDataPath() {
-        return this.dataPath;
-    }
-
-    public JsonUserRepository getUserRepository() {
+    public Repository<UUID, TDUser> getUserRepository() {
         return this.userRepository;
     }
 

@@ -1,5 +1,60 @@
 package pink.zak.minestom.towerdefence.storage.dynamic;
 
-public class RepositoryCreator {
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+import org.checkerframework.checker.units.qual.A;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import pink.zak.minestom.towerdefence.TowerDefencePlugin;
+import pink.zak.minestom.towerdefence.model.TDUser;
+import pink.zak.minestom.towerdefence.storage.dynamic.repository.JsonUserRepository;
+import pink.zak.minestom.towerdefence.utils.FileUtils;
+import pink.zak.minestom.towerdefence.utils.storage.Repository;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.UUID;
+
+public class RepositoryCreator {
+    private static final Logger LOGGER = LoggerFactory.getLogger(RepositoryCreator.class);
+
+    private final TowerDefencePlugin plugin;
+    private final RepositoryType repositoryType;
+
+    private Path jsonPath;
+
+    public RepositoryCreator(TowerDefencePlugin plugin) {
+        this.plugin = plugin;
+
+        Path configPath = plugin.dataDirectory().resolve("storage.conf");
+        File configFile = configPath.toFile();
+        if (Files.notExists(configPath))
+            FileUtils.saveResource(configPath, "storage.conf");
+        Config config = ConfigFactory.parseFile(configFile);
+
+        this.repositoryType = config.getEnum(RepositoryType.class, "repository");
+
+        if (!this.checkEligibility(config)) {
+            LOGGER.error("Eligibility failed to use repository type {}", this.repositoryType);
+            System.exit(1);
+        } else
+            LOGGER.info("Started storage using repository type {}", this.repositoryType);
+    }
+
+    // todo mongo and rest api
+    private boolean checkEligibility(Config config) {
+        switch (this.repositoryType) {
+            case JSON -> this.jsonPath = this.plugin.dataDirectory().resolve("data");
+            default -> {}
+        }
+        return true;
+    }
+
+    public Repository<UUID, TDUser> createUserRepository() {
+        return switch (this.repositoryType) {
+            case JSON -> new JsonUserRepository(this.jsonPath.resolve("users"));
+            default -> null;
+        };
+    }
 }
