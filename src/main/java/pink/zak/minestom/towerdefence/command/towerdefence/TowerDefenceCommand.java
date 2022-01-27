@@ -22,13 +22,17 @@ public class TowerDefenceCommand extends Command {
         TowerMap map = mapStorage.getMap();
 
 
-        this.setCondition((sender, commandString) -> {
-            if (!sender.isPlayer()) {
-                sender.sendMessage(Component.text("You must be a player to execute this command"));
-                return false;
-            }
-            if (!sender.asPlayer().getUsername().equals("Expectational")) {
-                sender.sendMessage(Component.text("No permission"));
+        this.setCondition((sender, commandString) -> { // todo dont just use my username - use a proper permission system
+            boolean accessRequest = commandString == null;
+            if (sender instanceof Player player) {
+                if (!player.getUsername().equals("Expectational")) {
+                    if (!accessRequest)
+                        player.sendMessage(Component.text("No permission"));
+                    return false;
+                }
+            } else {
+                if (!accessRequest)
+                    sender.sendMessage(Component.text("You must be a player to execute this command"));
                 return false;
             }
             return true;
@@ -45,7 +49,7 @@ public class TowerDefenceCommand extends Command {
         this.addSyntax(editorSubCommand, editorArg);
 
         this.addSyntax((sender, context) -> {
-            Player player = sender.asPlayer();
+            Player player = (Player) sender;
             String teamId = context.get(teamArg);
             switch (teamId) {
                 case "red" -> map.setRedSpawn(player.getPosition());
@@ -58,7 +62,7 @@ public class TowerDefenceCommand extends Command {
 
         GameHandler gameHandler = plugin.getGameHandler();
         this.addSyntax((sender, context) -> {
-            gameHandler.start(sender.asPlayer().getInstance());
+            gameHandler.start(((Player) sender).getInstance());
             sender.sendMessage(Component.text("Force starting the game", NamedTextColor.RED));
         }, forceStartArg);
     }
