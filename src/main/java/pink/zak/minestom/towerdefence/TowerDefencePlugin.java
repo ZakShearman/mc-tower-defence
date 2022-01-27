@@ -10,6 +10,7 @@ import net.minestom.server.entity.Player;
 import net.minestom.server.event.Event;
 import net.minestom.server.event.EventNode;
 import net.minestom.server.event.player.PlayerLoginEvent;
+import net.minestom.server.event.server.ServerTickMonitorEvent;
 import net.minestom.server.extensions.Extension;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.monitoring.BenchmarkManager;
@@ -19,6 +20,7 @@ import net.minestom.server.utils.NamespaceID;
 import net.minestom.server.utils.time.TimeUnit;
 import net.minestom.server.world.DimensionType;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pink.zak.minestom.towerdefence.cache.TDUserCache;
 import pink.zak.minestom.towerdefence.command.towerdefence.TowerDefenceCommand;
 import pink.zak.minestom.towerdefence.enums.GameState;
@@ -39,7 +41,6 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class TowerDefencePlugin extends Extension {
-    public static Logger LOGGER;
     public static EventNode<Event> EVENT_NODE;
 
     private final Set<Player> redPlayers = Sets.newConcurrentHashSet();
@@ -58,9 +59,8 @@ public class TowerDefencePlugin extends Extension {
     private GameHandler gameHandler;
 
     @Override
-    public void initialize() {
-        LOGGER = getLogger();
-        EVENT_NODE = this.getEventNode();
+    public LoadStatus initialize() {
+        EVENT_NODE = this.eventNode();
         this.startBenchmark();
 
         DimensionType dimensionType = DimensionType.builder(NamespaceID.from("towerdefence:main"))
@@ -71,12 +71,12 @@ public class TowerDefencePlugin extends Extension {
         Instance instance = MinecraftServer.getInstanceManager().createInstanceContainer(dimensionType);
 
         instance.setExplosionSupplier((centerX, centerY, centerZ, strength, additionalData) -> new CustomExplosion(centerX, centerY, centerZ, strength));
-        this.getEventNode().addListener(PlayerLoginEvent.class, event -> {
+        this.eventNode().addListener(PlayerLoginEvent.class, event -> {
             event.getPlayer().setRespawnPoint(new Pos(-1, 67, 4));
             event.setSpawningInstance(instance);
         });
 
-        this.dataPath = super.getDataDirectory().resolve("data");
+        this.dataPath = super.dataDirectory().resolve("data");
         this.userRepository = new JsonUserRepository(this.dataPath.resolve("users"));
         this.userCache = new TDUserCache(this);
 
@@ -93,6 +93,8 @@ public class TowerDefencePlugin extends Extension {
 
         CommandManager commandManager = MinecraftServer.getCommandManager();
         commandManager.register(new TowerDefenceCommand(this));
+
+        return LoadStatus.SUCCESS;
     }
 
     @Override
@@ -153,7 +155,9 @@ public class TowerDefencePlugin extends Extension {
         benchmarkManager.enable(Duration.ofMillis(Long.MAX_VALUE));
 
         AtomicReference<TickMonitor> lastTick = new AtomicReference<>();
-        MinecraftServer.getUpdateManager().addTickMonitor(lastTick::set);
+        MinecraftServer.getGlobalEventHandler().addListener(ServerTickMonitorEvent.class, event -> {
+            lastTick.set(event.getTickMonitor());
+        });
 
         MinecraftServer.getSchedulerManager().buildTask(() -> {
             Collection<Player> players = MinecraftServer.getConnectionManager().getOnlinePlayers();

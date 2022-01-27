@@ -4,6 +4,8 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonObject;
 import net.minestom.server.entity.EntityType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 import pink.zak.minestom.towerdefence.model.mob.EnemyMob;
 import pink.zak.minestom.towerdefence.utils.FileUtils;
@@ -15,6 +17,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class MobStorage {
+    private static final Logger LOGGER = LoggerFactory.getLogger(MobStorage.class);
     private final TowerDefencePlugin plugin;
 
     private final Path folderPath;
@@ -46,7 +49,7 @@ public class MobStorage {
         );
 
         for (String towerName : enemyMobNames) {
-            TowerDefencePlugin.LOGGER.info("Saving packaged resource mobs\\" + towerName);
+            LOGGER.info("Saving packaged resource mobs\\" + towerName);
             this.plugin.savePackagedResource(Path.of("mobs").resolve(towerName));
         }
     }

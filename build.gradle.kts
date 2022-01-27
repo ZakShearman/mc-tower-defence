@@ -1,6 +1,6 @@
 plugins {
     `java-library`
-    id("com.github.johnrengelman.shadow") version "7.0.0"
+    id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
 group = "pink.zak.minestom.towerdefence"
@@ -10,16 +10,17 @@ repositories {
     mavenLocal()
     mavenCentral()
     maven("https://oss.sonatype.org/content/repositories/snapshots/") // minimessage? todo plz fix
+    maven("https://mvn.zak.pink/shapshots") // pre-release builds
     maven("https://jitpack.io")
 }
 
 dependencies {
     //compileOnly("com.github.Minestom:Minestom:6e16fb7b13")
-    compileOnly("com.github.ZakShearman:Minestom:12bc35f89")
+    compileOnly("com.github.ZakShearman:Minestom:9dfc3007e0")
     implementation("net.kyori:adventure-text-minimessage:4.2.0-SNAPSHOT")
     implementation("com.github.ben-manes.caffeine:caffeine:3.0.5")
     //testImplementation("com.github.Minestom:Minestom:6e16fb7b13")
-    testImplementation("com.github.ZakShearman:Minestom:12bc35f89")
+    testImplementation("com.github.ZakShearman:Minestom:9dfc3007e0")
 
     //testImplementation("net.minestom.server:Minestom:1.0")
 }

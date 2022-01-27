@@ -5,6 +5,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.minestom.server.extensions.Extension;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 
 import java.io.File;
@@ -22,6 +24,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.function.UnaryOperator;
 
 public class FileUtils {
+    private static final Logger LOGGER = LoggerFactory.getLogger(FileUtils.class);
     private static final Gson GSON = new Gson();
 
     public static void createFile(Path path) {
@@ -33,7 +36,7 @@ public class FileUtils {
     }
 
     public static JsonElement getLocalOrResourceJson(Extension extension, UnaryOperator<Path> pathOperator) {
-        Path fullPath = pathOperator.apply(extension.getDataDirectory().resolve("TowerDefence"));
+        Path fullPath = pathOperator.apply(extension.dataDirectory().resolve("TowerDefence"));
         File systemFile = fullPath.toFile();
         if (systemFile.exists()) {
             try {
@@ -94,7 +97,7 @@ public class FileUtils {
 
         URL resourceUrl = FileUtils.class.getClassLoader().getResource(resource);
         if (resourceUrl == null) {
-            TowerDefencePlugin.LOGGER.error("Could not locate resource " + resource);
+            LOGGER.error("Could not locate resource " + resource);
             return;
         }
         try {

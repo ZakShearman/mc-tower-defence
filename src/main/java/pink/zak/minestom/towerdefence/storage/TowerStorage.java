@@ -2,6 +2,8 @@ package pink.zak.minestom.towerdefence.storage;
 
 import com.google.common.collect.Maps;
 import com.google.gson.JsonObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 import pink.zak.minestom.towerdefence.enums.TowerType;
 import pink.zak.minestom.towerdefence.model.tower.config.Tower;
@@ -16,6 +18,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class TowerStorage {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TowerStorage.class);
     private final TowerDefencePlugin plugin;
 
     private final Path folderPath;
@@ -49,7 +52,7 @@ public class TowerStorage {
             .collect(Collectors.toUnmodifiableSet());
 
         for (String towerName : towerNames) {
-            System.out.println("Saving packaged resource towers\\" + towerName);
+            LOGGER.info("Saving packaged resource towers {}", towerName);
             this.plugin.savePackagedResource(Path.of("towers").resolve(towerName));
         }
     }

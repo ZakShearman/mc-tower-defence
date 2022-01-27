@@ -13,6 +13,6 @@ COPY --from=BUILD ./home/gradle/build/libs/*.jar ./TowerDefence.jar
 RUN ls /lib/minestom/extensions
 
 WORKDIR /lib/minestom
-COPY /world ./world
-COPY /extensions/TowerDefence ./extensions/TowerDefence
+COPY /run/world ./world
+COPY /run/extensions/TowerDefence ./extensions/TowerDefence
 CMD ["java", "-jar", "/lib/minestom/server.jar"]
