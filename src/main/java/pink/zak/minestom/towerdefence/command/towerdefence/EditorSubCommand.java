@@ -58,7 +58,7 @@ public class EditorSubCommand implements CommandExecutor {
             .displayName(Component.text("Team area wand item", NamedTextColor.BLUE)
                 .decoration(TextDecoration.ITALIC, false)).build();
 
-        plugin.getEventNode()
+        plugin.eventNode()
             .addListener(PlayerStartDiggingEvent.class, event -> { // left click block
                 Player player = event.getPlayer();
                 EditorInfo editorInfo = this.editors.get(player);
@@ -98,7 +98,7 @@ public class EditorSubCommand implements CommandExecutor {
 
     @Override
     public void apply(@NotNull CommandSender sender, @NotNull CommandContext context) {
-        Player player = sender.asPlayer();
+        Player player = (Player) sender;
         if (this.editors.remove(player) != null) {
             player.sendMessage(Component.text("You are no longer in editor mode", NamedTextColor.GREEN));
             this.removePlayerChanges(player);

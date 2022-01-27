@@ -31,7 +31,7 @@ public class GameScoreboard {
 
         this.sidebar.addViewer(this.gameUser.getPlayer());
 
-        plugin.getEventNode()
+        plugin.eventNode()
             .addListener(TowerDamageEvent.class, event -> {
                 if (event.team() == Team.RED)
                     this.sidebar.updateLineContent("red-health", this.createRedHealth(event));

@@ -31,27 +31,27 @@ public class LobbyScoreboard implements TowerScoreboard {
         this.sidebar.createLine(new Sidebar.ScoreboardLine("empty-1", Component.empty(), 1));
         this.sidebar.createLine(new Sidebar.ScoreboardLine("website", TowerScoreboard.DOMAIN, 0));
 
-        plugin.getEventNode().addListener(PlayerSpawnEvent.class, event -> {
-            this.sidebar.updateLineContent("online-players", this.createOnlinePlayers());
-            this.sidebar.addViewer(event.getPlayer());
-        });
-        plugin.getEventNode().addListener(PlayerDisconnectEvent.class, event -> this.sidebar.updateLineContent("online-players", this.createOnlinePlayers()));
-        plugin.getEventNode().addListener(PlayerTeamSwitchEvent.class, event -> {
-            Team updateTeam;
-            if (event.joinedTeam() == null)
-                updateTeam = event.oldTeam();
-            else if (event.oldTeam() == null)
-                updateTeam = event.joinedTeam();
-            else {
-                this.sidebar.updateLineContent("red-players", this.createRedPlayers());
-                this.sidebar.updateLineContent("blue-players", this.createBluePlayers());
-                return;
-            }
-            if (updateTeam == Team.RED)
-                this.sidebar.updateLineContent("red-players", this.createRedPlayers());
-            else
-                this.sidebar.updateLineContent("blue-players", this.createBluePlayers());
-        });
+        plugin.eventNode().addListener(PlayerSpawnEvent.class, event -> {
+                this.sidebar.updateLineContent("online-players", this.createOnlinePlayers());
+                this.sidebar.addViewer(event.getPlayer());
+            })
+            .addListener(PlayerDisconnectEvent.class, event -> this.sidebar.updateLineContent("online-players", this.createOnlinePlayers()))
+            .addListener(PlayerTeamSwitchEvent.class, event -> {
+                Team updateTeam;
+                if (event.joinedTeam() == null)
+                    updateTeam = event.oldTeam();
+                else if (event.oldTeam() == null)
+                    updateTeam = event.joinedTeam();
+                else {
+                    this.sidebar.updateLineContent("red-players", this.createRedPlayers());
+                    this.sidebar.updateLineContent("blue-players", this.createBluePlayers());
+                    return;
+                }
+                if (updateTeam == Team.RED)
+                    this.sidebar.updateLineContent("red-players", this.createRedPlayers());
+                else
+                    this.sidebar.updateLineContent("blue-players", this.createBluePlayers());
+            });
     }
 
     private Component createOnlinePlayers() {

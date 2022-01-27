@@ -27,7 +27,7 @@ public class TowerStorage {
     public TowerStorage(TowerDefencePlugin plugin) {
         this.plugin = plugin;
 
-        this.folderPath = plugin.getDataDirectory().resolve("towers");
+        this.folderPath = plugin.dataDirectory().resolve("towers");
         if (!Files.exists(this.folderPath))
             this.createDefaultFiles();
         this.load();

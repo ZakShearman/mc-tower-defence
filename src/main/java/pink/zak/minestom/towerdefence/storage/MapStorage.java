@@ -12,7 +12,7 @@ public class MapStorage {
     private final TowerMap map;
 
     public MapStorage(TowerDefencePlugin plugin) {
-        this.filePath = plugin.getDataDirectory().resolve("map.json");
+        this.filePath = plugin.dataDirectory().resolve("map.json");
         if (Files.exists(this.filePath)) {
             this.map = this.load();
         } else {

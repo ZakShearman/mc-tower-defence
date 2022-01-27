@@ -26,7 +26,7 @@ public class MobStorage {
     public MobStorage(TowerDefencePlugin plugin) {
         this.plugin = plugin;
 
-        this.folderPath = plugin.getDataDirectory().resolve("mobs");
+        this.folderPath = plugin.dataDirectory().resolve("mobs");
         if (!Files.exists(this.folderPath))
             this.createDefaultFiles();
         this.load();
