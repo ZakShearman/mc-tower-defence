@@ -39,21 +39,22 @@ public class DamageIndicator extends Entity {
 
         this.setAutoViewable(false);
 
+        this.setInstance(instance, spawnPosition.add(0, OFFSET_Y, 0));
         for (TDUser user : userCache.getAllUsers())
-            if (user.isDamageIndicators() && user.getPlayer() != null)
+            if (user.isDamageIndicators() && user.getPlayer() != null && user.getPlayer().getDistance(this) < 10) // distance check probably isnt necessary but save some packets
                 this.addViewer(user.getPlayer());
 
-        this.setInstance(instance, spawnPosition.add(0, OFFSET_Y, 0));
-
         this.position = spawnPosition;
-
-        this.scheduleRemove(15, TimeUnit.CLIENT_TICK);
-
     }
 
     @Override
     protected void velocityTick() {
-        this.velocity = this.vectors[(int) this.getAliveTicks()];
+        int aliveTicks = (int) this.getAliveTicks();
+        if (aliveTicks == 16) {
+            this.remove();
+            return;
+        }
+        this.velocity = this.vectors[aliveTicks];
 
         Pos newPosition = this.position.add(this.velocity.div(20));
 
