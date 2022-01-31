@@ -57,7 +57,7 @@ public class RepositoryCreator {
                 if (!config.hasPath("mongodb"))
                     return false;
 
-                MongoSettings mongoSettings = MongoSettings.parse(config.getConfig("mongo"));
+                MongoSettings mongoSettings = MongoSettings.parse(config.getConfig("mongodb"));
                 this.mongoDatabase = mongoSettings.database();
                 this.mongoClient = MongoClients.create(mongoSettings.asClientSettings());
             }

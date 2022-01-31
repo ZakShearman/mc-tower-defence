@@ -13,20 +13,19 @@ import java.util.Collections;
 
 public record MongoSettings(String address,
                             int port,
-                            String username,
                             String database,
+                            String username,
                             String authDb,
                             char[] password) {
 
-    public static MongoSettings parse(Config globalConfig) {
-        Config config = globalConfig.getConfig("mongo");
+    public static MongoSettings parse(Config config) {
         return new MongoSettings(
             config.getString("address"),
             config.getInt("port"),
             config.getString("database"),
-            globalConfig.hasPath("auth.username") ? globalConfig.getString("auth.username") : null,
-            globalConfig.hasPath("auth.db") ? globalConfig.getString("auth.db") : null,
-            globalConfig.hasPath("auth.password") ? globalConfig.getString("auth.password").toCharArray() : null
+            config.hasPath("auth.username") ? config.getString("auth.username") : null,
+            config.hasPath("auth.db") ? config.getString("auth.db") : null,
+            config.hasPath("auth.password") ? config.getString("auth.password").toCharArray() : null
         );
     }
 
