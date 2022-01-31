@@ -1,4 +1,4 @@
-package pink.zak.minestom.towerdefence.storage.dynamic.repository;
+package pink.zak.minestom.towerdefence.storage.dynamic.repository.user;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;

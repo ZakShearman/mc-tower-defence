@@ -1,13 +1,17 @@
 package pink.zak.minestom.towerdefence.storage.dynamic;
 
+import com.mongodb.MongoClientSettings;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import org.checkerframework.checker.units.qual.A;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 import pink.zak.minestom.towerdefence.model.TDUser;
-import pink.zak.minestom.towerdefence.storage.dynamic.repository.JsonUserRepository;
+import pink.zak.minestom.towerdefence.storage.dynamic.repository.user.JsonUserRepository;
+import pink.zak.minestom.towerdefence.storage.dynamic.repository.user.MongoUserRepository;
+import pink.zak.minestom.towerdefence.storage.dynamic.settings.MongoSettings;
 import pink.zak.minestom.towerdefence.utils.FileUtils;
 import pink.zak.minestom.towerdefence.utils.storage.Repository;
 
@@ -23,6 +27,9 @@ public class RepositoryCreator {
     private final RepositoryType repositoryType;
 
     private Path jsonPath;
+
+    private MongoClient mongoClient;
+    private String mongoDatabase;
 
     public RepositoryCreator(TowerDefencePlugin plugin) {
         this.plugin = plugin;
@@ -46,6 +53,14 @@ public class RepositoryCreator {
     private boolean checkEligibility(Config config) {
         switch (this.repositoryType) {
             case JSON -> this.jsonPath = this.plugin.dataDirectory().resolve("data");
+            case MONGO_DB -> {
+                if (!config.hasPath("mongodb"))
+                    return false;
+
+                MongoSettings mongoSettings = MongoSettings.parse(config.getConfig("mongo"));
+                this.mongoDatabase = mongoSettings.database();
+                this.mongoClient = MongoClients.create(mongoSettings.asClientSettings());
+            }
             default -> {}
         }
         return true;
@@ -54,6 +69,7 @@ public class RepositoryCreator {
     public Repository<UUID, TDUser> createUserRepository() {
         return switch (this.repositoryType) {
             case JSON -> new JsonUserRepository(this.jsonPath.resolve("users"));
+            case MONGO_DB -> new MongoUserRepository(this.mongoClient, this.mongoDatabase);
             default -> null;
         };
     }
