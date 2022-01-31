@@ -18,8 +18,11 @@ dependencies {
     //compileOnly("com.github.Minestom:Minestom:6e16fb7b13")
     compileOnly("com.github.ZakShearman:Minestom:9dfc3007e0")
     implementation("net.kyori:adventure-text-minimessage:4.2.0-SNAPSHOT")
-    implementation("com.github.ben-manes.caffeine:caffeine:3.0.5")
     implementation("com.typesafe:config:1.4.1")
+
+    implementation("com.github.ben-manes.caffeine:caffeine:3.0.5")
+    implementation("org.mongodb:mongo-java-driver:3.12.10")
+
     //testImplementation("com.github.Minestom:Minestom:6e16fb7b13")
     testImplementation("com.github.ZakShearman:Minestom:9dfc3007e0")
 
