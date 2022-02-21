@@ -14,6 +14,7 @@ import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.game.listeners.MobMenuHandler;
 import pink.zak.minestom.towerdefence.game.listeners.TowerPlaceHandler;
 import pink.zak.minestom.towerdefence.game.listeners.TowerUpgradeHandler;
+import pink.zak.minestom.towerdefence.game.listeners.UserSettingsMenuHandler;
 import pink.zak.minestom.towerdefence.model.GameUser;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
 
@@ -29,6 +30,7 @@ public class GameHandler {
     private final MobHandler mobHandler;
     private final TowerHandler towerHandler;
     private final MobMenuHandler mobMenuHandler;
+    private final UserSettingsMenuHandler userSettingsMenuHandler;
 
     private Map<Player, GameUser> users = Maps.newHashMap();
     private Instance instance;
@@ -44,6 +46,7 @@ public class GameHandler {
         this.towerHandler = new TowerHandler(this);
         this.mobHandler = new MobHandler(this, plugin);
         this.mobMenuHandler = new MobMenuHandler(plugin, this);
+        this.userSettingsMenuHandler = new UserSettingsMenuHandler(plugin);
         new TowerPlaceHandler(plugin, this);
         new TowerUpgradeHandler(plugin, this);
 
@@ -60,7 +63,14 @@ public class GameHandler {
         this.configureTeam(Team.RED, this.plugin.getRedPlayers());
         this.configureTeam(Team.BLUE, this.plugin.getBluePlayers());
         this.plugin.getScoreboardManager().startGame();
-        this.mobMenuHandler.startGame();
+
+        for (Player player : this.users.keySet()) {
+            player.getInventory().clear();
+            player.getInventory().setItemStack(4, this.mobMenuHandler.getChestItem());
+            player.getInventory().setItemStack(8, UserSettingsMenuHandler.getMenuItem()); // todo standardise static/non-static usage
+            this.mobMenuHandler.onGameStart();
+            this.userSettingsMenuHandler.onGameStart();
+        }
 
         /*EnemyMob enemyMob = this.plugin.getMobStorage().getTower(EntityType.LLAMA);
         EnemyMobLevel enemyMobLevel = enemyMob.level(1);
@@ -80,7 +90,7 @@ public class GameHandler {
 
             player.setAllowFlying(true);
             player.setFlying(true);
-            player.setFlyingSpeed(gameUser.getUser().getFlySpeed());
+            player.setFlyingSpeed(gameUser.getUser().getFlySpeed().getSpeed());
             player.teleport(spawnPoint);
         }
     }

@@ -30,7 +30,6 @@ public class DamageIndicatorCache {
                 json.get("x").getAsDouble(),
                 json.get("y").getAsDouble(),
                 json.get("z").getAsDouble()
-            ))
-            .collect(Collectors.toUnmodifiableList());
+            )).toList();
     }
 }

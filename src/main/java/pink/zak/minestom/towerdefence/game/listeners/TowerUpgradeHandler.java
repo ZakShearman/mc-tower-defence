@@ -33,8 +33,8 @@ import java.util.Map;
 import java.util.Set;
 
 public class TowerUpgradeHandler {
-    private static final Map<Tower, Component> TOWER_UPGRADE_TITLES = Maps.newHashMap();
     private static final ItemStack RADIUS_MENU_ITEM;
+    private final Map<Tower, Component> towerUpgradeTitles = Maps.newHashMap();
     private final TowerDefencePlugin plugin;
     private final GameHandler gameHandler;
     private final TowerHandler towerHandler;
@@ -51,7 +51,7 @@ public class TowerUpgradeHandler {
 
     public TowerUpgradeHandler(TowerDefencePlugin plugin, GameHandler gameHandler) {
         for (Tower tower : plugin.getTowerStorage().getTowers().values())
-            TOWER_UPGRADE_TITLES.put(tower, Component.text("Upgrade " + tower.getName()));
+            this.towerUpgradeTitles.put(tower, Component.text("Upgrade " + tower.getName()));
 
 
         this.plugin = plugin;
@@ -78,7 +78,7 @@ public class TowerUpgradeHandler {
         TowerLevel currentLevel = placedTower.getLevel();
         Tower tower = placedTower.getTower();
 
-        Inventory inventory = new Inventory(InventoryType.CHEST_3_ROW, TOWER_UPGRADE_TITLES.get(tower));
+        Inventory inventory = new Inventory(InventoryType.CHEST_3_ROW, towerUpgradeTitles.get(tower));
         inventory.setTag(PlacedTower.ID_TAG, placedTower.getId());
         inventory.setItemStack(0, currentLevel.getMenuItem());
 

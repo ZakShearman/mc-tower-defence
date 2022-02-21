@@ -4,6 +4,7 @@ import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import pink.zak.minestom.towerdefence.model.settings.FlySpeed;
 import pink.zak.minestom.towerdefence.model.settings.HealthDisplayMode;
 
 import java.util.UUID;
@@ -11,14 +12,17 @@ import java.util.UUID;
 public class TDUser {
     private final @NotNull UUID uuid;
     private Player player;
+
     private @NotNull HealthDisplayMode healthMode = HealthDisplayMode.PERCENTAGE;
     private boolean damageIndicators = true;
-    private float flySpeed = 0.05f;
+    private boolean thinParticles = false;
+    private @NotNull FlySpeed flySpeed = FlySpeed.NORMAL;
 
-    public TDUser(@NotNull UUID uuid, @NotNull HealthDisplayMode healthMode, boolean damageIndicators, float flySpeed) {
+    public TDUser(@NotNull UUID uuid, @NotNull HealthDisplayMode healthMode, boolean damageIndicators, boolean thinParticles, @NotNull FlySpeed flySpeed) {
         this.uuid = uuid;
         this.healthMode = healthMode;
         this.damageIndicators = damageIndicators;
+        this.thinParticles = thinParticles;
         this.flySpeed = flySpeed;
     }
 
@@ -53,11 +57,19 @@ public class TDUser {
         this.damageIndicators = damageIndicators;
     }
 
-    public float getFlySpeed() {
+    public boolean isThinParticles() {
+        return this.thinParticles;
+    }
+
+    public void setThinParticles(boolean thinParticles) {
+        this.thinParticles = thinParticles;
+    }
+
+    public @NotNull FlySpeed getFlySpeed() {
         return this.flySpeed;
     }
 
-    public void setFlySpeed(float flySpeed) {
+    public void setFlySpeed(@NotNull FlySpeed flySpeed) {
         this.flySpeed = flySpeed;
     }
 }

@@ -3,6 +3,7 @@ package pink.zak.minestom.towerdefence.storage.dynamic.repository.user;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import pink.zak.minestom.towerdefence.model.TDUser;
+import pink.zak.minestom.towerdefence.model.settings.FlySpeed;
 import pink.zak.minestom.towerdefence.model.settings.HealthDisplayMode;
 import pink.zak.minestom.towerdefence.utils.storage.json.JsonRepository;
 
@@ -27,8 +28,9 @@ public class JsonUserRepository extends JsonRepository<UUID, TDUser> {
         UUID uuid = UUID.fromString(json.get("id").getAsString());
         HealthDisplayMode healthMode = HealthDisplayMode.valueOf(json.get("healthMode").getAsString());
         boolean damageIndicators = json.get("damageIndicators").getAsBoolean();
-        float flySpeed = json.get("flySpeed").getAsFloat();
-        return new TDUser(uuid, healthMode, damageIndicators, flySpeed);
+        boolean thinParticles = json.get("thinParticles").getAsBoolean();
+        FlySpeed flySpeed = FlySpeed.valueOf(json.get("flySpeed").getAsString());
+        return new TDUser(uuid, healthMode, damageIndicators, thinParticles, flySpeed);
     }
 
     @Override
@@ -37,7 +39,8 @@ public class JsonUserRepository extends JsonRepository<UUID, TDUser> {
         json.addProperty("id", user.getUuid().toString());
         json.addProperty("healthMode", user.getHealthMode().toString());
         json.addProperty("damageIndicators", user.isDamageIndicators());
-        json.addProperty("flySpeed", user.getFlySpeed());
+        json.addProperty("thinParticles", user.isThinParticles());
+        json.addProperty("flySpeed", user.getFlySpeed().toString());
         return json;
     }
 }

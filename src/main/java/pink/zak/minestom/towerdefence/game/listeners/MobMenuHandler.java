@@ -62,10 +62,7 @@ public class MobMenuHandler {
         this.startQueueProcessor();
     }
 
-    public void startGame() {
-        for (Player player : this.gameHandler.getUsers().keySet())
-            player.getInventory().setItemStack(4, this.chestItem);
-
+    public void onGameStart() {
         this.plugin.eventNode().addListener(PlayerUseItemEvent.class, event -> {
             if (this.plugin.getGameState() == GameState.IN_PROGRESS && event.getItemStack().getMaterial() == Material.CHEST) {
                 this.createGui(this.gameHandler, event.getPlayer());
@@ -267,5 +264,9 @@ public class MobMenuHandler {
             })
             .repeat(1, TimeUnit.SECOND)
             .schedule();
+    }
+
+    public ItemStack getChestItem() {
+        return this.chestItem;
     }
 }
