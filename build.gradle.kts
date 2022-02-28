@@ -9,7 +9,6 @@ version = "1.0-SNAPSHOT"
 repositories {
     mavenLocal()
     mavenCentral()
-    maven("https://oss.sonatype.org/content/repositories/snapshots/") // minimessage? todo plz fix
     maven("https://mvn.zak.pink/shapshots") // pre-release builds
     maven("https://jitpack.io")
 }
