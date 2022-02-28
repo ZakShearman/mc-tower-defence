@@ -12,7 +12,7 @@ public class StringUtils {
     private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
 
     public static Component parseMessage(String message) {
-        return MINI_MESSAGE.parse(message).decoration(TextDecoration.ITALIC, false);
+        return MINI_MESSAGE.deserialize(message).decoration(TextDecoration.ITALIC, false);
     }
 
     public static List<Component> parseMessages(List<String> messages) {
