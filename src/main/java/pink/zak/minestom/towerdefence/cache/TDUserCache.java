@@ -24,7 +24,7 @@ public class TDUserCache {
         plugin.eventNode().addListener(PlayerDisconnectEvent.class, event -> this.invalidate(event.getPlayer().getUuid()));
     }
 
-    public Collection<TDUser> getAllUsers() {
+    public Collection<TDUser> getAllLoadedUsers() {
         return this.tdUsers.values();
     }
 
