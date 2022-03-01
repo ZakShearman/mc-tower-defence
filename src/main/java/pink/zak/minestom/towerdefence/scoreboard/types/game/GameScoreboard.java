@@ -12,7 +12,11 @@ import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.model.GameUser;
 import pink.zak.minestom.towerdefence.scoreboard.TowerScoreboard;
 
+import java.text.DecimalFormat;
+
 public class GameScoreboard {
+    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("##.#");
+
     private final Sidebar sidebar = new Sidebar(TowerScoreboard.TITLE);
     private final GameUser gameUser;
     private final double maxHealth = 1000;
@@ -58,10 +62,10 @@ public class GameScoreboard {
     }
 
     private Component createRedHealth(TowerDamageEvent event) {
-        return Component.text("Health: " + (event.health() / this.maxHealth) * 100 + "%", NamedTextColor.RED);
+        return Component.text("Health: " + DECIMAL_FORMAT.format((event.health() / this.maxHealth) * 100) + "%", NamedTextColor.RED);
     }
 
     private Component createBlueHealth(TowerDamageEvent event) {
-        return Component.text("Health: " + (event.health() / this.maxHealth) * 100 + "%", NamedTextColor.AQUA);
+        return Component.text("Health: " + DECIMAL_FORMAT.format((event.health() / this.maxHealth) * 100) + "%", NamedTextColor.AQUA);
     }
 }

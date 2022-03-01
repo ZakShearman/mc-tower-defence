@@ -1,9 +1,13 @@
 package pink.zak.minestom.towerdefence.game;
 
 import com.google.common.collect.Maps;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.MinecraftServer;
+import net.minestom.server.adventure.audience.Audiences;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
+import net.minestom.server.entity.hologram.Hologram;
 import net.minestom.server.event.player.PlayerDisconnectEvent;
 import net.minestom.server.instance.Instance;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
@@ -18,6 +22,7 @@ import pink.zak.minestom.towerdefence.game.listeners.UserSettingsMenuHandler;
 import pink.zak.minestom.towerdefence.model.GameUser;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -37,6 +42,9 @@ public class GameHandler {
 
     private final AtomicInteger redTowerHealth = new AtomicInteger(1000);
     private final AtomicInteger blueTowerHealth = new AtomicInteger(1000);
+
+    private Hologram redTowerHologram;
+    private Hologram blueTowerHologram;
 
     public GameHandler(TowerDefencePlugin plugin) {
         this.plugin = plugin;
@@ -84,6 +92,15 @@ public class GameHandler {
 
     private void configureTeam(Team team, Set<Player> players) {
         Pos spawnPoint = this.map.getSpawn(team);
+
+        if (team == Team.RED) {
+            Audiences.all().sendMessage(Component.text("Creating red hologram at " + this.map.getRedTowerHologram()));
+            this.redTowerHologram = new Hologram(this.instance, this.map.getRedTowerHologram(), this.createTowerHologram(Team.RED));
+        } else {
+            Audiences.all().sendMessage(Component.text("Creating blue hologram at " + this.map.getBlueTowerHologram()));
+            this.blueTowerHologram = new Hologram(this.instance, this.map.getBlueTowerHologram(), this.createTowerHologram(Team.BLUE));
+        }
+
         for (Player player : players) {
             GameUser gameUser = new GameUser(player, this.userCache.getUser(player.getUuid()), team);
             this.users.put(player, gameUser);
@@ -93,6 +110,19 @@ public class GameHandler {
             player.setFlyingSpeed(gameUser.getUser().getFlySpeed().getSpeed());
             player.teleport(spawnPoint);
         }
+    }
+
+    private Component createTowerHologram(Team team) {
+        int health = (team == Team.RED ? this.redTowerHealth : this.blueTowerHealth).get();
+        int barAmount = (int) Math.ceil(health / 25.0); // for 40 bars, 40 * 25 = 1000
+
+        char[] presentBars = new char[barAmount];
+        char[] lostBars = new char[40 - barAmount];
+        Arrays.fill(presentBars, '|');
+        Arrays.fill(lostBars, '|');
+
+        StringBuilder builder = new StringBuilder();
+        return Component.text(String.valueOf(presentBars), NamedTextColor.GREEN).append(Component.text(String.valueOf(lostBars), NamedTextColor.RED));
     }
 
     public void end() {
@@ -128,13 +158,15 @@ public class GameHandler {
         return this.instance;
     }
 
-    public void damageRedTower(int damage) {
+    public void damageRedTower(int damage) { // todo only update hologram if necessary.
         int newHealth = this.redTowerHealth.updateAndGet(current -> current - damage);
+        this.redTowerHologram.setText(this.createTowerHologram(Team.RED));
         MinecraftServer.getGlobalEventHandler().call(new TowerDamageEvent(Team.RED, damage, newHealth));
     }
 
     public void damageBlueTower(int damage) {
         int newHealth = this.blueTowerHealth.updateAndGet(current -> current - damage);
+        this.redTowerHologram.setText(this.createTowerHologram(Team.BLUE));
         MinecraftServer.getGlobalEventHandler().call(new TowerDamageEvent(Team.BLUE, damage, newHealth));
     }
 }

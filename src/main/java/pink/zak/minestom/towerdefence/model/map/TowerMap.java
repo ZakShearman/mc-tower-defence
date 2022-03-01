@@ -20,6 +20,9 @@ public class TowerMap {
     private Pos redMobSpawn;
     private Pos blueMobSpawn;
 
+    private Pos redTowerHologram;
+    private Pos blueTowerHologram;
+
     private int pathWidth;
 
     private List<PathCorner> redCorners;
@@ -31,6 +34,7 @@ public class TowerMap {
     }
 
     public TowerMap(Pos spectatorSpawn, Pos redSpawn, Pos blueSpawn,
+                    Pos redTowerHologram, Pos blueTowerHologram,
                     Area redArea, Area blueArea,
                     Pos redMobSpawn, Pos blueMobSpawn,
                     int pathWidth, List<PathCorner> redCorners, List<PathCorner> blueCorners,
@@ -38,6 +42,8 @@ public class TowerMap {
         this.spectatorSpawn = spectatorSpawn;
         this.redSpawn = redSpawn;
         this.blueSpawn = blueSpawn;
+        this.redTowerHologram = redTowerHologram;
+        this.blueTowerHologram = blueTowerHologram;
         this.redArea = redArea;
         this.blueArea = blueArea;
         this.redMobSpawn = redMobSpawn;
@@ -60,6 +66,9 @@ public class TowerMap {
         Pos redMobSpawn = null;
         Pos blueMobSpawn = null;
 
+        Pos redTowerHologram = null;
+        Pos blueTowerHologram = null;
+
         List<PathCorner> redCorners = null;
         List<PathCorner> blueCorners = null;
 
@@ -72,6 +81,10 @@ public class TowerMap {
             redSpawn = jsonToPosition(jsonObject.getAsJsonObject("redSpawn"));
         if (jsonObject.has("blueSpawn"))
             blueSpawn = jsonToPosition(jsonObject.getAsJsonObject("blueSpawn"));
+        if (jsonObject.has("redTowerHologram"))
+            redTowerHologram = jsonToPosition(jsonObject.getAsJsonObject("redTowerHologram"));
+        if (jsonObject.has("blueTowerHologram"))
+            blueTowerHologram = jsonToPosition(jsonObject.getAsJsonObject("blueTowerHologram"));
         if (jsonObject.has("redArea"))
             redArea = Area.fromJson(jsonObject.getAsJsonObject("redArea"));
         if (jsonObject.has("blueArea"))
@@ -88,6 +101,7 @@ public class TowerMap {
             towerPlaceMaterial = Material.fromNamespaceId(jsonObject.get("towerPlaceMaterial").getAsString());
 
         return new TowerMap(spectatorSpawn, redSpawn, blueSpawn,
+            redTowerHologram, blueTowerHologram,
             redArea, blueArea,
             redMobSpawn, blueMobSpawn,
             pathWidth, redCorners, blueCorners,
@@ -186,6 +200,22 @@ public class TowerMap {
         this.blueMobSpawn = blueMobSpawn;
     }
 
+    public Pos getRedTowerHologram() {
+        return this.redTowerHologram;
+    }
+
+    public void setRedTowerHologram(Pos redTowerHologram) {
+        this.redTowerHologram = redTowerHologram;
+    }
+
+    public Pos getBlueTowerHologram() {
+        return this.blueTowerHologram;
+    }
+
+    public void setBlueTowerHologram(Pos blueTowerHologram) {
+        this.blueTowerHologram = blueTowerHologram;
+    }
+
     public List<PathCorner> getCorners(Team team) {
         return team == Team.RED ? this.redCorners : this.blueCorners;
     }
@@ -216,6 +246,10 @@ public class TowerMap {
             jsonObject.add("redSpawn", this.posToJson(this.redSpawn));
         if (this.blueSpawn != null)
             jsonObject.add("blueSpawn", this.posToJson(this.blueSpawn));
+        if (this.redTowerHologram != null)
+            jsonObject.add("redTowerHologram", this.posToJson(this.redTowerHologram));
+        if (this.blueTowerHologram != null)
+            jsonObject.add("blueTowerHologram", this.posToJson(this.blueTowerHologram));
         if (this.redArea != null)
             jsonObject.add("redArea", this.redArea.toJsonObject());
         if (this.blueArea != null)
