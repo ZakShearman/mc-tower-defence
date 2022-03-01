@@ -100,8 +100,6 @@ public class BomberTower extends PlacedAttackingTower<AttackingTowerLevel> imple
                 this.remove();
                 return;
             }
-            if (this.position.y() < 65.5)
-                System.out.println("A " + aliveTicks);
 
             if (this.getVelocity().y() <= 0) {
                 if (!this.set) {

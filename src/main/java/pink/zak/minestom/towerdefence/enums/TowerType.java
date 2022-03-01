@@ -1,6 +1,7 @@
 package pink.zak.minestom.towerdefence.enums;
 
 import com.google.gson.JsonObject;
+import pink.zak.minestom.towerdefence.model.tower.config.AttackingTower;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.config.Tower;
 import pink.zak.minestom.towerdefence.model.tower.config.TowerLevel;
@@ -10,9 +11,9 @@ import pink.zak.minestom.towerdefence.model.tower.config.towers.LightningTowerLe
 import java.util.function.Function;
 
 public enum TowerType {
-    ARCHER(Size.THREE, 10, true, Tower::new, AttackingTowerLevel::new),
-    BOMBER(Size.THREE, 11, false, Tower::new, AttackingTowerLevel::new),
-    LIGHTNING(Size.THREE, 12, true, Tower::new, LightningTowerLevel::new),
+    ARCHER(Size.THREE, 10, true, AttackingTower::new, AttackingTowerLevel::new),
+    BOMBER(Size.THREE, 11, false, AttackingTower::new, AttackingTowerLevel::new),
+    LIGHTNING(Size.THREE, 12, true, AttackingTower::new, LightningTowerLevel::new),
     CHARITY(Size.THREE, 13, false, Tower::new, CharityTowerLevel::new);
 
     private final Size size;

@@ -94,10 +94,8 @@ public class GameHandler {
         Pos spawnPoint = this.map.getSpawn(team);
 
         if (team == Team.RED) {
-            Audiences.all().sendMessage(Component.text("Creating red hologram at " + this.map.getRedTowerHologram()));
             this.redTowerHologram = new Hologram(this.instance, this.map.getRedTowerHologram(), this.createTowerHologram(Team.RED));
         } else {
-            Audiences.all().sendMessage(Component.text("Creating blue hologram at " + this.map.getBlueTowerHologram()));
             this.blueTowerHologram = new Hologram(this.instance, this.map.getBlueTowerHologram(), this.createTowerHologram(Team.BLUE));
         }
 
