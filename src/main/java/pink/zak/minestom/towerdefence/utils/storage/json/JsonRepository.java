@@ -5,6 +5,8 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pink.zak.minestom.towerdefence.utils.storage.Repository;
 
 import java.io.File;
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public abstract class JsonRepository<ID, T> implements Repository<ID, T>, IdStringConverter<ID> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(JsonRepository.class);
     protected static final Gson GSON = new GsonBuilder().create();
     protected final Path basePath;
 
@@ -44,8 +47,8 @@ public abstract class JsonRepository<ID, T> implements Repository<ID, T>, IdStri
             try (Writer writer = Files.newBufferedWriter(path)) {
                 GSON.toJson(this.serialize(entity), writer);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ex) {
+            LOGGER.error("Error writing Json to file: ", ex);
         }
 
         return entity;
@@ -71,8 +74,8 @@ public abstract class JsonRepository<ID, T> implements Repository<ID, T>, IdStri
                 .map(this::parseFile)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toUnmodifiableSet());
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ex) {
+            LOGGER.error("Error listing files: ", ex);
             return (Iterable<T>) Collections.emptyIterator();
         }
     }
@@ -89,8 +92,8 @@ public abstract class JsonRepository<ID, T> implements Repository<ID, T>, IdStri
                 .map(Path::toFile)
                 .filter(file -> file.getName().endsWith(".json"))
                 .count();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ex) {
+            LOGGER.error("Error counting files: ", ex);
             return -1;
         }
     }
@@ -100,8 +103,8 @@ public abstract class JsonRepository<ID, T> implements Repository<ID, T>, IdStri
         Path path = this.getEntityPath(id);
         try {
             Files.deleteIfExists(path);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ex) {
+            LOGGER.error("Error deleting file by ID: ", ex);
         }
     }
 
@@ -109,8 +112,8 @@ public abstract class JsonRepository<ID, T> implements Repository<ID, T>, IdStri
         try (FileReader fileReader = new FileReader(file)) {
             JsonElement json = JsonParser.parseReader(fileReader);
             return this.deserialize(json);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ex) {
+            LOGGER.error("Error reading file as Json: ", ex);
         }
 
         return null;
@@ -127,8 +130,8 @@ public abstract class JsonRepository<ID, T> implements Repository<ID, T>, IdStri
                 .map(Path::toFile)
                 .filter(file -> file.getName().endsWith(".json"))
                 .forEach(File::delete);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ex) {
+            LOGGER.error("Error deleting files: ", ex);
         }
     }
 }

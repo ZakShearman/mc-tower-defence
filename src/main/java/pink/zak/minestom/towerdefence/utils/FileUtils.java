@@ -30,8 +30,8 @@ public class FileUtils {
     public static boolean createFile(Path path) {
         try {
             return path.toFile().createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ex) {
+            LOGGER.error("Error creating file from path: ", ex);
             return false;
         }
     }
@@ -42,16 +42,16 @@ public class FileUtils {
         if (systemFile.exists()) {
             try {
                 return JsonParser.parseReader(new FileReader(systemFile));
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
+            } catch (FileNotFoundException ex) {
+                LOGGER.error("Error reading local file as Json: ", ex);
             }
         } else {
             Path hollowPath = pathOperator.apply(Path.of(""));
             try (InputStream inputStream = extension.getPackagedResource(hollowPath)) {
                 return JsonParser.parseReader(new InputStreamReader(inputStream));
 
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (IOException ex) {
+                LOGGER.error("Error reading resource as Json: ", ex);
             }
         }
         return null;
@@ -60,8 +60,8 @@ public class FileUtils {
     public static JsonObject resourceToJsonObject(Extension extension, String resource) {
         try (InputStream inputStream = extension.getPackagedResource(resource)) {
             return JsonParser.parseReader(new InputStreamReader(inputStream)).getAsJsonObject();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ex) {
+            LOGGER.error("Error reading resource as Json: ", ex);
         }
         return null;
     }
@@ -69,8 +69,8 @@ public class FileUtils {
     public static JsonObject fileToJsonObject(File file) {
         try {
             return JsonParser.parseReader(new FileReader(file)).getAsJsonObject();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        } catch (FileNotFoundException ex) {
+            LOGGER.error("Error reading file as Json: ", ex);
             return null;
         }
     }
@@ -84,8 +84,8 @@ public class FileUtils {
 
         try (Writer writer = Files.newBufferedWriter(path)) {
             GSON.toJson(jsonObject, writer);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ex) {
+            LOGGER.error("Error writing Json to file: ", ex);
         }
     }
 
@@ -103,8 +103,8 @@ public class FileUtils {
         }
         try {
             Files.write(savePath, FileUtils.class.getClassLoader().getResourceAsStream(resource).readAllBytes(), StandardOpenOption.CREATE);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ex) {
+            LOGGER.error("Error writing resource to file: ", ex);
         }
     }
 }
