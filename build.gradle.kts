@@ -1,6 +1,7 @@
 plugins {
     `java-library`
     id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("org.sonarqube") version "3.3"
 }
 
 group = "pink.zak.minestom.towerdefence"
@@ -31,4 +32,12 @@ dependencies {
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
+}
+
+sonarqube {
+    properties {
+        property("sonar.projectKey", "ZakShearman_mc-tower-defence")
+        property("sonar.organization", "zakshearman")
+        property("sonar.host.url", "https://sonarcloud.io")
+    }
 }
