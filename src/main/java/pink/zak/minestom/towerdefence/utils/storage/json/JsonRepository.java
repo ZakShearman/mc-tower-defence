@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public abstract class JsonRepository<ID, T> implements Repository<ID, T>, IdStringConverter<ID> {
     protected static final Gson GSON = new GsonBuilder().create();
@@ -39,9 +40,7 @@ public abstract class JsonRepository<ID, T> implements Repository<ID, T>, IdStri
         File file = path.toFile();
 
         try {
-            if (!file.exists()) {
-                file.createNewFile();
-            }
+            file.createNewFile();
             try (Writer writer = Files.newBufferedWriter(path)) {
                 GSON.toJson(this.serialize(entity), writer);
             }
@@ -65,8 +64,8 @@ public abstract class JsonRepository<ID, T> implements Repository<ID, T>, IdStri
 
     @Override
     public @NotNull Iterable<T> findAll() {
-        try {
-            return Files.list(this.basePath)
+        try (Stream<Path> stream = Files.list(this.basePath)) {
+            return stream
                 .map(Path::toFile)
                 .filter(file -> file.getName().endsWith(".json"))
                 .map(this::parseFile)
@@ -85,8 +84,8 @@ public abstract class JsonRepository<ID, T> implements Repository<ID, T>, IdStri
 
     @Override
     public long count() {
-        try {
-            return Files.list(this.basePath)
+        try (Stream<Path> stream = Files.list(this.basePath)) {
+            return stream
                 .map(Path::toFile)
                 .filter(file -> file.getName().endsWith(".json"))
                 .count();
@@ -123,8 +122,8 @@ public abstract class JsonRepository<ID, T> implements Repository<ID, T>, IdStri
 
     @Override
     public void deleteAll() {
-        try {
-            Files.list(this.basePath)
+        try (Stream<Path> stream = Files.list(this.basePath)) {
+            stream
                 .map(Path::toFile)
                 .filter(file -> file.getName().endsWith(".json"))
                 .forEach(File::delete);

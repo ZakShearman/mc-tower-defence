@@ -27,11 +27,12 @@ public class FileUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(FileUtils.class);
     private static final Gson GSON = new Gson();
 
-    public static void createFile(Path path) {
+    public static boolean createFile(Path path) {
         try {
-            path.toFile().createNewFile();
+            return path.toFile().createNewFile();
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         }
     }
 

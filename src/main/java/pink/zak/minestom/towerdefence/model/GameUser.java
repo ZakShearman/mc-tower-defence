@@ -73,13 +73,13 @@ public class GameUser {
 
     public int updateAndGetCoins(IntUnaryOperator intOperator) {
         int newCoins = this.coins.updateAndGet(intOperator);
-        TowerDefencePlugin.EVENT_NODE.call(new PlayerCoinChangeEvent(this, newCoins));
+        TowerDefencePlugin.getCallingEventNode().call(new PlayerCoinChangeEvent(this, newCoins));
         return newCoins;
     }
 
     public int updateAndGetMana(IntUnaryOperator intOperator) {
         int newMana = this.mana.updateAndGet(intOperator);
-        TowerDefencePlugin.EVENT_NODE.call(new PlayerManaChangeEvent(this, newMana));
+        TowerDefencePlugin.getCallingEventNode().call(new PlayerManaChangeEvent(this, newMana));
         return newMana;
     }
 

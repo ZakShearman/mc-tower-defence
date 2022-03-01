@@ -19,6 +19,7 @@ import net.minestom.server.utils.MathUtils;
 import net.minestom.server.utils.NamespaceID;
 import net.minestom.server.utils.time.TimeUnit;
 import net.minestom.server.world.DimensionType;
+import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.cache.TDUserCache;
 import pink.zak.minestom.towerdefence.command.towerdefence.TowerDefenceCommand;
 import pink.zak.minestom.towerdefence.enums.GameState;
@@ -41,7 +42,7 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class TowerDefencePlugin extends Extension {
-    public static EventNode<Event> EVENT_NODE;
+    private static EventNode<Event> EVENT_NODE;
 
     private final Set<Player> redPlayers = Sets.newConcurrentHashSet();
     private final Set<Player> bluePlayers = Sets.newConcurrentHashSet();
@@ -100,6 +101,11 @@ public class TowerDefencePlugin extends Extension {
         this.userCache.invalidateAll();
     }
 
+    @NotNull
+    public static EventNode<Event> getCallingEventNode() {
+        return EVENT_NODE;
+    }
+
     public Set<Player> getRedPlayers() {
         return this.redPlayers;
     }
@@ -149,9 +155,7 @@ public class TowerDefencePlugin extends Extension {
         benchmarkManager.enable(Duration.ofMillis(Long.MAX_VALUE));
 
         AtomicReference<TickMonitor> lastTick = new AtomicReference<>();
-        MinecraftServer.getGlobalEventHandler().addListener(ServerTickMonitorEvent.class, event -> {
-            lastTick.set(event.getTickMonitor());
-        });
+        MinecraftServer.getGlobalEventHandler().addListener(ServerTickMonitorEvent.class, event -> lastTick.set(event.getTickMonitor()));
 
         MinecraftServer.getSchedulerManager().buildTask(() -> {
             Collection<Player> players = MinecraftServer.getConnectionManager().getOnlinePlayers();

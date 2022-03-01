@@ -131,7 +131,7 @@ public class GameHandler {
             this.redTowerHologram.setText(this.createTowerHologram(Team.RED));
         } else {
             newHealth = this.blueTowerHealth.updateAndGet(current -> current - damage);
-            this.redTowerHologram.setText(this.createTowerHologram(Team.BLUE));
+            this.blueTowerHologram.setText(this.createTowerHologram(Team.BLUE));
         }
         MinecraftServer.getGlobalEventHandler().call(new TowerDamageEvent(team, damage, newHealth));
     }
