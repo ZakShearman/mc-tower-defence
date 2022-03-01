@@ -3,6 +3,7 @@ package pink.zak.minestom.towerdefence.game;
 import com.google.common.collect.Sets;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.utils.Direction;
+import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.model.GameUser;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
@@ -14,6 +15,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class TowerHandler {
     private final AtomicReference<Short> towerIdCounter = new AtomicReference<>(Short.MIN_VALUE);
+    private final TowerDefencePlugin plugin;
     private final GameHandler gameHandler;
     private final Set<PlacedTower<?>> redTowers = Sets.newConcurrentHashSet();
     private final Set<PlacedTower<?>> blueTowers = Sets.newConcurrentHashSet();
@@ -21,13 +23,14 @@ public class TowerHandler {
     private final TowerMap map;
     private Instance instance;
 
-    public TowerHandler(GameHandler gameHandler) {
+    public TowerHandler(TowerDefencePlugin plugin, GameHandler gameHandler) {
+        this.plugin = plugin;
         this.gameHandler = gameHandler;
         this.map = gameHandler.getMap();
     }
 
     public void createTower(Tower tower, GameUser gameUser) {
-        PlacedTower<?> placedTower = PlacedTower.create(this.gameHandler, this.instance, tower, this.map.getTowerPlaceMaterial(), this.generateTowerId(), gameUser, gameUser.getLastClickedTowerBlock(), Direction.NORTH);
+        PlacedTower<?> placedTower = PlacedTower.create(this.plugin, this.gameHandler, this.instance, tower, this.map.getTowerPlaceMaterial(), this.generateTowerId(), gameUser, gameUser.getLastClickedTowerBlock(), Direction.NORTH);
         Team team = gameUser.getTeam();
         if (team == Team.RED)
             this.redTowers.add(placedTower);

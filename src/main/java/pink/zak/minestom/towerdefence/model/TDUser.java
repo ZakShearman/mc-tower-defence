@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pink.zak.minestom.towerdefence.model.settings.FlySpeed;
 import pink.zak.minestom.towerdefence.model.settings.HealthDisplayMode;
+import pink.zak.minestom.towerdefence.model.settings.ParticleThickness;
 
 import java.util.UUID;
 
@@ -14,16 +15,16 @@ public class TDUser {
     private Player player;
 
     private @NotNull HealthDisplayMode healthMode = HealthDisplayMode.PERCENTAGE;
-    private boolean damageIndicators = true;
-    private boolean thinParticles = false;
+    private @NotNull ParticleThickness particleThickness = ParticleThickness.STANDARD;
     private @NotNull FlySpeed flySpeed = FlySpeed.NORMAL;
+    private boolean damageIndicators = true;
 
-    public TDUser(@NotNull UUID uuid, @NotNull HealthDisplayMode healthMode, boolean damageIndicators, boolean thinParticles, @NotNull FlySpeed flySpeed) {
+    public TDUser(@NotNull UUID uuid, @NotNull HealthDisplayMode healthMode, @NotNull ParticleThickness particleThickness, @NotNull FlySpeed flySpeed, boolean damageIndicators) {
         this.uuid = uuid;
         this.healthMode = healthMode;
-        this.damageIndicators = damageIndicators;
-        this.thinParticles = thinParticles;
+        this.particleThickness = particleThickness;
         this.flySpeed = flySpeed;
+        this.damageIndicators = damageIndicators;
     }
 
     public TDUser(@NotNull UUID uuid) {
@@ -49,27 +50,27 @@ public class TDUser {
         this.healthMode = healthMode;
     }
 
-    public boolean isDamageIndicators() {
-        return this.damageIndicators;
-    }
-
-    public void setDamageIndicators(boolean damageIndicators) {
-        this.damageIndicators = damageIndicators;
-    }
-
-    public boolean isThinParticles() {
-        return this.thinParticles;
-    }
-
-    public void setThinParticles(boolean thinParticles) {
-        this.thinParticles = thinParticles;
-    }
-
     public @NotNull FlySpeed getFlySpeed() {
         return this.flySpeed;
     }
 
     public void setFlySpeed(@NotNull FlySpeed flySpeed) {
         this.flySpeed = flySpeed;
+    }
+
+    public ParticleThickness getParticleThickness() {
+        return this.particleThickness;
+    }
+
+    public void setParticleThickness(ParticleThickness particleThickness) {
+        this.particleThickness = particleThickness;
+    }
+
+    public boolean isDamageIndicators() {
+        return this.damageIndicators;
+    }
+
+    public void setDamageIndicators(boolean damageIndicators) {
+        this.damageIndicators = damageIndicators;
     }
 }

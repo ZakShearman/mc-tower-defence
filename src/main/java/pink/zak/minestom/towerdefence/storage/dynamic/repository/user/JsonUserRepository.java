@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import pink.zak.minestom.towerdefence.model.TDUser;
 import pink.zak.minestom.towerdefence.model.settings.FlySpeed;
 import pink.zak.minestom.towerdefence.model.settings.HealthDisplayMode;
+import pink.zak.minestom.towerdefence.model.settings.ParticleThickness;
 import pink.zak.minestom.towerdefence.utils.storage.json.JsonRepository;
 
 import java.nio.file.Path;
@@ -27,10 +28,10 @@ public class JsonUserRepository extends JsonRepository<UUID, TDUser> {
 
         UUID uuid = UUID.fromString(json.get("id").getAsString());
         HealthDisplayMode healthMode = HealthDisplayMode.valueOf(json.get("healthMode").getAsString());
-        boolean damageIndicators = json.get("damageIndicators").getAsBoolean();
-        boolean thinParticles = json.get("thinParticles").getAsBoolean();
+        ParticleThickness particleThickness = ParticleThickness.valueOf(json.get("particleThickness").getAsString());
         FlySpeed flySpeed = FlySpeed.valueOf(json.get("flySpeed").getAsString());
-        return new TDUser(uuid, healthMode, damageIndicators, thinParticles, flySpeed);
+        boolean damageIndicators = json.get("damageIndicators").getAsBoolean();
+        return new TDUser(uuid, healthMode, particleThickness, flySpeed, damageIndicators);
     }
 
     @Override
@@ -38,8 +39,8 @@ public class JsonUserRepository extends JsonRepository<UUID, TDUser> {
         JsonObject json = new JsonObject();
         json.addProperty("id", user.getUuid().toString());
         json.addProperty("healthMode", user.getHealthMode().toString());
+        json.addProperty("particleThickness", user.getParticleThickness().toString());
         json.addProperty("damageIndicators", user.isDamageIndicators());
-        json.addProperty("thinParticles", user.isThinParticles());
         json.addProperty("flySpeed", user.getFlySpeed().toString());
         return json;
     }

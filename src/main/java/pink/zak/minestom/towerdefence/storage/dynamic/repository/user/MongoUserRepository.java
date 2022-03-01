@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.model.TDUser;
 import pink.zak.minestom.towerdefence.model.settings.FlySpeed;
 import pink.zak.minestom.towerdefence.model.settings.HealthDisplayMode;
+import pink.zak.minestom.towerdefence.model.settings.ParticleThickness;
 import pink.zak.minestom.towerdefence.utils.storage.mongo.MongoRepository;
 
 import java.util.UUID;
@@ -20,21 +21,22 @@ public class MongoUserRepository extends MongoRepository<UUID, TDUser> {
     public @NotNull Document serialize(@NotNull TDUser user) {
         Document document = new Document();
 
-        document.put("id", user.getUuid());
+        document.put("_id", user.getUuid());
         document.put("healthMode", user.getHealthMode().toString());
+        document.put("particleThickness", user.getParticleThickness().toString());
         document.put("damageIndicators", user.isDamageIndicators());
-        document.put("thinParticles", user.isThinParticles());
         document.put("flySpeed", user.getFlySpeed().toString());
         return document;
     }
 
     @Override
     public @NotNull TDUser deserialize(@NotNull Document document) {
-        UUID uuid = document.get("id", UUID.class);
+        UUID uuid = document.get("_id", UUID.class);
         HealthDisplayMode healthMode = HealthDisplayMode.valueOf(document.getString("healthMode"));
+        ParticleThickness particleThickness = ParticleThickness.valueOf(document.getString("particleThickness"));
         boolean damageIndicators = document.getBoolean("damageIndicators");
         boolean thinParticles = document.getBoolean("thinParticles");
         FlySpeed flySpeed = FlySpeed.valueOf(document.getString("flySpeed"));
-        return new TDUser(uuid, healthMode, damageIndicators, thinParticles, flySpeed);
+        return new TDUser(uuid, healthMode, particleThickness, flySpeed, damageIndicators);
     }
 }

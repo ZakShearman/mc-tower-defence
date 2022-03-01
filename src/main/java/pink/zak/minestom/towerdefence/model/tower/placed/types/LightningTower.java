@@ -2,6 +2,7 @@ package pink.zak.minestom.towerdefence.model.tower.placed.types;
 
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Point;
+import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.item.Material;
@@ -9,22 +10,31 @@ import net.minestom.server.network.packet.server.SendablePacket;
 import net.minestom.server.particle.Particle;
 import net.minestom.server.particle.ParticleCreator;
 import net.minestom.server.utils.Direction;
+import org.jetbrains.annotations.NotNull;
+import pink.zak.minestom.towerdefence.TowerDefencePlugin;
+import pink.zak.minestom.towerdefence.cache.TDUserCache;
 import pink.zak.minestom.towerdefence.model.GameUser;
+import pink.zak.minestom.towerdefence.model.TDUser;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingEnemyMob;
+import pink.zak.minestom.towerdefence.model.settings.ParticleThickness;
 import pink.zak.minestom.towerdefence.model.tower.config.Tower;
 import pink.zak.minestom.towerdefence.model.tower.config.towers.LightningTowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public class LightningTower extends PlacedAttackingTower<LightningTowerLevel> {
+    private final @NotNull TDUserCache userCache;
     private Point castPoint;
     private Set<Point> spawnPoints;
 
-    public LightningTower(Instance instance, Tower tower, Material towerPlaceMaterial, short id, GameUser owner, Point basePoint, Direction facing, int level) {
+    public LightningTower(TowerDefencePlugin plugin, Instance instance, Tower tower, Material towerPlaceMaterial, short id, GameUser owner, Point basePoint, Direction facing, int level) {
         super(instance, tower, towerPlaceMaterial, id, owner, basePoint, facing, level);
+        this.userCache = plugin.getUserCache();
         this.castPoint = this.getLevel().getRelativeCastPoint().apply(basePoint);
         this.spawnPoints = this.getLevel().getRelativeSpawnPoints().stream()
             .map(castPoint -> castPoint.apply(basePoint))
@@ -45,19 +55,28 @@ public class LightningTower extends PlacedAttackingTower<LightningTowerLevel> {
     }
 
     private void drawParticles() {
-        Set<SendablePacket> packets = new HashSet<>();
+        Map<ParticleThickness, Set<SendablePacket>> thicknessPackets = new HashMap<>();
 
         LivingEnemyMob target = this.targets.get(0);
-        for (Point spawnPoint : this.spawnPoints) {
-            this.drawParticleLine(packets, spawnPoint, this.castPoint, 0); // no modifier as this is going to the central point
-        }
-        this.drawParticleLine(packets, this.castPoint, target.getPosition(), target.getEyeHeight());
 
-        for (Player player : MinecraftServer.getConnectionManager().getOnlinePlayers())
-            player.sendPackets(packets);
+        for (ParticleThickness thickness : ParticleThickness.values()) {
+            Set<SendablePacket> packets = new HashSet<>();
+            for (Point spawnPoint : this.spawnPoints) {
+                packets.addAll(this.drawParticleLine(thickness, spawnPoint, this.castPoint, 0)); // no modifier as this is going to the central point
+            }
+            packets.addAll(this.drawParticleLine(thickness, this.castPoint, target.getPosition(), target.getEyeHeight()));
+            thicknessPackets.put(thickness, packets);
+        }
+
+        for (Player player : MinecraftServer.getConnectionManager().getOnlinePlayers()) {
+            // todo only send to applicable users
+            TDUser tdUser = this.userCache.getUser(player.getUuid());
+            player.sendPackets(thicknessPackets.get(tdUser.getParticleThickness()));
+        }
     }
 
-    private void drawParticleLine(Set<SendablePacket> packets, Point origin, Point destination, double yModifier) {
+    private Set<SendablePacket> drawParticleLine(ParticleThickness thickness, Point origin, Point destination, double yModifier) {
+        Set<SendablePacket> packets = new HashSet<>();
         double x = origin.x();
         double y = origin.y();
         double z = origin.z();
@@ -67,14 +86,13 @@ public class LightningTower extends PlacedAttackingTower<LightningTowerLevel> {
         double dz = destination.z() - origin.z();
         double length = Math.sqrt(dx * dx + dy * dy + dz * dz);
 
-        double distanceBetween = 0.25;
-        int particleCount = (int) Math.round(length / distanceBetween);
+        int particleCount = (int) Math.round(length / thickness.getSpacing());
 
-        double changeX = dx / particleCount;
-        double changeY = dy / particleCount;
-        double changeZ = dz / particleCount;
+        double xIncrement = dx / particleCount;
+        double yIncrement = dy / particleCount;
+        double zIncrement = dz / particleCount;
 
-        for (double thing = 0; thing <= length; thing += distanceBetween) {
+        for (double thing = 0; thing <= length; thing += thickness.getSpacing()) {
             packets.add(
                 ParticleCreator.createParticlePacket(Particle.SOUL_FIRE_FLAME,
                     x, y, z,
@@ -82,10 +100,11 @@ public class LightningTower extends PlacedAttackingTower<LightningTowerLevel> {
                     1)
             );
 
-            x += changeX;
-            y += changeY;
-            z += changeZ;
+            x += xIncrement;
+            y += yIncrement;
+            z += zIncrement;
         }
+        return packets;
     }
 
     @Override

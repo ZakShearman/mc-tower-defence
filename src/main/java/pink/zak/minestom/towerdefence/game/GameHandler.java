@@ -43,8 +43,8 @@ public class GameHandler {
         this.userCache = plugin.getUserCache();
         this.map = plugin.getMapStorage().getMap();
 
-        this.towerHandler = new TowerHandler(this);
-        this.mobHandler = new MobHandler(this, plugin);
+        this.towerHandler = new TowerHandler(plugin, this);
+        this.mobHandler = new MobHandler(plugin, this);
         this.mobMenuHandler = new MobMenuHandler(plugin, this);
         this.userSettingsMenuHandler = new UserSettingsMenuHandler(plugin);
         new TowerPlaceHandler(plugin, this);

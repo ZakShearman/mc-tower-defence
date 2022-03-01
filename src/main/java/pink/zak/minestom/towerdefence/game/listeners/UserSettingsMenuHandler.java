@@ -19,6 +19,7 @@ import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.model.TDUser;
 import pink.zak.minestom.towerdefence.model.settings.FlySpeed;
 import pink.zak.minestom.towerdefence.model.settings.HealthDisplayMode;
+import pink.zak.minestom.towerdefence.model.settings.ParticleThickness;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,7 +84,7 @@ public class UserSettingsMenuHandler {
                    inventory.setItemStack(5, this.createFlySpeedItem(user));
                }
                case 7 -> {
-                   user.setThinParticles(!user.isThinParticles());
+                   user.setParticleThickness(user.getParticleThickness().next());
                    inventory.setItemStack(7, this.createThinParticlesItem(user));
                }
            }
@@ -131,12 +132,16 @@ public class UserSettingsMenuHandler {
     }
 
     private ItemStack createThinParticlesItem(TDUser user) {
+        List<Component> lore = new ArrayList<>();
+
+        ParticleThickness thickness = user.getParticleThickness();
+        for (ParticleThickness loopThickness : ParticleThickness.values())
+            lore.add(Component.text("> " + loopThickness.toString().toLowerCase().replace('_', ' ') + " (" + loopThickness.getSpacing() + ")",
+                loopThickness == thickness ? NamedTextColor.GREEN : NamedTextColor.RED).decoration(TextDecoration.ITALIC, false));
+
         return ItemStack.builder(Material.REDSTONE)
             .displayName(Component.text("Thin Particles", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false))
-            .lore(
-                Component.text("> enabled", user.isThinParticles() ? NamedTextColor.GREEN : NamedTextColor.RED).decoration(TextDecoration.ITALIC, false),
-                Component.text("> disabled", !user.isThinParticles() ? NamedTextColor.GREEN : NamedTextColor.RED).decoration(TextDecoration.ITALIC, false)
-            )
+            .lore(lore)
             .build();
     }
 

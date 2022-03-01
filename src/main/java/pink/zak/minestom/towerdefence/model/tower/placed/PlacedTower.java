@@ -7,6 +7,7 @@ import net.minestom.server.item.Material;
 import net.minestom.server.tag.Tag;
 import net.minestom.server.utils.Direction;
 import org.jetbrains.annotations.NotNull;
+import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.enums.TowerType;
 import pink.zak.minestom.towerdefence.game.GameHandler;
@@ -51,12 +52,12 @@ public abstract class PlacedTower<T extends TowerLevel> implements OwnedEntity {
         this.placeBase(towerPlaceMaterial);
     }
 
-    public static PlacedTower<?> create(GameHandler gameHandler, Instance instance, Tower tower, Material towerPlaceMaterial, short id, GameUser owner, Point baseBlock, Direction facing) {
+    public static PlacedTower<?> create(TowerDefencePlugin plugin, GameHandler gameHandler, Instance instance, Tower tower, Material towerPlaceMaterial, short id, GameUser owner, Point baseBlock, Direction facing) {
         TowerType towerType = tower.getType();
         return switch (towerType) {
             case BOMBER -> new BomberTower(gameHandler, instance, tower, towerPlaceMaterial, id, owner, baseBlock, facing, 1);
             case CHARITY -> new CharityTower(instance, tower, towerPlaceMaterial, id, owner, baseBlock, facing, 1);
-            case LIGHTNING -> new LightningTower(instance, tower, towerPlaceMaterial, id, owner, baseBlock, facing, 1);
+            case LIGHTNING -> new LightningTower(plugin, instance, tower, towerPlaceMaterial, id, owner, baseBlock, facing, 1);
             default -> throw new RuntimeException("Missing tower - " + towerType + " is not coded in but was created");
         };
     }

@@ -35,7 +35,7 @@ public class MobHandler {
 
     private Task attackUpdateTask;
 
-    public MobHandler(GameHandler gameHandler, TowerDefencePlugin plugin) {
+    public MobHandler(TowerDefencePlugin plugin, GameHandler gameHandler) {
         this.plugin = plugin;
         this.gameHandler = gameHandler;
 
