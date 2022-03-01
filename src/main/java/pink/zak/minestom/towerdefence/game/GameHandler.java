@@ -121,8 +121,19 @@ public class GameHandler {
         Arrays.fill(presentBars, '|');
         Arrays.fill(lostBars, '|');
 
-        StringBuilder builder = new StringBuilder();
         return Component.text(String.valueOf(presentBars), NamedTextColor.GREEN).append(Component.text(String.valueOf(lostBars), NamedTextColor.RED));
+    }
+
+    public void damageTower(Team team, int damage) {
+        int newHealth;
+        if (team == Team.RED) {
+            newHealth = this.redTowerHealth.updateAndGet(current -> current - damage);
+            this.redTowerHologram.setText(this.createTowerHologram(Team.RED));
+        } else {
+            newHealth = this.blueTowerHealth.updateAndGet(current -> current - damage);
+            this.redTowerHologram.setText(this.createTowerHologram(Team.BLUE));
+        }
+        MinecraftServer.getGlobalEventHandler().call(new TowerDamageEvent(team, damage, newHealth));
     }
 
     public void end() {
@@ -156,17 +167,5 @@ public class GameHandler {
 
     public Instance getInstance() {
         return this.instance;
-    }
-
-    public void damageRedTower(int damage) { // todo only update hologram if necessary.
-        int newHealth = this.redTowerHealth.updateAndGet(current -> current - damage);
-        this.redTowerHologram.setText(this.createTowerHologram(Team.RED));
-        MinecraftServer.getGlobalEventHandler().call(new TowerDamageEvent(Team.RED, damage, newHealth));
-    }
-
-    public void damageBlueTower(int damage) {
-        int newHealth = this.blueTowerHealth.updateAndGet(current -> current - damage);
-        this.redTowerHologram.setText(this.createTowerHologram(Team.BLUE));
-        MinecraftServer.getGlobalEventHandler().call(new TowerDamageEvent(Team.BLUE, damage, newHealth));
     }
 }

@@ -5,7 +5,6 @@ import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.MinecraftServer;
-import net.minestom.server.adventure.audience.Audiences;
 import net.minestom.server.attribute.Attribute;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.EntityCreature;
@@ -194,10 +193,7 @@ public class LivingEnemyMob extends EntityCreature {
     }
 
     protected void damageCastle() {
-        if (this.team == Team.RED)
-            this.gameHandler.damageRedTower(this.level.getDamage());
-        else
-            this.gameHandler.damageBlueTower(this.level.getDamage());
+        this.gameHandler.damageTower(this.team, this.level.getDamage());
     }
 
     protected void startAttackingCastle() {
