@@ -5,17 +5,27 @@ import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.MinecraftServer;
+import net.minestom.server.adventure.audience.Audiences;
 import net.minestom.server.attribute.Attribute;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.EntityCreature;
 import net.minestom.server.entity.EntityType;
+import net.minestom.server.entity.Metadata;
+import net.minestom.server.entity.Player;
 import net.minestom.server.entity.damage.DamageType;
+import net.minestom.server.entity.metadata.EntityMeta;
 import net.minestom.server.instance.Instance;
+import net.minestom.server.network.packet.server.LazyPacket;
 import net.minestom.server.network.packet.server.play.EntityAnimationPacket;
+import net.minestom.server.network.packet.server.play.EntityHeadLookPacket;
+import net.minestom.server.network.packet.server.play.EntityMetaDataPacket;
 import net.minestom.server.network.packet.server.play.SoundEffectPacket;
 import net.minestom.server.sound.SoundEvent;
 import net.minestom.server.timer.Task;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 import pink.zak.minestom.towerdefence.cache.TDUserCache;
 import pink.zak.minestom.towerdefence.enums.Team;
@@ -24,6 +34,7 @@ import pink.zak.minestom.towerdefence.game.MobHandler;
 import pink.zak.minestom.towerdefence.game.TowerHandler;
 import pink.zak.minestom.towerdefence.model.GameUser;
 import pink.zak.minestom.towerdefence.model.OwnedEntity;
+import pink.zak.minestom.towerdefence.model.TDUser;
 import pink.zak.minestom.towerdefence.model.map.PathCorner;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
 import pink.zak.minestom.towerdefence.model.mob.EnemyMob;
@@ -37,11 +48,15 @@ import pink.zak.minestom.towerdefence.utils.DirectionUtils;
 import pink.zak.minestom.towerdefence.utils.StringUtils;
 
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class LivingEnemyMob extends EntityCreature {
+    private static final Logger LOGGER = LoggerFactory.getLogger(LivingEnemyMob.class);
+
     private final TDUserCache userCache;
     private final GameHandler gameHandler;
 
@@ -64,6 +79,10 @@ public class LivingEnemyMob extends EntityCreature {
 
     protected Set<PlacedAttackingTower<?>> attackingTowers = Sets.newConcurrentHashSet();
     protected float health;
+
+    // we must have our own metadata to support both percentage and raw health display
+    protected EntityMeta percentageMetadata;
+    protected EntityMeta rawMetadata;
 
     private Task attackTask;
 
@@ -95,7 +114,6 @@ public class LivingEnemyMob extends EntityCreature {
         if (enemyMob.isFlying())
             this.setNoGravity(true);
 
-        this.setCustomName(this.createCustomName());
         this.setCustomNameVisible(true);
 
         Pos spawnPos = this.team == Team.RED ? map.getRedMobSpawn() : map.getBlueMobSpawn();
@@ -111,11 +129,12 @@ public class LivingEnemyMob extends EntityCreature {
             return new LivingEnemyMob(plugin, gameHandler, enemyMob, instance, map, gameUser, level);
     }
 
-    private Component createCustomName() {
+    private Component createNameComponent(Player player) {
+        TDUser tdUser = this.userCache.getUser(player.getUuid());
+        String health = tdUser.getHealthMode().resolve(this);
         return Component.text(StringUtils.namespaceToName(this.entityType.name()) + " " + StringUtils.integerToCardinal(this.level.getLevel()), NamedTextColor.DARK_GREEN)
-            .append(Component.text(" (", NamedTextColor.GREEN))
-            .append(Component.text(((int) Math.ceil(this.health / this.level.getHealth() * 100)) + "%", NamedTextColor.DARK_GREEN))
-            .append(Component.text(")", NamedTextColor.GREEN));
+            .append(Component.text(" | ", NamedTextColor.GREEN))
+            .append(Component.text(health, NamedTextColor.DARK_GREEN));
     }
 
     @Override
@@ -211,7 +230,35 @@ public class LivingEnemyMob extends EntityCreature {
             this.kill();
 
         if (this.level != null)
-            this.setCustomName(this.createCustomName());
+            this.updateCustomName();
+    }
+
+    @Override
+    public void updateNewViewer(@NotNull Player player) {
+        player.sendPacket(this.getEntityType().registry().spawnType().getSpawnPacket(this));
+        if (this.hasVelocity()) player.sendPacket(this.getVelocityPacket());
+
+        List<Metadata.Entry<?>> entries = new ArrayList<>(this.metadata.getEntries());
+        Metadata.Entry<?> nameEntry = new Metadata.Entry<>((byte) (EntityMeta.OFFSET + 2), Metadata.OptChat(this.createNameComponent(player)));
+        entries.add(nameEntry);
+        player.sendPacket(new LazyPacket(() -> new EntityMetaDataPacket(getEntityId(), entries)));
+        // todo Passengers
+
+        // Head position
+        player.sendPacket(new EntityHeadLookPacket(getEntityId(), this.position.yaw()));
+    }
+
+    public void updateCustomName() {
+        for (Player player : this.getViewers()) {
+            Component value = this.createNameComponent(player);
+            Metadata.Entry<?> nameEntry = new Metadata.Entry<>((byte) (EntityMeta.OFFSET + 2), Metadata.OptChat(value));
+            player.sendPacket(new EntityMetaDataPacket(this.getEntityId(), Collections.singleton(nameEntry)));
+        }
+    }
+
+    @Override
+    public void setCustomName(@Nullable Component customName) {
+        LOGGER.warn("setCustomName called for a LivingEnemyMob. This action is not supported");
     }
 
     public void towerDamage(@NotNull OwnedEntity entity, float value) {
@@ -246,6 +293,11 @@ public class LivingEnemyMob extends EntityCreature {
     @Override
     public boolean damage(@NotNull DamageType type, float value) {
         return false;
+    }
+
+    @Override
+    public float getHealth() {
+        return this.health;
     }
 
     private int getRandomLengthModifier() {
