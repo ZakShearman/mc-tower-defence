@@ -63,7 +63,7 @@ public class MobMenuHandler {
     }
 
     public void onGameStart() {
-        this.plugin.eventNode().addListener(PlayerUseItemEvent.class, event -> {
+        this.plugin.getEventNode().addListener(PlayerUseItemEvent.class, event -> {
             if (this.plugin.getGameState() == GameState.IN_PROGRESS && event.getItemStack().getMaterial() == Material.CHEST) {
                 this.createGui(this.gameHandler, event.getPlayer());
             }
@@ -122,7 +122,7 @@ public class MobMenuHandler {
     }
 
     private void startSendGuiListener() {
-        this.plugin.eventNode().addListener(InventoryPreClickEvent.class, event -> {
+        this.plugin.getEventNode().addListener(InventoryPreClickEvent.class, event -> {
             Inventory inventory = event.getInventory();
             if (event.getClickType() == ClickType.START_DOUBLE_CLICK || inventory == null || inventory.getTitle() != SEND_TITLE)
                 return;
@@ -156,7 +156,7 @@ public class MobMenuHandler {
     }
 
     private void startUpgradeGuiListener() {
-        this.plugin.eventNode().addListener(InventoryPreClickEvent.class, event -> {
+        this.plugin.getEventNode().addListener(InventoryPreClickEvent.class, event -> {
             Inventory inventory = event.getInventory();
             if (event.getClickType() == ClickType.START_DOUBLE_CLICK || inventory == null || inventory.getTitle() != UPGRADE_TITLE)
                 return;
@@ -178,7 +178,7 @@ public class MobMenuHandler {
     }
 
     private void startMobUpgradeGuiListener() {
-        this.plugin.eventNode().addListener(InventoryPreClickEvent.class, event -> {
+        this.plugin.getEventNode().addListener(InventoryPreClickEvent.class, event -> {
             Inventory inventory = event.getInventory();
             if (event.getClickType() == ClickType.START_DOUBLE_CLICK || inventory == null)
                 return;

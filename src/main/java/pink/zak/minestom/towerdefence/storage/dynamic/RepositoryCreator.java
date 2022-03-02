@@ -34,7 +34,7 @@ public class RepositoryCreator {
     public RepositoryCreator(TowerDefencePlugin plugin) {
         this.plugin = plugin;
 
-        Path configPath = plugin.dataDirectory().resolve("storage.conf");
+        Path configPath = plugin.getDataDirectory().resolve("storage.conf");
         File configFile = configPath.toFile();
         if (Files.notExists(configPath))
             FileUtils.saveResource(configPath, "storage.conf");
@@ -52,7 +52,7 @@ public class RepositoryCreator {
     // todo mongo and rest api
     private boolean checkEligibility(Config config) {
         switch (this.repositoryType) {
-            case JSON -> this.jsonPath = this.plugin.dataDirectory().resolve("data");
+            case JSON -> this.jsonPath = this.plugin.getDataDirectory().resolve("data");
             case MONGO_DB -> {
                 if (!config.hasPath("mongodb"))
                     return false;

@@ -24,7 +24,7 @@ public class ScoreboardManager {
         this.scoreboardMap.put(TowerScoreboard.Type.IN_GAME, this.gameScoreboardManager);
 
         // remove player from scoreboards on disconnect
-        plugin.eventNode().addListener(PlayerDisconnectEvent.class, event -> {
+        plugin.getEventNode().addListener(PlayerDisconnectEvent.class, event -> {
             for (TowerScoreboard scoreboard : this.scoreboardMap.values()) {
                 if (scoreboard.removeViewer(event.getPlayer()))
                     break;

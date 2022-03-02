@@ -58,7 +58,7 @@ public class GameHandler {
         new TowerPlaceHandler(plugin, this);
         new TowerUpgradeHandler(plugin, this);
 
-        plugin.eventNode().addListener(PlayerDisconnectEvent.class, event -> this.users.remove(event.getPlayer()));
+        plugin.getEventNode().addListener(PlayerDisconnectEvent.class, event -> this.users.remove(event.getPlayer()));
     }
 
     public void start(Instance instance) {

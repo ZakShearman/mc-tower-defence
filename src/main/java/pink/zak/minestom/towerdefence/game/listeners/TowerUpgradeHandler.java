@@ -58,7 +58,7 @@ public class TowerUpgradeHandler {
         this.gameHandler = gameHandler;
         this.towerHandler = gameHandler.getTowerHandler();
 
-        plugin.eventNode()
+        plugin.getEventNode()
             .addListener(PlayerBlockInteractEvent.class, event -> {
                 Player player = event.getPlayer();
                 if (event.getHand() != Player.Hand.MAIN || plugin.getGameState() != GameState.IN_PROGRESS)
@@ -98,7 +98,7 @@ public class TowerUpgradeHandler {
     }
 
     private void startTowerUpgradeGuiListener() {
-        this.plugin.eventNode().addListener(InventoryPreClickEvent.class, event -> {
+        this.plugin.getEventNode().addListener(InventoryPreClickEvent.class, event -> {
             Inventory inventory = event.getInventory();
             if (event.getClickType() == ClickType.START_DOUBLE_CLICK || inventory == null)
                 return;

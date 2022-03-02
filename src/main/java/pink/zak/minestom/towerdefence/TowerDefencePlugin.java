@@ -59,8 +59,8 @@ public class TowerDefencePlugin extends Extension {
     private GameHandler gameHandler;
 
     @Override
-    public LoadStatus initialize() {
-        EVENT_NODE = this.eventNode();
+    public void initialize() {
+        EVENT_NODE = this.getEventNode();
         this.startBenchmark();
 
         DimensionType dimensionType = DimensionType.builder(NamespaceID.from("towerdefence:main"))
@@ -71,7 +71,7 @@ public class TowerDefencePlugin extends Extension {
         Instance instance = MinecraftServer.getInstanceManager().createInstanceContainer(dimensionType);
 
         instance.setExplosionSupplier((centerX, centerY, centerZ, strength, additionalData) -> new CustomExplosion(centerX, centerY, centerZ, strength));
-        this.eventNode().addListener(PlayerLoginEvent.class, event -> {
+        this.getEventNode().addListener(PlayerLoginEvent.class, event -> {
             event.getPlayer().setRespawnPoint(new Pos(-1, 67, 4));
             event.setSpawningInstance(instance);
         });
@@ -92,8 +92,6 @@ public class TowerDefencePlugin extends Extension {
 
         CommandManager commandManager = MinecraftServer.getCommandManager();
         commandManager.register(new TowerDefenceCommand(this));
-
-        return LoadStatus.SUCCESS;
     }
 
     @Override

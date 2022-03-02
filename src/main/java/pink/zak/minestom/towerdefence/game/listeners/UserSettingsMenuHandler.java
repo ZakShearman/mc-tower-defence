@@ -40,7 +40,7 @@ public class UserSettingsMenuHandler {
     }
 
     public void onGameStart() {
-        this.plugin.eventNode().addListener(PlayerUseItemEvent.class, event -> {
+        this.plugin.getEventNode().addListener(PlayerUseItemEvent.class, event -> {
             if (this.plugin.getGameState() == GameState.IN_PROGRESS && event.getItemStack().getMaterial() == Material.COMMAND_BLOCK_MINECART) {
                 this.createGui(event.getPlayer());
             }
@@ -61,7 +61,7 @@ public class UserSettingsMenuHandler {
     }
 
     private void startListener() {
-        this.plugin.eventNode().addListener(InventoryPreClickEvent.class, event -> {
+        this.plugin.getEventNode().addListener(InventoryPreClickEvent.class, event -> {
            Inventory inventory = event.getInventory();
            if (inventory == null || inventory.getTitle() != MENU_TITLE)
                return;

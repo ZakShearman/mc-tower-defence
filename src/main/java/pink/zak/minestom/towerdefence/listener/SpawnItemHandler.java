@@ -44,7 +44,7 @@ public class SpawnItemHandler {
         this.updateTeamItem(Team.RED);
         this.updateTeamItem(Team.BLUE);
 
-        this.plugin.eventNode()
+        this.plugin.getEventNode()
             .addListener(PlayerSpawnEvent.class, event -> {
                 Player player = event.getPlayer();
                 player.getInventory().setItemStack(0, this.redItem);

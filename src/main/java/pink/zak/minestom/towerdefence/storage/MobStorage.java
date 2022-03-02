@@ -11,10 +11,12 @@ import pink.zak.minestom.towerdefence.model.mob.EnemyMob;
 import pink.zak.minestom.towerdefence.utils.FileUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Stream;
 
 public class MobStorage {
     private static final Logger LOGGER = LoggerFactory.getLogger(MobStorage.class);
@@ -26,18 +28,21 @@ public class MobStorage {
     public MobStorage(TowerDefencePlugin plugin) {
         this.plugin = plugin;
 
-        this.folderPath = plugin.dataDirectory().resolve("mobs");
+        this.folderPath = plugin.getDataDirectory().resolve("mobs");
         if (!Files.exists(this.folderPath))
             this.createDefaultFiles();
         this.load();
     }
 
     private void load() {
-        for (File file : this.folderPath.toFile().listFiles()) {
-            JsonObject jsonObject = FileUtils.fileToJsonObject(file);
-            EnemyMob enemyMob = new EnemyMob(jsonObject);
-
-            this.enemyMobs.put(enemyMob.getEntityType(), enemyMob);
+        try (Stream<Path> stream = Files.list(this.folderPath)) {
+            stream
+                .map(Path::toFile)
+                .map(FileUtils::fileToJsonObject)
+                .map(EnemyMob::new)
+                .forEach(enemyMob -> this.enemyMobs.put(enemyMob.getEntityType(), enemyMob));
+        } catch (IOException ex) {
+            LOGGER.error("Error whilst loading EnemyMobs: ", ex);
         }
     }
 

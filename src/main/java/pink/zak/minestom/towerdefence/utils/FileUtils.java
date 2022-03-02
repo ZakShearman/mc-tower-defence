@@ -37,7 +37,7 @@ public class FileUtils {
     }
 
     public static JsonElement getLocalOrResourceJson(Extension extension, UnaryOperator<Path> pathOperator) {
-        Path fullPath = pathOperator.apply(extension.dataDirectory().resolve("TowerDefence"));
+        Path fullPath = pathOperator.apply(extension.getDataDirectory().resolve("TowerDefence"));
         File systemFile = fullPath.toFile();
         if (systemFile.exists()) {
             try {

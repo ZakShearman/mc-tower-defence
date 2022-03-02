@@ -20,8 +20,8 @@ public class TDUserCache {
     public TDUserCache(TowerDefencePlugin plugin) {
         this.userRepository = plugin.getUserRepository();
 
-        plugin.eventNode().addListener(PlayerLoginEvent.class, event -> this.load(event.getPlayer().getUuid()));
-        plugin.eventNode().addListener(PlayerDisconnectEvent.class, event -> this.invalidate(event.getPlayer().getUuid()));
+        plugin.getEventNode().addListener(PlayerLoginEvent.class, event -> this.load(event.getPlayer().getUuid()));
+        plugin.getEventNode().addListener(PlayerDisconnectEvent.class, event -> this.invalidate(event.getPlayer().getUuid()));
     }
 
     public Collection<TDUser> getAllLoadedUsers() {

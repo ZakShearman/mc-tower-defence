@@ -40,7 +40,7 @@ public class TowerPlaceHandler {
         this.towerPlaceGui = this.createTowerPlaceGui();
         this.towerMap = plugin.getMapStorage().getMap();
 
-        plugin.eventNode()
+        plugin.getEventNode()
             .addListener(PlayerBlockInteractEvent.class, event -> {
                 Player player = event.getPlayer();
                 if (event.getHand() != Player.Hand.MAIN || plugin.getGameState() != GameState.IN_PROGRESS)
@@ -65,7 +65,7 @@ public class TowerPlaceHandler {
             inventory.setItemStack(tower.getType().getGuiSlot(), tower.getBaseMenuItem());
         }
 
-        this.plugin.eventNode().addListener(InventoryPreClickEvent.class, event -> {
+        this.plugin.getEventNode().addListener(InventoryPreClickEvent.class, event -> {
             Inventory checkInventory = event.getInventory();
             if (event.getClickType() == ClickType.START_DOUBLE_CLICK || checkInventory == null || checkInventory.getTitle() != title)
                 return;

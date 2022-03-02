@@ -9,7 +9,7 @@ import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 public class ProtectionHandler {
 
     public ProtectionHandler(TowerDefencePlugin plugin) {
-        plugin.eventNode()
+        plugin.getEventNode()
             .addListener(PlayerBlockBreakEvent.class, event -> event.setCancelled(true))
             .addListener(PlayerBlockPlaceEvent.class, event -> event.setCancelled(true))
             .addListener(ItemDropEvent.class, event -> event.setCancelled(true))

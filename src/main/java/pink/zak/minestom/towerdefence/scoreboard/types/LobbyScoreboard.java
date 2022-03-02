@@ -31,7 +31,7 @@ public class LobbyScoreboard implements TowerScoreboard {
         this.sidebar.createLine(new Sidebar.ScoreboardLine("empty-1", Component.empty(), 1));
         this.sidebar.createLine(new Sidebar.ScoreboardLine("website", TowerScoreboard.DOMAIN, 0));
 
-        plugin.eventNode().addListener(PlayerSpawnEvent.class, event -> {
+        plugin.getEventNode().addListener(PlayerSpawnEvent.class, event -> {
                 this.sidebar.updateLineContent("online-players", this.createOnlinePlayers());
                 this.sidebar.addViewer(event.getPlayer());
             })

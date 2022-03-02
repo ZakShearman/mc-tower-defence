@@ -58,7 +58,7 @@ public class EditorSubCommand implements CommandExecutor {
             .displayName(Component.text("Team area wand item", NamedTextColor.BLUE)
                 .decoration(TextDecoration.ITALIC, false)).build();
 
-        plugin.eventNode()
+        plugin.getEventNode()
             .addListener(PlayerStartDiggingEvent.class, event -> { // left click block
                 Player player = event.getPlayer();
                 EditorInfo editorInfo = this.editors.get(player);
