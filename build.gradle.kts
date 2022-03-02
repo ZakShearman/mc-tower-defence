@@ -19,7 +19,7 @@ dependencies {
     compileOnly("com.github.ZakShearman:Minestom:9c98fe0f23")
     implementation("net.kyori:adventure-text-minimessage:4.10.0")
     implementation("com.typesafe:config:1.4.2")
-    implementation("com.google.guava:guava:31.0.1-jre")
+    implementation("com.google.guava:guava:31.1-jre")
 
     implementation("com.github.ben-manes.caffeine:caffeine:3.0.5")
     implementation("org.mongodb:mongo-java-driver:3.12.10")
