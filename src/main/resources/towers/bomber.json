@@ -1,6 +1,7 @@
 {
   "type": "BOMBER",
   "name": "bomber",
+  "damageType": "BLUDGEONING",
   "levels": [
     {
       "level": 1,

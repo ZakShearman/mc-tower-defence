@@ -1,8 +1,11 @@
 {
   "entityType": "minecraft:zombie",
   "commonName": "Zombie",
+  "damageType": "BLUDGEONING",
   "guiSlot": 3,
   "flying": false,
+  "ignoredEffects": ["POISONED"],
+  "ignoredDamageTypes": ["POISON"],
   "unitCost": 1.0,
   "unownedItem": {
     "material": "minecraft:zombie_head",

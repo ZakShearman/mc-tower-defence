@@ -1,8 +1,11 @@
 {
   "entityType": "minecraft:bee",
   "commonName": "Bee",
+  "damageType": "ACID",
   "guiSlot": 0,
   "flying": true,
+  "ignoredEffects": ["BURNING"],
+  "ignoredDamageTypes": ["FIRE"],
   "unitCost": 0.25,
   "unownedItem": {
     "material": "minecraft:player_head",

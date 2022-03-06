@@ -1,8 +1,11 @@
 {
   "entityType": "minecraft:skeleton",
   "commonName": "Skeleton",
+  "damageType": "BLUDGEONING",
   "guiSlot": 2,
   "flying": false,
+  "ignoredEffects": ["POISONED"],
+  "ignoredDamageTypes": ["POISON"],
   "unitCost": 1.0,
   "unownedItem": {
     "material": "minecraft:skeleton_skull",
