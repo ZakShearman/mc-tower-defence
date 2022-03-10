@@ -17,7 +17,7 @@ repositories {
 dependencies {
     //compileOnly("com.github.Minestom:Minestom:6e16fb7b13")
     compileOnly("com.github.ZakShearman:Minestom:9c98fe0f23")
-    implementation("net.kyori:adventure-text-minimessage:4.10.0")
+    implementation("net.kyori:adventure-text-minimessage:4.10.1")
     implementation("com.typesafe:config:1.4.2")
     implementation("com.google.guava:guava:31.1-jre")
 
