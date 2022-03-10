@@ -52,9 +52,11 @@ public class SpawnItemHandler {
 
                 this.redPlayers.add(player);
 
-                MinecraftServer.getSchedulerManager().buildTask(() -> {
-                    this.plugin.getGameHandler().start(player.getInstance());
-                }).delay(1, TimeUnit.SECOND).schedule();
+                if (this.plugin.getGameState() != GameState.IN_PROGRESS) {
+                    MinecraftServer.getSchedulerManager().buildTask(() -> {
+                        this.plugin.getGameHandler().start(player.getInstance());
+                    }).delay(1, TimeUnit.SECOND).schedule();
+                }
             })
             .addListener(PlayerDisconnectEvent.class, event -> {
                 Player player = event.getPlayer();

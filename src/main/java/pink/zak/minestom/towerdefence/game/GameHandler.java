@@ -25,6 +25,7 @@ import pink.zak.minestom.towerdefence.model.map.TowerMap;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class GameHandler {
