@@ -15,8 +15,7 @@ repositories {
 }
 
 dependencies {
-    //compileOnly("com.github.Minestom:Minestom:6e16fb7b13")
-    compileOnly("com.github.ZakShearman:Minestom:9c98fe0f23")
+    compileOnly("com.github.ZakShearman:Minestom:b77fa9cb53")
     implementation("net.kyori:adventure-text-minimessage:4.10.1")
     implementation("com.typesafe:config:1.4.2")
     implementation("com.google.guava:guava:31.1-jre")
@@ -24,8 +23,7 @@ dependencies {
     implementation("com.github.ben-manes.caffeine:caffeine:3.0.5")
     implementation("org.mongodb:mongo-java-driver:3.12.10")
 
-    //testImplementation("com.github.Minestom:Minestom:6e16fb7b13")
-    testImplementation("com.github.ZakShearman:Minestom:9c98fe0f23")
+    testImplementation("com.github.ZakShearman:Minestom:b77fa9cb53")
 
     //testImplementation("net.minestom.server:Minestom:1.0")
 }

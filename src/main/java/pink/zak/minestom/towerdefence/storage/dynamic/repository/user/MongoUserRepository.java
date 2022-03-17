@@ -35,7 +35,6 @@ public class MongoUserRepository extends MongoRepository<UUID, TDUser> {
         HealthDisplayMode healthMode = HealthDisplayMode.valueOf(document.getString("healthMode"));
         ParticleThickness particleThickness = ParticleThickness.valueOf(document.getString("particleThickness"));
         boolean damageIndicators = document.getBoolean("damageIndicators");
-        boolean thinParticles = document.getBoolean("thinParticles");
         FlySpeed flySpeed = FlySpeed.valueOf(document.getString("flySpeed"));
         return new TDUser(uuid, healthMode, particleThickness, flySpeed, damageIndicators);
     }
