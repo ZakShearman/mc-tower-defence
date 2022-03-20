@@ -4,12 +4,12 @@ import com.google.common.collect.Maps;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.MinecraftServer;
-import net.minestom.server.adventure.audience.Audiences;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
 import net.minestom.server.entity.hologram.Hologram;
 import net.minestom.server.event.player.PlayerDisconnectEvent;
 import net.minestom.server.instance.Instance;
+import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 import pink.zak.minestom.towerdefence.api.event.game.TowerDamageEvent;
 import pink.zak.minestom.towerdefence.cache.TDUserCache;
@@ -21,33 +21,36 @@ import pink.zak.minestom.towerdefence.game.listeners.TowerUpgradeHandler;
 import pink.zak.minestom.towerdefence.game.listeners.UserSettingsMenuHandler;
 import pink.zak.minestom.towerdefence.model.GameUser;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
+import pink.zak.minestom.towerdefence.model.mob.EnemyMob;
 
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 public class GameHandler {
-    private final TowerDefencePlugin plugin;
-    private final TDUserCache userCache;
-    private final TowerMap map;
+    private final @NotNull TowerDefencePlugin plugin;
+    private final @NotNull TDUserCache userCache;
+    private final @NotNull TowerMap map;
 
-    private final MobHandler mobHandler;
-    private final TowerHandler towerHandler;
-    private final MobMenuHandler mobMenuHandler;
-    private final UserSettingsMenuHandler userSettingsMenuHandler;
+    private final @NotNull MobHandler mobHandler;
+    private final @NotNull TowerHandler towerHandler;
+    private final @NotNull MobMenuHandler mobMenuHandler;
+    private final @NotNull UserSettingsMenuHandler userSettingsMenuHandler;
 
-    private Map<Player, GameUser> users = Maps.newHashMap();
+    private final Set<EnemyMob> defaultEnemyMobs;
+
+    private @NotNull Map<Player, GameUser> users = Maps.newHashMap();
     private Instance instance;
 
-    private final AtomicInteger redTowerHealth = new AtomicInteger(1000);
-    private final AtomicInteger blueTowerHealth = new AtomicInteger(1000);
+    private final @NotNull AtomicInteger redTowerHealth = new AtomicInteger(1000);
+    private final @NotNull AtomicInteger blueTowerHealth = new AtomicInteger(1000);
 
     private Hologram redTowerHologram;
     private Hologram blueTowerHologram;
 
-    public GameHandler(TowerDefencePlugin plugin) {
+    public GameHandler(@NotNull TowerDefencePlugin plugin) {
         this.plugin = plugin;
         this.userCache = plugin.getUserCache();
         this.map = plugin.getMapStorage().getMap();
@@ -56,13 +59,21 @@ public class GameHandler {
         this.mobHandler = new MobHandler(plugin, this);
         this.mobMenuHandler = new MobMenuHandler(plugin, this);
         this.userSettingsMenuHandler = new UserSettingsMenuHandler(plugin);
+
+        this.defaultEnemyMobs = plugin.getMobStorage().getEnemyMobs().values()
+            .stream()
+            .filter(mob -> mob.getLevel(1).getManaCost() <= 0)
+            .collect(Collectors.toUnmodifiableSet());
+
+        System.out.println(this.defaultEnemyMobs);
+
         new TowerPlaceHandler(plugin, this);
         new TowerUpgradeHandler(plugin, this);
 
         plugin.getEventNode().addListener(PlayerDisconnectEvent.class, event -> this.users.remove(event.getPlayer()));
     }
 
-    public void start(Instance instance) {
+    public void start(@NotNull Instance instance) {
         this.plugin.setGameState(GameState.IN_PROGRESS);
 
         this.instance = instance;
@@ -91,7 +102,7 @@ public class GameHandler {
         }*/
     }
 
-    private void configureTeam(Team team, Set<Player> players) {
+    private void configureTeam(@NotNull Team team, @NotNull Set<Player> players) {
         Pos spawnPoint = this.map.getSpawn(team);
 
         if (team == Team.RED) {
@@ -101,7 +112,7 @@ public class GameHandler {
         }
 
         for (Player player : players) {
-            GameUser gameUser = new GameUser(player, this.userCache.getUser(player.getUuid()), team);
+            GameUser gameUser = new GameUser(player, this.userCache.getUser(player.getUuid()), this.defaultEnemyMobs, team);
             this.users.put(player, gameUser);
 
             player.setAllowFlying(true);
@@ -111,7 +122,7 @@ public class GameHandler {
         }
     }
 
-    private Component createTowerHologram(Team team) {
+    private @NotNull Component createTowerHologram(Team team) {
         int health = (team == Team.RED ? this.redTowerHealth : this.blueTowerHealth).get();
         int barAmount = (int) Math.ceil(health / 25.0); // for 40 bars, 40 * 25 = 1000
 
@@ -123,7 +134,7 @@ public class GameHandler {
         return Component.text(String.valueOf(presentBars), NamedTextColor.GREEN).append(Component.text(String.valueOf(lostBars), NamedTextColor.RED));
     }
 
-    public void damageTower(Team team, int damage) {
+    public void damageTower(@NotNull Team team, int damage) {
         int newHealth;
         if (team == Team.RED) {
             newHealth = this.redTowerHealth.updateAndGet(current -> current - damage);
@@ -140,15 +151,15 @@ public class GameHandler {
         // todo properly clean up
     }
 
-    public TowerMap getMap() {
+    public @NotNull TowerMap getMap() {
         return this.map;
     }
 
-    public MobHandler getMobHandler() {
+    public @NotNull MobHandler getMobHandler() {
         return this.mobHandler;
     }
 
-    public TowerHandler getTowerHandler() {
+    public @NotNull TowerHandler getTowerHandler() {
         return this.towerHandler;
     }
 
@@ -156,11 +167,11 @@ public class GameHandler {
         return this.users.containsKey(player);
     }
 
-    public GameUser getGameUser(Player player) {
+    public @NotNull GameUser getGameUser(Player player) {
         return this.users.get(player);
     }
 
-    public Map<Player, GameUser> getUsers() {
+    public @NotNull Map<Player, GameUser> getUsers() {
         return this.users;
     }
 

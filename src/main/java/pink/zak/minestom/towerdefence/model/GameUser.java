@@ -4,6 +4,8 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Queues;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 import pink.zak.minestom.towerdefence.api.event.player.PlayerCoinChangeEvent;
 import pink.zak.minestom.towerdefence.api.event.player.PlayerManaChangeEvent;
@@ -13,42 +15,46 @@ import pink.zak.minestom.towerdefence.model.mob.QueuedEnemyMob;
 
 import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.IntUnaryOperator;
 
 public class GameUser {
-    private final Player player;
-    private final TDUser user;
-    private final Team team;
+    private final @NotNull Player player;
+    private final @NotNull TDUser user;
+    private final @NotNull Team team;
 
-    private final Map<EnemyMob, Integer> mobLevels = Maps.newConcurrentMap();
-    private final Queue<QueuedEnemyMob> queuedMobs = Queues.newConcurrentLinkedQueue();
+    private final @NotNull Map<EnemyMob, Integer> mobLevels = Maps.newConcurrentMap();
+    private final @NotNull Queue<QueuedEnemyMob> queuedMobs = Queues.newConcurrentLinkedQueue();
 
-    private final AtomicInteger coins = new AtomicInteger(1000000);
-    private final AtomicInteger mana = new AtomicInteger(10000);
-    private final AtomicInteger maxQueueSize = new AtomicInteger(2);
+    private final @NotNull AtomicInteger coins = new AtomicInteger(1000000);
+    private final @NotNull AtomicInteger mana = new AtomicInteger(10000);
+    private final @NotNull AtomicInteger maxQueueSize = new AtomicInteger(2);
 
-    private Point lastClickedTowerBlock;
+    private @Nullable Point lastClickedTowerBlock;
 
-    public GameUser(Player player, TDUser user, Team team) {
+    public GameUser(@NotNull Player player, @NotNull TDUser user, @NotNull Set<EnemyMob> defaultUnlocks, @NotNull Team team) {
         this.player = player;
         this.user = user;
         this.team = team;
+
+        for (EnemyMob mob : defaultUnlocks)
+            this.mobLevels.put(mob, 1);
     }
 
-    public Player getPlayer() {
+    public @NotNull Player getPlayer() {
         return this.player;
     }
 
-    public TDUser getUser() {
+    public @NotNull TDUser getUser() {
         return this.user;
     }
 
-    public Team getTeam() {
+    public @NotNull Team getTeam() {
         return this.team;
     }
 
-    public Map<EnemyMob, Integer> getMobLevels() {
+    public@NotNull  Map<EnemyMob, Integer> getMobLevels() {
         return this.mobLevels;
     }
 
@@ -56,7 +62,7 @@ public class GameUser {
         return this.mobLevels.getOrDefault(enemyMob, 0);
     }
 
-    public Queue<QueuedEnemyMob> getQueuedMobs() {
+    public @NotNull Queue<QueuedEnemyMob> getQueuedMobs() {
         return this.queuedMobs;
     }
 
@@ -71,13 +77,13 @@ public class GameUser {
         return this.coins.get();
     }
 
-    public int updateAndGetCoins(IntUnaryOperator intOperator) {
+    public int updateAndGetCoins(@NotNull IntUnaryOperator intOperator) {
         int newCoins = this.coins.updateAndGet(intOperator);
         TowerDefencePlugin.getCallingEventNode().call(new PlayerCoinChangeEvent(this, newCoins));
         return newCoins;
     }
 
-    public int updateAndGetMana(IntUnaryOperator intOperator) {
+    public int updateAndGetMana(@NotNull IntUnaryOperator intOperator) {
         int newMana = this.mana.updateAndGet(intOperator);
         TowerDefencePlugin.getCallingEventNode().call(new PlayerManaChangeEvent(this, newMana));
         return newMana;
@@ -87,15 +93,15 @@ public class GameUser {
         return this.mana.get();
     }
 
-    public AtomicInteger getMaxQueueSize() {
+    public @NotNull AtomicInteger getMaxQueueSize() {
         return this.maxQueueSize;
     }
 
-    public Point getLastClickedTowerBlock() {
+    public @Nullable Point getLastClickedTowerBlock() {
         return this.lastClickedTowerBlock;
     }
 
-    public void setLastClickedTowerBlock(Point lastClickedTowerBlock) {
+    public void setLastClickedTowerBlock(@Nullable Point lastClickedTowerBlock) {
         this.lastClickedTowerBlock = lastClickedTowerBlock;
     }
 }

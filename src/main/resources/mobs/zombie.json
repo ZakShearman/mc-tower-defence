@@ -21,7 +21,7 @@
       "health": 20,
       "damage": 1,
       "movementSpeed": 2.1,
-      "manaCost": 0,
+      "manaCost": -1,
       "sendItem": {
         "material": "minecraft:zombie_head",
         "displayName": "<yellow>Zombie",
