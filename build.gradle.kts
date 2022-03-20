@@ -20,7 +20,7 @@ dependencies {
     implementation("com.typesafe:config:1.4.2")
     implementation("com.google.guava:guava:31.1-jre")
 
-    implementation("com.github.ben-manes.caffeine:caffeine:3.0.5")
+    implementation("com.github.ben-manes.caffeine:caffeine:3.0.6")
     implementation("org.mongodb:mongo-java-driver:3.12.10")
 
     testImplementation("com.github.ZakShearman:Minestom:b77fa9cb53")
