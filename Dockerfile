@@ -1,4 +1,4 @@
-FROM gradle:7.4.0-jdk17 AS gradle
+FROM gradle:7.4.1-jdk17 AS gradle
 COPY --chown=gradle:gradle . /gradleBuild
 WORKDIR /gradleBuild
 
