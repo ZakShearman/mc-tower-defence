@@ -25,9 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserSettingsMenuHandler {
-    private static final Component MENU_TITLE = Component.text("User Settings", NamedTextColor.DARK_GRAY);
+    private static final @NotNull Component MENU_TITLE = Component.text("User Settings", NamedTextColor.DARK_GRAY);
 
-    private static final ItemStack SETTINGS_ITEM = ItemStack.builder(Material.COMMAND_BLOCK_MINECART)
+    private static final @NotNull ItemStack SETTINGS_ITEM = ItemStack.builder(Material.COMMAND_BLOCK_MINECART)
         .displayName(Component.text("User Settings", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
         .build();
 
@@ -48,7 +48,7 @@ public class UserSettingsMenuHandler {
         this.startListener();
     }
 
-    private void createGui(Player player) {
+    private void createGui(@NotNull Player player) {
         TDUser user = this.userCache.getUser(player.getUuid());
 
         Inventory inventory = new Inventory(InventoryType.CHEST_1_ROW, MENU_TITLE);
@@ -62,36 +62,36 @@ public class UserSettingsMenuHandler {
 
     private void startListener() {
         this.plugin.getEventNode().addListener(InventoryPreClickEvent.class, event -> {
-           Inventory inventory = event.getInventory();
-           if (inventory == null || inventory.getTitle() != MENU_TITLE)
-               return;
-           event.setCancelled(true);
+            Inventory inventory = event.getInventory();
+            if (inventory == null || inventory.getTitle() != MENU_TITLE)
+                return;
+            event.setCancelled(true);
 
-           Player player = event.getPlayer();
-           TDUser user = this.userCache.getUser(player.getUuid());
-           switch (event.getSlot()) {
-               case 1 -> {
-                   user.setDamageIndicators(!user.isDamageIndicators());
-                   inventory.setItemStack(1, this.createDamageIndicatorsItem(user));
-               }
-               case 3 -> {
-                   user.setHealthMode(user.getHealthMode().next());
-                   inventory.setItemStack(3, this.createHealthDisplayItem(user));
-               }
-               case 5 -> {
-                   user.setFlySpeed(user.getFlySpeed().next());
-                   player.setFlyingSpeed(user.getFlySpeed().getSpeed());
-                   inventory.setItemStack(5, this.createFlySpeedItem(user));
-               }
-               case 7 -> {
-                   user.setParticleThickness(user.getParticleThickness().next());
-                   inventory.setItemStack(7, this.createThinParticlesItem(user));
-               }
-           }
+            Player player = event.getPlayer();
+            TDUser user = this.userCache.getUser(player.getUuid());
+            switch (event.getSlot()) {
+                case 1 -> {
+                    user.setDamageIndicators(!user.isDamageIndicators());
+                    inventory.setItemStack(1, this.createDamageIndicatorsItem(user));
+                }
+                case 3 -> {
+                    user.setHealthMode(user.getHealthMode().next());
+                    inventory.setItemStack(3, this.createHealthDisplayItem(user));
+                }
+                case 5 -> {
+                    user.setFlySpeed(user.getFlySpeed().next());
+                    player.setFlyingSpeed(user.getFlySpeed().getSpeed());
+                    inventory.setItemStack(5, this.createFlySpeedItem(user));
+                }
+                case 7 -> {
+                    user.setParticleThickness(user.getParticleThickness().next());
+                    inventory.setItemStack(7, this.createThinParticlesItem(user));
+                }
+            }
         });
     }
 
-    private ItemStack createDamageIndicatorsItem(TDUser user) {
+    private @NotNull ItemStack createDamageIndicatorsItem(@NotNull TDUser user) {
         return ItemStack.builder(Material.OAK_SIGN)
             .displayName(Component.text("Show Damage Indicators", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false))
             .lore(
@@ -101,7 +101,7 @@ public class UserSettingsMenuHandler {
             .build();
     }
 
-    private ItemStack createHealthDisplayItem(TDUser user) {
+    private @NotNull ItemStack createHealthDisplayItem(@NotNull TDUser user) {
         HealthDisplayMode healthMode = user.getHealthMode();
         List<Component> lore = new ArrayList<>();
 
@@ -116,7 +116,7 @@ public class UserSettingsMenuHandler {
             .build();
     }
 
-    private ItemStack createFlySpeedItem(TDUser user) {
+    private @NotNull ItemStack createFlySpeedItem(@NotNull TDUser user) {
         FlySpeed flySpeed = user.getFlySpeed();
         List<Component> lore = new ArrayList<>();
 
@@ -131,7 +131,7 @@ public class UserSettingsMenuHandler {
             .build();
     }
 
-    private ItemStack createThinParticlesItem(TDUser user) {
+    private @NotNull ItemStack createThinParticlesItem(@NotNull TDUser user) {
         List<Component> lore = new ArrayList<>();
 
         ParticleThickness thickness = user.getParticleThickness();
@@ -145,7 +145,7 @@ public class UserSettingsMenuHandler {
             .build();
     }
 
-    public static ItemStack getMenuItem() {
+    public static @NotNull ItemStack getMenuItem() {
         return SETTINGS_ITEM;
     }
 }

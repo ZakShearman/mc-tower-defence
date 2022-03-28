@@ -15,6 +15,7 @@ import net.minestom.server.inventory.click.ClickType;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import net.minestom.server.utils.time.TimeUnit;
+import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.game.GameHandler;
@@ -25,22 +26,23 @@ import pink.zak.minestom.towerdefence.model.mob.EnemyMobLevel;
 import pink.zak.minestom.towerdefence.model.mob.QueuedEnemyMob;
 import pink.zak.minestom.towerdefence.storage.MobStorage;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 public class MobMenuHandler {
-    private static final Component SEND_TITLE = Component.text("Send Troops", NamedTextColor.DARK_GRAY);
-    private static final Component UPGRADE_TITLE = Component.text("Upgrade Troops", NamedTextColor.DARK_GRAY);
-    private static final Map<EnemyMob, Component> MOB_UPGRADE_TITLES = Maps.newHashMap();
-    private final TowerDefencePlugin plugin;
-    private final GameHandler gameHandler;
-    private final MobHandler mobHandler;
-    private final MobStorage mobStorage;
-    private final ItemStack chestItem;
-    private final ItemStack upgradeItem;
+    private static final @NotNull Component SEND_TITLE = Component.text("Send Troops", NamedTextColor.DARK_GRAY);
+    private static final @NotNull Component UPGRADE_TITLE = Component.text("Upgrade Troops", NamedTextColor.DARK_GRAY);
+    private static final @NotNull Map<EnemyMob, Component> MOB_UPGRADE_TITLES = new HashMap<>();
+    private final @NotNull TowerDefencePlugin plugin;
+    private final @NotNull GameHandler gameHandler;
+    private final @NotNull MobHandler mobHandler;
+    private final @NotNull MobStorage mobStorage;
+    private final @NotNull ItemStack chestItem;
+    private final @NotNull ItemStack upgradeItem;
 
-    public MobMenuHandler(TowerDefencePlugin plugin, GameHandler gameHandler) {
+    public MobMenuHandler(@NotNull TowerDefencePlugin plugin, @NotNull GameHandler gameHandler) {
         for (EnemyMob enemyMob : plugin.getMobStorage().getEnemyMobs().values())
             MOB_UPGRADE_TITLES.put(enemyMob, Component.text("Upgrade " + enemyMob.getCommonName()));
 
@@ -70,7 +72,7 @@ public class MobMenuHandler {
         });
     }
 
-    private void createGui(GameHandler gameHandler, Player player) {
+    private void createGui(@NotNull GameHandler gameHandler, @NotNull Player player) {
         GameUser gameUser = gameHandler.getGameUser(player);
         if (gameUser == null)
             return;
@@ -88,7 +90,7 @@ public class MobMenuHandler {
         player.openInventory(inventory);
     }
 
-    private ItemStack createQueueItem(GameUser gameUser) {
+    private @NotNull ItemStack createQueueItem(@NotNull GameUser gameUser) {
         List<Component> loreLines = Lists.newArrayList(Component.empty());
 
         EnemyMob currentTrackedMob = null;
@@ -223,7 +225,7 @@ public class MobMenuHandler {
         });
     }
 
-    private void convertToUpgradeGui(Inventory inventory) {
+    private void convertToUpgradeGui(@NotNull Inventory inventory) {
         inventory.setTitle(UPGRADE_TITLE);
         inventory.setItemStack(31, ItemStack.AIR); // todo Make upgrade just a right click on the mob
         inventory.setItemStack(35, ItemStack.AIR);
@@ -246,7 +248,7 @@ public class MobMenuHandler {
         gameUser.getPlayer().openInventory(inventory);
     }
 
-    private void sendTroops(GameUser gameUser, EnemyMob enemyMob, EnemyMobLevel enemyMobLevel) {
+    private void sendTroops(@NotNull GameUser gameUser, @NotNull EnemyMob enemyMob, @NotNull EnemyMobLevel enemyMobLevel) {
         gameUser.getQueuedMobs().add(new QueuedEnemyMob(enemyMob, enemyMobLevel));
     }
 
@@ -266,7 +268,7 @@ public class MobMenuHandler {
             .schedule();
     }
 
-    public ItemStack getChestItem() {
+    public @NotNull ItemStack getChestItem() {
         return this.chestItem;
     }
 }

@@ -1,6 +1,7 @@
 package pink.zak.minestom.towerdefence.enums;
 
 import com.google.gson.JsonObject;
+import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTower;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.config.Tower;
@@ -16,13 +17,14 @@ public enum TowerType {
     LIGHTNING(Size.THREE, 12, true, AttackingTower::new, LightningTowerLevel::new),
     CHARITY(Size.THREE, 13, false, Tower::new, CharityTowerLevel::new);
 
-    private final Size size;
+    private final @NotNull Size size;
     private final int guiSlot;
     private final boolean targetAir;
-    private final Function<JsonObject, ? extends Tower> towerFunction;
-    private final Function<JsonObject, ? extends TowerLevel> towerLevelFunction;
+    private final @NotNull Function<JsonObject, ? extends Tower> towerFunction;
+    private final @NotNull Function<JsonObject, ? extends TowerLevel> towerLevelFunction;
 
-    TowerType(Size size, int guiSlot, boolean targetAir, Function<JsonObject, ? extends Tower> towerFunction, Function<JsonObject, ? extends TowerLevel> towerLevelFunction) {
+    TowerType(@NotNull Size size, int guiSlot, boolean targetAir,
+              @NotNull Function<JsonObject, ? extends Tower> towerFunction, @NotNull Function<JsonObject, ? extends TowerLevel> towerLevelFunction) {
         this.size = size;
         this.guiSlot = guiSlot;
         this.targetAir = targetAir;
@@ -37,7 +39,7 @@ public enum TowerType {
         return null;
     }
 
-    public Size getSize() {
+    public @NotNull Size getSize() {
         return this.size;
     }
 
@@ -49,11 +51,11 @@ public enum TowerType {
         return this.targetAir;
     }
 
-    public Function<JsonObject, ? extends Tower> getTowerFunction() {
+    public @NotNull Function<JsonObject, ? extends Tower> getTowerFunction() {
         return this.towerFunction;
     }
 
-    public Function<JsonObject, ? extends TowerLevel> getTowerLevelFunction() {
+    public @NotNull Function<JsonObject, ? extends TowerLevel> getTowerLevelFunction() {
         return this.towerLevelFunction;
     }
 

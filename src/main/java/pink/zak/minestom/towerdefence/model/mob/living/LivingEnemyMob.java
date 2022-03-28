@@ -238,7 +238,7 @@ public class LivingEnemyMob extends EntityCreature {
         Metadata.Entry<?> nameEntry = new Metadata.Entry<>((byte) (EntityMeta.OFFSET + 2), Metadata.OptChat(this.createNameComponent(player)));
         entries.add(nameEntry);
         player.sendPacket(new LazyPacket(() -> new EntityMetaDataPacket(getEntityId(), entries)));
-        // todo Passengers
+        // todo Passengers are removed here as i dont need them
 
         // Head position
         player.sendPacket(new EntityHeadLookPacket(getEntityId(), this.position.yaw()));

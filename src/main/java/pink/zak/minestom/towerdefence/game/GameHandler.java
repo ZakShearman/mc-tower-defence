@@ -10,6 +10,7 @@ import net.minestom.server.entity.hologram.Hologram;
 import net.minestom.server.event.player.PlayerDisconnectEvent;
 import net.minestom.server.instance.Instance;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 import pink.zak.minestom.towerdefence.api.event.game.TowerDamageEvent;
 import pink.zak.minestom.towerdefence.cache.TDUserCache;
@@ -167,7 +168,7 @@ public class GameHandler {
         return this.users.containsKey(player);
     }
 
-    public @NotNull GameUser getGameUser(Player player) {
+    public @Nullable GameUser getGameUser(Player player) {
         return this.users.get(player);
     }
 

@@ -11,6 +11,7 @@ import net.minestom.server.inventory.Inventory;
 import net.minestom.server.inventory.InventoryType;
 import net.minestom.server.inventory.click.ClickType;
 import net.minestom.server.item.Material;
+import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.enums.TowerType;
@@ -23,15 +24,15 @@ import pink.zak.minestom.towerdefence.model.tower.config.TowerLevel;
 import pink.zak.minestom.towerdefence.storage.TowerStorage;
 
 public class TowerPlaceHandler {
-    private final TowerDefencePlugin plugin;
-    private final GameHandler gameHandler;
-    private final TowerHandler towerHandler;
-    private final TowerStorage towerStorage;
+    private final @NotNull TowerDefencePlugin plugin;
+    private final @NotNull GameHandler gameHandler;
+    private final @NotNull TowerHandler towerHandler;
+    private final @NotNull TowerStorage towerStorage;
 
-    private final Inventory towerPlaceGui;
-    private final TowerMap towerMap;
+    private final @NotNull Inventory towerPlaceGui;
+    private final @NotNull TowerMap towerMap;
 
-    public TowerPlaceHandler(TowerDefencePlugin plugin, GameHandler gameHandler) {
+    public TowerPlaceHandler(@NotNull TowerDefencePlugin plugin, @NotNull GameHandler gameHandler) {
         this.plugin = plugin;
         this.gameHandler = gameHandler;
         this.towerHandler = gameHandler.getTowerHandler();
@@ -57,7 +58,7 @@ public class TowerPlaceHandler {
             });
     }
 
-    private Inventory createTowerPlaceGui() {
+    private @NotNull Inventory createTowerPlaceGui() {
         TextComponent title = Component.text("Place a Tower", NamedTextColor.DARK_GRAY);
         Inventory inventory = new Inventory(InventoryType.CHEST_3_ROW, title);
 
@@ -81,7 +82,7 @@ public class TowerPlaceHandler {
         return inventory;
     }
 
-    private void requestTowerBuy(Player player, TowerType towerType) {
+    private void requestTowerBuy(@NotNull Player player, @NotNull TowerType towerType) {
         GameUser gameUser = this.gameHandler.getGameUser(player);
         Tower tower = this.towerStorage.getTower(towerType);
         TowerLevel level = tower.getLevel(1);

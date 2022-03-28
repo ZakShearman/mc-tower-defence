@@ -17,6 +17,7 @@ import net.minestom.server.particle.Particle;
 import net.minestom.server.particle.ParticleCreator;
 import net.minestom.server.timer.Task;
 import net.minestom.server.utils.time.TimeUnit;
+import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.game.GameHandler;
@@ -33,23 +34,20 @@ import java.util.Map;
 import java.util.Set;
 
 public class TowerUpgradeHandler {
-    private static final ItemStack RADIUS_MENU_ITEM;
-    private final Map<Tower, Component> towerUpgradeTitles = Maps.newHashMap();
-    private final TowerDefencePlugin plugin;
-    private final GameHandler gameHandler;
-    private final TowerHandler towerHandler;
+    private static final @NotNull ItemStack RADIUS_MENU_ITEM = ItemStack.builder(Material.REDSTONE)
+        .displayName(StringUtils.parseMessage("<red>Preview Tower Radius"))
+        .lore(StringUtils.parseMessages(List.of(
+            "",
+            "<red>Shows a particle outline of the tower's radius"
+        )))
+        .build();
 
-    static {
-        RADIUS_MENU_ITEM = ItemStack.builder(Material.REDSTONE)
-            .displayName(StringUtils.parseMessage("<red>Preview Tower Radius"))
-            .lore(StringUtils.parseMessages(List.of(
-                "",
-                "<red>Shows a particle outline of the tower's radius"
-            )))
-            .build();
-    }
+    private final @NotNull Map<Tower, Component> towerUpgradeTitles = Maps.newHashMap();
+    private final @NotNull TowerDefencePlugin plugin;
+    private final @NotNull GameHandler gameHandler;
+    private final @NotNull TowerHandler towerHandler;
 
-    public TowerUpgradeHandler(TowerDefencePlugin plugin, GameHandler gameHandler) {
+    public TowerUpgradeHandler(@NotNull TowerDefencePlugin plugin, @NotNull GameHandler gameHandler) {
         for (Tower tower : plugin.getTowerStorage().getTowers().values())
             this.towerUpgradeTitles.put(tower, Component.text("Upgrade " + tower.getName()));
 
@@ -74,7 +72,7 @@ public class TowerUpgradeHandler {
         this.startTowerUpgradeGuiListener();
     }
 
-    private void openUpgradeGui(GameUser gameUser, PlacedTower<?> placedTower) {
+    private void openUpgradeGui(@NotNull GameUser gameUser, @NotNull PlacedTower<?> placedTower) {
         TowerLevel currentLevel = placedTower.getLevel();
         Tower tower = placedTower.getTower();
 
@@ -143,7 +141,7 @@ public class TowerUpgradeHandler {
         });
     }
 
-    private void showTowerRadius(Player player, PlacedTower<?> tower) {
+    private void showTowerRadius(@NotNull Player player, @NotNull PlacedTower<?> tower) {
         Point center = tower.getBasePoint();
         double radius = tower.getLevel().getRange();
 

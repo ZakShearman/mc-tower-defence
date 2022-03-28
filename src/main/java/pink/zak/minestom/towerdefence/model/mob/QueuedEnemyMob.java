@@ -1,5 +1,7 @@
 package pink.zak.minestom.towerdefence.model.mob;
 
-public record QueuedEnemyMob(EnemyMob mob,
-                             EnemyMobLevel level) {
+import org.jetbrains.annotations.NotNull;
+
+public record QueuedEnemyMob(@NotNull EnemyMob mob,
+                             @NotNull EnemyMobLevel level) {
 }

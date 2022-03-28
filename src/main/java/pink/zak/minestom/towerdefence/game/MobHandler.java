@@ -5,6 +5,7 @@ import net.minestom.server.MinecraftServer;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.timer.Task;
 import net.minestom.server.utils.time.TimeUnit;
+import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 import pink.zak.minestom.towerdefence.cache.DamageIndicatorCache;
 import pink.zak.minestom.towerdefence.enums.Team;
@@ -23,19 +24,19 @@ import java.util.stream.Collectors;
 public class MobHandler {
     public static DamageIndicatorCache DAMAGE_INDICATOR_CACHE; // todo spend time to not use static here.
 
-    private final Set<LivingEnemyMob> redSideMobs = Sets.newConcurrentHashSet();
-    private final Set<LivingEnemyMob> blueSideMobs = Sets.newConcurrentHashSet();
+    private final @NotNull Set<LivingEnemyMob> redSideMobs = Sets.newConcurrentHashSet();
+    private final @NotNull Set<LivingEnemyMob> blueSideMobs = Sets.newConcurrentHashSet();
 
-    private final TowerDefencePlugin plugin;
-    private final GameHandler gameHandler;
+    private final @NotNull TowerDefencePlugin plugin;
+    private final @NotNull GameHandler gameHandler;
 
-    private final TowerHandler towerHandler;
-    private final TowerMap map;
+    private final @NotNull TowerHandler towerHandler;
+    private final @NotNull TowerMap map;
     private Instance instance;
 
     private Task attackUpdateTask;
 
-    public MobHandler(TowerDefencePlugin plugin, GameHandler gameHandler) {
+    public MobHandler(@NotNull TowerDefencePlugin plugin, @NotNull GameHandler gameHandler) {
         this.plugin = plugin;
         this.gameHandler = gameHandler;
 
@@ -47,7 +48,7 @@ public class MobHandler {
         this.startUpdatingAttackingTowers();
     }
 
-    public void spawnMob(QueuedEnemyMob queuedEnemyMob, GameUser spawner) {
+    public void spawnMob(@NotNull QueuedEnemyMob queuedEnemyMob, @NotNull GameUser spawner) {
         LivingEnemyMob mob = LivingEnemyMob.create(this.plugin, this.gameHandler, queuedEnemyMob.mob(), queuedEnemyMob.level().getLevel(), this.instance, this.map, spawner);
         if (spawner.getTeam() == Team.RED)
             this.redSideMobs.add(mob); // todo change later
@@ -68,7 +69,7 @@ public class MobHandler {
     }
 
     // todo is there a way other than recalculating every time? Sure this is easy, but not great on performance
-    private void updateAttackingTowers(Team team) {
+    private void updateAttackingTowers(@NotNull Team team) {
         List<LivingEnemyMob> distanceSortedMobs = new ArrayList<>(team == Team.RED ? this.redSideMobs : this.blueSideMobs);
         distanceSortedMobs.sort(Comparator.comparingDouble(LivingEnemyMob::getTotalDistanceMoved).reversed());
 
@@ -89,7 +90,6 @@ public class MobHandler {
 
                 i++;
             }
-
             tower.setTargets(newTargets);
         }
     }
@@ -98,11 +98,11 @@ public class MobHandler {
         this.instance = instance;
     }
 
-    public Set<LivingEnemyMob> getRedSideMobs() {
+    public @NotNull Set<LivingEnemyMob> getRedSideMobs() {
         return this.redSideMobs;
     }
 
-    public Set<LivingEnemyMob> getBlueSideMobs() {
+    public @NotNull Set<LivingEnemyMob> getBlueSideMobs() {
         return this.blueSideMobs;
     }
 }

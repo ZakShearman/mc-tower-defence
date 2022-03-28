@@ -1,6 +1,7 @@
 package pink.zak.minestom.towerdefence.enums;
 
 import net.minestom.server.entity.EntityType;
+import org.jetbrains.annotations.NotNull;
 
 public enum EnemyMobType {
 
@@ -25,9 +26,9 @@ public enum EnemyMobType {
     private final double speed;
     private final boolean flying;
     private final int xpReward;
-    private final EntityType entityType;
+    private final @NotNull EntityType entityType;
 
-    EnemyMobType(int cost, int health, int damage, double speed, boolean flying, int xpReward, EntityType entityType) {
+    EnemyMobType(int cost, int health, int damage, double speed, boolean flying, int xpReward, @NotNull EntityType entityType) {
         this.cost = cost;
         this.health = health;
         this.damage = damage;
@@ -61,7 +62,7 @@ public enum EnemyMobType {
         return this.xpReward;
     }
 
-    public EntityType getEntityType() {
+    public @NotNull EntityType getEntityType() {
         return this.entityType;
     }
 }
