@@ -1,6 +1,5 @@
 package pink.zak.minestom.towerdefence.storage;
 
-import com.google.common.collect.Maps;
 import com.google.gson.JsonObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +12,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -22,7 +22,7 @@ public class TowerStorage {
     private final TowerDefencePlugin plugin;
 
     private final Path folderPath;
-    private final Map<TowerType, Tower> towers = Maps.newHashMap();
+    private final Map<TowerType, Tower> towers = new HashMap<>();
 
     public TowerStorage(TowerDefencePlugin plugin) {
         this.plugin = plugin;

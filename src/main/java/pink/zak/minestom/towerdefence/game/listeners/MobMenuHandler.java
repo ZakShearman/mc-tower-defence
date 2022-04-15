@@ -1,7 +1,5 @@
 package pink.zak.minestom.towerdefence.game.listeners;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -26,6 +24,7 @@ import pink.zak.minestom.towerdefence.model.mob.EnemyMobLevel;
 import pink.zak.minestom.towerdefence.model.mob.QueuedEnemyMob;
 import pink.zak.minestom.towerdefence.storage.MobStorage;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,7 +90,7 @@ public class MobMenuHandler {
     }
 
     private @NotNull ItemStack createQueueItem(@NotNull GameUser gameUser) {
-        List<Component> loreLines = Lists.newArrayList(Component.empty());
+        List<Component> loreLines = new ArrayList<>();
 
         EnemyMob currentTrackedMob = null;
         int count = 0; // count of the current iterated mob

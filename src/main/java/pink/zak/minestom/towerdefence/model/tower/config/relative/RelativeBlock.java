@@ -1,12 +1,12 @@
 package pink.zak.minestom.towerdefence.model.tower.config.relative;
 
-import com.google.common.collect.Maps;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.utils.Direction;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -23,7 +23,7 @@ public class RelativeBlock {
         this.xOffset = jsonObject.get("xOffset").getAsInt();
         this.yOffset = jsonObject.get("yOffset").getAsInt();
         this.zOffset = jsonObject.get("zOffset").getAsInt();
-        this.block = getBlockFromJson(jsonObject.get("block").getAsJsonObject());;
+        this.block = getBlockFromJson(jsonObject.get("block").getAsJsonObject());
     }
 
     public static Set<RelativeBlock> setFromJson(JsonArray jsonArray) {
@@ -45,7 +45,7 @@ public class RelativeBlock {
     }
 
     private static Map<String, String> getPropertiesFromJson(JsonObject jsonObject) {
-        Map<String, String> map = Maps.newHashMap();
+        Map<String, String> map = new HashMap<>();
 
         for (String key : jsonObject.keySet())
             map.put(key, jsonObject.get(key).getAsString());

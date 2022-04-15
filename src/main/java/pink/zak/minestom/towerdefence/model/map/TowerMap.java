@@ -1,6 +1,5 @@
 package pink.zak.minestom.towerdefence.model.map;
 
-import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -8,6 +7,7 @@ import net.minestom.server.coordinate.Pos;
 import net.minestom.server.item.Material;
 import pink.zak.minestom.towerdefence.enums.Team;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TowerMap {
@@ -109,7 +109,7 @@ public class TowerMap {
     }
 
     private static List<PathCorner> jsonToPathCorners(JsonArray jsonElements) {
-        List<PathCorner> corners = Lists.newArrayList();
+        List<PathCorner> corners = new ArrayList<>();
         for (JsonElement jsonElement : jsonElements) {
             corners.add(PathCorner.fromJson(jsonElement.getAsJsonObject()));
         }

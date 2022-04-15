@@ -1,6 +1,5 @@
 package pink.zak.minestom.towerdefence.game;
 
-import com.google.common.collect.Sets;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.timer.Task;
@@ -19,13 +18,14 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class MobHandler {
     public static DamageIndicatorCache DAMAGE_INDICATOR_CACHE; // todo spend time to not use static here.
 
-    private final @NotNull Set<LivingEnemyMob> redSideMobs = Sets.newConcurrentHashSet();
-    private final @NotNull Set<LivingEnemyMob> blueSideMobs = Sets.newConcurrentHashSet();
+    private final @NotNull Set<LivingEnemyMob> redSideMobs = ConcurrentHashMap.newKeySet();
+    private final @NotNull Set<LivingEnemyMob> blueSideMobs = ConcurrentHashMap.newKeySet();
 
     private final @NotNull TowerDefencePlugin plugin;
     private final @NotNull GameHandler gameHandler;

@@ -1,6 +1,5 @@
 package pink.zak.minestom.towerdefence.game;
 
-import com.google.common.collect.Maps;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.MinecraftServer;
@@ -25,6 +24,7 @@ import pink.zak.minestom.towerdefence.model.map.TowerMap;
 import pink.zak.minestom.towerdefence.model.mob.EnemyMob;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -42,7 +42,7 @@ public class GameHandler {
 
     private final Set<EnemyMob> defaultEnemyMobs;
 
-    private @NotNull Map<Player, GameUser> users = Maps.newHashMap();
+    private @NotNull Map<Player, GameUser> users = new HashMap<>();
     private Instance instance;
 
     private final @NotNull AtomicInteger redTowerHealth = new AtomicInteger(1000);
@@ -146,7 +146,7 @@ public class GameHandler {
     }
 
     public void end() {
-        this.users = Maps.newHashMap();
+        this.users = new HashMap<>();
         // todo properly clean up
     }
 

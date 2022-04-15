@@ -1,6 +1,5 @@
 package pink.zak.minestom.towerdefence.game;
 
-import com.google.common.collect.Sets;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.utils.Direction;
 import org.jetbrains.annotations.NotNull;
@@ -12,14 +11,15 @@ import pink.zak.minestom.towerdefence.model.tower.config.Tower;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedTower;
 
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class TowerHandler {
     private final @NotNull AtomicReference<Short> towerIdCounter = new AtomicReference<>(Short.MIN_VALUE);
     private final @NotNull TowerDefencePlugin plugin;
     private final @NotNull GameHandler gameHandler;
-    private final @NotNull Set<PlacedTower<?>> redTowers = Sets.newConcurrentHashSet();
-    private final @NotNull Set<PlacedTower<?>> blueTowers = Sets.newConcurrentHashSet();
+    private final @NotNull Set<PlacedTower<?>> redTowers = ConcurrentHashMap.newKeySet();
+    private final @NotNull Set<PlacedTower<?>> blueTowers = ConcurrentHashMap.newKeySet();
 
     private final TowerMap map;
     private Instance instance;

@@ -1,10 +1,10 @@
 package pink.zak.minestom.towerdefence.utils.mechanic;
 
-import com.google.common.collect.Lists;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.instance.Explosion;
 import net.minestom.server.instance.Instance;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CustomExplosion extends Explosion {
@@ -15,6 +15,6 @@ public class CustomExplosion extends Explosion {
 
     @Override
     protected List<Point> prepare(Instance instance) {
-        return Lists.newArrayList();
+        return new ArrayList<>();
     }
 }

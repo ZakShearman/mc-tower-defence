@@ -1,6 +1,5 @@
 package pink.zak.minestom.towerdefence.game.listeners;
 
-import com.google.common.collect.Maps;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Point;
@@ -28,6 +27,7 @@ import pink.zak.minestom.towerdefence.model.tower.config.TowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedTower;
 import pink.zak.minestom.towerdefence.utils.StringUtils;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +42,7 @@ public class TowerUpgradeHandler {
         )))
         .build();
 
-    private final @NotNull Map<Tower, Component> towerUpgradeTitles = Maps.newHashMap();
+    private final @NotNull Map<Tower, Component> towerUpgradeTitles = new HashMap<>();
     private final @NotNull TowerDefencePlugin plugin;
     private final @NotNull GameHandler gameHandler;
     private final @NotNull TowerHandler towerHandler;

@@ -1,6 +1,5 @@
 package pink.zak.minestom.towerdefence.model.mob.living;
 
-import com.google.common.collect.Sets;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -51,6 +50,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class LivingEnemyMob extends EntityCreature {
@@ -76,7 +76,7 @@ public class LivingEnemyMob extends EntityCreature {
     protected double moveDistance;
     protected double totalDistanceMoved;
 
-    protected Set<PlacedAttackingTower<?>> attackingTowers = Sets.newConcurrentHashSet();
+    protected Set<PlacedAttackingTower<?>> attackingTowers = ConcurrentHashMap.newKeySet();
     protected float health;
 
     // we must have our own metadata to support both percentage and raw health display

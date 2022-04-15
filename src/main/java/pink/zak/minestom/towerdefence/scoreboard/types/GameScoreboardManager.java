@@ -1,6 +1,5 @@
 package pink.zak.minestom.towerdefence.scoreboard.types;
 
-import com.google.common.collect.Maps;
 import net.minestom.server.entity.Player;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 import pink.zak.minestom.towerdefence.model.GameUser;
@@ -9,9 +8,10 @@ import pink.zak.minestom.towerdefence.scoreboard.types.game.GameScoreboard;
 
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class GameScoreboardManager implements TowerScoreboard {
-    private final Map<UUID, GameScoreboard> scoreboards = Maps.newConcurrentMap();
+    private final Map<UUID, GameScoreboard> scoreboards = new ConcurrentHashMap<>();
 
     public GameScoreboardManager() {
 

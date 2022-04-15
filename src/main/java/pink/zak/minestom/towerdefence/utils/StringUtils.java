@@ -1,10 +1,10 @@
 package pink.zak.minestom.towerdefence.utils;
 
-import com.google.common.collect.Lists;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
 
@@ -16,7 +16,7 @@ public class StringUtils {
     }
 
     public static List<Component> parseMessages(List<String> messages) {
-        List<Component> components = Lists.newArrayList();
+        List<Component> components = new ArrayList<>();
         for (String message : messages)
             components.add(parseMessage(message));
 

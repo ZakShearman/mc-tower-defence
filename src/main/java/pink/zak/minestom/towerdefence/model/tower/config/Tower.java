@@ -1,6 +1,5 @@
 package pink.zak.minestom.towerdefence.model.tower.config;
 
-import com.google.common.collect.Maps;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minestom.server.coordinate.Point;
@@ -10,6 +9,7 @@ import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import pink.zak.minestom.towerdefence.enums.TowerType;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -29,7 +29,7 @@ public class Tower {
             .map(JsonElement::getAsJsonObject)
             .map(o -> this.type.getTowerLevelFunction().apply(o))
             .collect(Collectors.toUnmodifiableSet());
-        Map<Integer, TowerLevel> levelMap = Maps.newHashMap();
+        Map<Integer, TowerLevel> levelMap = new HashMap<>();
 
         for (TowerLevel level : levels)
             levelMap.put(level.getLevel(), level);

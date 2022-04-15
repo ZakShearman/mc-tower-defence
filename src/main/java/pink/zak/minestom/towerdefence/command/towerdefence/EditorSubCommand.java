@@ -1,6 +1,5 @@
 package pink.zak.minestom.towerdefence.command.towerdefence;
 
-import com.google.common.collect.Maps;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -26,12 +25,13 @@ import pink.zak.minestom.towerdefence.utils.ViewPath;
 
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class EditorSubCommand implements CommandExecutor {
     private final TowerDefencePlugin plugin;
     private final MapStorage mapStorage;
     private final TowerMap map;
-    private final Map<Player, EditorInfo> editors = Maps.newConcurrentMap();
+    private final Map<Player, EditorInfo> editors = new ConcurrentHashMap<>();
 
     private final ItemStack redTeamWandItem;
     private final ItemStack blueTeamWandItem;

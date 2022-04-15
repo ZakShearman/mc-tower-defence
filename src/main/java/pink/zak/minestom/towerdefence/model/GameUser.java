@@ -1,7 +1,5 @@
 package pink.zak.minestom.towerdefence.model;
 
-import com.google.common.collect.Maps;
-import com.google.common.collect.Queues;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -16,6 +14,8 @@ import pink.zak.minestom.towerdefence.model.mob.QueuedEnemyMob;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.IntUnaryOperator;
 
@@ -24,8 +24,8 @@ public class GameUser {
     private final @NotNull TDUser user;
     private final @NotNull Team team;
 
-    private final @NotNull Map<EnemyMob, Integer> mobLevels = Maps.newConcurrentMap();
-    private final @NotNull Queue<QueuedEnemyMob> queuedMobs = Queues.newConcurrentLinkedQueue();
+    private final @NotNull Map<EnemyMob, Integer> mobLevels = new ConcurrentHashMap<>();
+    private final @NotNull Queue<QueuedEnemyMob> queuedMobs = new ConcurrentLinkedQueue<>();
 
     private final @NotNull AtomicInteger coins = new AtomicInteger(1000000);
     private final @NotNull AtomicInteger mana = new AtomicInteger(10000);

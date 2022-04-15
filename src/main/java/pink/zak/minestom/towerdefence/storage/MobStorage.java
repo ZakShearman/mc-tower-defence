@@ -1,8 +1,5 @@
 package pink.zak.minestom.towerdefence.storage;
 
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-import com.google.gson.JsonObject;
 import net.minestom.server.entity.EntityType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,10 +7,10 @@ import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 import pink.zak.minestom.towerdefence.model.mob.EnemyMob;
 import pink.zak.minestom.towerdefence.utils.FileUtils;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -23,7 +20,7 @@ public class MobStorage {
     private final TowerDefencePlugin plugin;
 
     private final Path folderPath;
-    private final Map<EntityType, EnemyMob> enemyMobs = Maps.newHashMap();
+    private final Map<EntityType, EnemyMob> enemyMobs = new HashMap<>();
 
     public MobStorage(TowerDefencePlugin plugin) {
         this.plugin = plugin;
@@ -47,7 +44,7 @@ public class MobStorage {
     }
 
     private void createDefaultFiles() {
-        Set<String> enemyMobNames = Sets.newHashSet(
+        Set<String> enemyMobNames = Set.of(
             "zombie.json",
             "skeleton.json",
             "llama.json"
