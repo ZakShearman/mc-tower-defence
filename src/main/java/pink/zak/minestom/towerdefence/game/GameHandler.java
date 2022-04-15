@@ -66,8 +66,6 @@ public class GameHandler {
             .filter(mob -> mob.getLevel(1).getManaCost() <= 0)
             .collect(Collectors.toUnmodifiableSet());
 
-        System.out.println(this.defaultEnemyMobs);
-
         new TowerPlaceHandler(plugin, this);
         new TowerUpgradeHandler(plugin, this);
 

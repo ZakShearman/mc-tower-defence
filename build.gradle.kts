@@ -4,7 +4,7 @@ plugins {
     id("org.sonarqube") version "3.3"
 }
 
-group = "pink.zak.minestom.towerdefence"
+group = "pink.zak.minestom"
 version = "1.0-SNAPSHOT"
 
 repositories {
@@ -15,7 +15,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly("com.github.ZakShearman:Minestom:b77fa9cb53")
+    compileOnly("com.github.ZakShearman:Minestom:e5c7a20b0b")
     implementation("net.kyori:adventure-text-minimessage:4.10.1")
     implementation("com.typesafe:config:1.4.2")
     implementation("com.google.guava:guava:31.1-jre")
@@ -23,7 +23,7 @@ dependencies {
     implementation("com.github.ben-manes.caffeine:caffeine:3.0.6")
     implementation("org.mongodb:mongo-java-driver:3.12.10")
 
-    testImplementation("com.github.ZakShearman:Minestom:b77fa9cb53")
+    testImplementation("com.github.ZakShearman:Minestom:e5c7a20b0b")
 
     //testImplementation("net.minestom.server:Minestom:1.0")
 }

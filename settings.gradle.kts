@@ -1,2 +1,2 @@
-rootProject.name = "tower-defence"
+rootProject.name = "towerdefence"
 

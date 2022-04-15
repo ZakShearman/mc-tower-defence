@@ -4,7 +4,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minestom.server.entity.PlayerSkin;
 import net.minestom.server.item.ItemStack;
-import net.minestom.server.item.ItemStackBuilder;
 import net.minestom.server.item.Material;
 import net.minestom.server.item.metadata.PlayerHeadMeta;
 import net.minestom.server.utils.mojang.MojangUtils;
@@ -17,7 +16,7 @@ public class ItemUtils {
 
     public static ItemStack fromJsonObject(JsonObject jsonObject) {
         Material material = Material.fromNamespaceId(jsonObject.get("material").getAsString());
-        ItemStackBuilder builder = ItemStack.builder(material);
+        ItemStack.Builder builder = ItemStack.builder(material);
 
         if (material == Material.PLAYER_HEAD) {
             PlayerHeadMeta.Builder metaBuilder = new PlayerHeadMeta.Builder();
@@ -57,11 +56,11 @@ public class ItemUtils {
         return withMaterialBuilder(itemStack, material).build();
     }
 
-    public static ItemStackBuilder withMaterialBuilder(ItemStack itemStack, Material material) {
+    public static ItemStack.Builder withMaterialBuilder(ItemStack itemStack, Material material) {
         return ItemStack.builder(material)
             .displayName(itemStack.getDisplayName())
             .lore(itemStack.getLore())
-            .amount(itemStack.getAmount())
-            .meta(itemStack.getMeta());
+            .amount(itemStack.amount())
+            .meta(itemStack.meta());
     }
 }

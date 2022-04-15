@@ -14,7 +14,6 @@ import net.minestom.server.event.player.PlayerStartDiggingEvent;
 import net.minestom.server.event.player.PlayerUseItemEvent;
 import net.minestom.server.inventory.PlayerInventory;
 import net.minestom.server.item.ItemStack;
-import net.minestom.server.item.ItemStackBuilder;
 import net.minestom.server.item.Material;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
@@ -42,7 +41,7 @@ public class EditorSubCommand implements CommandExecutor {
         this.mapStorage = plugin.getMapStorage();
         this.map = this.mapStorage.getMap();
 
-        ItemStackBuilder wandBuilder = ItemStack.builder(Material.DIAMOND_HOE)
+        ItemStack.Builder wandBuilder = ItemStack.builder(Material.DIAMOND_HOE)
             .lore(
                 Component.text("Left-click for pos1", NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false),
                 Component.text("Right-click for pos2", NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false),
