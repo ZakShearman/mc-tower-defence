@@ -6,7 +6,6 @@ import net.minestom.server.coordinate.Vec;
 import net.minestom.server.entity.Entity;
 import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.LivingEntity;
-import net.minestom.server.entity.damage.DamageType;
 import net.minestom.server.entity.metadata.other.PrimedTntMeta;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.item.Material;
@@ -16,25 +15,24 @@ import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.game.MobHandler;
 import pink.zak.minestom.towerdefence.model.GameUser;
-import pink.zak.minestom.towerdefence.model.OwnedEntity;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingEnemyMob;
+import pink.zak.minestom.towerdefence.model.tower.config.AttackingTower;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTowerLevel;
-import pink.zak.minestom.towerdefence.model.tower.config.Tower;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
 
 import java.util.Set;
 
-public class BomberTower extends PlacedAttackingTower<AttackingTowerLevel> implements OwnedEntity {
+public class BomberTower extends PlacedAttackingTower<AttackingTowerLevel> {
     private final Pos spawnPos;
     private final MobHandler mobHandler;
     private final GameUser owner;
 
-    public BomberTower(GameHandler gameHandler, Instance instance, Tower tower, Material towerPlaceMaterial, short id, GameUser owner, Point baseBlock, Direction facing, int level) {
+    public BomberTower(GameHandler gameHandler, Instance instance, AttackingTower tower, Material towerPlaceMaterial, short id, GameUser owner, Point baseBlock, Direction facing, int level) {
         super(instance, tower, towerPlaceMaterial, id, owner, baseBlock, facing, level);
         this.mobHandler = gameHandler.getMobHandler();
         this.owner = owner;
 
-        this.spawnPos = new Pos(baseBlock.add(0.5, 2.5, 0.5));
+        this.spawnPos = new Pos(baseBlock.add(0, 2.5, 0));
     }
 
     @Override
@@ -95,7 +93,7 @@ public class BomberTower extends PlacedAttackingTower<AttackingTowerLevel> imple
             long aliveTicks = super.getAliveTicks();
             if (aliveTicks == 34) {
                 Pos pos = this.getPosition();
-                this.instance.explode(pos.blockX(), pos.blockY(), pos.blockZ(), 2);
+                this.instance.explode(pos.blockX(), pos.blockY(), pos.blockZ(), 1f);
                 this.tower.damageTroops(this);
                 this.remove();
                 return;

@@ -7,19 +7,22 @@ import net.minestom.server.item.Material;
 import net.minestom.server.timer.Task;
 import net.minestom.server.utils.Direction;
 import net.minestom.server.utils.time.TimeUnit;
+import org.jetbrains.annotations.NotNull;
+import pink.zak.minestom.towerdefence.model.DamageSource;
 import pink.zak.minestom.towerdefence.model.GameUser;
+import pink.zak.minestom.towerdefence.model.mob.TDDamageType;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingEnemyMob;
+import pink.zak.minestom.towerdefence.model.tower.config.AttackingTower;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTowerLevel;
-import pink.zak.minestom.towerdefence.model.tower.config.Tower;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class PlacedAttackingTower<T extends AttackingTowerLevel> extends PlacedTower<T> {
+public abstract class PlacedAttackingTower<T extends AttackingTowerLevel> extends PlacedTower<T> implements DamageSource {
     protected List<LivingEnemyMob> targets = new ArrayList<>();
     protected Task attackTask;
 
-    protected PlacedAttackingTower(Instance instance, Tower tower, Material towerPlaceMaterial, short id, GameUser owner, Point baseBlock, Direction facing, int level) {
+    protected PlacedAttackingTower(Instance instance, AttackingTower tower, Material towerPlaceMaterial, short id, GameUser owner, Point baseBlock, Direction facing, int level) {
         super(instance, tower, towerPlaceMaterial, id, owner, baseBlock, facing, level);
         this.startFiring();
     }
@@ -54,5 +57,15 @@ public abstract class PlacedAttackingTower<T extends AttackingTowerLevel> extend
 
     public void setTargets(List<LivingEnemyMob> targets) {
         this.targets = targets;
+    }
+
+    @Override
+    public @NotNull GameUser getOwningUser() {
+        return super.owner;
+    }
+
+    @Override
+    public @NotNull TDDamageType getDamageType() {
+        return ((AttackingTower) this.tower).getDamageType();
     }
 }

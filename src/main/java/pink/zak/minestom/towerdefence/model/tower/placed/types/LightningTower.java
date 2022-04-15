@@ -17,6 +17,7 @@ import pink.zak.minestom.towerdefence.model.GameUser;
 import pink.zak.minestom.towerdefence.model.TDUser;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingEnemyMob;
 import pink.zak.minestom.towerdefence.model.settings.ParticleThickness;
+import pink.zak.minestom.towerdefence.model.tower.config.AttackingTower;
 import pink.zak.minestom.towerdefence.model.tower.config.Tower;
 import pink.zak.minestom.towerdefence.model.tower.config.towers.LightningTowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
@@ -32,7 +33,7 @@ public class LightningTower extends PlacedAttackingTower<LightningTowerLevel> {
     private Point castPoint;
     private Set<Point> spawnPoints;
 
-    public LightningTower(TowerDefencePlugin plugin, Instance instance, Tower tower, Material towerPlaceMaterial, short id, GameUser owner, Point basePoint, Direction facing, int level) {
+    public LightningTower(TowerDefencePlugin plugin, Instance instance, AttackingTower tower, Material towerPlaceMaterial, short id, GameUser owner, Point basePoint, Direction facing, int level) {
         super(instance, tower, towerPlaceMaterial, id, owner, basePoint, facing, level);
         this.userCache = plugin.getUserCache();
         this.castPoint = this.getLevel().getRelativeCastPoint().apply(basePoint);

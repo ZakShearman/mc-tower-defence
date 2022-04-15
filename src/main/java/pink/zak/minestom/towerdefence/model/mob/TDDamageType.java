@@ -1,6 +1,6 @@
 package pink.zak.minestom.towerdefence.model.mob;
 
-public enum DamageType {
+public enum TDDamageType {
     SLASHING,
     PIERCING,
     BLUDGEONING,

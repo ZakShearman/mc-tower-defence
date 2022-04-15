@@ -16,19 +16,19 @@ import java.util.stream.StreamSupport;
 public class EnemyMob {
     private final @NotNull EntityType entityType;
     private final @NotNull String commonName;
-    private final @NotNull DamageType damageType;
+    private final @NotNull TDDamageType damageType;
     private final int slot;
     private final boolean flying;
     private final double unitCost;
     private final @NotNull ItemStack unownedItem;
     private final @NotNull Set<StatusEffect> ignoredEffects;
-    private final @NotNull Set<DamageType> ignoredDamageTypes;
+    private final @NotNull Set<TDDamageType> ignoredDamageTypes;
     private final @NotNull Map<Integer, EnemyMobLevel> levels = new HashMap<>();
 
     public EnemyMob(JsonObject jsonObject) {
         this.entityType = EntityType.fromNamespaceId(jsonObject.get("entityType").getAsString());
         this.commonName = jsonObject.get("commonName").getAsString();
-        this.damageType = DamageType.valueOf(jsonObject.get("damageType").getAsString());
+        this.damageType = TDDamageType.valueOf(jsonObject.get("damageType").getAsString());
         this.slot = jsonObject.get("guiSlot").getAsInt();
         this.flying = jsonObject.get("flying").getAsBoolean();
         this.unitCost = jsonObject.get("unitCost").getAsDouble();
@@ -42,7 +42,7 @@ public class EnemyMob {
 
         this.ignoredDamageTypes = StreamSupport.stream(jsonObject.get("ignoredDamageTypes").getAsJsonArray().spliterator(), false)
             .map(JsonElement::getAsString)
-            .map(DamageType::valueOf)
+            .map(TDDamageType::valueOf)
             .collect(Collectors.toSet());
 
         StreamSupport.stream(jsonObject.get("levels").getAsJsonArray().spliterator(), false)
@@ -59,7 +59,7 @@ public class EnemyMob {
         return this.commonName;
     }
 
-    public @NotNull DamageType getDamageType() {
+    public @NotNull TDDamageType getDamageType() {
         return this.damageType;
     }
 
@@ -83,8 +83,16 @@ public class EnemyMob {
         return this.ignoredEffects;
     }
 
-    public @NotNull Set<DamageType> getIgnoredDamageTypes() {
+    public boolean isEffectIgnored(StatusEffect statusEffect) {
+        return this.ignoredEffects.contains(statusEffect);
+    }
+
+    public @NotNull Set<TDDamageType> getIgnoredDamageTypes() {
         return this.ignoredDamageTypes;
+    }
+
+    public boolean isDamageTypeIgnored(TDDamageType damageType) {
+        return this.ignoredDamageTypes.contains(damageType);
     }
 
     public @NotNull Map<Integer, EnemyMobLevel> getLevels() {

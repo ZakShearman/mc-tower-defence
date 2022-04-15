@@ -1,17 +1,18 @@
 package pink.zak.minestom.towerdefence.model.tower.config;
 
 import com.google.gson.JsonObject;
-import pink.zak.minestom.towerdefence.model.mob.DamageType;
+import org.jetbrains.annotations.NotNull;
+import pink.zak.minestom.towerdefence.model.mob.TDDamageType;
 
 public class AttackingTower extends Tower {
-    private final DamageType damageType;
+    private final @NotNull TDDamageType damageType;
 
     public AttackingTower(JsonObject jsonObject) {
         super(jsonObject);
-        this.damageType = DamageType.valueOf(jsonObject.get("damageType").getAsString());
+        this.damageType = TDDamageType.valueOf(jsonObject.get("damageType").getAsString());
     }
 
-    public DamageType getDamageType() {
+    public @NotNull TDDamageType getDamageType() {
         return this.damageType;
     }
 }

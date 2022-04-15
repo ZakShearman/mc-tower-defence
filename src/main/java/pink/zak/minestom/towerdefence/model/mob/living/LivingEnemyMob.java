@@ -30,8 +30,8 @@ import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.game.MobHandler;
 import pink.zak.minestom.towerdefence.game.TowerHandler;
+import pink.zak.minestom.towerdefence.model.DamageSource;
 import pink.zak.minestom.towerdefence.model.GameUser;
-import pink.zak.minestom.towerdefence.model.OwnedEntity;
 import pink.zak.minestom.towerdefence.model.TDUser;
 import pink.zak.minestom.towerdefence.model.map.PathCorner;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
@@ -78,10 +78,6 @@ public class LivingEnemyMob extends EntityCreature {
 
     protected Set<PlacedAttackingTower<?>> attackingTowers = ConcurrentHashMap.newKeySet();
     protected float health;
-
-    // we must have our own metadata to support both percentage and raw health display
-    protected EntityMeta percentageMetadata;
-    protected EntityMeta rawMetadata;
 
     private Task attackTask;
 
@@ -205,6 +201,8 @@ public class LivingEnemyMob extends EntityCreature {
 
     @Override
     public void kill() {
+        this.refreshIsDead(true);
+
         if (this.attackTask != null)
             this.attackTask.cancel();
 
@@ -257,8 +255,10 @@ public class LivingEnemyMob extends EntityCreature {
         LOGGER.warn("setCustomName called for a LivingEnemyMob. This action is not supported");
     }
 
-    public void towerDamage(@NotNull OwnedEntity entity, float value) {
+    public void towerDamage(@NotNull DamageSource source, float value) {
         if (this.isDead)
+            return;
+        if (this.enemyMob.isDamageTypeIgnored(source.getDamageType()))
             return;
 
         DamageIndicator.create(this.userCache, this, value);
@@ -274,7 +274,7 @@ public class LivingEnemyMob extends EntityCreature {
                 }
             }
             double finalMultiplier = multiplier;
-            entity.getOwningUser().updateAndGetCoins(current -> (int) Math.floor(current + (this.level.getKillReward() * finalMultiplier)));
+            source.getOwningUser().updateAndGetCoins(current -> (int) Math.floor(current + (this.level.getKillReward() * finalMultiplier)));
         }
 
         final SoundEvent sound = DamageType.VOID.getSound(this);
