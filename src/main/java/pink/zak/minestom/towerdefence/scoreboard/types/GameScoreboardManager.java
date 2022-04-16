@@ -2,7 +2,7 @@ package pink.zak.minestom.towerdefence.scoreboard.types;
 
 import net.minestom.server.entity.Player;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
-import pink.zak.minestom.towerdefence.model.GameUser;
+import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.scoreboard.TowerScoreboard;
 import pink.zak.minestom.towerdefence.scoreboard.types.game.GameScoreboard;
 

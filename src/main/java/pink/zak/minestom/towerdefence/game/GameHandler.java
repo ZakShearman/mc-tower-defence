@@ -11,7 +11,7 @@ import net.minestom.server.instance.Instance;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
-import pink.zak.minestom.towerdefence.api.event.game.TowerDamageEvent;
+import pink.zak.minestom.towerdefence.api.event.game.CastleDamageEvent;
 import pink.zak.minestom.towerdefence.cache.TDUserCache;
 import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.enums.Team;
@@ -19,7 +19,7 @@ import pink.zak.minestom.towerdefence.game.listeners.MobMenuHandler;
 import pink.zak.minestom.towerdefence.game.listeners.TowerPlaceHandler;
 import pink.zak.minestom.towerdefence.game.listeners.TowerUpgradeHandler;
 import pink.zak.minestom.towerdefence.game.listeners.UserSettingsMenuHandler;
-import pink.zak.minestom.towerdefence.model.GameUser;
+import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
 import pink.zak.minestom.towerdefence.model.mob.EnemyMob;
 
@@ -142,7 +142,7 @@ public class GameHandler {
             newHealth = this.blueTowerHealth.updateAndGet(current -> current - damage);
             this.blueTowerHologram.setText(this.createTowerHologram(Team.BLUE));
         }
-        MinecraftServer.getGlobalEventHandler().call(new TowerDamageEvent(team, damage, newHealth));
+        MinecraftServer.getGlobalEventHandler().call(new CastleDamageEvent(team, damage, newHealth));
     }
 
     public void end() {

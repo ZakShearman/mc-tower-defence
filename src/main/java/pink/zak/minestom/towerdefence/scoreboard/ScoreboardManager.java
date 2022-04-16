@@ -2,7 +2,7 @@ package pink.zak.minestom.towerdefence.scoreboard;
 
 import net.minestom.server.event.player.PlayerDisconnectEvent;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
-import pink.zak.minestom.towerdefence.model.GameUser;
+import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.scoreboard.types.GameScoreboardManager;
 import pink.zak.minestom.towerdefence.scoreboard.types.LobbyScoreboard;
 

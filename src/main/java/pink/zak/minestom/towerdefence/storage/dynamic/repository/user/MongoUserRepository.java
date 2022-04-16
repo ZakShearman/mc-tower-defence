@@ -3,12 +3,16 @@ package pink.zak.minestom.towerdefence.storage.dynamic.repository.user;
 import com.mongodb.client.MongoClient;
 import org.bson.Document;
 import org.jetbrains.annotations.NotNull;
-import pink.zak.minestom.towerdefence.model.TDUser;
-import pink.zak.minestom.towerdefence.model.settings.FlySpeed;
-import pink.zak.minestom.towerdefence.model.settings.HealthDisplayMode;
-import pink.zak.minestom.towerdefence.model.settings.ParticleThickness;
+import pink.zak.minestom.towerdefence.model.user.TDStatistic;
+import pink.zak.minestom.towerdefence.model.user.TDUser;
+import pink.zak.minestom.towerdefence.model.user.settings.FlySpeed;
+import pink.zak.minestom.towerdefence.model.user.settings.HealthDisplayMode;
+import pink.zak.minestom.towerdefence.model.user.settings.ParticleThickness;
 import pink.zak.minestom.towerdefence.utils.storage.mongo.MongoRepository;
 
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class MongoUserRepository extends MongoRepository<UUID, TDUser> {
@@ -21,11 +25,18 @@ public class MongoUserRepository extends MongoRepository<UUID, TDUser> {
     public @NotNull Document serialize(@NotNull TDUser user) {
         Document document = new Document();
 
-        document.put("_id", user.getUuid());
-        document.put("healthMode", user.getHealthMode().toString());
-        document.put("particleThickness", user.getParticleThickness().toString());
-        document.put("damageIndicators", user.isDamageIndicators());
-        document.put("flySpeed", user.getFlySpeed().toString());
+        document.append("_id", user.getUuid())
+            .append("healthMode", user.getHealthMode().toString())
+            .append("particleThickness", user.getParticleThickness().toString())
+            .append("damageIndicators", user.isDamageIndicators())
+            .append("flySpeed", user.getFlySpeed().toString());
+
+        Document statistics = new Document();
+        for (Map.Entry<TDStatistic, Long> entry : user.getStatistics().entrySet()) {
+            statistics.append(entry.getKey().toString(), entry.getValue());
+        }
+        document.append("statistics", statistics);
+
         return document;
     }
 
@@ -36,6 +47,13 @@ public class MongoUserRepository extends MongoRepository<UUID, TDUser> {
         ParticleThickness particleThickness = ParticleThickness.valueOf(document.getString("particleThickness"));
         boolean damageIndicators = document.getBoolean("damageIndicators");
         FlySpeed flySpeed = FlySpeed.valueOf(document.getString("flySpeed"));
-        return new TDUser(uuid, healthMode, particleThickness, flySpeed, damageIndicators);
+
+        Map<TDStatistic, Long> statistics = Collections.synchronizedMap(new EnumMap<>(TDStatistic.class));
+        Document statisticsDocument = document.get("statistics", Document.class);
+        for (Map.Entry<String, Object> entry : statisticsDocument.entrySet()) {
+            statistics.put(TDStatistic.valueOf(entry.getKey()), (Long) entry.getValue());
+        }
+
+        return new TDUser(uuid, statistics, healthMode, particleThickness, flySpeed, damageIndicators);
     }
 }

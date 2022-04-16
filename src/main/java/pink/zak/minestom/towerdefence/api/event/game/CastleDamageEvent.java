@@ -4,5 +4,5 @@ import net.minestom.server.event.Event;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.enums.Team;
 
-public record TowerDamageEvent(@NotNull Team team, int damage, int health) implements Event {
+public record CastleDamageEvent(@NotNull Team team, int damage, int health) implements Event {
 }

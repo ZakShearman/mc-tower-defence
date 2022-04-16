@@ -16,10 +16,10 @@ import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 import pink.zak.minestom.towerdefence.cache.TDUserCache;
 import pink.zak.minestom.towerdefence.enums.GameState;
-import pink.zak.minestom.towerdefence.model.TDUser;
-import pink.zak.minestom.towerdefence.model.settings.FlySpeed;
-import pink.zak.minestom.towerdefence.model.settings.HealthDisplayMode;
-import pink.zak.minestom.towerdefence.model.settings.ParticleThickness;
+import pink.zak.minestom.towerdefence.model.user.TDUser;
+import pink.zak.minestom.towerdefence.model.user.settings.FlySpeed;
+import pink.zak.minestom.towerdefence.model.user.settings.HealthDisplayMode;
+import pink.zak.minestom.towerdefence.model.user.settings.ParticleThickness;
 
 import java.util.ArrayList;
 import java.util.List;

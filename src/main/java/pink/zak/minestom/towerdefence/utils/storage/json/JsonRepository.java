@@ -23,7 +23,7 @@ import java.util.stream.Stream;
 
 public abstract class JsonRepository<ID, T> implements Repository<ID, T>, IdStringConverter<ID> {
     private static final Logger LOGGER = LoggerFactory.getLogger(JsonRepository.class);
-    protected static final Gson GSON = new GsonBuilder().create();
+    protected final Gson GSON = this.createGson();
     protected final Path basePath;
 
     public JsonRepository(Path folder) {
@@ -33,9 +33,13 @@ public abstract class JsonRepository<ID, T> implements Repository<ID, T>, IdStri
             folder.toFile().mkdirs();
     }
 
-    protected abstract T deserialize(JsonElement json);
+    protected abstract T deserialize(@NotNull JsonElement json);
 
-    protected abstract JsonElement serialize(T entity);
+    protected abstract JsonElement serialize(@NotNull T entity);
+
+    protected @NotNull Gson createGson() {
+        return new GsonBuilder().create();
+    }
 
     @Override
     public <S extends T> @NotNull S save(@NotNull ID id, @NotNull S entity) {

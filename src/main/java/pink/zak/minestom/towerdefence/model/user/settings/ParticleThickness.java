@@ -1,4 +1,4 @@
-package pink.zak.minestom.towerdefence.model.settings;
+package pink.zak.minestom.towerdefence.model.user.settings;
 
 public enum ParticleThickness {
     THIN(0.4),

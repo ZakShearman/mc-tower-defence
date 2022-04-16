@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.game.MobHandler;
-import pink.zak.minestom.towerdefence.model.GameUser;
+import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingEnemyMob;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTower;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTowerLevel;

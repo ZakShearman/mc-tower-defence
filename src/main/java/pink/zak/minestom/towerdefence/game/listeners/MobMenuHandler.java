@@ -18,7 +18,7 @@ import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.game.MobHandler;
-import pink.zak.minestom.towerdefence.model.GameUser;
+import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.model.mob.EnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.EnemyMobLevel;
 import pink.zak.minestom.towerdefence.model.mob.QueuedEnemyMob;

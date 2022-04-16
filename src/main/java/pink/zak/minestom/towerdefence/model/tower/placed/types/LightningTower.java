@@ -2,7 +2,6 @@ package pink.zak.minestom.towerdefence.model.tower.placed.types;
 
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Point;
-import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Player;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.item.Material;
@@ -13,12 +12,11 @@ import net.minestom.server.utils.Direction;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 import pink.zak.minestom.towerdefence.cache.TDUserCache;
-import pink.zak.minestom.towerdefence.model.GameUser;
-import pink.zak.minestom.towerdefence.model.TDUser;
+import pink.zak.minestom.towerdefence.model.user.GameUser;
+import pink.zak.minestom.towerdefence.model.user.TDUser;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingEnemyMob;
-import pink.zak.minestom.towerdefence.model.settings.ParticleThickness;
+import pink.zak.minestom.towerdefence.model.user.settings.ParticleThickness;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTower;
-import pink.zak.minestom.towerdefence.model.tower.config.Tower;
 import pink.zak.minestom.towerdefence.model.tower.config.towers.LightningTowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
 

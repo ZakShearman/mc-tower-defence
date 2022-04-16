@@ -9,7 +9,7 @@ import net.minestom.server.utils.Direction;
 import net.minestom.server.utils.time.TimeUnit;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.model.DamageSource;
-import pink.zak.minestom.towerdefence.model.GameUser;
+import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.model.mob.TDDamageType;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingEnemyMob;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTower;

@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 import pink.zak.minestom.towerdefence.cache.DamageIndicatorCache;
 import pink.zak.minestom.towerdefence.enums.Team;
-import pink.zak.minestom.towerdefence.model.GameUser;
+import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
 import pink.zak.minestom.towerdefence.model.mob.QueuedEnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingEnemyMob;

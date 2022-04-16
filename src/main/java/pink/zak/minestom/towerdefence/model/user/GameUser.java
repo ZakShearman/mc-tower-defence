@@ -1,4 +1,4 @@
-package pink.zak.minestom.towerdefence.model;
+package pink.zak.minestom.towerdefence.model.user;
 
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.entity.Player;
@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.IntUnaryOperator;
 
 public class GameUser {
-    private final @NotNull Player player;
+    private final @NotNull Player player; // todo in the future we should allow re-joining a game so this will not be final.
     private final @NotNull TDUser user;
     private final @NotNull Team team;
 
@@ -54,7 +54,7 @@ public class GameUser {
         return this.team;
     }
 
-    public@NotNull  Map<EnemyMob, Integer> getMobLevels() {
+    public @NotNull Map<EnemyMob, Integer> getMobLevels() {
         return this.mobLevels;
     }
 

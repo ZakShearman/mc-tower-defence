@@ -13,7 +13,7 @@ import net.minestom.server.instance.Instance;
 import net.minestom.server.utils.time.TimeUnit;
 import pink.zak.minestom.towerdefence.cache.TDUserCache;
 import pink.zak.minestom.towerdefence.game.MobHandler;
-import pink.zak.minestom.towerdefence.model.TDUser;
+import pink.zak.minestom.towerdefence.model.user.TDUser;
 
 import java.time.Duration;
 

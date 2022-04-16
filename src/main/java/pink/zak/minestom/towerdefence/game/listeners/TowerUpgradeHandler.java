@@ -21,7 +21,7 @@ import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.game.TowerHandler;
-import pink.zak.minestom.towerdefence.model.GameUser;
+import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.model.tower.config.Tower;
 import pink.zak.minestom.towerdefence.model.tower.config.TowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedTower;

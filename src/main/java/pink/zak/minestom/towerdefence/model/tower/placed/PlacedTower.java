@@ -10,7 +10,7 @@ import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.enums.TowerType;
 import pink.zak.minestom.towerdefence.game.GameHandler;
-import pink.zak.minestom.towerdefence.model.GameUser;
+import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTower;
 import pink.zak.minestom.towerdefence.model.tower.config.Tower;
 import pink.zak.minestom.towerdefence.model.tower.config.TowerLevel;

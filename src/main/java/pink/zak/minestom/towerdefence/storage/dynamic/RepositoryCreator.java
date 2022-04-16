@@ -1,6 +1,5 @@
 package pink.zak.minestom.towerdefence.storage.dynamic;
 
-import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.typesafe.config.Config;
@@ -8,7 +7,7 @@ import com.typesafe.config.ConfigFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
-import pink.zak.minestom.towerdefence.model.TDUser;
+import pink.zak.minestom.towerdefence.model.user.TDUser;
 import pink.zak.minestom.towerdefence.storage.dynamic.repository.user.JsonUserRepository;
 import pink.zak.minestom.towerdefence.storage.dynamic.repository.user.MongoUserRepository;
 import pink.zak.minestom.towerdefence.storage.dynamic.settings.MongoSettings;

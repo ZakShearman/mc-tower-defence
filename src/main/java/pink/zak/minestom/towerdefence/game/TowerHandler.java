@@ -5,7 +5,7 @@ import net.minestom.server.utils.Direction;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 import pink.zak.minestom.towerdefence.enums.Team;
-import pink.zak.minestom.towerdefence.model.GameUser;
+import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
 import pink.zak.minestom.towerdefence.model.tower.config.Tower;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedTower;

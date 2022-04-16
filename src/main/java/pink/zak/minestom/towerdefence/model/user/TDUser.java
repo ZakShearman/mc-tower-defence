@@ -1,26 +1,33 @@
-package pink.zak.minestom.towerdefence.model;
+package pink.zak.minestom.towerdefence.model.user;
 
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import pink.zak.minestom.towerdefence.model.settings.FlySpeed;
-import pink.zak.minestom.towerdefence.model.settings.HealthDisplayMode;
-import pink.zak.minestom.towerdefence.model.settings.ParticleThickness;
+import pink.zak.minestom.towerdefence.model.user.settings.FlySpeed;
+import pink.zak.minestom.towerdefence.model.user.settings.HealthDisplayMode;
+import pink.zak.minestom.towerdefence.model.user.settings.ParticleThickness;
 
+import java.lang.ref.WeakReference;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class TDUser {
     private final @NotNull UUID uuid;
-    private Player player;
+    private WeakReference<Player> player;
+
+    private final @NotNull Map<TDStatistic, Long> statistics;
 
     private @NotNull HealthDisplayMode healthMode = HealthDisplayMode.PERCENTAGE;
     private @NotNull ParticleThickness particleThickness = ParticleThickness.STANDARD;
     private @NotNull FlySpeed flySpeed = FlySpeed.NORMAL;
     private boolean damageIndicators = true;
 
-    public TDUser(@NotNull UUID uuid, @NotNull HealthDisplayMode healthMode, @NotNull ParticleThickness particleThickness, @NotNull FlySpeed flySpeed, boolean damageIndicators) {
+    public TDUser(@NotNull UUID uuid, @NotNull Map<TDStatistic, Long> statistics, @NotNull HealthDisplayMode healthMode, @NotNull ParticleThickness particleThickness, @NotNull FlySpeed flySpeed, boolean damageIndicators) {
         this.uuid = uuid;
+        this.statistics = statistics;
         this.healthMode = healthMode;
         this.particleThickness = particleThickness;
         this.flySpeed = flySpeed;
@@ -29,6 +36,7 @@ public class TDUser {
 
     public TDUser(@NotNull UUID uuid) {
         this.uuid = uuid;
+        this.statistics = Collections.synchronizedMap(new EnumMap<>(TDStatistic.class));
     }
 
     public @NotNull UUID getUuid() {
@@ -37,9 +45,17 @@ public class TDUser {
 
     public @Nullable Player getPlayer() {
         if (this.player == null)
-            this.player = MinecraftServer.getConnectionManager().getPlayer(this.uuid);
+            this.player = new WeakReference<>(MinecraftServer.getConnectionManager().getPlayer(this.uuid));
 
-        return this.player;
+        return this.player.get();
+    }
+
+    public @NotNull Map<TDStatistic, Long> getStatistics() {
+        return this.statistics;
+    }
+
+    public long getStatistic(@NotNull TDStatistic statistic) {
+        return this.statistics.getOrDefault(statistic, 0L);
     }
 
     public @NotNull HealthDisplayMode getHealthMode() {
@@ -58,11 +74,11 @@ public class TDUser {
         this.flySpeed = flySpeed;
     }
 
-    public ParticleThickness getParticleThickness() {
+    public @NotNull ParticleThickness getParticleThickness() {
         return this.particleThickness;
     }
 
-    public void setParticleThickness(ParticleThickness particleThickness) {
+    public void setParticleThickness(@NotNull ParticleThickness particleThickness) {
         this.particleThickness = particleThickness;
     }
 

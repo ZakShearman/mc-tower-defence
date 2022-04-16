@@ -1,4 +1,4 @@
-package pink.zak.minestom.towerdefence.model.settings;
+package pink.zak.minestom.towerdefence.model.user.settings;
 
 import net.minestom.server.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
