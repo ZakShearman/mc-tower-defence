@@ -5,7 +5,7 @@ WORKDIR /gradleBuild
 RUN gradle clean shadowJar --no-daemon
 
 
-FROM azul/zulu-openjdk-alpine:17.0.2
+FROM azul/zulu-openjdk-alpine:17.0.3
 MAINTAINER ZakShearman
 
 RUN mkdir -p /app/extensions
