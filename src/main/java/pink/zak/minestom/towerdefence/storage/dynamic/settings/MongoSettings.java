@@ -20,18 +20,18 @@ public record MongoSettings(String address,
 
     public static MongoSettings parse(Config config) {
         return new MongoSettings(
-            config.getString("address"),
-            config.getInt("port"),
-            config.getString("database"),
-            config.hasPath("auth.username") ? config.getString("auth.username") : null,
-            config.hasPath("auth.db") ? config.getString("auth.db") : null,
-            config.hasPath("auth.password") ? config.getString("auth.password").toCharArray() : null
+                config.getString("address"),
+                config.getInt("port"),
+                config.getString("database"),
+                config.hasPath("auth.username") ? config.getString("auth.username") : null,
+                config.hasPath("auth.db") ? config.getString("auth.db") : null,
+                config.hasPath("auth.password") ? config.getString("auth.password").toCharArray() : null
         );
     }
 
     public MongoClientSettings asClientSettings() {
         MongoClientSettings.Builder builder = MongoClientSettings.builder()
-            .uuidRepresentation(UuidRepresentation.STANDARD);
+                .uuidRepresentation(UuidRepresentation.STANDARD);
 
         ServerAddress serverAddress = new ServerAddress(this.address, this.port);
         builder.applyToClusterSettings(clusterBuilder -> clusterBuilder.hosts(Collections.singletonList(serverAddress))); // todo is there a better way to do this?
@@ -41,8 +41,8 @@ public record MongoSettings(String address,
             builder.credential(credentials);
         }
         CodecRegistry codecRegistry = CodecRegistries.fromRegistries(
-            MongoClientSettings.getDefaultCodecRegistry(),
-            CodecRegistries.fromProviders(PojoCodecProvider.builder().automatic(true).build())
+                MongoClientSettings.getDefaultCodecRegistry(),
+                CodecRegistries.fromProviders(PojoCodecProvider.builder().automatic(true).build())
         );
         builder.codecRegistry(codecRegistry);
 
