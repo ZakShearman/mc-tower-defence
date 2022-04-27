@@ -14,11 +14,11 @@ import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.game.MobHandler;
-import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingEnemyMob;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTower;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
+import pink.zak.minestom.towerdefence.model.user.GameUser;
 
 import java.util.Set;
 
@@ -45,7 +45,7 @@ public class BomberTower extends PlacedAttackingTower<AttackingTowerLevel> {
         new BombTnt(this);
     }
 
-    private void damageTroops(BombTnt tnt) {
+    private void damageTroops(@NotNull BombTnt tnt) {
         Pos center = tnt.getPosition();
         Set<LivingEnemyMob> enemyMobs = super.team == Team.RED ? this.mobHandler.getRedSideMobs() : this.mobHandler.getBlueSideMobs();
 

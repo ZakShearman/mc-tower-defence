@@ -25,14 +25,13 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
+import pink.zak.minestom.towerdefence.api.event.tower.TowerDamageMobEvent;
 import pink.zak.minestom.towerdefence.cache.TDUserCache;
 import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.game.MobHandler;
 import pink.zak.minestom.towerdefence.game.TowerHandler;
 import pink.zak.minestom.towerdefence.model.DamageSource;
-import pink.zak.minestom.towerdefence.model.user.GameUser;
-import pink.zak.minestom.towerdefence.model.user.TDUser;
 import pink.zak.minestom.towerdefence.model.map.PathCorner;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
 import pink.zak.minestom.towerdefence.model.mob.EnemyMob;
@@ -42,6 +41,8 @@ import pink.zak.minestom.towerdefence.model.mob.living.types.LlamaLivingEnemyMob
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedTower;
 import pink.zak.minestom.towerdefence.model.tower.placed.types.CharityTower;
+import pink.zak.minestom.towerdefence.model.user.GameUser;
+import pink.zak.minestom.towerdefence.model.user.TDUser;
 import pink.zak.minestom.towerdefence.utils.DirectionUtils;
 import pink.zak.minestom.towerdefence.utils.StringUtils;
 
@@ -255,15 +256,21 @@ public class LivingEnemyMob extends EntityCreature {
         LOGGER.warn("setCustomName called for a LivingEnemyMob. This action is not supported");
     }
 
-    public void towerDamage(@NotNull DamageSource source, float value) {
-        if (this.isDead)
-            return;
-        if (this.enemyMob.isDamageTypeIgnored(source.getDamageType()))
-            return;
+    /**
+     * @param source
+     * @param value
+     * @return The amount of damage dealt
+     */
+    public float towerDamage(@NotNull DamageSource source, float value) {
+        if (this.isDead) return 0;
+        if (this.enemyMob.isDamageTypeIgnored(source.getDamageType())) return 0;
 
         DamageIndicator.create(this.userCache, this, value);
+
+
         this.sendPacketToViewersAndSelf(new EntityAnimationPacket(this.getEntityId(), EntityAnimationPacket.Animation.TAKE_DAMAGE));
         this.setHealth(this.health - value);
+        float damageDealt = this.isDead ? value : value - Math.abs(this.health);
 
         if (this.isDead) {
             Set<PlacedTower<?>> towers = this.team == Team.BLUE ? this.towerHandler.getBlueTowers() : this.towerHandler.getRedTowers();
@@ -284,6 +291,9 @@ public class LivingEnemyMob extends EntityCreature {
             SoundEffectPacket damageSoundPacket = new SoundEffectPacket(sound, soundCategory, this.getPosition(), 1.0f, 1.0f);
             this.sendPacketToViewersAndSelf(damageSoundPacket);
         }
+
+        MinecraftServer.getGlobalEventHandler().call(new TowerDamageMobEvent(source.getSourceTower(), this, damageDealt));
+        return damageDealt;
     }
 
     @Override

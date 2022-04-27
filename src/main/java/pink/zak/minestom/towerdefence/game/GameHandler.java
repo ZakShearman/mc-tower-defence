@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 import pink.zak.minestom.towerdefence.api.event.game.CastleDamageEvent;
+import pink.zak.minestom.towerdefence.api.event.game.GameStartEvent;
 import pink.zak.minestom.towerdefence.cache.TDUserCache;
 import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.enums.Team;
@@ -19,11 +20,12 @@ import pink.zak.minestom.towerdefence.game.listeners.MobMenuHandler;
 import pink.zak.minestom.towerdefence.game.listeners.TowerPlaceHandler;
 import pink.zak.minestom.towerdefence.game.listeners.TowerUpgradeHandler;
 import pink.zak.minestom.towerdefence.game.listeners.UserSettingsMenuHandler;
-import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
 import pink.zak.minestom.towerdefence.model.mob.EnemyMob;
+import pink.zak.minestom.towerdefence.model.user.GameUser;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -90,6 +92,8 @@ public class GameHandler {
             this.mobMenuHandler.onGameStart();
             this.userSettingsMenuHandler.onGameStart();
         }
+
+        MinecraftServer.getGlobalEventHandler().call(new GameStartEvent(Collections.unmodifiableCollection(this.users.values())));
 
         /*EnemyMob enemyMob = this.plugin.getMobStorage().getTower(EntityType.LLAMA);
         EnemyMobLevel enemyMobLevel = enemyMob.level(1);

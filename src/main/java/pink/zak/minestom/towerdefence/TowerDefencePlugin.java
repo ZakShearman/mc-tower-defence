@@ -25,6 +25,7 @@ import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.listener.ProtectionHandler;
 import pink.zak.minestom.towerdefence.listener.SpawnItemHandler;
+import pink.zak.minestom.towerdefence.listener.StatisticsListener;
 import pink.zak.minestom.towerdefence.model.user.TDUser;
 import pink.zak.minestom.towerdefence.scoreboard.ScoreboardManager;
 import pink.zak.minestom.towerdefence.storage.MapStorage;
@@ -89,6 +90,8 @@ public class TowerDefencePlugin extends Extension {
 
         new ProtectionHandler(this);
         new SpawnItemHandler(this);
+
+        new StatisticsListener(this.getEventNode().addChild(EventNode.all("statistics")));
 
         CommandManager commandManager = MinecraftServer.getCommandManager();
         commandManager.register(new TowerDefenceCommand(this));

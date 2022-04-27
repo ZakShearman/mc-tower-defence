@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class JsonUserRepository extends JsonRepository<UUID, TDUser> {
 
@@ -37,8 +38,8 @@ public class JsonUserRepository extends JsonRepository<UUID, TDUser> {
         json.addProperty("flySpeed", user.getFlySpeed().toString());
 
         JsonObject statistics = new JsonObject();
-        for (Map.Entry<TDStatistic, Long> entry : user.getStatistics().entrySet()) {
-            statistics.addProperty(entry.getKey().toString(), entry.getValue());
+        for (Map.Entry<TDStatistic, AtomicLong> entry : user.getStatistics().entrySet()) {
+            statistics.addProperty(entry.getKey().toString(), entry.getValue().longValue());
         }
         json.add("statistics", statistics);
 
@@ -55,10 +56,10 @@ public class JsonUserRepository extends JsonRepository<UUID, TDUser> {
         FlySpeed flySpeed = FlySpeed.valueOf(json.get("flySpeed").getAsString());
         boolean damageIndicators = json.get("damageIndicators").getAsBoolean();
 
-        Map<TDStatistic, Long> statistics = Collections.synchronizedMap(new EnumMap<>(TDStatistic.class));
+        Map<TDStatistic, AtomicLong> statistics = Collections.synchronizedMap(new EnumMap<>(TDStatistic.class));
         JsonObject statisticsJson = json.get("statistics").getAsJsonObject();
         for (Map.Entry<String, JsonElement> entry : statisticsJson.entrySet()) {
-            statistics.put(TDStatistic.valueOf(entry.getKey()), entry.getValue().getAsLong());
+            statistics.put(TDStatistic.valueOf(entry.getKey()), new AtomicLong(entry.getValue().getAsLong()));
         }
 
         return new TDUser(uuid, statistics, healthMode, particleThickness, flySpeed, damageIndicators);

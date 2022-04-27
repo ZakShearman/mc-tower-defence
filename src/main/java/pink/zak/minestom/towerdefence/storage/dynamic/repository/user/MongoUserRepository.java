@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class MongoUserRepository extends MongoRepository<UUID, TDUser> {
 
@@ -32,8 +33,8 @@ public class MongoUserRepository extends MongoRepository<UUID, TDUser> {
             .append("flySpeed", user.getFlySpeed().toString());
 
         Document statistics = new Document();
-        for (Map.Entry<TDStatistic, Long> entry : user.getStatistics().entrySet()) {
-            statistics.append(entry.getKey().toString(), entry.getValue());
+        for (Map.Entry<TDStatistic, AtomicLong> entry : user.getStatistics().entrySet()) {
+            statistics.append(entry.getKey().toString(), entry.getValue().longValue());
         }
         document.append("statistics", statistics);
 
@@ -48,10 +49,10 @@ public class MongoUserRepository extends MongoRepository<UUID, TDUser> {
         boolean damageIndicators = document.getBoolean("damageIndicators");
         FlySpeed flySpeed = FlySpeed.valueOf(document.getString("flySpeed"));
 
-        Map<TDStatistic, Long> statistics = Collections.synchronizedMap(new EnumMap<>(TDStatistic.class));
+        Map<TDStatistic, AtomicLong> statistics = Collections.synchronizedMap(new EnumMap<>(TDStatistic.class));
         Document statisticsDocument = document.get("statistics", Document.class);
         for (Map.Entry<String, Object> entry : statisticsDocument.entrySet()) {
-            statistics.put(TDStatistic.valueOf(entry.getKey()), (Long) entry.getValue());
+            statistics.put(TDStatistic.valueOf(entry.getKey()), new AtomicLong((Long) entry.getValue()));
         }
 
         return new TDUser(uuid, statistics, healthMode, particleThickness, flySpeed, damageIndicators);

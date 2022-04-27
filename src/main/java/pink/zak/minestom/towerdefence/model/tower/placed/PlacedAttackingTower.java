@@ -9,11 +9,11 @@ import net.minestom.server.utils.Direction;
 import net.minestom.server.utils.time.TimeUnit;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.model.DamageSource;
-import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.model.mob.TDDamageType;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingEnemyMob;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTower;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTowerLevel;
+import pink.zak.minestom.towerdefence.model.user.GameUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +40,11 @@ public abstract class PlacedAttackingTower<T extends AttackingTowerLevel> extend
     protected abstract void fire();
 
     public abstract int getMaxTargets();
+
+    @Override
+    public @NotNull PlacedAttackingTower<T> getSourceTower() {
+        return this;
+    }
 
     @Override
     public void upgrade() {

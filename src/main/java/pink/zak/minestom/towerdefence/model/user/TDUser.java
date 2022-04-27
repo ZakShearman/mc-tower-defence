@@ -13,19 +13,20 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class TDUser {
     private final @NotNull UUID uuid;
     private WeakReference<Player> player;
 
-    private final @NotNull Map<TDStatistic, Long> statistics;
+    private final @NotNull Map<TDStatistic, AtomicLong> statistics;
 
     private @NotNull HealthDisplayMode healthMode = HealthDisplayMode.PERCENTAGE;
     private @NotNull ParticleThickness particleThickness = ParticleThickness.STANDARD;
     private @NotNull FlySpeed flySpeed = FlySpeed.NORMAL;
     private boolean damageIndicators = true;
 
-    public TDUser(@NotNull UUID uuid, @NotNull Map<TDStatistic, Long> statistics, @NotNull HealthDisplayMode healthMode, @NotNull ParticleThickness particleThickness, @NotNull FlySpeed flySpeed, boolean damageIndicators) {
+    public TDUser(@NotNull UUID uuid, @NotNull Map<TDStatistic, AtomicLong> statistics, @NotNull HealthDisplayMode healthMode, @NotNull ParticleThickness particleThickness, @NotNull FlySpeed flySpeed, boolean damageIndicators) {
         this.uuid = uuid;
         this.statistics = statistics;
         this.healthMode = healthMode;
@@ -50,12 +51,12 @@ public class TDUser {
         return this.player.get();
     }
 
-    public @NotNull Map<TDStatistic, Long> getStatistics() {
+    public @NotNull Map<TDStatistic, AtomicLong> getStatistics() {
         return this.statistics;
     }
 
-    public long getStatistic(@NotNull TDStatistic statistic) {
-        return this.statistics.getOrDefault(statistic, 0L);
+    public AtomicLong getStatistic(@NotNull TDStatistic statistic) {
+        return this.statistics.getOrDefault(statistic, new AtomicLong(0));
     }
 
     public @NotNull HealthDisplayMode getHealthMode() {

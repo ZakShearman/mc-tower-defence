@@ -1,9 +1,11 @@
 package pink.zak.minestom.towerdefence.game;
 
+import net.minestom.server.MinecraftServer;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.utils.Direction;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
+import pink.zak.minestom.towerdefence.api.event.player.PlayerTowerPlaceEvent;
 import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
@@ -37,6 +39,8 @@ public class TowerHandler {
             this.redTowers.add(placedTower);
         else
             this.blueTowers.add(placedTower);
+
+        MinecraftServer.getGlobalEventHandler().call(new PlayerTowerPlaceEvent(tower, gameUser));
     }
 
     private short generateTowerId() {
