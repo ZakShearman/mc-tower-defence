@@ -19,7 +19,7 @@ dependencies {
     implementation("net.kyori:adventure-text-minimessage:4.10.1")
     implementation("com.typesafe:config:1.4.2")
 
-    implementation("com.github.ben-manes.caffeine:caffeine:3.0.6")
+    implementation("com.github.ben-manes.caffeine:caffeine:3.1.0")
     implementation("org.mongodb:mongodb-driver-sync:4.6.0")
 
     testImplementation("com.github.ZakShearman:Minestom:e5c7a20b0b")
