@@ -1,4 +1,4 @@
-package pink.zak.minestom.towerdefence.storage.dynamic.settings;
+package pink.zak.minestom.towerdefence.utils.storage.mongo;
 
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoCredential;

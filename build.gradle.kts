@@ -56,7 +56,7 @@ tasks.register("depsize-all-configurations") {
     }
 }
 
-fun listConfigurationDependencies(configuration: Configuration ) {
+fun listConfigurationDependencies(configuration: Configuration) {
     val formatStr = "%,10.2f"
 
     val size = configuration.map { it.length() / (1024.0 * 1024.0) }.sum()

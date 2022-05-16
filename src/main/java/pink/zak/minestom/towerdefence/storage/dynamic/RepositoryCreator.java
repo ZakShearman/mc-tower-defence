@@ -10,7 +10,7 @@ import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 import pink.zak.minestom.towerdefence.model.user.TDUser;
 import pink.zak.minestom.towerdefence.storage.dynamic.repository.user.JsonUserRepository;
 import pink.zak.minestom.towerdefence.storage.dynamic.repository.user.MongoUserRepository;
-import pink.zak.minestom.towerdefence.storage.dynamic.settings.MongoSettings;
+import pink.zak.minestom.towerdefence.utils.storage.mongo.MongoSettings;
 import pink.zak.minestom.towerdefence.utils.FileUtils;
 import pink.zak.minestom.towerdefence.utils.storage.Repository;
 
@@ -48,7 +48,7 @@ public class RepositoryCreator {
             LOGGER.info("Started storage using repository type {}", this.repositoryType);
     }
 
-    // todo mongo and rest api
+    // todo rest api
     private boolean checkEligibility(Config config) {
         switch (this.repositoryType) {
             case JSON -> this.jsonPath = this.plugin.getDataDirectory().resolve("data");
