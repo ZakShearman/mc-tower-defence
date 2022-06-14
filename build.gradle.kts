@@ -16,7 +16,7 @@ repositories {
 
 dependencies {
     compileOnly("com.github.ZakShearman:Minestom:e5c7a20b0b")
-    implementation("net.kyori:adventure-text-minimessage:4.10.1")
+    implementation("net.kyori:adventure-text-minimessage:4.11.0")
     implementation("com.typesafe:config:1.4.2")
 
     implementation("com.github.ben-manes.caffeine:caffeine:3.1.1")
