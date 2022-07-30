@@ -20,7 +20,7 @@ dependencies {
     implementation("com.typesafe:config:1.4.2")
 
     implementation("com.github.ben-manes.caffeine:caffeine:3.1.1")
-    implementation("org.mongodb:mongodb-driver-sync:4.6.1")
+    implementation("org.mongodb:mongodb-driver-sync:4.7.1")
 
     testImplementation("com.github.ZakShearman:Minestom:e5c7a20b0b")
 
