@@ -102,16 +102,16 @@ public abstract class PlacedTower<T extends TowerLevel> {
 
             this.instance.setBlock(x, y, z, Block.AIR);
         }
-
+        this.normaliseBase();
     }
 
     // returns the blocks below the tower to normal, removing their ID_TAG property.
-    // todo add support for map-specific blocks/returning to the original block. Currently hardcoded as Material.OAK_PLANKS
+    // todo add support for map-specific blocks/returning to the original block. Currently hardcoded as Material.CYAN_TERRACOTTA
     private void normaliseBase() {
         int checkDistance = this.tower.getType().getSize().getCheckDistance();
         for (int x = this.basePoint.blockX() - checkDistance; x <= this.basePoint.blockX() + checkDistance; x++) {
             for (int z = this.basePoint.blockZ() - checkDistance; z <= this.basePoint.blockZ() + checkDistance; z++) {
-                this.instance.setBlock(x, this.basePoint.blockY(), z, Material.OAK_PLANKS.block());
+                this.instance.setBlock(x, this.basePoint.blockY(), z, Material.CYAN_TERRACOTTA.block());
             }
         }
     }

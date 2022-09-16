@@ -30,16 +30,17 @@ public class DamageIndicator extends Entity {
 
         AreaEffectCloudMeta meta = (AreaEffectCloudMeta) this.getEntityMeta();
         meta.setRadius(0f);
-        meta.setNotifyAboutChanges(false);
+        meta.setSilent(true);
         meta.setCustomName(text);
         meta.setCustomNameVisible(true);
-        meta.setHasNoGravity(true);
 
+        meta.setHasNoGravity(true);
+        meta.setNotifyAboutChanges(false);
         this.setAutoViewable(false);
 
         this.setInstance(instance, spawnPosition.add(0, OFFSET_Y, 0));
         for (TDUser user : userCache.getAllLoadedUsers())
-            if (user.isDamageIndicators() && user.getPlayer() != null && user.getPlayer().getDistance(this) < 10) // distance check probably isnt necessary but save some packets
+            if (user.isDamageIndicators() && user.getPlayer() != null && user.getPlayer().getDistance(this) < 20) // distance check probably isnt necessary but save some packets
                 this.addViewer(user.getPlayer());
 
         this.position = spawnPosition;
