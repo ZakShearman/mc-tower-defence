@@ -1,6 +1,7 @@
 package pink.zak.minestom.towerdefence.game.listeners;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.entity.Player;
@@ -21,26 +22,33 @@ import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.game.TowerHandler;
-import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.model.tower.config.Tower;
 import pink.zak.minestom.towerdefence.model.tower.config.TowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedTower;
+import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.utils.StringUtils;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public class TowerUpgradeHandler {
     private static final @NotNull ItemStack RADIUS_MENU_ITEM = ItemStack.builder(Material.REDSTONE)
-        .displayName(StringUtils.parseMessage("<red>Preview Tower Radius"))
-        .lore(StringUtils.parseMessages(List.of(
-            "",
-            "<red>Shows a particle outline of the tower's radius"
-        )))
-        .build();
+            .displayName(StringUtils.parseMessage("<red>Preview Tower Radius"))
+            .lore(StringUtils.parseMessages(
+                    "",
+                    "<red>Shows a particle outline of the tower's radius"
+            ))
+            .build();
+
+    private static final @NotNull ItemStack REMOVE_TOWER_ITEM = ItemStack.builder(Material.BARRIER)
+            .displayName(StringUtils.parseMessage("<red>Remove Tower"))
+            .lore(StringUtils.parseMessages(
+                    "",
+                    "<red>Removes the tower"
+            ))
+            .build();
 
     private final @NotNull Map<Tower, Component> towerUpgradeTitles = new HashMap<>();
     private final @NotNull TowerDefencePlugin plugin;
@@ -57,17 +65,17 @@ public class TowerUpgradeHandler {
         this.towerHandler = gameHandler.getTowerHandler();
 
         plugin.getEventNode()
-            .addListener(PlayerBlockInteractEvent.class, event -> {
-                Player player = event.getPlayer();
-                if (event.getHand() != Player.Hand.MAIN || plugin.getGameState() != GameState.IN_PROGRESS)
-                    return;
-                GameUser gameUser = this.gameHandler.getGameUser(player);
-                Short towerId = event.getBlock().getTag(PlacedTower.ID_TAG);
-                if (gameUser == null || towerId == null)
-                    return;
-                PlacedTower<?> tower = this.towerHandler.getTower(gameUser, towerId);
-                this.openUpgradeGui(gameUser, tower);
-            });
+                .addListener(PlayerBlockInteractEvent.class, event -> {
+                    Player player = event.getPlayer();
+                    if (event.getHand() != Player.Hand.MAIN || plugin.getGameState() != GameState.IN_PROGRESS)
+                        return;
+                    GameUser gameUser = this.gameHandler.getGameUser(player);
+                    Integer towerId = event.getBlock().getTag(PlacedTower.ID_TAG);
+                    if (gameUser == null || towerId == null)
+                        return;
+                    PlacedTower<?> tower = this.towerHandler.getTower(gameUser, towerId);
+                    this.openUpgradeGui(gameUser, tower);
+                });
 
         this.startTowerUpgradeGuiListener();
     }
@@ -90,6 +98,7 @@ public class TowerUpgradeHandler {
             inventory.setItemStack(10 + i, itemStack);
         }
 
+        inventory.setItemStack(17, REMOVE_TOWER_ITEM);
         inventory.setItemStack(26, RADIUS_MENU_ITEM);
 
         gameUser.getPlayer().openInventory(inventory);
@@ -115,6 +124,11 @@ public class TowerUpgradeHandler {
                 return;
             }
 
+            if (slot == 17) {
+                this.removeTower(gameUser, placedTower);
+                return;
+            }
+
             int clickedLevelInt = slot - 10;
 
             Tower tower = placedTower.getTower();
@@ -131,7 +145,7 @@ public class TowerUpgradeHandler {
                 int finalCost = cost;
                 gameUser.updateAndGetCoins(current -> current - finalCost);
                 for (int i = currentLevel; i < clickedLevelInt; i++)
-                    placedTower.upgrade(); // todo better way lol
+                    placedTower.upgrade(); // todo better way (reduce blocks being placed many times unnecessarily when skipping levels)
                 TowerLevel towerLevel = placedTower.getLevel();
                 // update inventory items
                 inventory.setItemStack(0, towerLevel.getMenuItem());
@@ -151,27 +165,35 @@ public class TowerUpgradeHandler {
             double c2 = radius * Math.sin(i);
 
             packets.add(ParticleCreator.createParticlePacket(Particle.DUST, true,
-                center.x() + c1, center.y() + 1.5, center.z() + c2,
-                0, 0, 0, 0f, 1,
-                binaryWriter -> {
-                    binaryWriter.writeFloat(1);
-                    binaryWriter.writeFloat(0);
-                    binaryWriter.writeFloat(0);
-                    binaryWriter.writeFloat(1.5f);
-                }));
+                    center.x() + c1, center.y() + 1.5, center.z() + c2,
+                    0, 0, 0, 0f, 1,
+                    binaryWriter -> {
+                        binaryWriter.writeFloat(1);
+                        binaryWriter.writeFloat(0);
+                        binaryWriter.writeFloat(0);
+                        binaryWriter.writeFloat(1.5f);
+                    }));
         }
         player.sendPackets(packets);
 
         Task task = MinecraftServer.getSchedulerManager()
-            .buildTask(() -> {
-                player.sendPackets(packets);
-            })
-            .repeat(750, TimeUnit.MILLISECOND)
-            .schedule();
+                .buildTask(() -> player.sendPackets(packets))
+                .repeat(750, TimeUnit.MILLISECOND)
+                .schedule();
 
         MinecraftServer.getSchedulerManager()
-            .buildTask(task::cancel)
-            .delay(5, TimeUnit.SECOND)
-            .schedule();
+                .buildTask(task::cancel)
+                .delay(5, TimeUnit.SECOND)
+                .schedule();
+    }
+
+    private void removeTower(GameUser gameUser, PlacedTower<?> placedTower) {
+        Player player = gameUser.getPlayer();
+
+        placedTower.destroy();
+        this.towerHandler.removeTower(gameUser, placedTower);
+
+        player.closeInventory();
+        player.sendMessage(Component.text("Tower removed!", NamedTextColor.RED));
     }
 }

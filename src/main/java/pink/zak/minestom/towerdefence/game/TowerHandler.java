@@ -7,17 +7,17 @@ import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 import pink.zak.minestom.towerdefence.api.event.player.PlayerTowerPlaceEvent;
 import pink.zak.minestom.towerdefence.enums.Team;
-import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
 import pink.zak.minestom.towerdefence.model.tower.config.Tower;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedTower;
+import pink.zak.minestom.towerdefence.model.user.GameUser;
 
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class TowerHandler {
-    private final @NotNull AtomicReference<Short> towerIdCounter = new AtomicReference<>(Short.MIN_VALUE);
+    private final @NotNull AtomicInteger towerIdCounter = new AtomicInteger(Integer.MIN_VALUE);
     private final @NotNull TowerDefencePlugin plugin;
     private final @NotNull GameHandler gameHandler;
     private final @NotNull Set<PlacedTower<?>> redTowers = ConcurrentHashMap.newKeySet();
@@ -43,12 +43,19 @@ public class TowerHandler {
         MinecraftServer.getGlobalEventHandler().call(new PlayerTowerPlaceEvent(tower, gameUser));
     }
 
-    private short generateTowerId() {
-        return this.towerIdCounter.getAndUpdate(aShort -> ++aShort);
+    private int generateTowerId() {
+        return this.towerIdCounter.getAndIncrement();
     }
 
-    public PlacedTower<?> getTower(@NotNull GameUser gameUser, short id) {
+    public PlacedTower<?> getTower(@NotNull GameUser gameUser, int id) {
         return (gameUser.getTeam() == Team.RED ? this.redTowers : this.blueTowers).stream().filter(tower -> tower.getId() == id).findFirst().orElse(null);
+    }
+
+    public void removeTower(@NotNull GameUser gameUser, @NotNull PlacedTower<?> tower) {
+        if (gameUser.getTeam() == Team.RED)
+            this.redTowers.remove(tower);
+        else
+            this.blueTowers.remove(tower);
     }
 
     public @NotNull Set<PlacedTower<?>> getRedTowers() {

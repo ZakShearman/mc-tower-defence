@@ -12,13 +12,13 @@ import net.minestom.server.utils.Direction;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 import pink.zak.minestom.towerdefence.cache.TDUserCache;
-import pink.zak.minestom.towerdefence.model.user.GameUser;
-import pink.zak.minestom.towerdefence.model.user.TDUser;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingEnemyMob;
-import pink.zak.minestom.towerdefence.model.user.settings.ParticleThickness;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTower;
 import pink.zak.minestom.towerdefence.model.tower.config.towers.LightningTowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
+import pink.zak.minestom.towerdefence.model.user.GameUser;
+import pink.zak.minestom.towerdefence.model.user.TDUser;
+import pink.zak.minestom.towerdefence.model.user.settings.ParticleThickness;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -31,7 +31,7 @@ public class LightningTower extends PlacedAttackingTower<LightningTowerLevel> {
     private Point castPoint;
     private Set<Point> spawnPoints;
 
-    public LightningTower(TowerDefencePlugin plugin, Instance instance, AttackingTower tower, Material towerPlaceMaterial, short id, GameUser owner, Point basePoint, Direction facing, int level) {
+    public LightningTower(TowerDefencePlugin plugin, Instance instance, AttackingTower tower, Material towerPlaceMaterial, int id, GameUser owner, Point basePoint, Direction facing, int level) {
         super(instance, tower, towerPlaceMaterial, id, owner, basePoint, facing, level);
         this.userCache = plugin.getUserCache();
         this.castPoint = this.getLevel().getRelativeCastPoint().apply(basePoint);
@@ -91,7 +91,7 @@ public class LightningTower extends PlacedAttackingTower<LightningTowerLevel> {
         double yIncrement = dy / particleCount;
         double zIncrement = dz / particleCount;
 
-        for (double thing = 0; thing <= length; thing += thickness.getSpacing()) {
+        for (double i = 0; i <= length; i += thickness.getSpacing()) {
             packets.add(
                 ParticleCreator.createParticlePacket(Particle.SOUL_FIRE_FLAME,
                     x, y, z,

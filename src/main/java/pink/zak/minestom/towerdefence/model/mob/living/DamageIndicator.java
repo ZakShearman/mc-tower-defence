@@ -33,6 +33,7 @@ public class DamageIndicator extends Entity {
         meta.setNotifyAboutChanges(false);
         meta.setCustomName(text);
         meta.setCustomNameVisible(true);
+        meta.setHasNoGravity(true);
 
         this.setAutoViewable(false);
 
@@ -45,7 +46,9 @@ public class DamageIndicator extends Entity {
     }
 
     @Override
-    protected void velocityTick() {
+    public void tick(long time) {
+        super.tick(time);
+
         int aliveTicks = (int) this.getAliveTicks();
         if (aliveTicks == 16) {
             this.remove();
@@ -53,10 +56,7 @@ public class DamageIndicator extends Entity {
         }
         this.velocity = this.vectors[aliveTicks];
 
-        Pos newPosition = this.position.add(this.velocity.div(20));
-
-        this.refreshPosition(newPosition, true);
-        this.sendPacketToViewers(this.getVelocityPacket());
+        this.position = this.position.add(this.velocity.div(20));
     }
 
     public static void create(TDUserCache userCache, LivingEnemyMob enemyMob, double damage) {

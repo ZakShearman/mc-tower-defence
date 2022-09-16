@@ -11,7 +11,6 @@ import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.Metadata;
 import net.minestom.server.entity.Player;
 import net.minestom.server.entity.damage.DamageType;
-import net.minestom.server.entity.metadata.EntityMeta;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.network.packet.server.LazyPacket;
 import net.minestom.server.network.packet.server.play.EntityAnimationPacket;
@@ -47,9 +46,9 @@ import pink.zak.minestom.towerdefence.utils.DirectionUtils;
 import pink.zak.minestom.towerdefence.utils.StringUtils;
 
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
@@ -228,16 +227,19 @@ public class LivingEnemyMob extends EntityCreature {
             this.updateCustomName();
     }
 
+    // todo all of this needs to be fixed up. Metadata/Metadata.Entry is no longer accessible
     @Override
     public void updateNewViewer(@NotNull Player player) {
+        super.updateNewViewer(player);
+
         player.sendPacket(this.getEntityType().registry().spawnType().getSpawnPacket(this));
         if (this.hasVelocity()) player.sendPacket(this.getVelocityPacket());
 
-        List<Metadata.Entry<?>> entries = new ArrayList<>(this.metadata.getEntries());
-        Metadata.Entry<?> nameEntry = new Metadata.Entry<>((byte) (EntityMeta.OFFSET + 2), Metadata.OptChat(this.createNameComponent(player)));
-        entries.add(nameEntry);
+        Map<Integer, Metadata.Entry<?>> entries = new HashMap<>(this.metadata.getEntries());
+        Metadata.Entry<?> nameEntry = Metadata.OptChat(this.createNameComponent(player));
+        entries.put(2, nameEntry);
         player.sendPacket(new LazyPacket(() -> new EntityMetaDataPacket(getEntityId(), entries)));
-        // todo Passengers are removed here as i dont need them
+        // Passengers are removed here as i dont need them
 
         // Head position
         player.sendPacket(new EntityHeadLookPacket(getEntityId(), this.position.yaw()));
@@ -246,8 +248,8 @@ public class LivingEnemyMob extends EntityCreature {
     public void updateCustomName() {
         for (Player player : this.getViewers()) {
             Component value = this.createNameComponent(player);
-            Metadata.Entry<?> nameEntry = new Metadata.Entry<>((byte) (EntityMeta.OFFSET + 2), Metadata.OptChat(value));
-            player.sendPacket(new EntityMetaDataPacket(this.getEntityId(), Collections.singleton(nameEntry)));
+            Metadata.Entry<?> nameEntry = Metadata.OptChat(value);
+            player.sendPacket(new EntityMetaDataPacket(this.getEntityId(), Map.of(2, nameEntry)));
         }
     }
 

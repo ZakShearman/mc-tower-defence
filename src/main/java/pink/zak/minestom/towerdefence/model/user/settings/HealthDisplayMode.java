@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BiFunction;
 
+// todo names aren't updated when the player changes their setting, only when the mob spawns or takes damage.
 public enum HealthDisplayMode {
     RAW((health, maxHealth) -> "\u2665 " + Math.round(health)),
     PERCENTAGE((health, maxHealth) -> ((int) Math.ceil((health / maxHealth) * 100)) + "%");

@@ -15,14 +15,14 @@ repositories {
 }
 
 dependencies {
-    compileOnly("com.github.ZakShearman:Minestom:e5c7a20b0b")
+    compileOnly("com.github.Minestom:Minestom:18c46481f4")
     implementation("net.kyori:adventure-text-minimessage:4.11.0")
     implementation("com.typesafe:config:1.4.2")
 
     implementation("com.github.ben-manes.caffeine:caffeine:3.1.1")
-    implementation("org.mongodb:mongodb-driver-sync:4.6.1")
+    implementation("org.mongodb:mongodb-driver-sync:4.7.1")
 
-    testImplementation("com.github.ZakShearman:Minestom:e5c7a20b0b")
+    testImplementation("com.github.Minestom:Minestom:18c46481f4")
 
     //testImplementation("net.minestom.server:Minestom:1.0")
 }

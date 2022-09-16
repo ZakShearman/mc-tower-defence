@@ -23,6 +23,10 @@ public class StringUtils {
         return components;
     }
 
+    public static List<Component> parseMessages(String... messages) {
+        return parseMessages(List.of(messages));
+    }
+
     public static String integerToCardinal(int level) {
         return switch (level) {
             case 1 -> "I";

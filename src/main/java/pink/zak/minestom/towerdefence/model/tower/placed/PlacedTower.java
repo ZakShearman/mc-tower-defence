@@ -19,13 +19,16 @@ import pink.zak.minestom.towerdefence.model.tower.placed.types.BomberTower;
 import pink.zak.minestom.towerdefence.model.tower.placed.types.CharityTower;
 import pink.zak.minestom.towerdefence.model.tower.placed.types.LightningTower;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 public abstract class PlacedTower<T extends TowerLevel> {
-    public static final Tag<Short> ID_TAG = Tag.Short("towerId");
+    public static final Tag<Integer> ID_TAG = Tag.Integer("towerId");
 
     protected final Instance instance;
 
     protected final Tower tower;
-    protected final short id;
+    protected final int id;
     protected final Team team;
     protected final Point basePoint;
     protected final Direction facing;
@@ -34,7 +37,7 @@ public abstract class PlacedTower<T extends TowerLevel> {
     protected T level;
     protected int levelInt;
 
-    protected PlacedTower(Instance instance, Tower tower, Material towerPlaceMaterial, short id, GameUser owner, Point baseBlock, Direction facing, int level) {
+    protected PlacedTower(Instance instance, Tower tower, Material towerPlaceMaterial, int id, GameUser owner, Point baseBlock, Direction facing, int level) {
         this.instance = instance;
 
         this.tower = tower;
@@ -51,7 +54,7 @@ public abstract class PlacedTower<T extends TowerLevel> {
         this.placeBase(towerPlaceMaterial);
     }
 
-    public static PlacedTower<?> create(TowerDefencePlugin plugin, GameHandler gameHandler, Instance instance, Tower tower, Material towerPlaceMaterial, short id, GameUser owner, Point baseBlock, Direction facing) {
+    public static PlacedTower<?> create(TowerDefencePlugin plugin, GameHandler gameHandler, Instance instance, Tower tower, Material towerPlaceMaterial, int id, GameUser owner, Point baseBlock, Direction facing) {
         TowerType towerType = tower.getType();
         return switch (towerType) {
             case BOMBER -> new BomberTower(gameHandler, instance, (AttackingTower) tower, towerPlaceMaterial, id, owner, baseBlock, facing, 1);
@@ -86,11 +89,38 @@ public abstract class PlacedTower<T extends TowerLevel> {
         }
     }
 
+    public void destroy() {
+        Set<RelativeBlock> allRelativeBlocks = this.getTower().getLevels().values().stream()
+                .filter(towerLevel -> towerLevel.getLevel() <= this.levelInt)
+                .flatMap(towerLevel -> towerLevel.getRelativeBlocks().stream())
+                .collect(Collectors.toUnmodifiableSet());
+
+        for (RelativeBlock relativeBlock : allRelativeBlocks) {
+            int x = this.basePoint.blockX() + relativeBlock.getXOffset(this.facing);
+            int z = this.basePoint.blockZ() + relativeBlock.getZOffset(this.facing);
+            int y = this.basePoint.blockY() + relativeBlock.getYOffset();
+
+            this.instance.setBlock(x, y, z, Block.AIR);
+        }
+
+    }
+
+    // returns the blocks below the tower to normal, removing their ID_TAG property.
+    // todo add support for map-specific blocks/returning to the original block. Currently hardcoded as Material.OAK_PLANKS
+    private void normaliseBase() {
+        int checkDistance = this.tower.getType().getSize().getCheckDistance();
+        for (int x = this.basePoint.blockX() - checkDistance; x <= this.basePoint.blockX() + checkDistance; x++) {
+            for (int z = this.basePoint.blockZ() - checkDistance; z <= this.basePoint.blockZ() + checkDistance; z++) {
+                this.instance.setBlock(x, this.basePoint.blockY(), z, Material.OAK_PLANKS.block());
+            }
+        }
+    }
+
     public Tower getTower() {
         return this.tower;
     }
 
-    public short getId() {
+    public int getId() {
         return this.id;
     }
 
