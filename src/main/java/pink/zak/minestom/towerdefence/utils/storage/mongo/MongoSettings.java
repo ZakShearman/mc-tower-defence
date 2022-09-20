@@ -9,7 +9,7 @@ import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 
-import java.util.Collections;
+import java.util.List;
 
 public record MongoSettings(String address,
                             int port,
@@ -34,7 +34,7 @@ public record MongoSettings(String address,
                 .uuidRepresentation(UuidRepresentation.STANDARD);
 
         ServerAddress serverAddress = new ServerAddress(this.address, this.port);
-        builder.applyToClusterSettings(clusterBuilder -> clusterBuilder.hosts(Collections.singletonList(serverAddress))); // todo is there a better way to do this?
+        builder.applyToClusterSettings(clusterBuilder -> clusterBuilder.hosts(List.of(serverAddress))); // todo is there a better way to do this?
 
         if (this.authDb != null && !this.authDb.isEmpty()) {
             MongoCredential credentials = MongoCredential.createCredential(this.username, this.authDb, this.password);

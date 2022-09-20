@@ -1,4 +1,4 @@
-package pink.zak.minestom.towerdefence.model.mob;
+package pink.zak.minestom.towerdefence.model.mob.config;
 
 import com.google.gson.JsonObject;
 import net.kyori.adventure.text.format.NamedTextColor;

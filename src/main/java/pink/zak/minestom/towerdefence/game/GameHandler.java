@@ -21,14 +21,10 @@ import pink.zak.minestom.towerdefence.game.listeners.TowerPlaceHandler;
 import pink.zak.minestom.towerdefence.game.listeners.TowerUpgradeHandler;
 import pink.zak.minestom.towerdefence.game.listeners.UserSettingsMenuHandler;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
-import pink.zak.minestom.towerdefence.model.mob.EnemyMob;
+import pink.zak.minestom.towerdefence.model.mob.config.EnemyMob;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -95,7 +91,7 @@ public class GameHandler {
 
         MinecraftServer.getGlobalEventHandler().call(new GameStartEvent(Collections.unmodifiableCollection(this.users.values())));
 
-        /*EnemyMob enemyMob = this.plugin.getMobStorage().getTower(EntityType.LLAMA);
+        /*EnemyMob enemyMob = this.plugin.getMobStorage().getEnemyMob(EntityType.LLAMA);
         EnemyMobLevel enemyMobLevel = enemyMob.level(1);
         QueuedEnemyMob queuedEnemyMob = new QueuedEnemyMob(enemyMob,enemyMobLevel);
         for (int i = 0; i<100; i++) { // desired game count

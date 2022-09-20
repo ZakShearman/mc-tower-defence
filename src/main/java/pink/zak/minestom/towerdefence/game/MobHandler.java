@@ -8,11 +8,11 @@ import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 import pink.zak.minestom.towerdefence.cache.DamageIndicatorCache;
 import pink.zak.minestom.towerdefence.enums.Team;
-import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
 import pink.zak.minestom.towerdefence.model.mob.QueuedEnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingEnemyMob;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
+import pink.zak.minestom.towerdefence.model.user.GameUser;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -58,9 +58,9 @@ public class MobHandler {
 
     private void startUpdatingAttackingTowers() {
         this.attackUpdateTask = MinecraftServer.getSchedulerManager()
-            .buildTask(this::updateAttackingTowers)
-            .repeat(10, TimeUnit.SERVER_TICK)
-            .schedule();
+                .buildTask(this::updateAttackingTowers)
+                .repeat(10, TimeUnit.SERVER_TICK)
+                .schedule();
     }
 
     private void updateAttackingTowers() {
@@ -74,10 +74,10 @@ public class MobHandler {
         distanceSortedMobs.sort(Comparator.comparingDouble(LivingEnemyMob::getTotalDistanceMoved).reversed());
 
         for (PlacedAttackingTower<?> tower : (team == Team.RED ? this.towerHandler.getRedTowers() : this.towerHandler.getBlueTowers())
-            .stream()
-            .filter(tower -> tower instanceof PlacedAttackingTower)
-            .map(tower -> (PlacedAttackingTower<?>) tower)
-            .collect(Collectors.toSet())
+                .stream()
+                .filter(tower -> tower instanceof PlacedAttackingTower)
+                .map(tower -> (PlacedAttackingTower<?>) tower)
+                .collect(Collectors.toUnmodifiableSet())
         ) {
             List<LivingEnemyMob> newTargets = new ArrayList<>();
             int i = 0;

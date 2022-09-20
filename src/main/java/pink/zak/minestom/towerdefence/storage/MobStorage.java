@@ -4,7 +4,7 @@ import net.minestom.server.entity.EntityType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
-import pink.zak.minestom.towerdefence.model.mob.EnemyMob;
+import pink.zak.minestom.towerdefence.model.mob.config.EnemyMob;
 import pink.zak.minestom.towerdefence.utils.FileUtils;
 
 import java.io.IOException;
@@ -60,7 +60,7 @@ public class MobStorage {
         return this.enemyMobs;
     }
 
-    public EnemyMob getTower(EntityType entityType) {
+    public EnemyMob getEnemyMob(EntityType entityType) {
         return this.enemyMobs.get(entityType);
     }
 }

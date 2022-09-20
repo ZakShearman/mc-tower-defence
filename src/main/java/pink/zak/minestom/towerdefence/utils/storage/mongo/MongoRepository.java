@@ -125,6 +125,8 @@ public abstract class MongoRepository<ID, T> implements MongoConverter<T>, Repos
 
     @Override
     public void deleteAll() {
-        this.collection.deleteMany(MongoUtils.EMPTY_DOCUMENT);
+        // todo switch to this.collection.drop()
+
+        this.collection.deleteMany(Filters.empty());
     }
 }

@@ -19,7 +19,7 @@ public class LightningTowerLevel extends AttackingTowerLevel {
                 .getAsJsonArray().spliterator(), true)
             .map(JsonElement::getAsJsonObject)
             .map(RelativePoint::new)
-            .collect(Collectors.toSet());
+            .collect(Collectors.toUnmodifiableSet());
 
         this.relativeCastPoint = new RelativePoint(jsonObject.get("relativeCastPoint").getAsJsonObject());
     }

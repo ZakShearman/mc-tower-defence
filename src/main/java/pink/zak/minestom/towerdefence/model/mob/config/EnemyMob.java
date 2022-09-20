@@ -1,10 +1,12 @@
-package pink.zak.minestom.towerdefence.model.mob;
+package pink.zak.minestom.towerdefence.model.mob.config;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minestom.server.entity.EntityType;
 import net.minestom.server.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import pink.zak.minestom.towerdefence.model.mob.StatusEffect;
+import pink.zak.minestom.towerdefence.model.mob.TDDamageType;
 import pink.zak.minestom.towerdefence.utils.ItemUtils;
 
 import java.util.HashMap;
@@ -38,12 +40,12 @@ public class EnemyMob {
         this.ignoredEffects = StreamSupport.stream(jsonObject.get("ignoredEffects").getAsJsonArray().spliterator(), false)
             .map(JsonElement::getAsString)
             .map(StatusEffect::valueOf)
-            .collect(Collectors.toSet());
+            .collect(Collectors.toUnmodifiableSet());
 
         this.ignoredDamageTypes = StreamSupport.stream(jsonObject.get("ignoredDamageTypes").getAsJsonArray().spliterator(), false)
             .map(JsonElement::getAsString)
             .map(TDDamageType::valueOf)
-            .collect(Collectors.toSet());
+            .collect(Collectors.toUnmodifiableSet());
 
         StreamSupport.stream(jsonObject.get("levels").getAsJsonArray().spliterator(), false)
             .map(JsonElement::getAsJsonObject)
