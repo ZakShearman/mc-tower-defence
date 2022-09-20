@@ -28,6 +28,8 @@ public abstract class PlacedTower<T extends TowerLevel> {
     protected final Instance instance;
 
     protected final Tower tower;
+    protected final Material towerBaseMaterial;
+
     protected final int id;
     protected final Team team;
     protected final Point basePoint;
@@ -37,10 +39,12 @@ public abstract class PlacedTower<T extends TowerLevel> {
     protected T level;
     protected int levelInt;
 
-    protected PlacedTower(Instance instance, Tower tower, Material towerPlaceMaterial, int id, GameUser owner, Point baseBlock, Direction facing, int level) {
+    protected PlacedTower(Instance instance, Tower tower, Material towerBaseMaterial, int id, GameUser owner, Point baseBlock, Direction facing, int level) {
         this.instance = instance;
 
         this.tower = tower;
+        this.towerBaseMaterial = towerBaseMaterial;
+
         this.id = id;
         this.team = owner.getTeam();
         this.basePoint = baseBlock;
@@ -51,17 +55,17 @@ public abstract class PlacedTower<T extends TowerLevel> {
         this.levelInt = level;
 
         this.placeLevel();
-        this.placeBase(towerPlaceMaterial);
+        this.placeBase();
     }
 
-    public static PlacedTower<?> create(TowerDefencePlugin plugin, GameHandler gameHandler, Instance instance, Tower tower, Material towerPlaceMaterial, int id, GameUser owner, Point baseBlock, Direction facing) {
+    public static PlacedTower<?> create(TowerDefencePlugin plugin, GameHandler gameHandler, Instance instance, Tower tower, Material towerBaseMaterial, int id, GameUser owner, Point baseBlock, Direction facing) {
         TowerType towerType = tower.getType();
         return switch (towerType) {
             case BOMBER ->
-                    new BomberTower(gameHandler, instance, (AttackingTower) tower, towerPlaceMaterial, id, owner, baseBlock, facing, 1);
-            case CHARITY -> new CharityTower(instance, tower, towerPlaceMaterial, id, owner, baseBlock, facing, 1);
+                    new BomberTower(gameHandler, instance, (AttackingTower) tower, towerBaseMaterial, id, owner, baseBlock, facing, 1);
+            case CHARITY -> new CharityTower(instance, tower, towerBaseMaterial, id, owner, baseBlock, facing, 1);
             case LIGHTNING ->
-                    new LightningTower(plugin, instance, (AttackingTower) tower, towerPlaceMaterial, id, owner, baseBlock, facing, 1);
+                    new LightningTower(plugin, instance, (AttackingTower) tower, towerBaseMaterial, id, owner, baseBlock, facing, 1);
             default -> throw new RuntimeException("Missing tower - " + towerType + " is not coded in but was created");
         };
     }
@@ -82,11 +86,11 @@ public abstract class PlacedTower<T extends TowerLevel> {
         }
     }
 
-    private void placeBase(Material towerPlaceMaterial) {
+    private void placeBase() {
         int checkDistance = this.tower.getType().getSize().getCheckDistance();
         for (int x = this.basePoint.blockX() - checkDistance; x <= this.basePoint.blockX() + checkDistance; x++) {
             for (int z = this.basePoint.blockZ() - checkDistance; z <= this.basePoint.blockZ() + checkDistance; z++) {
-                this.instance.setBlock(x, this.basePoint.blockY(), z, towerPlaceMaterial.block().withTag(ID_TAG, this.id));
+                this.instance.setBlock(x, this.basePoint.blockY(), z, this.towerBaseMaterial.block().withTag(ID_TAG, this.id));
             }
         }
     }
@@ -108,12 +112,11 @@ public abstract class PlacedTower<T extends TowerLevel> {
     }
 
     // returns the blocks below the tower to normal, removing their ID_TAG property.
-    // todo add support for map-specific blocks/returning to the original block. Currently hardcoded as Material.CYAN_TERRACOTTA
     private void normaliseBase() {
         int checkDistance = this.tower.getType().getSize().getCheckDistance();
         for (int x = this.basePoint.blockX() - checkDistance; x <= this.basePoint.blockX() + checkDistance; x++) {
             for (int z = this.basePoint.blockZ() - checkDistance; z <= this.basePoint.blockZ() + checkDistance; z++) {
-                this.instance.setBlock(x, this.basePoint.blockY(), z, Material.CYAN_TERRACOTTA.block());
+                this.instance.setBlock(x, this.basePoint.blockY(), z, this.towerBaseMaterial.block());
             }
         }
     }

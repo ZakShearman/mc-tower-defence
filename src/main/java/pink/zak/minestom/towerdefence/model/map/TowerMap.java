@@ -28,7 +28,7 @@ public class TowerMap {
     private List<PathCorner> redCorners;
     private List<PathCorner> blueCorners;
 
-    private Material towerPlaceMaterial;
+    private Material towerBaseMaterial;
 
     public TowerMap() {
     }
@@ -38,7 +38,7 @@ public class TowerMap {
                     Area redArea, Area blueArea,
                     Pos redMobSpawn, Pos blueMobSpawn,
                     int pathWidth, List<PathCorner> redCorners, List<PathCorner> blueCorners,
-                    Material towerPlaceMaterial) {
+                    Material towerBaseMaterial) {
         this.spectatorSpawn = spectatorSpawn;
         this.redSpawn = redSpawn;
         this.blueSpawn = blueSpawn;
@@ -51,7 +51,7 @@ public class TowerMap {
         this.pathWidth = pathWidth;
         this.redCorners = redCorners;
         this.blueCorners = blueCorners;
-        this.towerPlaceMaterial = towerPlaceMaterial;
+        this.towerBaseMaterial = towerBaseMaterial;
     }
 
     public static TowerMap fromJson(JsonObject jsonObject) {
@@ -72,7 +72,7 @@ public class TowerMap {
         List<PathCorner> redCorners = null;
         List<PathCorner> blueCorners = null;
 
-        Material towerPlaceMaterial = null;
+        Material towerBaseMaterial = null;
 
         pathWidth = jsonObject.get("pathWidth").getAsInt();
         if (jsonObject.has("spectatorSpawn"))
@@ -97,15 +97,15 @@ public class TowerMap {
             redCorners = jsonToPathCorners(jsonObject.getAsJsonArray("redCorners"));
         if (jsonObject.has("blueCorners"))
             blueCorners = jsonToPathCorners(jsonObject.getAsJsonArray("blueCorners"));
-        if (jsonObject.has("towerPlaceMaterial"))
-            towerPlaceMaterial = Material.fromNamespaceId(jsonObject.get("towerPlaceMaterial").getAsString());
+        if (jsonObject.has("towerBaseMaterial"))
+            towerBaseMaterial = Material.fromNamespaceId(jsonObject.get("towerBaseMaterial").getAsString());
 
         return new TowerMap(spectatorSpawn, redSpawn, blueSpawn,
                 redTowerHologram, blueTowerHologram,
                 redArea, blueArea,
                 redMobSpawn, blueMobSpawn,
                 pathWidth, redCorners, blueCorners,
-                towerPlaceMaterial);
+                towerBaseMaterial);
     }
 
     private static List<PathCorner> jsonToPathCorners(JsonArray jsonElements) {
@@ -228,12 +228,12 @@ public class TowerMap {
         return this.blueCorners;
     }
 
-    public Material getTowerPlaceMaterial() {
-        return this.towerPlaceMaterial;
+    public Material getTowerBaseMaterial() {
+        return this.towerBaseMaterial;
     }
 
-    public void setTowerPlaceMaterial(Material towerPlaceMaterial) {
-        this.towerPlaceMaterial = towerPlaceMaterial;
+    public void setTowerBaseMaterial(Material towerBaseMaterial) {
+        this.towerBaseMaterial = towerBaseMaterial;
     }
 
     public JsonObject toJson() {
@@ -262,8 +262,8 @@ public class TowerMap {
             jsonObject.add("redCorners", this.cornersToJsonArray(this.redCorners));
         if (this.blueCorners != null)
             jsonObject.add("blueCorners", this.cornersToJsonArray(this.blueCorners));
-        if (this.towerPlaceMaterial != null)
-            jsonObject.addProperty("towerPlaceMaterial", this.towerPlaceMaterial.name());
+        if (this.towerBaseMaterial != null)
+            jsonObject.addProperty("towerBaseMaterial", this.towerBaseMaterial.name());
 
         return jsonObject;
     }

@@ -39,12 +39,12 @@ public class Tower {
         this.maxLevel = this.levels.keySet().stream().max(Integer::compareTo).orElseThrow();
     }
 
-    public boolean isSpaceClear(Instance instance, Point baseBlock, Material towerPlaceMaterial) {
+    public boolean isSpaceClear(Instance instance, Point baseBlock, Material towerBaseMaterial) {
         int checkDistance = this.type.getSize().getCheckDistance();
         for (int x = baseBlock.blockX() - checkDistance; x <= baseBlock.blockX() + checkDistance; x++) {
             for (int z = baseBlock.blockZ() - checkDistance; z <= baseBlock.blockZ() + checkDistance; z++) {
                 Block first = instance.getBlock(x, baseBlock.blockY(), z);
-                if (first.registry().material() != towerPlaceMaterial || first.properties().containsKey("towerId"))
+                if (first.registry().material() != towerBaseMaterial || first.properties().containsKey("towerId"))
                     return false;
                 Material second = instance.getBlock(x, baseBlock.blockY() + 1, z).registry().material();
                 if (second != null && second != Material.AIR)

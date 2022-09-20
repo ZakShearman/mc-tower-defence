@@ -31,8 +31,8 @@ public class LightningTower extends PlacedAttackingTower<LightningTowerLevel> {
     private Point castPoint;
     private Set<Point> spawnPoints;
 
-    public LightningTower(TowerDefencePlugin plugin, Instance instance, AttackingTower tower, Material towerPlaceMaterial, int id, GameUser owner, Point basePoint, Direction facing, int level) {
-        super(instance, tower, towerPlaceMaterial, id, owner, basePoint, facing, level);
+    public LightningTower(TowerDefencePlugin plugin, Instance instance, AttackingTower tower, Material towerBaseMaterial, int id, GameUser owner, Point basePoint, Direction facing, int level) {
+        super(instance, tower, towerBaseMaterial, id, owner, basePoint, facing, level);
         this.userCache = plugin.getUserCache();
         this.castPoint = this.getLevel().getRelativeCastPoint().apply(basePoint);
         this.spawnPoints = this.getLevel().getRelativeSpawnPoints().stream()

@@ -47,7 +47,7 @@ public class TowerPlaceHandler {
                     if (event.getHand() != Player.Hand.MAIN || plugin.getGameState() != GameState.IN_PROGRESS)
                         return;
                     GameUser gameUser = this.gameHandler.getGameUser(player);
-                    if (gameUser == null || event.getBlock().registry().material() != this.towerMap.getTowerPlaceMaterial())
+                    if (gameUser == null || event.getBlock().registry().material() != this.towerMap.getTowerBaseMaterial())
                         return;
                     gameUser.setLastClickedTowerBlock(event.getBlockPosition().add(0.5, 0.5, 0.5));
                     if (!this.towerMap.getArea(gameUser.getTeam()).isWithin(gameUser.getLastClickedTowerBlock())) {
@@ -93,7 +93,7 @@ public class TowerPlaceHandler {
             return;
         }
         Point basePoint = gameUser.getLastClickedTowerBlock();
-        Material placeMaterial = this.towerMap.getTowerPlaceMaterial();
+        Material placeMaterial = this.towerMap.getTowerBaseMaterial();
         if (!tower.isSpaceClear(player.getInstance(), basePoint, placeMaterial)) {
             player.sendMessage(Component.text("Cannot place a tower as the area is not clear", NamedTextColor.RED));
             return;

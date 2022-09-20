@@ -22,8 +22,8 @@ public abstract class PlacedAttackingTower<T extends AttackingTowerLevel> extend
     protected List<LivingEnemyMob> targets = new ArrayList<>();
     protected Task attackTask;
 
-    protected PlacedAttackingTower(Instance instance, AttackingTower tower, Material towerPlaceMaterial, int id, GameUser owner, Point baseBlock, Direction facing, int level) {
-        super(instance, tower, towerPlaceMaterial, id, owner, baseBlock, facing, level);
+    protected PlacedAttackingTower(Instance instance, AttackingTower tower, Material towerBaseMaterial, int id, GameUser owner, Point baseBlock, Direction facing, int level) {
+        super(instance, tower, towerBaseMaterial, id, owner, baseBlock, facing, level);
         this.startFiring();
     }
 
@@ -54,6 +54,12 @@ public abstract class PlacedAttackingTower<T extends AttackingTowerLevel> extend
             this.attackTask.cancel();
             this.startFiring();
         }
+    }
+
+    @Override
+    public void destroy() {
+        this.attackTask.cancel();
+        super.destroy();
     }
 
     public List<LivingEnemyMob> getTargets() {

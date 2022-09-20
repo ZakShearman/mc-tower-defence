@@ -27,8 +27,8 @@ public class BomberTower extends PlacedAttackingTower<AttackingTowerLevel> {
     private final MobHandler mobHandler;
     private final GameUser owner;
 
-    public BomberTower(GameHandler gameHandler, Instance instance, AttackingTower tower, Material towerPlaceMaterial, int id, GameUser owner, Point baseBlock, Direction facing, int level) {
-        super(instance, tower, towerPlaceMaterial, id, owner, baseBlock, facing, level);
+    public BomberTower(GameHandler gameHandler, Instance instance, AttackingTower tower, Material towerBaseMaterial, int id, GameUser owner, Point baseBlock, Direction facing, int level) {
+        super(instance, tower, towerBaseMaterial, id, owner, baseBlock, facing, level);
         this.mobHandler = gameHandler.getMobHandler();
         this.owner = owner;
 

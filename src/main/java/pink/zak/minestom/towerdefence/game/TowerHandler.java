@@ -33,7 +33,7 @@ public class TowerHandler {
     }
 
     public void createTower(@NotNull Tower tower, @NotNull GameUser gameUser) {
-        PlacedTower<?> placedTower = PlacedTower.create(this.plugin, this.gameHandler, this.instance, tower, this.map.getTowerPlaceMaterial(), this.generateTowerId(), gameUser, gameUser.getLastClickedTowerBlock(), Direction.NORTH);
+        PlacedTower<?> placedTower = PlacedTower.create(this.plugin, this.gameHandler, this.instance, tower, this.map.getTowerBaseMaterial(), this.generateTowerId(), gameUser, gameUser.getLastClickedTowerBlock(), Direction.NORTH);
         Team team = gameUser.getTeam();
         if (team == Team.RED)
             this.redTowers.add(placedTower);
