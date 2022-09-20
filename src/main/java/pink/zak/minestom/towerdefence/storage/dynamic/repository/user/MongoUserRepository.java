@@ -27,10 +27,10 @@ public class MongoUserRepository extends MongoRepository<UUID, TDUser> {
         Document document = new Document();
 
         document.append("_id", user.getUuid())
-            .append("healthMode", user.getHealthMode().toString())
-            .append("particleThickness", user.getParticleThickness().toString())
-            .append("damageIndicators", user.isDamageIndicators())
-            .append("flySpeed", user.getFlySpeed().toString());
+                .append("healthMode", user.getHealthMode().toString())
+                .append("particleThickness", user.getParticleThickness().toString())
+                .append("damageIndicators", user.isDamageIndicators())
+                .append("flySpeed", user.getFlySpeed().toString());
 
         Document statistics = new Document();
         for (Map.Entry<TDStatistic, AtomicLong> entry : user.getStatistics().entrySet()) {

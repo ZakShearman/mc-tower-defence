@@ -55,20 +55,16 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class LivingEnemyMob extends EntityCreature {
     private static final Logger LOGGER = LoggerFactory.getLogger(LivingEnemyMob.class);
-
-    private final TDUserCache userCache;
-    private final GameHandler gameHandler;
-
     protected final TowerHandler towerHandler;
     protected final MobHandler mobHandler;
     protected final EnemyMob enemyMob;
     protected final EnemyMobLevel level;
     protected final Team team;
-
     protected final GameUser sender;
-
     protected final int positionModifier;
     protected final List<PathCorner> corners;
+    private final TDUserCache userCache;
+    private final GameHandler gameHandler;
     protected int currentCornerIndex;
     protected PathCorner currentCorner;
     protected PathCorner nextCorner;
@@ -128,8 +124,8 @@ public class LivingEnemyMob extends EntityCreature {
         TDUser tdUser = this.userCache.getUser(player.getUuid());
         String health = tdUser.getHealthMode().resolve(this);
         return Component.text(StringUtils.namespaceToName(this.entityType.name()) + " " + StringUtils.integerToCardinal(this.level.getLevel()), NamedTextColor.DARK_GREEN)
-            .append(Component.text(" | ", NamedTextColor.GREEN))
-            .append(Component.text(health, NamedTextColor.DARK_GREEN));
+                .append(Component.text(" | ", NamedTextColor.GREEN))
+                .append(Component.text(health, NamedTextColor.DARK_GREEN));
     }
 
     @Override
@@ -159,7 +155,8 @@ public class LivingEnemyMob extends EntityCreature {
             case SOUTH -> currentPos.add(0, 0, this.level.getMovementSpeed());
             case WEST -> currentPos.sub(this.level.getMovementSpeed(), 0, 0);
             case NORTH -> currentPos.sub(0, 0, this.level.getMovementSpeed());
-            default -> throw new IllegalArgumentException("Direction must be NORTH, EAST, SOUTH or WEST. Provided direction was " + this.currentCorner.direction());
+            default ->
+                    throw new IllegalArgumentException("Direction must be NORTH, EAST, SOUTH or WEST. Provided direction was " + this.currentCorner.direction());
         };
         return newPos.withView(DirectionUtils.getYaw(this.currentCorner.direction()), 0); // todo this can be removed in the majority of cases to reduce pos creations
     }
@@ -194,9 +191,9 @@ public class LivingEnemyMob extends EntityCreature {
 
     protected void startAttackingCastle() {
         this.attackTask = MinecraftServer.getSchedulerManager()
-            .buildTask(this::attackCastle)
-            .repeat(2, ChronoUnit.SECONDS)
-            .schedule();
+                .buildTask(this::attackCastle)
+                .repeat(2, ChronoUnit.SECONDS)
+                .schedule();
     }
 
     @Override
@@ -215,16 +212,6 @@ public class LivingEnemyMob extends EntityCreature {
             this.mobHandler.getBlueSideMobs().remove(this);
 
         super.kill();
-    }
-
-    @Override
-    public void setHealth(float health) {
-        this.health = health;
-        if (this.health <= 0 && !isDead)
-            this.kill();
-
-        if (this.level != null)
-            this.updateCustomName();
     }
 
     // todo all of this needs to be fixed up. Metadata/Metadata.Entry is no longer accessible
@@ -306,6 +293,16 @@ public class LivingEnemyMob extends EntityCreature {
     @Override
     public float getHealth() {
         return this.health;
+    }
+
+    @Override
+    public void setHealth(float health) {
+        this.health = health;
+        if (this.health <= 0 && !isDead)
+            this.kill();
+
+        if (this.level != null)
+            this.updateCustomName();
     }
 
     private int getRandomLengthModifier() {

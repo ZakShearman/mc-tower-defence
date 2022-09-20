@@ -101,11 +101,11 @@ public class TowerMap {
             towerPlaceMaterial = Material.fromNamespaceId(jsonObject.get("towerPlaceMaterial").getAsString());
 
         return new TowerMap(spectatorSpawn, redSpawn, blueSpawn,
-            redTowerHologram, blueTowerHologram,
-            redArea, blueArea,
-            redMobSpawn, blueMobSpawn,
-            pathWidth, redCorners, blueCorners,
-            towerPlaceMaterial);
+                redTowerHologram, blueTowerHologram,
+                redArea, blueArea,
+                redMobSpawn, blueMobSpawn,
+                pathWidth, redCorners, blueCorners,
+                towerPlaceMaterial);
     }
 
     private static List<PathCorner> jsonToPathCorners(JsonArray jsonElements) {

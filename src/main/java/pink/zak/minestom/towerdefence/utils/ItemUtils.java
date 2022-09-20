@@ -41,9 +41,9 @@ public class ItemUtils {
 
         if (jsonObject.has("lore"))
             builder.lore(StringUtils.parseMessages(
-                StreamSupport.stream(jsonObject.get("lore").getAsJsonArray().spliterator(), false)
-                    .map(JsonElement::getAsString)
-                    .collect(Collectors.toList())
+                    StreamSupport.stream(jsonObject.get("lore").getAsJsonArray().spliterator(), false)
+                            .map(JsonElement::getAsString)
+                            .collect(Collectors.toList())
             ));
 
         if (jsonObject.has("amount"))
@@ -58,9 +58,9 @@ public class ItemUtils {
 
     public static ItemStack.Builder withMaterialBuilder(ItemStack itemStack, Material material) {
         return ItemStack.builder(material)
-            .displayName(itemStack.getDisplayName())
-            .lore(itemStack.getLore())
-            .amount(itemStack.amount())
-            .meta(itemStack.meta());
+                .displayName(itemStack.getDisplayName())
+                .lore(itemStack.getLore())
+                .amount(itemStack.amount())
+                .meta(itemStack.meta());
     }
 }

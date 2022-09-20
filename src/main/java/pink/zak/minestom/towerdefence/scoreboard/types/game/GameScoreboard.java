@@ -35,14 +35,14 @@ public class GameScoreboard {
         this.sidebar.addViewer(this.gameUser.getPlayer());
 
         plugin.getEventNode()
-            .addListener(CastleDamageEvent.class, event -> {
-                if (event.team() == Team.RED)
-                    this.sidebar.updateLineContent("red-health", this.createRedHealth(event));
-                else
-                    this.sidebar.updateLineContent("blue-health", this.createBlueHealth(event));
-            })
-            .addListener(PlayerCoinChangeEvent.class, event -> this.sidebar.updateLineContent("coins", this.createCoins()))
-            .addListener(PlayerManaChangeEvent.class, event -> this.sidebar.updateLineContent("mana", this.createMana()));
+                .addListener(CastleDamageEvent.class, event -> {
+                    if (event.team() == Team.RED)
+                        this.sidebar.updateLineContent("red-health", this.createRedHealth(event));
+                    else
+                        this.sidebar.updateLineContent("blue-health", this.createBlueHealth(event));
+                })
+                .addListener(PlayerCoinChangeEvent.class, event -> this.sidebar.updateLineContent("coins", this.createCoins()))
+                .addListener(PlayerManaChangeEvent.class, event -> this.sidebar.updateLineContent("mana", this.createMana()));
     }
 
     public void destroy() {
@@ -52,12 +52,12 @@ public class GameScoreboard {
 
     private Component createCoins() {
         return Component.text("Coins: ", NamedTextColor.WHITE)
-            .append(Component.text(this.gameUser.getCoins(), NamedTextColor.YELLOW));
+                .append(Component.text(this.gameUser.getCoins(), NamedTextColor.YELLOW));
     }
 
     private Component createMana() {
         return Component.text("Mana: ", NamedTextColor.WHITE)
-            .append(Component.text(this.gameUser.getMana(), NamedTextColor.AQUA));
+                .append(Component.text(this.gameUser.getMana(), NamedTextColor.AQUA));
     }
 
     private Component createRedHealth(CastleDamageEvent event) {

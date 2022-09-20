@@ -23,12 +23,12 @@ public class DamageIndicatorCache {
 
     private List<Vec> parseVelocity(JsonObject jsonObject) {
         return StreamSupport.stream(jsonObject.get("velocity").getAsJsonArray()
-                .spliterator(), false)
-            .map(JsonElement::getAsJsonObject)
-            .map(json -> new Vec(
-                json.get("x").getAsDouble(),
-                json.get("y").getAsDouble(),
-                json.get("z").getAsDouble()
-            )).toList();
+                        .spliterator(), false)
+                .map(JsonElement::getAsJsonObject)
+                .map(json -> new Vec(
+                        json.get("x").getAsDouble(),
+                        json.get("y").getAsDouble(),
+                        json.get("z").getAsDouble()
+                )).toList();
     }
 }

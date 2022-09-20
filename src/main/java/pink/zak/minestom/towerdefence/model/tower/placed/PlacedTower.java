@@ -10,7 +10,6 @@ import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.enums.TowerType;
 import pink.zak.minestom.towerdefence.game.GameHandler;
-import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTower;
 import pink.zak.minestom.towerdefence.model.tower.config.Tower;
 import pink.zak.minestom.towerdefence.model.tower.config.TowerLevel;
@@ -18,6 +17,7 @@ import pink.zak.minestom.towerdefence.model.tower.config.relative.RelativeBlock;
 import pink.zak.minestom.towerdefence.model.tower.placed.types.BomberTower;
 import pink.zak.minestom.towerdefence.model.tower.placed.types.CharityTower;
 import pink.zak.minestom.towerdefence.model.tower.placed.types.LightningTower;
+import pink.zak.minestom.towerdefence.model.user.GameUser;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -57,9 +57,11 @@ public abstract class PlacedTower<T extends TowerLevel> {
     public static PlacedTower<?> create(TowerDefencePlugin plugin, GameHandler gameHandler, Instance instance, Tower tower, Material towerPlaceMaterial, int id, GameUser owner, Point baseBlock, Direction facing) {
         TowerType towerType = tower.getType();
         return switch (towerType) {
-            case BOMBER -> new BomberTower(gameHandler, instance, (AttackingTower) tower, towerPlaceMaterial, id, owner, baseBlock, facing, 1);
+            case BOMBER ->
+                    new BomberTower(gameHandler, instance, (AttackingTower) tower, towerPlaceMaterial, id, owner, baseBlock, facing, 1);
             case CHARITY -> new CharityTower(instance, tower, towerPlaceMaterial, id, owner, baseBlock, facing, 1);
-            case LIGHTNING -> new LightningTower(plugin, instance, (AttackingTower) tower, towerPlaceMaterial, id, owner, baseBlock, facing, 1);
+            case LIGHTNING ->
+                    new LightningTower(plugin, instance, (AttackingTower) tower, towerPlaceMaterial, id, owner, baseBlock, facing, 1);
             default -> throw new RuntimeException("Missing tower - " + towerType + " is not coded in but was created");
         };
     }

@@ -26,9 +26,9 @@ public class Tower {
         this.name = jsonObject.get("name").getAsString();
 
         Set<? extends TowerLevel> levels = StreamSupport.stream(jsonObject.get("levels").getAsJsonArray().spliterator(), true)
-            .map(JsonElement::getAsJsonObject)
-            .map(o -> this.type.getTowerLevelFunction().apply(o))
-            .collect(Collectors.toUnmodifiableSet());
+                .map(JsonElement::getAsJsonObject)
+                .map(o -> this.type.getTowerLevelFunction().apply(o))
+                .collect(Collectors.toUnmodifiableSet());
         Map<Integer, TowerLevel> levelMap = new HashMap<>();
 
         for (TowerLevel level : levels)

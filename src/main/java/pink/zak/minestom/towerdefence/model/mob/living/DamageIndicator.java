@@ -20,8 +20,8 @@ import java.time.Duration;
 public class DamageIndicator extends Entity {
     private static final float OFFSET_Y = -0.5f;
     private static final Cache<Double, Component> NAME_CACHE = Caffeine.newBuilder()
-        .expireAfterAccess(Duration.of(30, TimeUnit.SECOND))
-        .build();
+            .expireAfterAccess(Duration.of(30, TimeUnit.SECOND))
+            .build();
 
     private final Vec[] vectors = MobHandler.DAMAGE_INDICATOR_CACHE.getPreCalculatedVelocity();
 
@@ -46,6 +46,11 @@ public class DamageIndicator extends Entity {
         this.position = spawnPosition;
     }
 
+    public static void create(TDUserCache userCache, LivingEnemyMob enemyMob, double damage) {
+        Component text = NAME_CACHE.get(damage, key -> Component.text(damage, NamedTextColor.RED));
+        new DamageIndicator(userCache, enemyMob.getInstance(), enemyMob.getPosition().add(0, enemyMob.getEntityType().height(), 0), text);
+    }
+
     @Override
     public void tick(long time) {
         super.tick(time);
@@ -58,10 +63,5 @@ public class DamageIndicator extends Entity {
         this.velocity = this.vectors[aliveTicks];
 
         this.position = this.position.add(this.velocity.div(20));
-    }
-
-    public static void create(TDUserCache userCache, LivingEnemyMob enemyMob, double damage) {
-        Component text = NAME_CACHE.get(damage, key -> Component.text(damage, NamedTextColor.RED));
-        new DamageIndicator(userCache, enemyMob.getInstance(), enemyMob.getPosition().add(0, enemyMob.getEntityType().height(), 0), text);
     }
 }

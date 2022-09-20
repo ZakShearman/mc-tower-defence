@@ -18,17 +18,13 @@ import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.game.MobHandler;
-import pink.zak.minestom.towerdefence.model.user.GameUser;
+import pink.zak.minestom.towerdefence.model.mob.QueuedEnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.config.EnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.config.EnemyMobLevel;
-import pink.zak.minestom.towerdefence.model.mob.QueuedEnemyMob;
+import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.storage.MobStorage;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class MobMenuHandler {
     private static final @NotNull Component SEND_TITLE = Component.text("Send Troops", NamedTextColor.DARK_GRAY);
@@ -50,12 +46,12 @@ public class MobMenuHandler {
         this.mobHandler = gameHandler.getMobHandler();
         this.mobStorage = plugin.getMobStorage();
         this.chestItem = ItemStack.builder(Material.CHEST)
-            .displayName(Component.text("Send Troops", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
-            .build();
+                .displayName(Component.text("Send Troops", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
+                .build();
 
         this.upgradeItem = ItemStack.builder(Material.ENDER_PEARL)
-            .displayName(Component.text("Upgrade Troops", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
-            .build();
+                .displayName(Component.text("Upgrade Troops", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
+                .build();
 
         this.startSendGuiListener();
         this.startUpgradeGuiListener();
@@ -117,9 +113,9 @@ public class MobMenuHandler {
 
         double size = gameUser.getQueuedMobsUnitSize(); // unit size applied
         return ItemStack.builder(Material.PAPER)
-            .displayName(Component.text("Current Queue (" + size + "/" + gameUser.getMaxQueueSize() + ")", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
-            .lore(loreLines)
-            .build();
+                .displayName(Component.text("Current Queue (" + size + "/" + gameUser.getMaxQueueSize() + ")", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
+                .lore(loreLines)
+                .build();
     }
 
     private void startSendGuiListener() {
@@ -136,9 +132,9 @@ public class MobMenuHandler {
             }
 
             Optional<EnemyMob> optionalClickedMob = this.mobStorage.getEnemyMobs().values()
-                .stream()
-                .filter(enemyMob -> enemyMob.getSlot() == slot)
-                .findFirst();
+                    .stream()
+                    .filter(enemyMob -> enemyMob.getSlot() == slot)
+                    .findFirst();
             optionalClickedMob.ifPresent(clickedMob -> {
                 GameUser gameUser = this.gameHandler.getGameUser(event.getPlayer());
 
@@ -165,9 +161,9 @@ public class MobMenuHandler {
             int slot = event.getSlot();
 
             Optional<EnemyMob> optionalClickedMob = this.mobStorage.getEnemyMobs().values()
-                .stream()
-                .filter(enemyMob -> enemyMob.getSlot() == slot)
-                .findFirst();
+                    .stream()
+                    .filter(enemyMob -> enemyMob.getSlot() == slot)
+                    .findFirst();
             if (optionalClickedMob.isEmpty())
                 return;
 
@@ -185,8 +181,8 @@ public class MobMenuHandler {
                 return;
 
             Optional<EnemyMob> optionalMob = MOB_UPGRADE_TITLES.entrySet().stream()
-                .filter(entry -> entry.getValue() == inventory.getTitle())
-                .map(Map.Entry::getKey).findFirst();
+                    .filter(entry -> entry.getValue() == inventory.getTitle())
+                    .map(Map.Entry::getKey).findFirst();
             if (optionalMob.isEmpty())
                 return;
             EnemyMob mob = optionalMob.get();
@@ -253,18 +249,18 @@ public class MobMenuHandler {
 
     private void startQueueProcessor() {
         MinecraftServer.getSchedulerManager().buildTask(() -> {
-                for (GameUser gameUser : this.gameHandler.getUsers().values()) {
-                    QueuedEnemyMob enemyMob = gameUser.getQueuedMobs().poll();
-                    if (enemyMob != null) {
-                        this.mobHandler.spawnMob(enemyMob, gameUser);
-                        Inventory inventory = gameUser.getPlayer().getOpenInventory();
-                        if (inventory != null && inventory.getTitle() == SEND_TITLE)
-                            inventory.setItemStack(35, this.createQueueItem(gameUser));
+                    for (GameUser gameUser : this.gameHandler.getUsers().values()) {
+                        QueuedEnemyMob enemyMob = gameUser.getQueuedMobs().poll();
+                        if (enemyMob != null) {
+                            this.mobHandler.spawnMob(enemyMob, gameUser);
+                            Inventory inventory = gameUser.getPlayer().getOpenInventory();
+                            if (inventory != null && inventory.getTitle() == SEND_TITLE)
+                                inventory.setItemStack(35, this.createQueueItem(gameUser));
+                        }
                     }
-                }
-            })
-            .repeat(1, TimeUnit.SECOND)
-            .schedule();
+                })
+                .repeat(1, TimeUnit.SECOND)
+                .schedule();
     }
 
     public @NotNull ItemStack getChestItem() {

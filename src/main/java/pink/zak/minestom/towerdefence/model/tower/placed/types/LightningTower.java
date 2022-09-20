@@ -36,8 +36,8 @@ public class LightningTower extends PlacedAttackingTower<LightningTowerLevel> {
         this.userCache = plugin.getUserCache();
         this.castPoint = this.getLevel().getRelativeCastPoint().apply(basePoint);
         this.spawnPoints = this.getLevel().getRelativeSpawnPoints().stream()
-            .map(castPoint -> castPoint.apply(basePoint))
-            .collect(Collectors.toUnmodifiableSet());
+                .map(castPoint -> castPoint.apply(basePoint))
+                .collect(Collectors.toUnmodifiableSet());
     }
 
     @Override
@@ -93,10 +93,10 @@ public class LightningTower extends PlacedAttackingTower<LightningTowerLevel> {
 
         for (double i = 0; i <= length; i += thickness.getSpacing()) {
             packets.add(
-                ParticleCreator.createParticlePacket(Particle.SOUL_FIRE_FLAME,
-                    x, y, z,
-                    0, 0, 0,
-                    1)
+                    ParticleCreator.createParticlePacket(Particle.SOUL_FIRE_FLAME,
+                            x, y, z,
+                            0, 0, 0,
+                            1)
             );
 
             x += xIncrement;
@@ -112,7 +112,7 @@ public class LightningTower extends PlacedAttackingTower<LightningTowerLevel> {
 
         this.castPoint = this.getLevel().getRelativeCastPoint().apply(this.basePoint);
         this.spawnPoints = this.getLevel().getRelativeSpawnPoints().stream()
-            .map(castPoint -> castPoint.apply(this.basePoint))
-            .collect(Collectors.toUnmodifiableSet());
+                .map(castPoint -> castPoint.apply(this.basePoint))
+                .collect(Collectors.toUnmodifiableSet());
     }
 }

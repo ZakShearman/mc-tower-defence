@@ -28,9 +28,9 @@ public class RelativeBlock {
 
     public static Set<RelativeBlock> setFromJson(JsonArray jsonArray) {
         return StreamSupport.stream(jsonArray.spliterator(), true)
-            .map(JsonElement::getAsJsonObject)
-            .map(RelativeBlock::new)
-            .collect(Collectors.toUnmodifiableSet());
+                .map(JsonElement::getAsJsonObject)
+                .map(RelativeBlock::new)
+                .collect(Collectors.toUnmodifiableSet());
     }
 
     private static Block getBlockFromJson(JsonObject jsonObject) {
@@ -59,7 +59,8 @@ public class RelativeBlock {
             case EAST -> -this.zOffset;
             case SOUTH -> -this.xOffset;
             case WEST -> this.zOffset;
-            default -> throw new IllegalArgumentException("Direction must be NORTH, EAST, SOUTH or WEST. Provided direction was " + facing);
+            default ->
+                    throw new IllegalArgumentException("Direction must be NORTH, EAST, SOUTH or WEST. Provided direction was " + facing);
         };
     }
 
@@ -69,7 +70,8 @@ public class RelativeBlock {
             case EAST -> this.xOffset;
             case SOUTH -> -this.zOffset;
             case WEST -> -this.xOffset;
-            default -> throw new IllegalArgumentException("Direction must be NORTH, EAST, SOUTH or WEST. Provided direction was " + facing);
+            default ->
+                    throw new IllegalArgumentException("Direction must be NORTH, EAST, SOUTH or WEST. Provided direction was " + facing);
         };
     }
 

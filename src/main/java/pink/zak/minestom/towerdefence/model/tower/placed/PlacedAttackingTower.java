@@ -29,12 +29,12 @@ public abstract class PlacedAttackingTower<T extends AttackingTowerLevel> extend
 
     private void startFiring() {
         this.attackTask = MinecraftServer.getSchedulerManager()
-            .buildTask(() -> {
-                if (!this.targets.isEmpty())
-                    this.fire();
-            })
-            .repeat(this.level.getFireDelay(), TimeUnit.CLIENT_TICK)
-            .schedule();
+                .buildTask(() -> {
+                    if (!this.targets.isEmpty())
+                        this.fire();
+                })
+                .repeat(this.level.getFireDelay(), TimeUnit.CLIENT_TICK)
+                .schedule();
     }
 
     protected abstract void fire();

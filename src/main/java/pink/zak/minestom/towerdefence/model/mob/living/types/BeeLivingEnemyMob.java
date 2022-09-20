@@ -4,10 +4,10 @@ import net.minestom.server.entity.metadata.animal.BeeMeta;
 import net.minestom.server.instance.Instance;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 import pink.zak.minestom.towerdefence.game.GameHandler;
-import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
 import pink.zak.minestom.towerdefence.model.mob.config.EnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingEnemyMob;
+import pink.zak.minestom.towerdefence.model.user.GameUser;
 
 public class BeeLivingEnemyMob extends LivingEnemyMob {
     private final BeeMeta beeMeta;

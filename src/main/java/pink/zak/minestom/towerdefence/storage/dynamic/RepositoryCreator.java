@@ -10,9 +10,9 @@ import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 import pink.zak.minestom.towerdefence.model.user.TDUser;
 import pink.zak.minestom.towerdefence.storage.dynamic.repository.user.JsonUserRepository;
 import pink.zak.minestom.towerdefence.storage.dynamic.repository.user.MongoUserRepository;
-import pink.zak.minestom.towerdefence.utils.storage.mongo.MongoSettings;
 import pink.zak.minestom.towerdefence.utils.FileUtils;
 import pink.zak.minestom.towerdefence.utils.storage.Repository;
+import pink.zak.minestom.towerdefence.utils.storage.mongo.MongoSettings;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -60,7 +60,8 @@ public class RepositoryCreator {
                 this.mongoDatabase = mongoSettings.database();
                 this.mongoClient = MongoClients.create(mongoSettings.asClientSettings());
             }
-            default -> {}
+            default -> {
+            }
         }
         return true;
     }

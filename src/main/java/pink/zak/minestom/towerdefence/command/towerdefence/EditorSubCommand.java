@@ -42,57 +42,57 @@ public class EditorSubCommand implements CommandExecutor {
         this.map = this.mapStorage.getMap();
 
         ItemStack.Builder wandBuilder = ItemStack.builder(Material.DIAMOND_HOE)
-            .lore(
-                Component.text("Left-click for pos1", NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false),
-                Component.text("Right-click for pos2", NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false),
-                Component.empty(),
-                Component.text("Right-click the air to change team", NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false)
-            );
+                .lore(
+                        Component.text("Left-click for pos1", NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false),
+                        Component.text("Right-click for pos2", NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false),
+                        Component.empty(),
+                        Component.text("Right-click the air to change team", NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false)
+                );
 
         this.redTeamWandItem = wandBuilder
-            .displayName(Component.text("Team area wand item", NamedTextColor.RED)
-                .decoration(TextDecoration.ITALIC, false)).build();
+                .displayName(Component.text("Team area wand item", NamedTextColor.RED)
+                        .decoration(TextDecoration.ITALIC, false)).build();
 
         this.blueTeamWandItem = wandBuilder
-            .displayName(Component.text("Team area wand item", NamedTextColor.BLUE)
-                .decoration(TextDecoration.ITALIC, false)).build();
+                .displayName(Component.text("Team area wand item", NamedTextColor.BLUE)
+                        .decoration(TextDecoration.ITALIC, false)).build();
 
         plugin.getEventNode()
-            .addListener(PlayerStartDiggingEvent.class, event -> { // left click block
-                Player player = event.getPlayer();
-                EditorInfo editorInfo = this.editors.get(player);
-                if (editorInfo == null || !player.getItemInMainHand().getMaterial().equals(Material.DIAMOND_HOE))
-                    return;
-                Point clickPoint = event.getBlockPosition();
+                .addListener(PlayerStartDiggingEvent.class, event -> { // left click block
+                    Player player = event.getPlayer();
+                    EditorInfo editorInfo = this.editors.get(player);
+                    if (editorInfo == null || !player.getItemInMainHand().getMaterial().equals(Material.DIAMOND_HOE))
+                        return;
+                    Point clickPoint = event.getBlockPosition();
 
-                editorInfo.setPos1(clickPoint);
-                player.sendMessage(Component.text("Set pos1", NamedTextColor.GREEN));
-                this.tryCreateArea(player, editorInfo);
-            })
-            .addListener(PlayerBlockInteractEvent.class, event -> { // right click block
-                Player player = event.getPlayer();
-                EditorInfo editorInfo = this.editors.get(player);
-                if (event.getHand() != Player.Hand.MAIN || editorInfo == null || !player.getItemInMainHand().getMaterial().equals(Material.DIAMOND_HOE))
-                    return;
-                Point clickPoint = event.getBlockPosition();
+                    editorInfo.setPos1(clickPoint);
+                    player.sendMessage(Component.text("Set pos1", NamedTextColor.GREEN));
+                    this.tryCreateArea(player, editorInfo);
+                })
+                .addListener(PlayerBlockInteractEvent.class, event -> { // right click block
+                    Player player = event.getPlayer();
+                    EditorInfo editorInfo = this.editors.get(player);
+                    if (event.getHand() != Player.Hand.MAIN || editorInfo == null || !player.getItemInMainHand().getMaterial().equals(Material.DIAMOND_HOE))
+                        return;
+                    Point clickPoint = event.getBlockPosition();
 
-                editorInfo.setPos2(clickPoint);
-                player.sendMessage(Component.text("Set pos2", NamedTextColor.GREEN));
-                this.tryCreateArea(player, editorInfo);
-            })
-            .addListener(PlayerUseItemEvent.class, event -> { // right click air
-                Player player = event.getPlayer();
-                if (event.getHand() != Player.Hand.MAIN || !ViewPath.isClear(event.getPlayer()) || !player.getItemInMainHand().getMaterial().equals(Material.DIAMOND_HOE)) {
-                    return;
-                }
-                EditorInfo editorInfo = this.editors.get(player);
-                if (editorInfo != null) {
-                    Team newTeam = editorInfo.getTeam() == Team.RED ? Team.BLUE : Team.RED;
-                    editorInfo.setTeam(newTeam);
-                    player.getInventory().setItemStack(8, newTeam == Team.RED ? this.redTeamWandItem : this.blueTeamWandItem);
-                    player.sendMessage(Component.text("Changed team to " + newTeam.name().toLowerCase(Locale.ROOT), newTeam.getColor()));
-                }
-            });
+                    editorInfo.setPos2(clickPoint);
+                    player.sendMessage(Component.text("Set pos2", NamedTextColor.GREEN));
+                    this.tryCreateArea(player, editorInfo);
+                })
+                .addListener(PlayerUseItemEvent.class, event -> { // right click air
+                    Player player = event.getPlayer();
+                    if (event.getHand() != Player.Hand.MAIN || !ViewPath.isClear(event.getPlayer()) || !player.getItemInMainHand().getMaterial().equals(Material.DIAMOND_HOE)) {
+                        return;
+                    }
+                    EditorInfo editorInfo = this.editors.get(player);
+                    if (editorInfo != null) {
+                        Team newTeam = editorInfo.getTeam() == Team.RED ? Team.BLUE : Team.RED;
+                        editorInfo.setTeam(newTeam);
+                        player.getInventory().setItemStack(8, newTeam == Team.RED ? this.redTeamWandItem : this.blueTeamWandItem);
+                        player.sendMessage(Component.text("Changed team to " + newTeam.name().toLowerCase(Locale.ROOT), newTeam.getColor()));
+                    }
+                });
     }
 
     @Override

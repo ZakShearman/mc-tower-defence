@@ -34,7 +34,8 @@ public class DirectionUtils {
             case EAST -> -90;
             case SOUTH -> 0;
             case WEST -> 90;
-            default -> throw new IllegalArgumentException("Direction must be NORTH, EAST, SOUTH or WEST. Provided direction was " + direction);
+            default ->
+                    throw new IllegalArgumentException("Direction must be NORTH, EAST, SOUTH or WEST. Provided direction was " + direction);
         };
     }
 }

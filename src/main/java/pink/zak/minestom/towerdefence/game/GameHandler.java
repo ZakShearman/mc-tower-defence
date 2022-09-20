@@ -39,13 +39,10 @@ public class GameHandler {
     private final @NotNull UserSettingsMenuHandler userSettingsMenuHandler;
 
     private final Set<EnemyMob> defaultEnemyMobs;
-
-    private @NotNull Map<Player, GameUser> users = new HashMap<>();
-    private Instance instance;
-
     private final @NotNull AtomicInteger redTowerHealth = new AtomicInteger(1000);
     private final @NotNull AtomicInteger blueTowerHealth = new AtomicInteger(1000);
-
+    private @NotNull Map<Player, GameUser> users = new HashMap<>();
+    private Instance instance;
     private Hologram redTowerHologram;
     private Hologram blueTowerHologram;
 
@@ -60,9 +57,9 @@ public class GameHandler {
         this.userSettingsMenuHandler = new UserSettingsMenuHandler(plugin);
 
         this.defaultEnemyMobs = plugin.getMobStorage().getEnemyMobs().values()
-            .stream()
-            .filter(mob -> mob.getLevel(1).getManaCost() <= 0)
-            .collect(Collectors.toUnmodifiableSet());
+                .stream()
+                .filter(mob -> mob.getLevel(1).getManaCost() <= 0)
+                .collect(Collectors.toUnmodifiableSet());
 
         new TowerPlaceHandler(plugin, this);
         new TowerUpgradeHandler(plugin, this);

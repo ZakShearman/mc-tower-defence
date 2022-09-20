@@ -38,19 +38,19 @@ public class EnemyMob {
         this.unownedItem = jsonObject.has("unownedItem") ? ItemUtils.fromJsonObject(jsonObject.get("unownedItem").getAsJsonObject()) : null;
 
         this.ignoredEffects = StreamSupport.stream(jsonObject.get("ignoredEffects").getAsJsonArray().spliterator(), false)
-            .map(JsonElement::getAsString)
-            .map(StatusEffect::valueOf)
-            .collect(Collectors.toUnmodifiableSet());
+                .map(JsonElement::getAsString)
+                .map(StatusEffect::valueOf)
+                .collect(Collectors.toUnmodifiableSet());
 
         this.ignoredDamageTypes = StreamSupport.stream(jsonObject.get("ignoredDamageTypes").getAsJsonArray().spliterator(), false)
-            .map(JsonElement::getAsString)
-            .map(TDDamageType::valueOf)
-            .collect(Collectors.toUnmodifiableSet());
+                .map(JsonElement::getAsString)
+                .map(TDDamageType::valueOf)
+                .collect(Collectors.toUnmodifiableSet());
 
         StreamSupport.stream(jsonObject.get("levels").getAsJsonArray().spliterator(), false)
-            .map(JsonElement::getAsJsonObject)
-            .map(EnemyMobLevel::new)
-            .forEach(mobLevel -> this.levels.put(mobLevel.getLevel(), mobLevel));
+                .map(JsonElement::getAsJsonObject)
+                .map(EnemyMobLevel::new)
+                .forEach(mobLevel -> this.levels.put(mobLevel.getLevel(), mobLevel));
     }
 
     public @NotNull EntityType getEntityType() {

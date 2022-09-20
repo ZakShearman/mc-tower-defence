@@ -34,10 +34,10 @@ public class MobStorage {
     private void load() {
         try (Stream<Path> stream = Files.list(this.folderPath)) {
             stream
-                .map(Path::toFile)
-                .map(FileUtils::fileToJsonObject)
-                .map(EnemyMob::new)
-                .forEach(enemyMob -> this.enemyMobs.put(enemyMob.getEntityType(), enemyMob));
+                    .map(Path::toFile)
+                    .map(FileUtils::fileToJsonObject)
+                    .map(EnemyMob::new)
+                    .forEach(enemyMob -> this.enemyMobs.put(enemyMob.getEntityType(), enemyMob));
         } catch (IOException ex) {
             LOGGER.error("Error whilst loading EnemyMobs: ", ex);
         }
@@ -45,9 +45,9 @@ public class MobStorage {
 
     private void createDefaultFiles() {
         Set<String> enemyMobNames = Set.of(
-            "zombie.json",
-            "skeleton.json",
-            "llama.json"
+                "zombie.json",
+                "skeleton.json",
+                "llama.json"
         );
 
         for (String towerName : enemyMobNames) {

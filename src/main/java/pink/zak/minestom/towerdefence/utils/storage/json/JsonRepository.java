@@ -73,11 +73,11 @@ public abstract class JsonRepository<ID, T> implements Repository<ID, T>, IdStri
     public @NotNull Iterable<T> findAll() {
         try (Stream<Path> stream = Files.list(this.basePath)) {
             return stream
-                .map(Path::toFile)
-                .filter(file -> file.getName().endsWith(".json"))
-                .map(this::parseFile)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toUnmodifiableSet());
+                    .map(Path::toFile)
+                    .filter(file -> file.getName().endsWith(".json"))
+                    .map(this::parseFile)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toUnmodifiableSet());
         } catch (IOException ex) {
             LOGGER.error("Error listing files: ", ex);
             return (Iterable<T>) Collections.emptyIterator();
@@ -93,9 +93,9 @@ public abstract class JsonRepository<ID, T> implements Repository<ID, T>, IdStri
     public long count() {
         try (Stream<Path> stream = Files.list(this.basePath)) {
             return stream
-                .map(Path::toFile)
-                .filter(file -> file.getName().endsWith(".json"))
-                .count();
+                    .map(Path::toFile)
+                    .filter(file -> file.getName().endsWith(".json"))
+                    .count();
         } catch (IOException ex) {
             LOGGER.error("Error counting files: ", ex);
             return -1;
@@ -131,9 +131,9 @@ public abstract class JsonRepository<ID, T> implements Repository<ID, T>, IdStri
     public void deleteAll() {
         try (Stream<Path> stream = Files.list(this.basePath)) {
             stream
-                .map(Path::toFile)
-                .filter(file -> file.getName().endsWith(".json"))
-                .forEach(File::delete);
+                    .map(Path::toFile)
+                    .filter(file -> file.getName().endsWith(".json"))
+                    .forEach(File::delete);
         } catch (IOException ex) {
             LOGGER.error("Error deleting files: ", ex);
         }

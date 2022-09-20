@@ -45,37 +45,37 @@ public class SpawnItemHandler {
         this.updateTeamItem(Team.BLUE);
 
         this.plugin.getEventNode()
-            .addListener(PlayerSpawnEvent.class, event -> {
-                Player player = event.getPlayer();
-                player.getInventory().setItemStack(0, this.redItem);
-                player.getInventory().setItemStack(1, this.blueItem);
+                .addListener(PlayerSpawnEvent.class, event -> {
+                    Player player = event.getPlayer();
+                    player.getInventory().setItemStack(0, this.redItem);
+                    player.getInventory().setItemStack(1, this.blueItem);
 
-                this.redPlayers.add(player);
+                    this.redPlayers.add(player);
 
-                if (this.plugin.getGameState() != GameState.IN_PROGRESS) {
-                    MinecraftServer.getSchedulerManager().buildTask(() -> {
-                        this.plugin.getGameHandler().start(player.getInstance());
-                    }).delay(1, TimeUnit.SECOND).schedule();
-                }
-            })
-            .addListener(PlayerDisconnectEvent.class, event -> {
-                Player player = event.getPlayer();
-                if (this.redPlayers.remove(player))
-                    this.globalEventHandler.call(new PlayerTeamSwitchEvent(null, Team.RED, player));
-                else if (this.bluePlayers.remove(player))
-                    this.globalEventHandler.call(new PlayerTeamSwitchEvent(null, Team.BLUE, player));
-            })
-            .addListener(InventoryPreClickEvent.class, event -> {
-                if (event.getClickType() == ClickType.START_DOUBLE_CLICK)
-                    return;
-                Material clickedMaterial = event.getClickedItem().getMaterial();
+                    if (this.plugin.getGameState() != GameState.IN_PROGRESS) {
+                        MinecraftServer.getSchedulerManager().buildTask(() -> {
+                            this.plugin.getGameHandler().start(player.getInstance());
+                        }).delay(1, TimeUnit.SECOND).schedule();
+                    }
+                })
+                .addListener(PlayerDisconnectEvent.class, event -> {
+                    Player player = event.getPlayer();
+                    if (this.redPlayers.remove(player))
+                        this.globalEventHandler.call(new PlayerTeamSwitchEvent(null, Team.RED, player));
+                    else if (this.bluePlayers.remove(player))
+                        this.globalEventHandler.call(new PlayerTeamSwitchEvent(null, Team.BLUE, player));
+                })
+                .addListener(InventoryPreClickEvent.class, event -> {
+                    if (event.getClickType() == ClickType.START_DOUBLE_CLICK)
+                        return;
+                    Material clickedMaterial = event.getClickedItem().getMaterial();
 
-                Audiences.players().sendMessage(Component.text("Slot: " + event.getSlot() + " material " + clickedMaterial.name() + " click type " + event.getClickType()));
-                if (this.plugin.getGameState() == GameState.LOBBY)
-                    event.setCancelled(true);
-            })
-            .addListener(PlayerUseItemEvent.class, event -> this.handleTeamItemClick(event.getPlayer(), event.getItemStack()))
-            .addListener(PlayerUseItemOnBlockEvent.class, event -> this.handleTeamItemClick(event.getPlayer(), event.getItemStack()));
+                    Audiences.players().sendMessage(Component.text("Slot: " + event.getSlot() + " material " + clickedMaterial.name() + " click type " + event.getClickType()));
+                    if (this.plugin.getGameState() == GameState.LOBBY)
+                        event.setCancelled(true);
+                })
+                .addListener(PlayerUseItemEvent.class, event -> this.handleTeamItemClick(event.getPlayer(), event.getItemStack()))
+                .addListener(PlayerUseItemOnBlockEvent.class, event -> this.handleTeamItemClick(event.getPlayer(), event.getItemStack()));
     }
 
     private void handleTeamItemClick(Player player, ItemStack itemStack) {
@@ -131,8 +131,8 @@ public class SpawnItemHandler {
         }
 
         ItemStack teamItem = ItemStack.builder(material)
-            .displayName(Component.text(name, team.getColor()).decoration(TextDecoration.ITALIC, false))
-            .build();
+                .displayName(Component.text(name, team.getColor()).decoration(TextDecoration.ITALIC, false))
+                .build();
 
         if (team == Team.BLUE)
             this.blueItem = teamItem;

@@ -46,10 +46,10 @@ public class TowerStorage {
 
     private void createDefaultFiles() {
         Set<String> towerNames = Arrays.stream(TowerType.values())
-            .map(TowerType::name)
-            .map(String::toLowerCase)
-            .map(name -> name.concat(".json"))
-            .collect(Collectors.toUnmodifiableSet());
+                .map(TowerType::name)
+                .map(String::toLowerCase)
+                .map(name -> name.concat(".json"))
+                .collect(Collectors.toUnmodifiableSet());
 
         for (String towerName : towerNames) {
             LOGGER.info("Saving packaged resource towers {}", towerName);

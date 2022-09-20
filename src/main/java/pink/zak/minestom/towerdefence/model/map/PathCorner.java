@@ -3,7 +3,8 @@ package pink.zak.minestom.towerdefence.model.map;
 import com.google.gson.JsonObject;
 import net.minestom.server.utils.Direction;
 
-public record PathCorner(Direction direction, int distance, boolean modify, boolean multiplyModifier, boolean negativeModifier) {
+public record PathCorner(Direction direction, int distance, boolean modify, boolean multiplyModifier,
+                         boolean negativeModifier) {
 
     public static PathCorner fromJson(JsonObject jsonObject) {
         Direction direction = Direction.valueOf(jsonObject.get("direction").getAsString());

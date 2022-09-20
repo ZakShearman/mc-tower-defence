@@ -32,11 +32,11 @@ public class TowerLevel {
         this.ownedUpgradeItem = ownedUpgradeItem.withDisplayName(ownedUpgradeItem.getDisplayName().color(NamedTextColor.GREEN));
 
         this.buyUpgradeItem = ItemUtils.withMaterialBuilder(this.ownedUpgradeItem, Material.ORANGE_STAINED_GLASS_PANE)
-            .displayName(this.ownedUpgradeItem.getDisplayName().color(NamedTextColor.GOLD))
-            .build();
+                .displayName(this.ownedUpgradeItem.getDisplayName().color(NamedTextColor.GOLD))
+                .build();
         this.cantAffordUpgradeItem = ItemUtils.withMaterialBuilder(this.ownedUpgradeItem, Material.RED_STAINED_GLASS_PANE)
-            .displayName(this.ownedUpgradeItem.getDisplayName().color(NamedTextColor.RED))
-            .build();
+                .displayName(this.ownedUpgradeItem.getDisplayName().color(NamedTextColor.RED))
+                .build();
 
         this.relativeBlocks = RelativeBlock.setFromJson(jsonObject.get("relativeBlocks").getAsJsonArray());
     }

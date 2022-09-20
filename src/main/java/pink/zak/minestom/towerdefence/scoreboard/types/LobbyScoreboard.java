@@ -32,41 +32,41 @@ public class LobbyScoreboard implements TowerScoreboard {
         this.sidebar.createLine(new Sidebar.ScoreboardLine("website", TowerScoreboard.DOMAIN, 0));
 
         plugin.getEventNode().addListener(PlayerSpawnEvent.class, event -> {
-                this.sidebar.updateLineContent("online-players", this.createOnlinePlayers());
-                this.sidebar.addViewer(event.getPlayer());
-            })
-            .addListener(PlayerDisconnectEvent.class, event -> this.sidebar.updateLineContent("online-players", this.createOnlinePlayers()))
-            .addListener(PlayerTeamSwitchEvent.class, event -> {
-                Team updateTeam;
-                if (event.newTeam() == null)
-                    updateTeam = event.oldTeam();
-                else if (event.oldTeam() == null)
-                    updateTeam = event.newTeam();
-                else {
-                    this.sidebar.updateLineContent("red-players", this.createRedPlayers());
-                    this.sidebar.updateLineContent("blue-players", this.createBluePlayers());
-                    return;
-                }
-                if (updateTeam == Team.RED)
-                    this.sidebar.updateLineContent("red-players", this.createRedPlayers());
-                else
-                    this.sidebar.updateLineContent("blue-players", this.createBluePlayers());
-            });
+                    this.sidebar.updateLineContent("online-players", this.createOnlinePlayers());
+                    this.sidebar.addViewer(event.getPlayer());
+                })
+                .addListener(PlayerDisconnectEvent.class, event -> this.sidebar.updateLineContent("online-players", this.createOnlinePlayers()))
+                .addListener(PlayerTeamSwitchEvent.class, event -> {
+                    Team updateTeam;
+                    if (event.newTeam() == null)
+                        updateTeam = event.oldTeam();
+                    else if (event.oldTeam() == null)
+                        updateTeam = event.newTeam();
+                    else {
+                        this.sidebar.updateLineContent("red-players", this.createRedPlayers());
+                        this.sidebar.updateLineContent("blue-players", this.createBluePlayers());
+                        return;
+                    }
+                    if (updateTeam == Team.RED)
+                        this.sidebar.updateLineContent("red-players", this.createRedPlayers());
+                    else
+                        this.sidebar.updateLineContent("blue-players", this.createBluePlayers());
+                });
     }
 
     private Component createOnlinePlayers() {
         return Component.text("Online Players: ", NamedTextColor.WHITE)
-            .append(Component.text(MinecraftServer.getConnectionManager().getOnlinePlayers().size(), NamedTextColor.YELLOW));
+                .append(Component.text(MinecraftServer.getConnectionManager().getOnlinePlayers().size(), NamedTextColor.YELLOW));
     }
 
     private Component createRedPlayers() {
         return Component.text("Red Players: ", NamedTextColor.WHITE)
-            .append(Component.text(this.redPlayers.size() + "/6", NamedTextColor.RED));
+                .append(Component.text(this.redPlayers.size() + "/6", NamedTextColor.RED));
     }
 
     private Component createBluePlayers() {
         return Component.text("Blue Players: ", NamedTextColor.WHITE)
-            .append(Component.text(this.bluePlayers.size() + "/6", NamedTextColor.BLUE));
+                .append(Component.text(this.bluePlayers.size() + "/6", NamedTextColor.BLUE));
     }
 
     @Override

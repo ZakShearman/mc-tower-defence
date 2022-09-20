@@ -28,8 +28,8 @@ public class UserSettingsMenuHandler {
     private static final @NotNull Component MENU_TITLE = Component.text("User Settings", NamedTextColor.DARK_GRAY);
 
     private static final @NotNull ItemStack SETTINGS_ITEM = ItemStack.builder(Material.COMMAND_BLOCK_MINECART)
-        .displayName(Component.text("User Settings", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
-        .build();
+            .displayName(Component.text("User Settings", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
+            .build();
 
     private final @NotNull TowerDefencePlugin plugin;
     private final @NotNull TDUserCache userCache;
@@ -37,6 +37,10 @@ public class UserSettingsMenuHandler {
     public UserSettingsMenuHandler(@NotNull TowerDefencePlugin plugin) {
         this.plugin = plugin;
         this.userCache = plugin.getUserCache();
+    }
+
+    public static @NotNull ItemStack getMenuItem() {
+        return SETTINGS_ITEM;
     }
 
     public void onGameStart() {
@@ -93,12 +97,12 @@ public class UserSettingsMenuHandler {
 
     private @NotNull ItemStack createDamageIndicatorsItem(@NotNull TDUser user) {
         return ItemStack.builder(Material.OAK_SIGN)
-            .displayName(Component.text("Show Damage Indicators", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false))
-            .lore(
-                Component.text("> enabled", user.isDamageIndicators() ? NamedTextColor.GREEN : NamedTextColor.RED).decoration(TextDecoration.ITALIC, false),
-                Component.text("> disabled", !user.isDamageIndicators() ? NamedTextColor.GREEN : NamedTextColor.RED).decoration(TextDecoration.ITALIC, false)
-            )
-            .build();
+                .displayName(Component.text("Show Damage Indicators", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false))
+                .lore(
+                        Component.text("> enabled", user.isDamageIndicators() ? NamedTextColor.GREEN : NamedTextColor.RED).decoration(TextDecoration.ITALIC, false),
+                        Component.text("> disabled", !user.isDamageIndicators() ? NamedTextColor.GREEN : NamedTextColor.RED).decoration(TextDecoration.ITALIC, false)
+                )
+                .build();
     }
 
     private @NotNull ItemStack createHealthDisplayItem(@NotNull TDUser user) {
@@ -107,13 +111,13 @@ public class UserSettingsMenuHandler {
 
         for (HealthDisplayMode loopHealthMode : HealthDisplayMode.values())
             lore.add(Component.text("> " + loopHealthMode.toString().toLowerCase().replace('_', ' '),
-                loopHealthMode == healthMode ? NamedTextColor.GREEN : NamedTextColor.RED).decoration(TextDecoration.ITALIC, false));
+                    loopHealthMode == healthMode ? NamedTextColor.GREEN : NamedTextColor.RED).decoration(TextDecoration.ITALIC, false));
 
         return ItemStack.builder(Material.POTION)
-            .meta(PotionMeta.class, builder -> builder.color(new Color(NamedTextColor.RED)))
-            .displayName(Component.text("Health Display Mode", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false))
-            .lore(lore)
-            .build();
+                .meta(PotionMeta.class, builder -> builder.color(new Color(NamedTextColor.RED)))
+                .displayName(Component.text("Health Display Mode", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false))
+                .lore(lore)
+                .build();
     }
 
     private @NotNull ItemStack createFlySpeedItem(@NotNull TDUser user) {
@@ -122,13 +126,13 @@ public class UserSettingsMenuHandler {
 
         for (FlySpeed loopFlySpeed : FlySpeed.values())
             lore.add(Component.text("> " + loopFlySpeed.toString().toLowerCase().replace('_', ' ') + " (" + loopFlySpeed.getSpeed() + ")",
-                loopFlySpeed == flySpeed ? NamedTextColor.GREEN : NamedTextColor.RED).decoration(TextDecoration.ITALIC, false));
+                    loopFlySpeed == flySpeed ? NamedTextColor.GREEN : NamedTextColor.RED).decoration(TextDecoration.ITALIC, false));
 
 
         return ItemStack.builder(Material.FEATHER)
-            .displayName(Component.text("Fly Speed", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false))
-            .lore(lore)
-            .build();
+                .displayName(Component.text("Fly Speed", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false))
+                .lore(lore)
+                .build();
     }
 
     private @NotNull ItemStack createThinParticlesItem(@NotNull TDUser user) {
@@ -137,15 +141,11 @@ public class UserSettingsMenuHandler {
         ParticleThickness thickness = user.getParticleThickness();
         for (ParticleThickness loopThickness : ParticleThickness.values())
             lore.add(Component.text("> " + loopThickness.toString().toLowerCase().replace('_', ' ') + " (" + loopThickness.getSpacing() + ")",
-                loopThickness == thickness ? NamedTextColor.GREEN : NamedTextColor.RED).decoration(TextDecoration.ITALIC, false));
+                    loopThickness == thickness ? NamedTextColor.GREEN : NamedTextColor.RED).decoration(TextDecoration.ITALIC, false));
 
         return ItemStack.builder(Material.REDSTONE)
-            .displayName(Component.text("Thin Particles", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false))
-            .lore(lore)
-            .build();
-    }
-
-    public static @NotNull ItemStack getMenuItem() {
-        return SETTINGS_ITEM;
+                .displayName(Component.text("Thin Particles", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false))
+                .lore(lore)
+                .build();
     }
 }

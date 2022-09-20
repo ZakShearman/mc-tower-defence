@@ -16,10 +16,10 @@ public class LightningTowerLevel extends AttackingTowerLevel {
     public LightningTowerLevel(JsonObject jsonObject) {
         super(jsonObject);
         this.relativeSpawnPoints = StreamSupport.stream(jsonObject.get("relativeSpawnPoints")
-                .getAsJsonArray().spliterator(), true)
-            .map(JsonElement::getAsJsonObject)
-            .map(RelativePoint::new)
-            .collect(Collectors.toUnmodifiableSet());
+                        .getAsJsonArray().spliterator(), true)
+                .map(JsonElement::getAsJsonObject)
+                .map(RelativePoint::new)
+                .collect(Collectors.toUnmodifiableSet());
 
         this.relativeCastPoint = new RelativePoint(jsonObject.get("relativeCastPoint").getAsJsonObject());
     }

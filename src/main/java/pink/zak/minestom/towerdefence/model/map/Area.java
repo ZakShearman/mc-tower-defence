@@ -66,7 +66,7 @@ public class Area {
 
     public boolean isWithin(Point pos) {
         return pos.x() < this.maxX && pos.x() > this.minX
-            && pos.z() < this.maxZ && pos.z() > this.minZ;
+                && pos.z() < this.maxZ && pos.z() > this.minZ;
     }
 
     public JsonObject toJsonObject() {

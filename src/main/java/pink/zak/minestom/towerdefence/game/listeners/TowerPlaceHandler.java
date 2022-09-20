@@ -17,10 +17,10 @@ import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.enums.TowerType;
 import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.game.TowerHandler;
-import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
 import pink.zak.minestom.towerdefence.model.tower.config.Tower;
 import pink.zak.minestom.towerdefence.model.tower.config.TowerLevel;
+import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.storage.TowerStorage;
 
 public class TowerPlaceHandler {
@@ -42,20 +42,20 @@ public class TowerPlaceHandler {
         this.towerMap = plugin.getMapStorage().getMap();
 
         plugin.getEventNode()
-            .addListener(PlayerBlockInteractEvent.class, event -> {
-                Player player = event.getPlayer();
-                if (event.getHand() != Player.Hand.MAIN || plugin.getGameState() != GameState.IN_PROGRESS)
-                    return;
-                GameUser gameUser = this.gameHandler.getGameUser(player);
-                if (gameUser == null || event.getBlock().registry().material() != this.towerMap.getTowerPlaceMaterial())
-                    return;
-                gameUser.setLastClickedTowerBlock(event.getBlockPosition().add(0.5, 0.5, 0.5));
-                if (!this.towerMap.getArea(gameUser.getTeam()).isWithin(gameUser.getLastClickedTowerBlock())) {
-                    player.sendMessage(Component.text("You can only place towers on your side of the map (" + gameUser.getTeam().name().toLowerCase() + ").", NamedTextColor.RED));
-                    return;
-                }
-                player.openInventory(this.towerPlaceGui);
-            });
+                .addListener(PlayerBlockInteractEvent.class, event -> {
+                    Player player = event.getPlayer();
+                    if (event.getHand() != Player.Hand.MAIN || plugin.getGameState() != GameState.IN_PROGRESS)
+                        return;
+                    GameUser gameUser = this.gameHandler.getGameUser(player);
+                    if (gameUser == null || event.getBlock().registry().material() != this.towerMap.getTowerPlaceMaterial())
+                        return;
+                    gameUser.setLastClickedTowerBlock(event.getBlockPosition().add(0.5, 0.5, 0.5));
+                    if (!this.towerMap.getArea(gameUser.getTeam()).isWithin(gameUser.getLastClickedTowerBlock())) {
+                        player.sendMessage(Component.text("You can only place towers on your side of the map (" + gameUser.getTeam().name().toLowerCase() + ").", NamedTextColor.RED));
+                        return;
+                    }
+                    player.openInventory(this.towerPlaceGui);
+                });
     }
 
     private @NotNull Inventory createTowerPlaceGui() {

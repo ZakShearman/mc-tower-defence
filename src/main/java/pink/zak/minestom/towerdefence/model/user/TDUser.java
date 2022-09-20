@@ -17,10 +17,8 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class TDUser {
     private final @NotNull UUID uuid;
-    private WeakReference<Player> player;
-
     private final @NotNull Map<TDStatistic, AtomicLong> statistics;
-
+    private WeakReference<Player> player;
     private @NotNull HealthDisplayMode healthMode = HealthDisplayMode.PERCENTAGE;
     private @NotNull ParticleThickness particleThickness = ParticleThickness.STANDARD;
     private @NotNull FlySpeed flySpeed = FlySpeed.NORMAL;

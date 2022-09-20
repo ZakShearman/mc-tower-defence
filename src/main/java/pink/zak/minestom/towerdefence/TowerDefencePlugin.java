@@ -59,15 +59,20 @@ public class TowerDefencePlugin extends Extension {
 
     private GameHandler gameHandler;
 
+    @NotNull
+    public static EventNode<Event> getCallingEventNode() {
+        return EVENT_NODE;
+    }
+
     @Override
     public void initialize() {
         EVENT_NODE = this.getEventNode();
         this.startBenchmark();
 
         DimensionType dimensionType = DimensionType.builder(NamespaceID.from("towerdefence:main"))
-            .fixedTime(1000L)
-            .skylightEnabled(true)
-            .build();
+                .fixedTime(1000L)
+                .skylightEnabled(true)
+                .build();
         MinecraftServer.getDimensionTypeManager().addDimension(dimensionType);
         Instance instance = MinecraftServer.getInstanceManager().createInstanceContainer(dimensionType);
 
@@ -100,11 +105,6 @@ public class TowerDefencePlugin extends Extension {
     @Override
     public void terminate() {
         this.userCache.invalidateAll();
-    }
-
-    @NotNull
-    public static EventNode<Event> getCallingEventNode() {
-        return EVENT_NODE;
     }
 
     public Set<Player> getRedPlayers() {
@@ -168,8 +168,8 @@ public class TowerDefencePlugin extends Extension {
 
             TickMonitor tickMonitor = lastTick.get();
             final Component header = Component.text("RAM USAGE: " + ramUsage + " MB")
-                .append(Component.newline())
-                .append(Component.text("TICK TIME: " + MathUtils.round(tickMonitor.getTickTime(), 2) + "ms"));
+                    .append(Component.newline())
+                    .append(Component.text("TICK TIME: " + MathUtils.round(tickMonitor.getTickTime(), 2) + "ms"));
             final Component footer = benchmarkManager.getCpuMonitoringMessage();
             Audiences.players().sendPlayerListHeaderAndFooter(header, footer);
         }).repeat(10, TimeUnit.SERVER_TICK).schedule();
