@@ -49,15 +49,6 @@ public class FileUtils {
         return null;
     }
 
-    public static JsonObject resourceToJsonObject(Extension extension, String resource) {
-        try (InputStream inputStream = extension.getPackagedResource(resource)) {
-            return JsonParser.parseReader(new InputStreamReader(inputStream)).getAsJsonObject();
-        } catch (IOException ex) {
-            LOGGER.error("Error reading resource as Json: ", ex);
-        }
-        return null;
-    }
-
     public static JsonObject fileToJsonObject(File file) {
         try {
             return JsonParser.parseReader(new FileReader(file)).getAsJsonObject();

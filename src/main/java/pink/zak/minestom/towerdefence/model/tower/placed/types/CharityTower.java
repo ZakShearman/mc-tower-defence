@@ -11,7 +11,7 @@ import pink.zak.minestom.towerdefence.model.user.GameUser;
 
 public class CharityTower extends PlacedTower<CharityTowerLevel> {
 
-    public CharityTower(Instance instance, Tower tower, Material towerBaseMaterial, int id, GameUser owner, Point baseBlock, Direction facing, int level) {
-        super(instance, tower, towerBaseMaterial, id, owner, baseBlock, facing, level);
+    public CharityTower(Instance instance, Tower tower, Material towerBaseMaterial, int id, GameUser owner, Point basePoint, Direction facing, int level) {
+        super(instance, tower, towerBaseMaterial, id, owner, basePoint, facing, level);
     }
 }

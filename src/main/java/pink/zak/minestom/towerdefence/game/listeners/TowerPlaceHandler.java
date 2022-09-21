@@ -14,7 +14,6 @@ import net.minestom.server.item.Material;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.TowerDefencePlugin;
 import pink.zak.minestom.towerdefence.enums.GameState;
-import pink.zak.minestom.towerdefence.enums.TowerType;
 import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.game.TowerHandler;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
@@ -63,7 +62,7 @@ public class TowerPlaceHandler {
         Inventory inventory = new Inventory(InventoryType.CHEST_3_ROW, title);
 
         for (Tower tower : this.towerStorage.getTowers().values()) {
-            inventory.setItemStack(tower.getType().getGuiSlot(), tower.getBaseMenuItem());
+            inventory.setItemStack(tower.getGuiSlot(), tower.getBaseMenuItem());
         }
 
         this.plugin.getEventNode().addListener(InventoryPreClickEvent.class, event -> {
@@ -71,9 +70,9 @@ public class TowerPlaceHandler {
             if (event.getClickType() == ClickType.START_DOUBLE_CLICK || checkInventory == null || checkInventory.getTitle() != title)
                 return;
             event.setCancelled(true);
-            TowerType clickedTower = TowerType.valueOf(event.getSlot());
-            if (clickedTower == null)
-                return;
+            Tower clickedTower = this.towerStorage.getTower(event.getSlot());
+            if (clickedTower == null) return;
+
             Player player = event.getPlayer();
             player.closeInventory();
             this.requestTowerBuy(player, clickedTower);
@@ -82,9 +81,8 @@ public class TowerPlaceHandler {
         return inventory;
     }
 
-    private void requestTowerBuy(@NotNull Player player, @NotNull TowerType towerType) {
+    private void requestTowerBuy(@NotNull Player player, @NotNull Tower tower) {
         GameUser gameUser = this.gameHandler.getGameUser(player);
-        Tower tower = this.towerStorage.getTower(towerType);
         TowerLevel level = tower.getLevel(1);
 
         int coins = gameUser.getCoins();

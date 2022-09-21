@@ -4,11 +4,13 @@ import com.google.gson.JsonObject;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.model.mob.TDDamageType;
 
+import java.util.Map;
+
 public class AttackingTower extends Tower {
     private final @NotNull TDDamageType damageType;
 
-    public AttackingTower(JsonObject jsonObject) {
-        super(jsonObject);
+    public AttackingTower(JsonObject jsonObject, Map<Integer, JsonObject> levelJson) {
+        super(jsonObject, levelJson);
         this.damageType = TDDamageType.valueOf(jsonObject.get("damageType").getAsString());
     }
 

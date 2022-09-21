@@ -14,6 +14,8 @@ import pink.zak.minestom.towerdefence.model.tower.config.AttackingTower;
 import pink.zak.minestom.towerdefence.model.tower.config.Tower;
 import pink.zak.minestom.towerdefence.model.tower.config.TowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.config.relative.RelativeBlock;
+import pink.zak.minestom.towerdefence.model.tower.config.relative.RelativePoint;
+import pink.zak.minestom.towerdefence.model.tower.placed.types.BlizzardTower;
 import pink.zak.minestom.towerdefence.model.tower.placed.types.BomberTower;
 import pink.zak.minestom.towerdefence.model.tower.placed.types.CharityTower;
 import pink.zak.minestom.towerdefence.model.tower.placed.types.LightningTower;
@@ -39,7 +41,7 @@ public abstract class PlacedTower<T extends TowerLevel> {
     protected T level;
     protected int levelInt;
 
-    protected PlacedTower(Instance instance, Tower tower, Material towerBaseMaterial, int id, GameUser owner, Point baseBlock, Direction facing, int level) {
+    protected PlacedTower(Instance instance, Tower tower, Material towerBaseMaterial, int id, GameUser owner, Point basePoint, Direction facing, int level) {
         this.instance = instance;
 
         this.tower = tower;
@@ -47,7 +49,7 @@ public abstract class PlacedTower<T extends TowerLevel> {
 
         this.id = id;
         this.team = owner.getTeam();
-        this.basePoint = baseBlock;
+        this.basePoint = basePoint;
         this.facing = facing;
         this.owner = owner;
 
@@ -58,20 +60,24 @@ public abstract class PlacedTower<T extends TowerLevel> {
         this.placeBase();
     }
 
-    public static PlacedTower<?> create(TowerDefencePlugin plugin, GameHandler gameHandler, Instance instance, Tower tower, Material towerBaseMaterial, int id, GameUser owner, Point baseBlock, Direction facing) {
+    public static PlacedTower<?> create(TowerDefencePlugin plugin, GameHandler gameHandler, Instance instance, Tower tower, Material towerBaseMaterial, int id, GameUser owner, Point basePoint, Direction facing) {
         TowerType towerType = tower.getType();
         return switch (towerType) {
             case BOMBER ->
-                    new BomberTower(gameHandler, instance, (AttackingTower) tower, towerBaseMaterial, id, owner, baseBlock, facing, 1);
-            case CHARITY -> new CharityTower(instance, tower, towerBaseMaterial, id, owner, baseBlock, facing, 1);
+                    new BomberTower(gameHandler, instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
+            case BLIZZARD -> new BlizzardTower(instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1, gameHandler.getMap());
+            case CHARITY -> new CharityTower(instance, tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
             case LIGHTNING ->
-                    new LightningTower(plugin, instance, (AttackingTower) tower, towerBaseMaterial, id, owner, baseBlock, facing, 1);
-            default -> throw new RuntimeException("Missing tower - " + towerType + " is not coded in but was created");
+                    new LightningTower(plugin, instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
+            default -> throw new RuntimeException("Missing tower - %s is not coded in but was created".formatted(towerType));
         };
     }
 
     public void upgrade() {
+        T oldLevel = this.level;
         this.level = (T) this.tower.getLevel(++this.levelInt);
+
+        this.removeUnUpdatedBlocks(oldLevel, this.level);
         this.placeLevel();
     }
 
@@ -91,6 +97,20 @@ public abstract class PlacedTower<T extends TowerLevel> {
         for (int x = this.basePoint.blockX() - checkDistance; x <= this.basePoint.blockX() + checkDistance; x++) {
             for (int z = this.basePoint.blockZ() - checkDistance; z <= this.basePoint.blockZ() + checkDistance; z++) {
                 this.instance.setBlock(x, this.basePoint.blockY(), z, this.towerBaseMaterial.block().withTag(ID_TAG, this.id));
+            }
+        }
+    }
+
+    private void removeUnUpdatedBlocks(TowerLevel oldLevel, TowerLevel newLevel) {
+        Set<RelativePoint> oldPoints = oldLevel.getRelativeBlocks().stream().map(RelativeBlock::getRelativePoint).collect(Collectors.toSet());
+        Set<RelativePoint> newPoints = newLevel.getRelativeBlocks().stream().map(RelativeBlock::getRelativePoint).collect(Collectors.toSet());
+
+        for (RelativePoint relativePoint : oldPoints) {
+            if (!newPoints.contains(relativePoint)) {
+                int x = (int) (this.basePoint.blockX() + relativePoint.getXOffset());
+                int z = (int) (this.basePoint.blockZ() + relativePoint.getZOffset());
+                int y = (int) (this.basePoint.blockY() + relativePoint.getYOffset());
+                this.instance.setBlock(x, y, z, Block.AIR);
             }
         }
     }

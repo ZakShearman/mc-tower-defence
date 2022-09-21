@@ -14,15 +14,15 @@ import java.util.stream.StreamSupport;
 
 public class RelativeBlock {
     // treated as if the tower is facing north
-    private final int xOffset;
-    private final int zOffset;
-    private final int yOffset;
+    private final RelativePoint relativePoint;
     private final Block block;
 
     public RelativeBlock(JsonObject jsonObject) {
-        this.xOffset = jsonObject.get("xOffset").getAsInt();
-        this.yOffset = jsonObject.get("yOffset").getAsInt();
-        this.zOffset = jsonObject.get("zOffset").getAsInt();
+        int xOffset = jsonObject.get("xOffset").getAsInt();
+        int yOffset = jsonObject.get("yOffset").getAsInt();
+        int zOffset = jsonObject.get("zOffset").getAsInt();
+        this.relativePoint = new RelativePoint(xOffset, yOffset, zOffset);
+
         this.block = getBlockFromJson(jsonObject.get("block").getAsJsonObject());
     }
 
@@ -37,46 +37,52 @@ public class RelativeBlock {
         String id = jsonObject.get("material").getAsString();
         Map<String, String> properties;
         if (jsonObject.has("properties"))
-            properties = getPropertiesFromJson(jsonObject.get("properties").getAsJsonObject());
+            properties = getPropertiesFromJson(jsonObject.get("properties").getAsJsonArray());
         else
             return Block.fromNamespaceId(id);
 
         return Block.fromNamespaceId(id).withProperties(properties);
     }
 
-    private static Map<String, String> getPropertiesFromJson(JsonObject jsonObject) {
+    private static Map<String, String> getPropertiesFromJson(JsonArray jsonArray) {
         Map<String, String> map = new HashMap<>();
 
-        for (String key : jsonObject.keySet())
-            map.put(key, jsonObject.get(key).getAsString());
+        for (JsonElement jsonElement : jsonArray) {
+            String[] split = jsonElement.getAsString().split("=");
+            map.put(split[0], split[1]);
+        }
 
         return map;
     }
 
+    public RelativePoint getRelativePoint() {
+        return this.relativePoint;
+    }
+
     public int getXOffset(Direction facing) {
-        return switch (facing) {
-            case NORTH -> this.xOffset;
-            case EAST -> -this.zOffset;
-            case SOUTH -> -this.xOffset;
-            case WEST -> this.zOffset;
+        return (int) switch (facing) {
+            case NORTH -> this.relativePoint.getXOffset();
+            case EAST -> -this.relativePoint.getZOffset();
+            case SOUTH -> -this.relativePoint.getXOffset();
+            case WEST -> this.relativePoint.getZOffset();
             default ->
                     throw new IllegalArgumentException("Direction must be NORTH, EAST, SOUTH or WEST. Provided direction was " + facing);
         };
     }
 
     public int getZOffset(Direction facing) {
-        return switch (facing) {
-            case NORTH -> this.zOffset;
-            case EAST -> this.xOffset;
-            case SOUTH -> -this.zOffset;
-            case WEST -> -this.xOffset;
+        return (int) switch (facing) {
+            case NORTH -> this.relativePoint.getZOffset();
+            case EAST -> this.relativePoint.getXOffset();
+            case SOUTH -> -this.relativePoint.getZOffset();
+            case WEST -> -this.relativePoint.getXOffset();
             default ->
                     throw new IllegalArgumentException("Direction must be NORTH, EAST, SOUTH or WEST. Provided direction was " + facing);
         };
     }
 
     public int getYOffset() {
-        return this.yOffset;
+        return (int) this.relativePoint.getYOffset();
     }
 
     public Block getBlock() {

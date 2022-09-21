@@ -184,6 +184,10 @@ public class TowerMap {
         return this.pathWidth;
     }
 
+    public Pos getMobSpawn(Team team) {
+        return team == Team.RED ? this.redMobSpawn : this.blueMobSpawn;
+    }
+
     public Pos getRedMobSpawn() {
         return this.redMobSpawn;
     }

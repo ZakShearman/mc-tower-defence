@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import net.minestom.server.entity.EntityType;
 import net.minestom.server.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import pink.zak.minestom.towerdefence.model.mob.StatusEffect;
+import pink.zak.minestom.towerdefence.model.mob.statuseffect.StatusEffectType;
 import pink.zak.minestom.towerdefence.model.mob.TDDamageType;
 import pink.zak.minestom.towerdefence.utils.ItemUtils;
 
@@ -23,7 +23,7 @@ public class EnemyMob {
     private final boolean flying;
     private final double unitCost;
     private final @NotNull ItemStack unownedItem;
-    private final @NotNull Set<StatusEffect> ignoredEffects;
+    private final @NotNull Set<StatusEffectType> ignoredEffects;
     private final @NotNull Set<TDDamageType> ignoredDamageTypes;
     private final @NotNull Map<Integer, EnemyMobLevel> levels = new HashMap<>();
 
@@ -39,7 +39,7 @@ public class EnemyMob {
 
         this.ignoredEffects = StreamSupport.stream(jsonObject.get("ignoredEffects").getAsJsonArray().spliterator(), false)
                 .map(JsonElement::getAsString)
-                .map(StatusEffect::valueOf)
+                .map(StatusEffectType::valueOf)
                 .collect(Collectors.toUnmodifiableSet());
 
         this.ignoredDamageTypes = StreamSupport.stream(jsonObject.get("ignoredDamageTypes").getAsJsonArray().spliterator(), false)
@@ -81,12 +81,12 @@ public class EnemyMob {
         return this.unownedItem;
     }
 
-    public @NotNull Set<StatusEffect> getIgnoredEffects() {
+    public @NotNull Set<StatusEffectType> getIgnoredEffects() {
         return this.ignoredEffects;
     }
 
-    public boolean isEffectIgnored(StatusEffect statusEffect) {
-        return this.ignoredEffects.contains(statusEffect);
+    public boolean isEffectIgnored(StatusEffectType statusEffectType) {
+        return this.ignoredEffects.contains(statusEffectType);
     }
 
     public @NotNull Set<TDDamageType> getIgnoredDamageTypes() {

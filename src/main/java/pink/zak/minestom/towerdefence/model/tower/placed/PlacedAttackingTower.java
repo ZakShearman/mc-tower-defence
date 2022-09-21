@@ -22,8 +22,8 @@ public abstract class PlacedAttackingTower<T extends AttackingTowerLevel> extend
     protected List<LivingEnemyMob> targets = new ArrayList<>();
     protected Task attackTask;
 
-    protected PlacedAttackingTower(Instance instance, AttackingTower tower, Material towerBaseMaterial, int id, GameUser owner, Point baseBlock, Direction facing, int level) {
-        super(instance, tower, towerBaseMaterial, id, owner, baseBlock, facing, level);
+    protected PlacedAttackingTower(Instance instance, AttackingTower tower, Material towerBaseMaterial, int id, GameUser owner, Point basePoint, Direction facing, int level) {
+        super(instance, tower, towerBaseMaterial, id, owner, basePoint, facing, level);
         this.startFiring();
     }
 

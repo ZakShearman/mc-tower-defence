@@ -2,6 +2,7 @@ package pink.zak.minestom.towerdefence.model.mob.living;
 
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.attribute.Attribute;
@@ -37,6 +38,9 @@ import pink.zak.minestom.towerdefence.model.mob.config.EnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.config.EnemyMobLevel;
 import pink.zak.minestom.towerdefence.model.mob.living.types.BeeLivingEnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.living.types.LlamaLivingEnemyMob;
+import pink.zak.minestom.towerdefence.model.mob.modifier.SpeedModifier;
+import pink.zak.minestom.towerdefence.model.mob.statuseffect.StatusEffect;
+import pink.zak.minestom.towerdefence.model.mob.statuseffect.StatusEffectType;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedTower;
 import pink.zak.minestom.towerdefence.model.tower.placed.types.CharityTower;
@@ -46,10 +50,7 @@ import pink.zak.minestom.towerdefence.utils.DirectionUtils;
 import pink.zak.minestom.towerdefence.utils.StringUtils;
 
 import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -61,10 +62,16 @@ public class LivingEnemyMob extends EntityCreature {
     protected final EnemyMobLevel level;
     protected final Team team;
     protected final GameUser sender;
+
     protected final int positionModifier;
     protected final List<PathCorner> corners;
+
+    protected final Map<StatusEffectType, StatusEffect> statusEffects = Collections.synchronizedMap(new EnumMap<>(StatusEffectType.class));
+    protected final Set<SpeedModifier> speedModifiers = Collections.synchronizedSet(new HashSet<>());
+
     private final TDUserCache userCache;
     private final GameHandler gameHandler;
+
     protected int currentCornerIndex;
     protected PathCorner currentCorner;
     protected PathCorner nextCorner;
@@ -120,16 +127,28 @@ public class LivingEnemyMob extends EntityCreature {
             return new LivingEnemyMob(plugin, gameHandler, enemyMob, instance, map, gameUser, level);
     }
 
-    private Component createNameComponent(Player player) {
+    private Component createNameComponent(@NotNull Player player) {
         TDUser tdUser = this.userCache.getUser(player.getUuid());
         String health = tdUser.getHealthMode().resolve(this);
-        return Component.text(StringUtils.namespaceToName(this.entityType.name()) + " " + StringUtils.integerToCardinal(this.level.getLevel()), NamedTextColor.DARK_GREEN)
+        TextComponent.Builder builder = Component.text()
+                .append(Component.text(StringUtils.namespaceToName(this.entityType.name()) + " " + StringUtils.integerToCardinal(this.level.getLevel()), NamedTextColor.DARK_GREEN))
                 .append(Component.text(" | ", NamedTextColor.GREEN))
                 .append(Component.text(health, NamedTextColor.DARK_GREEN));
+
+        // add status effect icons
+        if (!this.statusEffects.isEmpty()) {
+            builder.append(Component.text(" | ", NamedTextColor.GREEN));
+            for (StatusEffect<?> statusEffect : this.statusEffects.values())
+                builder.append(statusEffect.getIcon());
+        }
+
+        return builder.build();
     }
 
     @Override
     public void tick(long time) {
+        for (StatusEffect statusEffect : this.statusEffects.values()) statusEffect.tick(time);
+
         if (this.attackTask == null && !this.isDead())
             this.updatePos();
         super.tick(time);
@@ -150,13 +169,17 @@ public class LivingEnemyMob extends EntityCreature {
 
     private Pos modifyPosition() {
         Pos currentPos = this.getPosition();
+
+        double movement = this.level.getMovementSpeed();
+        for (SpeedModifier speedModifier : this.speedModifiers) movement *= speedModifier.getModifier();
+
         Pos newPos = switch (this.currentCorner.direction()) {
-            case EAST -> currentPos.add(this.level.getMovementSpeed(), 0, 0);
-            case SOUTH -> currentPos.add(0, 0, this.level.getMovementSpeed());
-            case WEST -> currentPos.sub(this.level.getMovementSpeed(), 0, 0);
-            case NORTH -> currentPos.sub(0, 0, this.level.getMovementSpeed());
+            case EAST -> currentPos.add(movement, 0, 0);
+            case SOUTH -> currentPos.add(0, 0, movement);
+            case WEST -> currentPos.sub(movement, 0, 0);
+            case NORTH -> currentPos.sub(0, 0, movement);
             default ->
-                    throw new IllegalArgumentException("Direction must be NORTH, EAST, SOUTH or WEST. Provided direction was " + this.currentCorner.direction());
+                    throw new IllegalArgumentException("Direction must be NORTH, EAST, SOUTH or WEST. Provided direction was %s".formatted(this.currentCorner.direction()));
         };
         return newPos.withView(DirectionUtils.getYaw(this.currentCorner.direction()), 0); // todo this can be removed in the majority of cases to reduce pos creations
     }
@@ -285,6 +308,26 @@ public class LivingEnemyMob extends EntityCreature {
         return damageDealt;
     }
 
+    public void applyStatusEffect(@NotNull StatusEffect statusEffect) {
+        if (this.enemyMob.isEffectIgnored(statusEffect.type()))
+            throw new IllegalArgumentException("Tried to apply ignored status effect to mob (%s)".formatted(statusEffect.type()));
+
+        this.statusEffects.put(statusEffect.type(), statusEffect);
+        this.updateCustomName();
+    }
+
+    public void removeStatusEffect(@NotNull StatusEffectType type) {
+        if (this.statusEffects.remove(type) != null) this.updateCustomName();
+    }
+
+    public void applySpeedModifier(@NotNull SpeedModifier speedModifier) {
+        this.speedModifiers.add(speedModifier);
+    }
+
+    public void removeSpeedModifier(@NotNull SpeedModifier speedModifier) {
+        this.speedModifiers.remove(speedModifier);
+    }
+
     @Override
     public boolean damage(@NotNull DamageType type, float value) {
         return false;
@@ -316,16 +359,12 @@ public class LivingEnemyMob extends EntityCreature {
         return value;
     }
 
+    public Map<StatusEffectType, StatusEffect> getStatusEffects() {
+        return this.statusEffects;
+    }
+
     public double getTotalDistanceMoved() {
         return this.totalDistanceMoved;
-    }
-
-    public Set<PlacedAttackingTower<?>> getAttackingTowers() {
-        return this.attackingTowers;
-    }
-
-    public void setAttackingTowers(Set<PlacedAttackingTower<?>> attackingTowers) {
-        this.attackingTowers = attackingTowers;
     }
 
     public EnemyMob getEnemyMob() {
