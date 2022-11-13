@@ -1,0 +1,26 @@
+{
+  "level": 3,
+  "cost": 1,
+  "fireDelay": 15,
+  "damage": 1,
+  "range": 20,
+  "menuItem": {
+    "material": "minecraft:tnt",
+    "displayName": "<yellow>Bomber Lvl. III",
+    "lore": [
+      "",
+      "<yellow>Blows up enemies",
+      ""
+    ]
+  },
+  "upgradeItem": {
+    "material": "minecraft:tnt",
+    "displayName": "<yellow>Bomber Lvl. III",
+    "lore": [
+      "",
+      "<yellow>Blows up enemies",
+      ""
+    ]
+  },
+  "relativeBlocks": [{"xOffset":-1,"yOffset":1,"zOffset":-1,"block":{"material":"minecraft:polished_blackstone_bricks"}},{"xOffset":0,"yOffset":1,"zOffset":-1,"block":{"material":"minecraft:polished_blackstone_bricks"}},{"xOffset":-1,"yOffset":1,"zOffset":0,"block":{"material":"minecraft:polished_blackstone_bricks"}},{"xOffset":0,"yOffset":1,"zOffset":0,"block":{"material":"minecraft:polished_blackstone_bricks"}},{"xOffset":-1,"yOffset":1,"zOffset":1,"block":{"material":"minecraft:polished_blackstone_bricks"}},{"xOffset":0,"yOffset":1,"zOffset":1,"block":{"material":"minecraft:polished_blackstone_bricks"}},{"xOffset":-1,"yOffset":2,"zOffset":-1,"block":{"material":"minecraft:polished_deepslate_wall","properties":["east=tall","south=tall","up=true"]}},{"xOffset":0,"yOffset":2,"zOffset":-1,"block":{"material":"minecraft:blast_furnace","properties":["facing=north","lit=true"]}},{"xOffset":-1,"yOffset":2,"zOffset":0,"block":{"material":"minecraft:blast_furnace","properties":["facing=west","lit=true"]}},{"xOffset":0,"yOffset":2,"zOffset":0,"block":{"material":"minecraft:polished_blackstone_bricks"}},{"xOffset":-1,"yOffset":2,"zOffset":1,"block":{"material":"minecraft:polished_deepslate_wall","properties":["east=tall","north=tall","up=true"]}},{"xOffset":0,"yOffset":2,"zOffset":1,"block":{"material":"minecraft:blast_furnace","properties":["facing=south","lit=true"]}},{"xOffset":-1,"yOffset":3,"zOffset":-1,"block":{"material":"minecraft:polished_blackstone"}},{"xOffset":0,"yOffset":3,"zOffset":-1,"block":{"material":"minecraft:iron_bars","properties":["east=true","south=true","west=true"]}},{"xOffset":-1,"yOffset":3,"zOffset":0,"block":{"material":"minecraft:iron_bars","properties":["east=true","north=true","south=true"]}},{"xOffset":0,"yOffset":3,"zOffset":0,"block":{"material":"minecraft:tnt","properties":[]}},{"xOffset":-1,"yOffset":3,"zOffset":1,"block":{"material":"minecraft:polished_blackstone"}},{"xOffset":0,"yOffset":3,"zOffset":1,"block":{"material":"minecraft:iron_bars","properties":["east=true","north=true","west=true"]}},{"xOffset":0,"yOffset":4,"zOffset":-1,"block":{"material":"minecraft:polished_blackstone_slab","properties":["type=bottom"]}},{"xOffset":-1,"yOffset":4,"zOffset":0,"block":{"material":"minecraft:polished_blackstone_slab","properties":["type=bottom"]}},{"xOffset":0,"yOffset":4,"zOffset":0,"block":{"material":"minecraft:cauldron"}},{"xOffset":0,"yOffset":4,"zOffset":1,"block":{"material":"minecraft:polished_blackstone_slab","properties":["type=bottom"]}},{"xOffset":0,"yOffset":5,"zOffset":0,"block":{"material":"minecraft:cauldron"}},{"xOffset":1,"yOffset":1,"zOffset":-1,"block":{"material":"minecraft:polished_blackstone_bricks"}},{"xOffset":1,"yOffset":1,"zOffset":0,"block":{"material":"minecraft:polished_blackstone_bricks"}},{"xOffset":1,"yOffset":1,"zOffset":1,"block":{"material":"minecraft:polished_blackstone_bricks"}},{"xOffset":1,"yOffset":2,"zOffset":-1,"block":{"material":"minecraft:polished_deepslate_wall","properties":["south=tall","up=true","west=tall"]}},{"xOffset":1,"yOffset":2,"zOffset":0,"block":{"material":"minecraft:blast_furnace","properties":["facing=east","lit=true"]}},{"xOffset":1,"yOffset":2,"zOffset":1,"block":{"material":"minecraft:polished_deepslate_wall","properties":["north=tall","up=true","west=tall"]}},{"xOffset":1,"yOffset":3,"zOffset":-1,"block":{"material":"minecraft:polished_blackstone"}},{"xOffset":1,"yOffset":3,"zOffset":0,"block":{"material":"minecraft:iron_bars","properties":["north=true","south=true","west=true"]}},{"xOffset":1,"yOffset":3,"zOffset":1,"block":{"material":"minecraft:polished_blackstone"}},{"xOffset":1,"yOffset":4,"zOffset":0,"block":{"material":"minecraft:polished_blackstone_slab","properties":["type=bottom"]}}]
+}

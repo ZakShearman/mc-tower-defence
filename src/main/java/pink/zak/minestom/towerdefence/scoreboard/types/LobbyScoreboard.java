@@ -7,25 +7,22 @@ import net.minestom.server.entity.Player;
 import net.minestom.server.event.player.PlayerDisconnectEvent;
 import net.minestom.server.event.player.PlayerSpawnEvent;
 import net.minestom.server.scoreboard.Sidebar;
-import pink.zak.minestom.towerdefence.TowerDefencePlugin;
+import pink.zak.minestom.towerdefence.TowerDefenceModule;
 import pink.zak.minestom.towerdefence.api.event.player.PlayerTeamSwitchEvent;
 import pink.zak.minestom.towerdefence.enums.Team;
+import pink.zak.minestom.towerdefence.lobby.LobbyManager;
 import pink.zak.minestom.towerdefence.scoreboard.TowerScoreboard;
-
-import java.util.Set;
 
 public class LobbyScoreboard implements TowerScoreboard {
     private final Sidebar sidebar = new Sidebar(TowerScoreboard.TITLE);
-    private final Set<Player> redPlayers;
-    private final Set<Player> bluePlayers;
+    private final LobbyManager lobbyManager;
 
-    public LobbyScoreboard(TowerDefencePlugin plugin) {
-        this.redPlayers = plugin.getRedPlayers();
-        this.bluePlayers = plugin.getBluePlayers();
+    public LobbyScoreboard(TowerDefenceModule plugin, LobbyManager lobbyManager) {
+        this.lobbyManager = lobbyManager;
 
-        this.sidebar.createLine(new Sidebar.ScoreboardLine("empty-line-6", Component.empty(), 6));
+        this.sidebar.createLine(new Sidebar.ScoreboardLine("empty-6", Component.empty(), 6));
         this.sidebar.createLine(new Sidebar.ScoreboardLine("online-players", this.createOnlinePlayers(), 5));
-        this.sidebar.createLine(new Sidebar.ScoreboardLine("empty-line-4", Component.empty(), 4));
+        this.sidebar.createLine(new Sidebar.ScoreboardLine("empty-4", Component.empty(), 4));
         this.sidebar.createLine(new Sidebar.ScoreboardLine("red-players", this.createRedPlayers(), 3));
         this.sidebar.createLine(new Sidebar.ScoreboardLine("blue-players", this.createBluePlayers(), 2));
         this.sidebar.createLine(new Sidebar.ScoreboardLine("empty-1", Component.empty(), 1));
@@ -61,12 +58,12 @@ public class LobbyScoreboard implements TowerScoreboard {
 
     private Component createRedPlayers() {
         return Component.text("Red Players: ", NamedTextColor.WHITE)
-                .append(Component.text(this.redPlayers.size() + "/6", NamedTextColor.RED));
+                .append(Component.text(this.lobbyManager.getTeamSize(Team.RED) + "/6", NamedTextColor.RED));
     }
 
     private Component createBluePlayers() {
         return Component.text("Blue Players: ", NamedTextColor.WHITE)
-                .append(Component.text(this.bluePlayers.size() + "/6", NamedTextColor.BLUE));
+                .append(Component.text(this.lobbyManager.getTeamSize(Team.BLUE) + "/6", NamedTextColor.BLUE));
     }
 
     @Override

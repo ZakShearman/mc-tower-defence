@@ -3,7 +3,7 @@ package pink.zak.minestom.towerdefence.storage;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.minestom.server.entity.EntityType;
-import pink.zak.minestom.towerdefence.TowerDefencePlugin;
+import pink.zak.minestom.towerdefence.TowerDefenceModule;
 import pink.zak.minestom.towerdefence.model.mob.config.EnemyMob;
 
 import java.io.InputStream;
@@ -20,11 +20,11 @@ public class MobStorage {
             "zombie.json"
     );
 
-    private final TowerDefencePlugin plugin;
+    private final TowerDefenceModule plugin;
 
     private final Map<EntityType, EnemyMob> enemyMobs = new HashMap<>();
 
-    public MobStorage(TowerDefencePlugin plugin) {
+    public MobStorage(TowerDefenceModule plugin) {
         this.plugin = plugin;
 
         this.load();
@@ -32,7 +32,7 @@ public class MobStorage {
 
     private void load() {
         for (String fileName : MOB_FILES) {
-            InputStream inputStream = this.plugin.getPackagedResource("mobs/" + fileName);
+            InputStream inputStream = TowerDefenceModule.class.getClassLoader().getResourceAsStream("mobs/" + fileName);
 
             JsonObject json = JsonParser.parseReader(new InputStreamReader(inputStream)).getAsJsonObject();
             EnemyMob enemyMob = new EnemyMob(json);

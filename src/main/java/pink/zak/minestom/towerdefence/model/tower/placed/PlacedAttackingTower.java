@@ -33,7 +33,7 @@ public abstract class PlacedAttackingTower<T extends AttackingTowerLevel> extend
                     if (!this.targets.isEmpty())
                         this.fire();
                 })
-                .repeat(this.level.getFireDelay(), TimeUnit.CLIENT_TICK)
+                .repeat(this.level.getFireDelay(), TimeUnit.SERVER_TICK)
                 .schedule();
     }
 

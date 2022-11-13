@@ -4,16 +4,15 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import net.minestom.server.extensions.Extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pink.zak.minestom.towerdefence.TowerDefenceModule;
 
 import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.util.function.UnaryOperator;
 
 public class FileUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(FileUtils.class);
@@ -28,23 +27,12 @@ public class FileUtils {
         }
     }
 
-    public static JsonElement getLocalOrResourceJson(Extension extension, UnaryOperator<Path> pathOperator) {
-        Path fullPath = pathOperator.apply(extension.getDataDirectory().resolve("TowerDefence"));
-        File systemFile = fullPath.toFile();
-        if (systemFile.exists()) {
-            try {
-                return JsonParser.parseReader(new FileReader(systemFile));
-            } catch (FileNotFoundException ex) {
-                LOGGER.error("Error reading local file as Json: ", ex);
-            }
-        } else {
-            Path hollowPath = pathOperator.apply(Path.of(""));
-            try (InputStream inputStream = extension.getPackagedResource(hollowPath)) {
-                return JsonParser.parseReader(new InputStreamReader(inputStream));
+    public static JsonElement getResourceJson(String resourcePath) {
+        try (InputStream inputStream = TowerDefenceModule.class.getClassLoader().getResourceAsStream(resourcePath)) {
+            return JsonParser.parseReader(new InputStreamReader(inputStream));
 
-            } catch (IOException ex) {
-                LOGGER.error("Error reading resource as Json: ", ex);
-            }
+        } catch (IOException ex) {
+            LOGGER.error("Error reading resource as Json: ", ex);
         }
         return null;
     }

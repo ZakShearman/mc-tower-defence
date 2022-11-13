@@ -12,7 +12,7 @@ import net.minestom.server.inventory.InventoryType;
 import net.minestom.server.inventory.click.ClickType;
 import net.minestom.server.item.Material;
 import org.jetbrains.annotations.NotNull;
-import pink.zak.minestom.towerdefence.TowerDefencePlugin;
+import pink.zak.minestom.towerdefence.TowerDefenceModule;
 import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.game.TowerHandler;
@@ -23,7 +23,7 @@ import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.storage.TowerStorage;
 
 public class TowerPlaceHandler {
-    private final @NotNull TowerDefencePlugin plugin;
+    private final @NotNull TowerDefenceModule plugin;
     private final @NotNull GameHandler gameHandler;
     private final @NotNull TowerHandler towerHandler;
     private final @NotNull TowerStorage towerStorage;
@@ -31,7 +31,7 @@ public class TowerPlaceHandler {
     private final @NotNull Inventory towerPlaceGui;
     private final @NotNull TowerMap towerMap;
 
-    public TowerPlaceHandler(@NotNull TowerDefencePlugin plugin, @NotNull GameHandler gameHandler) {
+    public TowerPlaceHandler(@NotNull TowerDefenceModule plugin, @NotNull GameHandler gameHandler) {
         this.plugin = plugin;
         this.gameHandler = gameHandler;
         this.towerHandler = gameHandler.getTowerHandler();

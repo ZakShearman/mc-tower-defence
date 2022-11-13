@@ -1,10 +1,9 @@
 package pink.zak.minestom.towerdefence.model.user;
 
 import net.minestom.server.coordinate.Point;
-import net.minestom.server.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import pink.zak.minestom.towerdefence.TowerDefencePlugin;
+import pink.zak.minestom.towerdefence.TowerDefenceModule;
 import pink.zak.minestom.towerdefence.api.event.player.PlayerCoinChangeEvent;
 import pink.zak.minestom.towerdefence.api.event.player.PlayerManaChangeEvent;
 import pink.zak.minestom.towerdefence.enums.Team;
@@ -20,8 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.IntUnaryOperator;
 
 public class GameUser {
-    private final @NotNull Player player; // todo in the future we should allow re-joining a game so this will not be final.
-    private final @NotNull TDUser user;
+    private final @NotNull TDPlayer player; // todo in the future we should allow re-joining a game so this will not be final.
     private final @NotNull Team team;
 
     private final @NotNull Map<EnemyMob, Integer> mobLevels = new ConcurrentHashMap<>();
@@ -33,21 +31,16 @@ public class GameUser {
 
     private @Nullable Point lastClickedTowerBlock;
 
-    public GameUser(@NotNull Player player, @NotNull TDUser user, @NotNull Set<EnemyMob> defaultUnlocks, @NotNull Team team) {
+    public GameUser(@NotNull TDPlayer player, @NotNull Set<EnemyMob> defaultUnlocks, @NotNull Team team) {
         this.player = player;
-        this.user = user;
         this.team = team;
 
         for (EnemyMob mob : defaultUnlocks)
             this.mobLevels.put(mob, 1);
     }
 
-    public @NotNull Player getPlayer() {
+    public @NotNull TDPlayer getPlayer() {
         return this.player;
-    }
-
-    public @NotNull TDUser getUser() {
-        return this.user;
     }
 
     public @NotNull Team getTeam() {
@@ -79,13 +72,13 @@ public class GameUser {
 
     public int updateAndGetCoins(@NotNull IntUnaryOperator intOperator) {
         int newCoins = this.coins.updateAndGet(intOperator);
-        TowerDefencePlugin.getCallingEventNode().call(new PlayerCoinChangeEvent(this, newCoins));
+        TowerDefenceModule.getCallingEventNode().call(new PlayerCoinChangeEvent(this, newCoins));
         return newCoins;
     }
 
     public int updateAndGetMana(@NotNull IntUnaryOperator intOperator) {
         int newMana = this.mana.updateAndGet(intOperator);
-        TowerDefencePlugin.getCallingEventNode().call(new PlayerManaChangeEvent(this, newMana));
+        TowerDefenceModule.getCallingEventNode().call(new PlayerManaChangeEvent(this, newMana));
         return newMana;
     }
 

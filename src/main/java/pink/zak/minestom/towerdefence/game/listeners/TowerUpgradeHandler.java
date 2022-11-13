@@ -18,7 +18,7 @@ import net.minestom.server.particle.ParticleCreator;
 import net.minestom.server.timer.Task;
 import net.minestom.server.utils.time.TimeUnit;
 import org.jetbrains.annotations.NotNull;
-import pink.zak.minestom.towerdefence.TowerDefencePlugin;
+import pink.zak.minestom.towerdefence.TowerDefenceModule;
 import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.game.TowerHandler;
@@ -51,11 +51,11 @@ public class TowerUpgradeHandler {
             .build();
 
     private final @NotNull Map<Tower, Component> towerUpgradeTitles = new HashMap<>();
-    private final @NotNull TowerDefencePlugin plugin;
+    private final @NotNull TowerDefenceModule plugin;
     private final @NotNull GameHandler gameHandler;
     private final @NotNull TowerHandler towerHandler;
 
-    public TowerUpgradeHandler(@NotNull TowerDefencePlugin plugin, @NotNull GameHandler gameHandler) {
+    public TowerUpgradeHandler(@NotNull TowerDefenceModule plugin, @NotNull GameHandler gameHandler) {
         for (Tower tower : plugin.getTowerStorage().getTowers().values())
             this.towerUpgradeTitles.put(tower, Component.text("Upgrade " + tower.getName()));
 

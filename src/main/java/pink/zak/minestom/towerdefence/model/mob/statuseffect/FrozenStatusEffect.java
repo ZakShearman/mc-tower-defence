@@ -21,8 +21,6 @@ public class FrozenStatusEffect implements StatusEffect<FrozenStatusEffect>, Spe
         this.mob = mob;
         this.speedModifier = speedModifier;
         this.maxTicks = maxTicks;
-
-        this.mob.applySpeedModifier(this);
     }
 
     @Override
@@ -30,6 +28,7 @@ public class FrozenStatusEffect implements StatusEffect<FrozenStatusEffect>, Spe
         if (this.isRemoved()) return;
         if (this.remainingTicks() <= 0) {
             this.remove();
+            return;
         }
         this.ticks.incrementAndGet();
     }
@@ -38,7 +37,7 @@ public class FrozenStatusEffect implements StatusEffect<FrozenStatusEffect>, Spe
     public void remove() {
         this.removed = true;
 
-        this.mob.removeStatusEffect(this.type());
+        this.mob.removeStatusEffect(this);
         this.mob.removeSpeedModifier(this);
     }
 

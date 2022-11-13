@@ -4,11 +4,11 @@ import net.minestom.server.event.item.ItemDropEvent;
 import net.minestom.server.event.player.PlayerBlockBreakEvent;
 import net.minestom.server.event.player.PlayerBlockPlaceEvent;
 import net.minestom.server.event.player.PlayerSwapItemEvent;
-import pink.zak.minestom.towerdefence.TowerDefencePlugin;
+import pink.zak.minestom.towerdefence.TowerDefenceModule;
 
 public class ProtectionHandler {
 
-    public ProtectionHandler(TowerDefencePlugin plugin) {
+    public ProtectionHandler(TowerDefenceModule plugin) {
         plugin.getEventNode()
                 .addListener(PlayerBlockBreakEvent.class, event -> event.setCancelled(true))
                 .addListener(PlayerBlockPlaceEvent.class, event -> event.setCancelled(true))

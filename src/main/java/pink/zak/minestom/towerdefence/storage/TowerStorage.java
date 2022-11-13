@@ -5,7 +5,7 @@ import com.google.gson.JsonParser;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pink.zak.minestom.towerdefence.TowerDefencePlugin;
+import pink.zak.minestom.towerdefence.TowerDefenceModule;
 import pink.zak.minestom.towerdefence.enums.TowerType;
 import pink.zak.minestom.towerdefence.model.tower.config.Tower;
 
@@ -21,11 +21,11 @@ public class TowerStorage {
     private static final Logger LOGGER = LoggerFactory.getLogger(TowerStorage.class);
     private static final Set<String> TOWER_NAMES = Arrays.stream(TowerType.values()).map(towerType -> towerType.name().toLowerCase() + ".json").collect(Collectors.toUnmodifiableSet());
 
-    private final TowerDefencePlugin plugin;
+    private final TowerDefenceModule plugin;
 
     private final Map<TowerType, Tower> towers = new HashMap<>();
 
-    public TowerStorage(TowerDefencePlugin plugin) {
+    public TowerStorage(TowerDefenceModule plugin) {
         this.plugin = plugin;
 
         this.load();
@@ -41,7 +41,7 @@ public class TowerStorage {
         String basePath = "towers/%s".formatted(towerName);
         String towerJsonPath = "%s/%s.json".formatted(basePath, towerName);
 
-        InputStream inputStream = this.plugin.getPackagedResource(towerJsonPath);
+        InputStream inputStream = TowerDefenceModule.class.getClassLoader().getResourceAsStream(towerJsonPath);
         if (inputStream == null) {
             LOGGER.error("Could not find tower file: " + towerJsonPath);
             return;
@@ -53,7 +53,7 @@ public class TowerStorage {
         for (int level = 1; level <= 10; level++) {
             String levelJsonPath = "%s/%s.json".formatted(basePath, level);
 
-            InputStream levelInputStream = this.plugin.getPackagedResource(levelJsonPath);
+            InputStream levelInputStream = TowerDefenceModule.class.getClassLoader().getResourceAsStream(levelJsonPath);
             if (levelInputStream == null) break;
 
             levelJson.put(level, JsonParser.parseReader(new InputStreamReader(levelInputStream)).getAsJsonObject());

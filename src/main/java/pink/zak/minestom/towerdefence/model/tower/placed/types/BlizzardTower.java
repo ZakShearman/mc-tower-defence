@@ -8,6 +8,9 @@ import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.metadata.golem.SnowGolemMeta;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.item.Material;
+import net.minestom.server.network.packet.server.SendablePacket;
+import net.minestom.server.particle.Particle;
+import net.minestom.server.particle.ParticleCreator;
 import net.minestom.server.timer.Task;
 import net.minestom.server.utils.Direction;
 import net.minestom.server.utils.time.TimeUnit;
@@ -21,7 +24,6 @@ import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 
 public class BlizzardTower extends PlacedAttackingTower<BlizzardTowerLevel> {
-
     private final Pos restSnowmanPos;
     private Entity snowman;
     private Task snowmanTask;
@@ -29,6 +31,7 @@ public class BlizzardTower extends PlacedAttackingTower<BlizzardTowerLevel> {
     public BlizzardTower(Instance instance, AttackingTower tower, Material towerBaseMaterial, int id, GameUser owner, Point basePoint, Direction facing, int level, TowerMap map) {
         super(instance, tower, towerBaseMaterial, id, owner, basePoint, facing, level);
 
+        // todo faces the wrong direction
         Pos spawnPos = map.getMobSpawn(this.team);
         this.restSnowmanPos = new Pos(basePoint.add(0, 1.5, 0)).withDirection(spawnPos).withPitch(0);
 
@@ -51,7 +54,20 @@ public class BlizzardTower extends PlacedAttackingTower<BlizzardTowerLevel> {
             if (currentEffect == null
                     || currentEffect.getModifier() < speedModifier
                     || (currentEffect.getModifier() == speedModifier && currentEffect.remainingTicks() < tickDuration)) {
-                target.applyStatusEffect(new FrozenStatusEffect(target, speedModifier, tickDuration));
+                FrozenStatusEffect effect = new FrozenStatusEffect(target, speedModifier, tickDuration);
+                target.applyStatusEffect(effect);
+                target.applySpeedModifier(effect);
+            }
+        }
+
+        if (this.targets.size() > 0) {
+            if (this.levelInt >= 4) {
+                double x = this.basePoint.x();
+                double y = this.basePoint.y() + 3.5;
+                double z = this.basePoint.z();
+                SendablePacket particlePacket = ParticleCreator.createParticlePacket(Particle.SNOWFLAKE, x, y, z, 0.9f, 1.5f, 0.9f, 150);
+
+                MinecraftServer.getConnectionManager().getOnlinePlayers().forEach(player -> player.sendPacket(particlePacket));
             }
         }
     }

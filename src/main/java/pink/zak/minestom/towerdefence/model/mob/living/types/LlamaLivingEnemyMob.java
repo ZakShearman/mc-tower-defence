@@ -7,7 +7,7 @@ import net.minestom.server.instance.Instance;
 import net.minestom.server.utils.Direction;
 import net.minestom.server.utils.time.TimeUnit;
 import org.jetbrains.annotations.NotNull;
-import pink.zak.minestom.towerdefence.TowerDefencePlugin;
+import pink.zak.minestom.towerdefence.TowerDefenceModule;
 import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
 import pink.zak.minestom.towerdefence.model.mob.config.EnemyMob;
@@ -17,7 +17,7 @@ import pink.zak.minestom.towerdefence.utils.DirectionUtils;
 
 public class LlamaLivingEnemyMob extends LivingEnemyMob {
 
-    public LlamaLivingEnemyMob(TowerDefencePlugin plugin, GameHandler gameHandler, @NotNull EnemyMob enemyMob, Instance instance, TowerMap map, GameUser gameUser, int level) {
+    public LlamaLivingEnemyMob(TowerDefenceModule plugin, GameHandler gameHandler, @NotNull EnemyMob enemyMob, Instance instance, TowerMap map, GameUser gameUser, int level) {
         super(plugin, gameHandler, enemyMob, instance, map, gameUser, level);
     }
 
@@ -29,7 +29,7 @@ public class LlamaLivingEnemyMob extends LivingEnemyMob {
         spit.setNoGravity(true);
         spit.setInstance(this.instance, DirectionUtils.add(position.add(0, EntityType.LLAMA.height(), 0), direction, 1));
         spit.setVelocity(DirectionUtils.createVec(direction, 7));
-        spit.scheduleRemove(10, TimeUnit.CLIENT_TICK);
+        spit.scheduleRemove(10, TimeUnit.SERVER_TICK);
     }
 
     @Override

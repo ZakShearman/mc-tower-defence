@@ -1,0 +1,27 @@
+{
+  "level": 1,
+  "cost": 1,
+  "fireDelay": 15,
+  "damage": 1,
+  "range": 20,
+
+  "menuItem": {
+    "material": "minecraft:tnt",
+    "displayName": "<yellow>Bomber ($undefined)",
+    "lore": [
+      "",
+      "<yellow>Blows up enemies",
+      ""
+    ]
+  },
+  "upgradeItem": {
+    "material": "minecraft:tnt",
+    "displayName": "<yellow>Bomber Lvl. I",
+    "lore": [
+      "",
+      "<yellow>Blows up enemies",
+      ""
+    ]
+  },
+  "relativeBlocks": [{"xOffset":-1,"yOffset":1,"zOffset":-1,"block":{"material":"minecraft:cobbled_deepslate_slab","properties":["type=bottom"]}},{"xOffset":0,"yOffset":1,"zOffset":-1,"block":{"material":"minecraft:cobbled_deepslate_slab","properties":["type=bottom"]}},{"xOffset":-1,"yOffset":1,"zOffset":0,"block":{"material":"minecraft:cobbled_deepslate_slab","properties":["type=bottom"]}},{"xOffset":0,"yOffset":1,"zOffset":0,"block":{"material":"minecraft:tnt","properties":[]}},{"xOffset":-1,"yOffset":1,"zOffset":1,"block":{"material":"minecraft:cobbled_deepslate_slab","properties":["type=bottom"]}},{"xOffset":0,"yOffset":1,"zOffset":1,"block":{"material":"minecraft:cobbled_deepslate_slab","properties":["type=bottom"]}},{"xOffset":0,"yOffset":2,"zOffset":0,"block":{"material":"minecraft:cauldron"}},{"xOffset":1,"yOffset":1,"zOffset":-1,"block":{"material":"minecraft:cobbled_deepslate_slab","properties":["type=bottom"]}},{"xOffset":1,"yOffset":1,"zOffset":0,"block":{"material":"minecraft:cobbled_deepslate_slab","properties":["type=bottom"]}},{"xOffset":1,"yOffset":1,"zOffset":1,"block":{"material":"minecraft:cobbled_deepslate_slab","properties":["type=bottom"]}}]
+}

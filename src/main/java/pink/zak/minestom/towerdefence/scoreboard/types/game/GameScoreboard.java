@@ -3,7 +3,7 @@ package pink.zak.minestom.towerdefence.scoreboard.types.game;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.scoreboard.Sidebar;
-import pink.zak.minestom.towerdefence.TowerDefencePlugin;
+import pink.zak.minestom.towerdefence.TowerDefenceModule;
 import pink.zak.minestom.towerdefence.api.event.game.CastleDamageEvent;
 import pink.zak.minestom.towerdefence.api.event.player.PlayerCoinChangeEvent;
 import pink.zak.minestom.towerdefence.api.event.player.PlayerManaChangeEvent;
@@ -18,9 +18,9 @@ public class GameScoreboard {
 
     private final Sidebar sidebar = new Sidebar(TowerScoreboard.TITLE);
     private final GameUser gameUser;
-    private final double maxHealth = 1000;
+    private final double maxHealth = 10_000;
 
-    public GameScoreboard(TowerDefencePlugin plugin, GameUser gameUser) {
+    public GameScoreboard(TowerDefenceModule plugin, GameUser gameUser) {
         this.gameUser = gameUser;
 
         this.sidebar.createLine(new Sidebar.ScoreboardLine("empty-6", Component.empty(), 7));

@@ -19,6 +19,7 @@ public enum TowerType {
     BOMBER(Size.THREE, false, AttackingTower::new, AttackingTowerLevel::new),
     BLIZZARD(Size.THREE, true, AttackingTower::new, BlizzardTowerLevel::new),
     LIGHTNING(Size.THREE, true, AttackingTower::new, LightningTowerLevel::new),
+    NECROMANCER(Size.FIVE, true, AttackingTower::new, AttackingTowerLevel::new),
     CHARITY(Size.THREE, false, Tower::new, CharityTowerLevel::new);
 
     private final @NotNull Size size;

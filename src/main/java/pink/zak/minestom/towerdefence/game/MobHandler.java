@@ -5,7 +5,7 @@ import net.minestom.server.instance.Instance;
 import net.minestom.server.timer.Task;
 import net.minestom.server.utils.time.TimeUnit;
 import org.jetbrains.annotations.NotNull;
-import pink.zak.minestom.towerdefence.TowerDefencePlugin;
+import pink.zak.minestom.towerdefence.TowerDefenceModule;
 import pink.zak.minestom.towerdefence.cache.DamageIndicatorCache;
 import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
@@ -27,7 +27,7 @@ public class MobHandler {
     private final @NotNull Set<LivingEnemyMob> redSideMobs = ConcurrentHashMap.newKeySet();
     private final @NotNull Set<LivingEnemyMob> blueSideMobs = ConcurrentHashMap.newKeySet();
 
-    private final @NotNull TowerDefencePlugin plugin;
+    private final @NotNull TowerDefenceModule plugin;
     private final @NotNull GameHandler gameHandler;
 
     private final @NotNull TowerHandler towerHandler;
@@ -36,7 +36,7 @@ public class MobHandler {
 
     private Task attackUpdateTask;
 
-    public MobHandler(@NotNull TowerDefencePlugin plugin, @NotNull GameHandler gameHandler) {
+    public MobHandler(@NotNull TowerDefenceModule plugin, @NotNull GameHandler gameHandler) {
         this.plugin = plugin;
         this.gameHandler = gameHandler;
 
@@ -50,10 +50,11 @@ public class MobHandler {
 
     public void spawnMob(@NotNull QueuedEnemyMob queuedEnemyMob, @NotNull GameUser spawner) {
         LivingEnemyMob mob = LivingEnemyMob.create(this.plugin, this.gameHandler, queuedEnemyMob.mob(), queuedEnemyMob.level().getLevel(), this.instance, this.map, spawner);
+        // todo invert later
         if (spawner.getTeam() == Team.RED)
-            this.redSideMobs.add(mob); // todo change later
-        else
             this.redSideMobs.add(mob);
+        else
+            this.blueSideMobs.add(mob);
     }
 
     private void startUpdatingAttackingTowers() {

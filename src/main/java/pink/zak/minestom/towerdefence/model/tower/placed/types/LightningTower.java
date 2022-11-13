@@ -9,15 +9,12 @@ import net.minestom.server.network.packet.server.SendablePacket;
 import net.minestom.server.particle.Particle;
 import net.minestom.server.particle.ParticleCreator;
 import net.minestom.server.utils.Direction;
-import org.jetbrains.annotations.NotNull;
-import pink.zak.minestom.towerdefence.TowerDefencePlugin;
-import pink.zak.minestom.towerdefence.cache.TDUserCache;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingEnemyMob;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTower;
 import pink.zak.minestom.towerdefence.model.tower.config.towers.LightningTowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
-import pink.zak.minestom.towerdefence.model.user.TDUser;
+import pink.zak.minestom.towerdefence.model.user.TDPlayer;
 import pink.zak.minestom.towerdefence.model.user.settings.ParticleThickness;
 
 import java.util.HashMap;
@@ -27,13 +24,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class LightningTower extends PlacedAttackingTower<LightningTowerLevel> {
-    private final @NotNull TDUserCache userCache;
     private Point castPoint;
     private Set<Point> spawnPoints;
 
-    public LightningTower(TowerDefencePlugin plugin, Instance instance, AttackingTower tower, Material towerBaseMaterial, int id, GameUser owner, Point basePoint, Direction facing, int level) {
+    public LightningTower(Instance instance, AttackingTower tower, Material towerBaseMaterial, int id, GameUser owner, Point basePoint, Direction facing, int level) {
         super(instance, tower, towerBaseMaterial, id, owner, basePoint, facing, level);
-        this.userCache = plugin.getUserCache();
         this.castPoint = this.getLevel().getRelativeCastPoint().apply(basePoint);
         this.spawnPoints = this.getLevel().getRelativeSpawnPoints().stream()
                 .map(castPoint -> castPoint.apply(basePoint))
@@ -69,8 +64,8 @@ public class LightningTower extends PlacedAttackingTower<LightningTowerLevel> {
 
         for (Player player : MinecraftServer.getConnectionManager().getOnlinePlayers()) {
             // todo only send to applicable users
-            TDUser tdUser = this.userCache.getUser(player.getUuid());
-            player.sendPackets(thicknessPackets.get(tdUser.getParticleThickness()));
+            TDPlayer tdPlayer = (TDPlayer) player;
+            player.sendPackets(thicknessPackets.get(tdPlayer.getParticleThickness()));
         }
     }
 

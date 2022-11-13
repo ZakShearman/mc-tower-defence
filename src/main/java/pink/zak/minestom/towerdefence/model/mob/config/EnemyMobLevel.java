@@ -10,6 +10,7 @@ public class EnemyMobLevel {
     private final int level;
     private final int cost;
     private final int killReward;
+    private final int manaKillReward;
     private final int health;
     private final int damage;
     private final double movementSpeed;
@@ -23,6 +24,7 @@ public class EnemyMobLevel {
         this.level = jsonObject.get("level").getAsInt();
         this.cost = jsonObject.get("cost").getAsInt();
         this.killReward = this.cost / 4; // todo balance
+        this.manaKillReward = this.cost / 8; // todo balance
         this.health = jsonObject.get("health").getAsInt();
         this.damage = jsonObject.get("damage").getAsInt();
         this.movementSpeed = jsonObject.get("movementSpeed").getAsDouble() / 20;
@@ -50,6 +52,10 @@ public class EnemyMobLevel {
 
     public int getKillReward() {
         return this.killReward;
+    }
+
+    public int getManaKillReward() {
+        return manaKillReward;
     }
 
     public int getHealth() {

@@ -1,5 +1,11 @@
 package pink.zak.minestom.towerdefence.game;
 
+import cc.towerdefence.api.agonessdk.IgnoredStreamObserver;
+import cc.towerdefence.minestom.Environment;
+import cc.towerdefence.minestom.module.kubernetes.KubernetesModule;
+import cc.towerdefence.minestom.utils.ProgressBar;
+import dev.agones.sdk.AgonesSDKProto;
+import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.MinecraftServer;
@@ -8,30 +14,42 @@ import net.minestom.server.entity.Player;
 import net.minestom.server.entity.hologram.Hologram;
 import net.minestom.server.event.player.PlayerDisconnectEvent;
 import net.minestom.server.instance.Instance;
+import net.minestom.server.timer.Task;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import pink.zak.minestom.towerdefence.TowerDefencePlugin;
+import pink.zak.minestom.towerdefence.TowerDefenceModule;
 import pink.zak.minestom.towerdefence.api.event.game.CastleDamageEvent;
 import pink.zak.minestom.towerdefence.api.event.game.GameStartEvent;
-import pink.zak.minestom.towerdefence.cache.TDUserCache;
 import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.game.listeners.MobMenuHandler;
 import pink.zak.minestom.towerdefence.game.listeners.TowerPlaceHandler;
 import pink.zak.minestom.towerdefence.game.listeners.TowerUpgradeHandler;
 import pink.zak.minestom.towerdefence.game.listeners.UserSettingsMenuHandler;
+import pink.zak.minestom.towerdefence.lobby.LobbyManager;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
 import pink.zak.minestom.towerdefence.model.mob.config.EnemyMob;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
+import pink.zak.minestom.towerdefence.model.user.LobbyPlayer;
+import pink.zak.minestom.towerdefence.model.user.TDPlayer;
 
-import java.util.*;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 public class GameHandler {
-    private final @NotNull TowerDefencePlugin plugin;
-    private final @NotNull TDUserCache userCache;
+    private final @NotNull TowerDefenceModule plugin;
     private final @NotNull TowerMap map;
+    private final @NotNull LobbyManager lobbyManager;
+    private final KubernetesModule kubernetesModule;
 
     private final @NotNull MobHandler mobHandler;
     private final @NotNull TowerHandler towerHandler;
@@ -39,32 +57,34 @@ public class GameHandler {
     private final @NotNull UserSettingsMenuHandler userSettingsMenuHandler;
 
     private final Set<EnemyMob> defaultEnemyMobs;
-    private final @NotNull AtomicInteger redTowerHealth = new AtomicInteger(1000);
-    private final @NotNull AtomicInteger blueTowerHealth = new AtomicInteger(1000);
-    private @NotNull Map<Player, GameUser> users = new HashMap<>();
+    private final @NotNull AtomicInteger redTowerHealth = new AtomicInteger(10_000);
+    private final @NotNull AtomicInteger blueTowerHealth = new AtomicInteger(10_000);
+    private final @NotNull Map<Player, GameUser> users = new HashMap<>();
+    private final AtomicBoolean ended = new AtomicBoolean(false);
     private Instance instance;
     private Hologram redTowerHologram;
     private Hologram blueTowerHologram;
 
-    public GameHandler(@NotNull TowerDefencePlugin plugin) {
-        this.plugin = plugin;
-        this.userCache = plugin.getUserCache();
-        this.map = plugin.getMapStorage().getMap();
+    public GameHandler(@NotNull TowerDefenceModule module, @NotNull LobbyManager lobbyManager) {
+        this.plugin = module;
+        this.map = module.getMapStorage().getMap();
+        this.lobbyManager = lobbyManager;
+        this.kubernetesModule = module.getKubernetesModule();
 
-        this.towerHandler = new TowerHandler(plugin, this);
-        this.mobHandler = new MobHandler(plugin, this);
-        this.mobMenuHandler = new MobMenuHandler(plugin, this);
-        this.userSettingsMenuHandler = new UserSettingsMenuHandler(plugin);
+        this.towerHandler = new TowerHandler(module, this);
+        this.mobHandler = new MobHandler(module, this);
+        this.mobMenuHandler = new MobMenuHandler(module, this);
+        this.userSettingsMenuHandler = new UserSettingsMenuHandler(module);
 
-        this.defaultEnemyMobs = plugin.getMobStorage().getEnemyMobs().values()
+        this.defaultEnemyMobs = module.getMobStorage().getEnemyMobs().values()
                 .stream()
                 .filter(mob -> mob.getLevel(1).getManaCost() <= 0)
                 .collect(Collectors.toUnmodifiableSet());
 
-        new TowerPlaceHandler(plugin, this);
-        new TowerUpgradeHandler(plugin, this);
+        new TowerPlaceHandler(module, this);
+        new TowerUpgradeHandler(module, this);
 
-        plugin.getEventNode().addListener(PlayerDisconnectEvent.class, event -> this.users.remove(event.getPlayer()));
+        module.getEventNode().addListener(PlayerDisconnectEvent.class, event -> this.users.remove(event.getPlayer()));
     }
 
     public void start(@NotNull Instance instance) {
@@ -74,8 +94,12 @@ public class GameHandler {
         this.mobHandler.setInstance(instance);
         this.towerHandler.setInstance(instance);
 
-        this.configureTeam(Team.RED, this.plugin.getRedPlayers());
-        this.configureTeam(Team.BLUE, this.plugin.getBluePlayers());
+        Set<LobbyPlayer> lobbyPlayers = this.lobbyManager.getLobbyPlayers();
+        Set<LobbyPlayer> redPlayers = lobbyPlayers.stream().filter(lobbyPlayer -> lobbyPlayer.getTeam() == Team.RED).collect(Collectors.toSet());
+        Set<LobbyPlayer> bluePlayers = lobbyPlayers.stream().filter(lobbyPlayer -> lobbyPlayer.getTeam() == Team.BLUE).collect(Collectors.toSet());
+
+        this.configureTeam(Team.RED, redPlayers);
+        this.configureTeam(Team.BLUE, bluePlayers);
         this.plugin.getScoreboardManager().startGame();
 
         for (Player player : this.users.keySet()) {
@@ -98,7 +122,7 @@ public class GameHandler {
         }*/
     }
 
-    private void configureTeam(@NotNull Team team, @NotNull Set<Player> players) {
+    private void configureTeam(@NotNull Team team, @NotNull Set<LobbyPlayer> players) {
         Pos spawnPoint = this.map.getSpawn(team);
 
         if (team == Team.RED) {
@@ -107,44 +131,85 @@ public class GameHandler {
             this.blueTowerHologram = new Hologram(this.instance, this.map.getBlueTowerHologram(), this.createTowerHologram(Team.BLUE));
         }
 
-        for (Player player : players) {
-            GameUser gameUser = new GameUser(player, this.userCache.getUser(player.getUuid()), this.defaultEnemyMobs, team);
-            this.users.put(player, gameUser);
+        for (LobbyPlayer lobbyPlayer : players) {
+            TDPlayer tdPlayer = lobbyPlayer.getPlayer();
+            GameUser gameUser = new GameUser(tdPlayer, this.defaultEnemyMobs, team);
+            this.users.put(tdPlayer, gameUser);
 
-            player.setAllowFlying(true);
-            player.setFlying(true);
-            player.setFlyingSpeed(gameUser.getUser().getFlySpeed().getSpeed());
-            player.teleport(spawnPoint);
+            tdPlayer.setAllowFlying(true);
+            tdPlayer.setFlyingSpeed(tdPlayer.getFlySpeed().getSpeed());
+            tdPlayer.teleport(spawnPoint);
+            tdPlayer.setFlying(true); // set flying here so they don't fall after teleporting
         }
     }
 
     private @NotNull Component createTowerHologram(Team team) {
-        int health = (team == Team.RED ? this.redTowerHealth : this.blueTowerHealth).get();
-        int barAmount = (int) Math.ceil(health / 25.0); // for 40 bars, 40 * 25 = 1000
-
-        char[] presentBars = new char[barAmount];
-        char[] lostBars = new char[40 - barAmount];
-        Arrays.fill(presentBars, '|');
-        Arrays.fill(lostBars, '|');
-
-        return Component.text(String.valueOf(presentBars), NamedTextColor.GREEN).append(Component.text(String.valueOf(lostBars), NamedTextColor.RED));
+        int health = team == Team.RED ? this.redTowerHealth.get() : this.blueTowerHealth.get();
+        int maxHealth = 10_000;
+        float percentageRemaining = (float) health / maxHealth;
+        return ProgressBar.create(
+                percentageRemaining,
+                40,
+                "|",
+                NamedTextColor.GREEN,
+                NamedTextColor.RED
+        );
     }
 
     public void damageTower(@NotNull Team team, int damage) {
-        int newHealth;
-        if (team == Team.RED) {
-            newHealth = this.redTowerHealth.updateAndGet(current -> current - damage);
-            this.redTowerHologram.setText(this.createTowerHologram(Team.RED));
-        } else {
-            newHealth = this.blueTowerHealth.updateAndGet(current -> current - damage);
-            this.blueTowerHologram.setText(this.createTowerHologram(Team.BLUE));
+        AtomicInteger health = team == Team.RED ? this.redTowerHealth : this.blueTowerHealth;
+        Hologram hologram = team == Team.RED ? this.redTowerHologram : this.blueTowerHologram;
+
+        int newHealth = health.updateAndGet(currentHealth -> currentHealth - damage);
+
+        if (newHealth <= 0) {
+            if (this.ended.compareAndSet(false, true)) {
+                this.endGame(team == Team.RED ? Team.BLUE : Team.RED);
+            }
+            return;
         }
+
+        hologram.setText(this.createTowerHologram(team));
+
         MinecraftServer.getGlobalEventHandler().call(new CastleDamageEvent(team, damage, newHealth));
     }
 
-    public void end() {
-        this.users = new HashMap<>();
+    public void endGame(Team winningTeam) {
+        this.shutdownTask();
         // todo properly clean up
+    }
+
+    private void shutdownTask() {
+        Instant startTime = Instant.now();
+        AtomicReference<BossBar> lastBossBar = new AtomicReference<>(null);
+        Task task = MinecraftServer.getSchedulerManager().buildTask(() -> {
+                    int remainingSeconds = 60 - (int) Duration.between(startTime, Instant.now()).getSeconds();
+                    float progress = remainingSeconds / 60f;
+                    Component text;
+                    if (remainingSeconds > 30)
+                        text = Component.text("Game over!").color(NamedTextColor.RED);
+                    else
+                        text = Component.text("Server will close in %s seconds".formatted(remainingSeconds), NamedTextColor.RED);
+
+                    BossBar newBossBar = BossBar.bossBar(text, progress, BossBar.Color.RED, BossBar.Overlay.PROGRESS);
+                    BossBar previousBossBar = lastBossBar.getAndSet(newBossBar);
+                    for (Player player : MinecraftServer.getConnectionManager().getOnlinePlayers()) {
+                        if (previousBossBar != null) player.hideBossBar(previousBossBar);
+                        player.showBossBar(newBossBar);
+                    }
+                })
+                .repeat(250, ChronoUnit.MILLIS)
+                .schedule();
+
+        MinecraftServer.getSchedulerManager().buildTask(() -> {
+                    task.cancel();
+
+                    if (Environment.isProduction()) {
+                        this.kubernetesModule.getSdk().shutdown(AgonesSDKProto.Empty.getDefaultInstance(), new IgnoredStreamObserver<>());
+                    }
+                })
+                .delay(59, ChronoUnit.SECONDS)
+                .schedule();
     }
 
     public @NotNull TowerMap getMap() {

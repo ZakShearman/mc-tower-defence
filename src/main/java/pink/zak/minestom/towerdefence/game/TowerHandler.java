@@ -4,7 +4,7 @@ import net.minestom.server.MinecraftServer;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.utils.Direction;
 import org.jetbrains.annotations.NotNull;
-import pink.zak.minestom.towerdefence.TowerDefencePlugin;
+import pink.zak.minestom.towerdefence.TowerDefenceModule;
 import pink.zak.minestom.towerdefence.api.event.player.PlayerTowerPlaceEvent;
 import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class TowerHandler {
     private final @NotNull AtomicInteger towerIdCounter = new AtomicInteger(Integer.MIN_VALUE);
-    private final @NotNull TowerDefencePlugin plugin;
+    private final @NotNull TowerDefenceModule plugin;
     private final @NotNull GameHandler gameHandler;
     private final @NotNull Set<PlacedTower<?>> redTowers = ConcurrentHashMap.newKeySet();
     private final @NotNull Set<PlacedTower<?>> blueTowers = ConcurrentHashMap.newKeySet();
@@ -26,7 +26,7 @@ public class TowerHandler {
     private final TowerMap map;
     private Instance instance;
 
-    public TowerHandler(@NotNull TowerDefencePlugin plugin, @NotNull GameHandler gameHandler) {
+    public TowerHandler(@NotNull TowerDefenceModule plugin, @NotNull GameHandler gameHandler) {
         this.plugin = plugin;
         this.gameHandler = gameHandler;
         this.map = gameHandler.getMap();

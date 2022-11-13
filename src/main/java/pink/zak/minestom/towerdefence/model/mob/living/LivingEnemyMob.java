@@ -24,9 +24,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pink.zak.minestom.towerdefence.TowerDefencePlugin;
+import pink.zak.minestom.towerdefence.TowerDefenceModule;
 import pink.zak.minestom.towerdefence.api.event.tower.TowerDamageMobEvent;
-import pink.zak.minestom.towerdefence.cache.TDUserCache;
 import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.game.MobHandler;
@@ -45,13 +44,14 @@ import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedTower;
 import pink.zak.minestom.towerdefence.model.tower.placed.types.CharityTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
-import pink.zak.minestom.towerdefence.model.user.TDUser;
+import pink.zak.minestom.towerdefence.model.user.TDPlayer;
 import pink.zak.minestom.towerdefence.utils.DirectionUtils;
 import pink.zak.minestom.towerdefence.utils.StringUtils;
 
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class LivingEnemyMob extends EntityCreature {
@@ -67,9 +67,8 @@ public class LivingEnemyMob extends EntityCreature {
     protected final List<PathCorner> corners;
 
     protected final Map<StatusEffectType, StatusEffect> statusEffects = Collections.synchronizedMap(new EnumMap<>(StatusEffectType.class));
-    protected final Set<SpeedModifier> speedModifiers = Collections.synchronizedSet(new HashSet<>());
+    protected final Set<SpeedModifier> speedModifiers = new CopyOnWriteArraySet<>();
 
-    private final TDUserCache userCache;
     private final GameHandler gameHandler;
 
     protected int currentCornerIndex;
@@ -84,10 +83,9 @@ public class LivingEnemyMob extends EntityCreature {
 
     private Task attackTask;
 
-    protected LivingEnemyMob(TowerDefencePlugin plugin, GameHandler gameHandler, EnemyMob enemyMob, Instance instance, TowerMap map, GameUser gameUser, int level) {
+    protected LivingEnemyMob(TowerDefenceModule plugin, GameHandler gameHandler, EnemyMob enemyMob, Instance instance, TowerMap map, GameUser gameUser, int level) {
         super(enemyMob.getEntityType());
 
-        this.userCache = plugin.getUserCache();
         this.gameHandler = gameHandler;
 
         this.towerHandler = gameHandler.getTowerHandler();
@@ -115,10 +113,11 @@ public class LivingEnemyMob extends EntityCreature {
         this.setCustomNameVisible(true);
 
         Pos spawnPos = this.team == Team.RED ? map.getRedMobSpawn() : map.getBlueMobSpawn();
+        // todo the issue might be here? Adding the position modifier has a very different effect based on direction
         this.setInstance(instance, spawnPos.add(this.positionModifier, enemyMob.isFlying() ? 5 : 0, this.positionModifier));
     }
 
-    public static LivingEnemyMob create(TowerDefencePlugin plugin, GameHandler gameHandler, EnemyMob enemyMob, int level, Instance instance, TowerMap map, GameUser gameUser) {
+    public static LivingEnemyMob create(TowerDefenceModule plugin, GameHandler gameHandler, EnemyMob enemyMob, int level, Instance instance, TowerMap map, GameUser gameUser) {
         if (enemyMob.getEntityType() == EntityType.LLAMA)
             return new LlamaLivingEnemyMob(plugin, gameHandler, enemyMob, instance, map, gameUser, level);
         else if (enemyMob.getEntityType() == EntityType.BEE)
@@ -128,8 +127,8 @@ public class LivingEnemyMob extends EntityCreature {
     }
 
     private Component createNameComponent(@NotNull Player player) {
-        TDUser tdUser = this.userCache.getUser(player.getUuid());
-        String health = tdUser.getHealthMode().resolve(this);
+        TDPlayer tdPlayer = (TDPlayer) player;
+        String health = tdPlayer.getHealthMode().resolve(this);
         TextComponent.Builder builder = Component.text()
                 .append(Component.text(StringUtils.namespaceToName(this.entityType.name()) + " " + StringUtils.integerToCardinal(this.level.getLevel()), NamedTextColor.DARK_GREEN))
                 .append(Component.text(" | ", NamedTextColor.GREEN))
@@ -155,11 +154,19 @@ public class LivingEnemyMob extends EntityCreature {
     }
 
     private void updatePos() {
-        this.refreshPosition(this.modifyPosition());
-        this.moveDistance += this.level.getMovementSpeed();
-        this.totalDistanceMoved += this.level.getMovementSpeed();
+        double movement = this.level.getMovementSpeed();
+        for (SpeedModifier speedModifier : this.speedModifiers) movement *= speedModifier.getModifier();
+
+        this.refreshPosition(this.modifyPosition(movement));
+        this.moveDistance += movement;
+        this.totalDistanceMoved += movement;
         if (this.nextCorner == null) {
-            if (this.moveDistance >= this.currentCorner.distance() - this.positionModifier) {
+            // detect if we've reached the end
+            int modifier = this.positionModifier;
+            if (this.currentCorner.modify()) {
+                if (this.currentCorner.negativeModifier()) modifier = -modifier;
+            }
+            if (this.moveDistance >= this.currentCorner.distance() - modifier) {
                 this.nextCorner();
             }
         } else if (this.moveDistance >= this.currentCorner.distance() + this.currentCornerLengthModifier) {
@@ -167,11 +174,8 @@ public class LivingEnemyMob extends EntityCreature {
         }
     }
 
-    private Pos modifyPosition() {
+    private Pos modifyPosition(double movement) {
         Pos currentPos = this.getPosition();
-
-        double movement = this.level.getMovementSpeed();
-        for (SpeedModifier speedModifier : this.speedModifiers) movement *= speedModifier.getModifier();
 
         Pos newPos = switch (this.currentCorner.direction()) {
             case EAST -> currentPos.add(movement, 0, 0);
@@ -249,7 +253,7 @@ public class LivingEnemyMob extends EntityCreature {
         Metadata.Entry<?> nameEntry = Metadata.OptChat(this.createNameComponent(player));
         entries.put(2, nameEntry);
         player.sendPacket(new LazyPacket(() -> new EntityMetaDataPacket(getEntityId(), entries)));
-        // Passengers are removed here as i dont need them
+        // Passengers are removed here as i don't need them
 
         // Head position
         player.sendPacket(new EntityHeadLookPacket(getEntityId(), this.position.yaw()));
@@ -277,7 +281,7 @@ public class LivingEnemyMob extends EntityCreature {
         if (this.isDead) return 0;
         if (this.enemyMob.isDamageTypeIgnored(source.getDamageType())) return 0;
 
-        DamageIndicator.create(this.userCache, this, value);
+        DamageIndicator.create(this, value);
 
 
         this.sendPacketToViewersAndSelf(new EntityAnimationPacket(this.getEntityId(), EntityAnimationPacket.Animation.TAKE_DAMAGE));
@@ -285,7 +289,7 @@ public class LivingEnemyMob extends EntityCreature {
         float damageDealt = this.isDead ? value : value - Math.abs(this.health);
 
         if (this.isDead) {
-            Set<PlacedTower<?>> towers = this.team == Team.BLUE ? this.towerHandler.getBlueTowers() : this.towerHandler.getRedTowers();
+            Set<PlacedTower<?>> towers = this.team == Team.RED ? this.towerHandler.getRedTowers() : this.towerHandler.getBlueTowers();
             double multiplier = 1;
             for (PlacedTower<?> tower : towers) {
                 if (tower instanceof CharityTower charityTower && tower.getBasePoint().distance(this.position) <= tower.getLevel().getRange()) {
@@ -294,6 +298,7 @@ public class LivingEnemyMob extends EntityCreature {
             }
             double finalMultiplier = multiplier;
             source.getOwningUser().updateAndGetCoins(current -> (int) Math.floor(current + (this.level.getKillReward() * finalMultiplier)));
+            source.getOwningUser().updateAndGetMana(current -> current + this.level.getManaKillReward());
         }
 
         final SoundEvent sound = DamageType.VOID.getSound(this);
@@ -312,12 +317,16 @@ public class LivingEnemyMob extends EntityCreature {
         if (this.enemyMob.isEffectIgnored(statusEffect.type()))
             throw new IllegalArgumentException("Tried to apply ignored status effect to mob (%s)".formatted(statusEffect.type()));
 
-        this.statusEffects.put(statusEffect.type(), statusEffect);
+        StatusEffect<?> removedEffect = this.statusEffects.put(statusEffect.type(), statusEffect);
+        if (removedEffect != null) {
+            removedEffect.remove();
+        }
+
         this.updateCustomName();
     }
 
-    public void removeStatusEffect(@NotNull StatusEffectType type) {
-        if (this.statusEffects.remove(type) != null) this.updateCustomName();
+    public void removeStatusEffect(@NotNull StatusEffect<?> statusEffect) {
+        if (this.statusEffects.remove(statusEffect.type(), statusEffect)) this.updateCustomName();
     }
 
     public void applySpeedModifier(@NotNull SpeedModifier speedModifier) {

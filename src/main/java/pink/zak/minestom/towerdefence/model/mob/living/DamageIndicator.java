@@ -4,16 +4,17 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.coordinate.Vec;
 import net.minestom.server.entity.Entity;
 import net.minestom.server.entity.EntityType;
+import net.minestom.server.entity.Player;
 import net.minestom.server.entity.metadata.other.AreaEffectCloudMeta;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.utils.time.TimeUnit;
-import pink.zak.minestom.towerdefence.cache.TDUserCache;
 import pink.zak.minestom.towerdefence.game.MobHandler;
-import pink.zak.minestom.towerdefence.model.user.TDUser;
+import pink.zak.minestom.towerdefence.model.user.TDPlayer;
 
 import java.time.Duration;
 
@@ -25,7 +26,7 @@ public class DamageIndicator extends Entity {
 
     private final Vec[] vectors = MobHandler.DAMAGE_INDICATOR_CACHE.getPreCalculatedVelocity();
 
-    private DamageIndicator(TDUserCache userCache, Instance instance, Pos spawnPosition, Component text) {
+    private DamageIndicator(Instance instance, Pos spawnPosition, Component text) {
         super(EntityType.AREA_EFFECT_CLOUD);
 
         AreaEffectCloudMeta meta = (AreaEffectCloudMeta) this.getEntityMeta();
@@ -39,16 +40,18 @@ public class DamageIndicator extends Entity {
         this.setAutoViewable(false);
 
         this.setInstance(instance, spawnPosition.add(0, OFFSET_Y, 0));
-        for (TDUser user : userCache.getAllLoadedUsers())
-            if (user.isDamageIndicators() && user.getPlayer() != null && user.getPlayer().getDistance(this) < 20) // distance check probably isnt necessary but save some packets
-                this.addViewer(user.getPlayer());
+        for (Player player : MinecraftServer.getConnectionManager().getOnlinePlayers()) {
+            TDPlayer tdPlayer = (TDPlayer) player;
+            if (tdPlayer.isDamageIndicators() &&  tdPlayer.getDistance(this) < 20) // distance check probably isn't necessary but save some packets
+                this.addViewer(tdPlayer);
+        }
 
         this.position = spawnPosition;
     }
 
-    public static void create(TDUserCache userCache, LivingEnemyMob enemyMob, double damage) {
+    public static void create(LivingEnemyMob enemyMob, double damage) {
         Component text = NAME_CACHE.get(damage, key -> Component.text(damage, NamedTextColor.RED));
-        new DamageIndicator(userCache, enemyMob.getInstance(), enemyMob.getPosition().add(0, enemyMob.getEntityType().height(), 0), text);
+        new DamageIndicator(enemyMob.getInstance(), enemyMob.getPosition().add(0, enemyMob.getEntityType().height(), 0), text);
     }
 
     @Override

@@ -15,7 +15,7 @@ import net.minestom.server.inventory.PlayerInventory;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import org.jetbrains.annotations.NotNull;
-import pink.zak.minestom.towerdefence.TowerDefencePlugin;
+import pink.zak.minestom.towerdefence.TowerDefenceModule;
 import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.model.map.Area;
@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class EditorSubCommand implements CommandExecutor {
-    private final TowerDefencePlugin plugin;
+    private final TowerDefenceModule plugin;
     private final MapStorage mapStorage;
     private final TowerMap map;
     private final Map<Player, EditorInfo> editors = new ConcurrentHashMap<>();
@@ -36,7 +36,7 @@ public class EditorSubCommand implements CommandExecutor {
     private final ItemStack redTeamWandItem;
     private final ItemStack blueTeamWandItem;
 
-    public EditorSubCommand(TowerDefencePlugin plugin) {
+    public EditorSubCommand(TowerDefenceModule plugin) {
         this.plugin = plugin;
         this.mapStorage = plugin.getMapStorage();
         this.map = this.mapStorage.getMap();
@@ -61,7 +61,7 @@ public class EditorSubCommand implements CommandExecutor {
                 .addListener(PlayerStartDiggingEvent.class, event -> { // left click block
                     Player player = event.getPlayer();
                     EditorInfo editorInfo = this.editors.get(player);
-                    if (editorInfo == null || !player.getItemInMainHand().getMaterial().equals(Material.DIAMOND_HOE))
+                    if (editorInfo == null || !player.getItemInMainHand().material().equals(Material.DIAMOND_HOE))
                         return;
                     Point clickPoint = event.getBlockPosition();
 
@@ -72,7 +72,7 @@ public class EditorSubCommand implements CommandExecutor {
                 .addListener(PlayerBlockInteractEvent.class, event -> { // right click block
                     Player player = event.getPlayer();
                     EditorInfo editorInfo = this.editors.get(player);
-                    if (event.getHand() != Player.Hand.MAIN || editorInfo == null || !player.getItemInMainHand().getMaterial().equals(Material.DIAMOND_HOE))
+                    if (event.getHand() != Player.Hand.MAIN || editorInfo == null || !player.getItemInMainHand().material().equals(Material.DIAMOND_HOE))
                         return;
                     Point clickPoint = event.getBlockPosition();
 
@@ -82,7 +82,7 @@ public class EditorSubCommand implements CommandExecutor {
                 })
                 .addListener(PlayerUseItemEvent.class, event -> { // right click air
                     Player player = event.getPlayer();
-                    if (event.getHand() != Player.Hand.MAIN || !ViewPath.isClear(event.getPlayer()) || !player.getItemInMainHand().getMaterial().equals(Material.DIAMOND_HOE)) {
+                    if (event.getHand() != Player.Hand.MAIN || !ViewPath.isClear(event.getPlayer()) || !player.getItemInMainHand().material().equals(Material.DIAMOND_HOE)) {
                         return;
                     }
                     EditorInfo editorInfo = this.editors.get(player);
@@ -150,7 +150,7 @@ public class EditorSubCommand implements CommandExecutor {
 
     private void removeEditorItems(Player player) {
         PlayerInventory inventory = player.getInventory();
-        if (inventory.getItemStack(8).getMaterial().equals(Material.DIAMOND_HOE)) { // check they still have the item
+        if (inventory.getItemStack(8).material().equals(Material.DIAMOND_HOE)) { // check they still have the item
             inventory.setItemStack(8, ItemStack.AIR);
         }
     }

@@ -14,7 +14,7 @@ import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import net.minestom.server.utils.time.TimeUnit;
 import org.jetbrains.annotations.NotNull;
-import pink.zak.minestom.towerdefence.TowerDefencePlugin;
+import pink.zak.minestom.towerdefence.TowerDefenceModule;
 import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.game.MobHandler;
@@ -30,14 +30,14 @@ public class MobMenuHandler {
     private static final @NotNull Component SEND_TITLE = Component.text("Send Troops", NamedTextColor.DARK_GRAY);
     private static final @NotNull Component UPGRADE_TITLE = Component.text("Upgrade Troops", NamedTextColor.DARK_GRAY);
     private static final @NotNull Map<EnemyMob, Component> MOB_UPGRADE_TITLES = new HashMap<>();
-    private final @NotNull TowerDefencePlugin plugin;
+    private final @NotNull TowerDefenceModule plugin;
     private final @NotNull GameHandler gameHandler;
     private final @NotNull MobHandler mobHandler;
     private final @NotNull MobStorage mobStorage;
     private final @NotNull ItemStack chestItem;
     private final @NotNull ItemStack upgradeItem;
 
-    public MobMenuHandler(@NotNull TowerDefencePlugin plugin, @NotNull GameHandler gameHandler) {
+    public MobMenuHandler(@NotNull TowerDefenceModule plugin, @NotNull GameHandler gameHandler) {
         for (EnemyMob enemyMob : plugin.getMobStorage().getEnemyMobs().values())
             MOB_UPGRADE_TITLES.put(enemyMob, Component.text("Upgrade " + enemyMob.getCommonName()));
 
@@ -61,7 +61,7 @@ public class MobMenuHandler {
 
     public void onGameStart() {
         this.plugin.getEventNode().addListener(PlayerUseItemEvent.class, event -> {
-            if (this.plugin.getGameState() == GameState.IN_PROGRESS && event.getItemStack().getMaterial() == Material.CHEST) {
+            if (this.plugin.getGameState() == GameState.IN_PROGRESS && event.getItemStack().material() == Material.CHEST) {
                 this.createGui(this.gameHandler, event.getPlayer());
             }
         });

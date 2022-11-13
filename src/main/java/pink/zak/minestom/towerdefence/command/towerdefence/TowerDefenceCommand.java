@@ -7,14 +7,14 @@ import net.minestom.server.command.builder.arguments.ArgumentLiteral;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.command.builder.arguments.ArgumentWord;
 import net.minestom.server.entity.Player;
-import pink.zak.minestom.towerdefence.TowerDefencePlugin;
+import pink.zak.minestom.towerdefence.TowerDefenceModule;
 import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
 import pink.zak.minestom.towerdefence.storage.MapStorage;
 
 public class TowerDefenceCommand extends Command {
 
-    public TowerDefenceCommand(TowerDefencePlugin plugin) {
+    public TowerDefenceCommand(TowerDefenceModule plugin) {
         super("towerdefence", "td");
         EditorSubCommand editorSubCommand = new EditorSubCommand(plugin);
 
@@ -22,7 +22,7 @@ public class TowerDefenceCommand extends Command {
         TowerMap map = mapStorage.getMap();
 
 
-        this.setCondition((sender, commandString) -> { // todo dont just use my username - use a proper permission system
+        this.setCondition((sender, commandString) -> { // todo don't just use my username - use a proper permission system
             boolean accessRequest = commandString == null;
             if (sender instanceof Player player) {
                 if (!player.getUsername().equals("Expectational")) {

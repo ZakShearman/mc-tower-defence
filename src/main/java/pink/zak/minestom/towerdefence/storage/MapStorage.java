@@ -1,6 +1,6 @@
 package pink.zak.minestom.towerdefence.storage;
 
-import pink.zak.minestom.towerdefence.TowerDefencePlugin;
+import pink.zak.minestom.towerdefence.TowerDefenceModule;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
 import pink.zak.minestom.towerdefence.utils.FileUtils;
 
@@ -11,8 +11,8 @@ public class MapStorage {
     private final Path filePath;
     private final TowerMap map;
 
-    public MapStorage(TowerDefencePlugin plugin) {
-        this.filePath = plugin.getDataDirectory().resolve("map.json");
+    public MapStorage(TowerDefenceModule plugin) {
+        this.filePath = Path.of("extensions/TowerDefence").resolve("map.json");
         if (Files.exists(this.filePath)) {
             this.map = this.load();
         } else {

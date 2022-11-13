@@ -8,21 +8,21 @@ group = "pink.zak.minestom"
 version = "1.0-SNAPSHOT"
 
 repositories {
-    mavenLocal()
     mavenCentral()
-    maven("https://mvn.zak.pink/shapshots") // pre-release builds
+    mavenLocal()
+    maven("https://repo.towerdefence.cc/snapshots")
+    maven("https://repo.towerdefence.cc/releases")
     maven("https://jitpack.io")
 }
 
 dependencies {
-    compileOnly("com.github.Minestom:Minestom:18c46481f4")
+    implementation("cc.towerdefence.minestom:core:04dbfa0")
     implementation("net.kyori:adventure-text-minimessage:4.11.0")
-    implementation("com.typesafe:config:1.4.2")
 
     implementation("com.github.ben-manes.caffeine:caffeine:3.1.1")
     implementation("org.mongodb:mongodb-driver-sync:4.7.1")
 
-    testImplementation("com.github.Minestom:Minestom:18c46481f4")
+    testImplementation("cc.towerdefence.minestom:core:04dbfa0")
 
     //testImplementation("net.minestom.server:Minestom:1.0")
 }
@@ -30,14 +30,6 @@ dependencies {
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
-}
-
-sonarqube {
-    properties {
-        property("sonar.projectKey", "ZakShearman_mc-tower-defence")
-        property("sonar.organization", "zakshearman")
-        property("sonar.host.url", "https://sonarcloud.io")
-    }
 }
 
 tasks.register("depsize") {

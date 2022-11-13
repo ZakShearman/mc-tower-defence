@@ -4,7 +4,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.color.Color;
-import net.minestom.server.entity.Player;
 import net.minestom.server.event.inventory.InventoryPreClickEvent;
 import net.minestom.server.event.player.PlayerUseItemEvent;
 import net.minestom.server.inventory.Inventory;
@@ -13,10 +12,9 @@ import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import net.minestom.server.item.metadata.PotionMeta;
 import org.jetbrains.annotations.NotNull;
-import pink.zak.minestom.towerdefence.TowerDefencePlugin;
-import pink.zak.minestom.towerdefence.cache.TDUserCache;
+import pink.zak.minestom.towerdefence.TowerDefenceModule;
 import pink.zak.minestom.towerdefence.enums.GameState;
-import pink.zak.minestom.towerdefence.model.user.TDUser;
+import pink.zak.minestom.towerdefence.model.user.TDPlayer;
 import pink.zak.minestom.towerdefence.model.user.settings.FlySpeed;
 import pink.zak.minestom.towerdefence.model.user.settings.HealthDisplayMode;
 import pink.zak.minestom.towerdefence.model.user.settings.ParticleThickness;
@@ -31,12 +29,10 @@ public class UserSettingsMenuHandler {
             .displayName(Component.text("User Settings", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
             .build();
 
-    private final @NotNull TowerDefencePlugin plugin;
-    private final @NotNull TDUserCache userCache;
+    private final @NotNull TowerDefenceModule plugin;
 
-    public UserSettingsMenuHandler(@NotNull TowerDefencePlugin plugin) {
+    public UserSettingsMenuHandler(@NotNull TowerDefenceModule plugin) {
         this.plugin = plugin;
-        this.userCache = plugin.getUserCache();
     }
 
     public static @NotNull ItemStack getMenuItem() {
@@ -45,21 +41,19 @@ public class UserSettingsMenuHandler {
 
     public void onGameStart() {
         this.plugin.getEventNode().addListener(PlayerUseItemEvent.class, event -> {
-            if (this.plugin.getGameState() == GameState.IN_PROGRESS && event.getItemStack().getMaterial() == Material.COMMAND_BLOCK_MINECART) {
-                this.createGui(event.getPlayer());
+            if (this.plugin.getGameState() == GameState.IN_PROGRESS && event.getItemStack().material() == Material.COMMAND_BLOCK_MINECART) {
+                this.createGui((TDPlayer) event.getPlayer());
             }
         });
         this.startListener();
     }
 
-    private void createGui(@NotNull Player player) {
-        TDUser user = this.userCache.getUser(player.getUuid());
-
+    private void createGui(@NotNull TDPlayer player) {
         Inventory inventory = new Inventory(InventoryType.CHEST_1_ROW, MENU_TITLE);
-        inventory.setItemStack(1, this.createDamageIndicatorsItem(user));
-        inventory.setItemStack(3, this.createHealthDisplayItem(user));
-        inventory.setItemStack(5, this.createFlySpeedItem(user));
-        inventory.setItemStack(7, this.createThinParticlesItem(user));
+        inventory.setItemStack(1, this.createDamageIndicatorsItem(player));
+        inventory.setItemStack(3, this.createHealthDisplayItem(player));
+        inventory.setItemStack(5, this.createFlySpeedItem(player));
+        inventory.setItemStack(7, this.createThinParticlesItem(player));
 
         player.openInventory(inventory);
     }
@@ -71,31 +65,30 @@ public class UserSettingsMenuHandler {
                 return;
             event.setCancelled(true);
 
-            Player player = event.getPlayer();
-            TDUser user = this.userCache.getUser(player.getUuid());
+            TDPlayer player = (TDPlayer) event.getPlayer();
             switch (event.getSlot()) {
                 case 1 -> {
-                    user.setDamageIndicators(!user.isDamageIndicators());
-                    inventory.setItemStack(1, this.createDamageIndicatorsItem(user));
+                    player.setDamageIndicators(!player.isDamageIndicators());
+                    inventory.setItemStack(1, this.createDamageIndicatorsItem(player));
                 }
                 case 3 -> {
-                    user.setHealthMode(user.getHealthMode().next());
-                    inventory.setItemStack(3, this.createHealthDisplayItem(user));
+                    player.setHealthMode(player.getHealthMode().next());
+                    inventory.setItemStack(3, this.createHealthDisplayItem(player));
                 }
                 case 5 -> {
-                    user.setFlySpeed(user.getFlySpeed().next());
-                    player.setFlyingSpeed(user.getFlySpeed().getSpeed());
-                    inventory.setItemStack(5, this.createFlySpeedItem(user));
+                    player.setFlySpeed(player.getFlySpeed().next());
+                    player.setFlyingSpeed(player.getFlySpeed().getSpeed());
+                    inventory.setItemStack(5, this.createFlySpeedItem(player));
                 }
                 case 7 -> {
-                    user.setParticleThickness(user.getParticleThickness().next());
-                    inventory.setItemStack(7, this.createThinParticlesItem(user));
+                    player.setParticleThickness(player.getParticleThickness().next());
+                    inventory.setItemStack(7, this.createThinParticlesItem(player));
                 }
             }
         });
     }
 
-    private @NotNull ItemStack createDamageIndicatorsItem(@NotNull TDUser user) {
+    private @NotNull ItemStack createDamageIndicatorsItem(@NotNull TDPlayer user) {
         return ItemStack.builder(Material.OAK_SIGN)
                 .displayName(Component.text("Show Damage Indicators", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false))
                 .lore(
@@ -105,7 +98,7 @@ public class UserSettingsMenuHandler {
                 .build();
     }
 
-    private @NotNull ItemStack createHealthDisplayItem(@NotNull TDUser user) {
+    private @NotNull ItemStack createHealthDisplayItem(@NotNull TDPlayer user) {
         HealthDisplayMode healthMode = user.getHealthMode();
         List<Component> lore = new ArrayList<>();
 
@@ -120,7 +113,7 @@ public class UserSettingsMenuHandler {
                 .build();
     }
 
-    private @NotNull ItemStack createFlySpeedItem(@NotNull TDUser user) {
+    private @NotNull ItemStack createFlySpeedItem(@NotNull TDPlayer user) {
         FlySpeed flySpeed = user.getFlySpeed();
         List<Component> lore = new ArrayList<>();
 
@@ -135,7 +128,7 @@ public class UserSettingsMenuHandler {
                 .build();
     }
 
-    private @NotNull ItemStack createThinParticlesItem(@NotNull TDUser user) {
+    private @NotNull ItemStack createThinParticlesItem(@NotNull TDPlayer user) {
         List<Component> lore = new ArrayList<>();
 
         ParticleThickness thickness = user.getParticleThickness();

@@ -6,7 +6,7 @@ import net.minestom.server.instance.block.Block;
 import net.minestom.server.item.Material;
 import net.minestom.server.tag.Tag;
 import net.minestom.server.utils.Direction;
-import pink.zak.minestom.towerdefence.TowerDefencePlugin;
+import pink.zak.minestom.towerdefence.TowerDefenceModule;
 import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.enums.TowerType;
 import pink.zak.minestom.towerdefence.game.GameHandler;
@@ -15,10 +15,7 @@ import pink.zak.minestom.towerdefence.model.tower.config.Tower;
 import pink.zak.minestom.towerdefence.model.tower.config.TowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.config.relative.RelativeBlock;
 import pink.zak.minestom.towerdefence.model.tower.config.relative.RelativePoint;
-import pink.zak.minestom.towerdefence.model.tower.placed.types.BlizzardTower;
-import pink.zak.minestom.towerdefence.model.tower.placed.types.BomberTower;
-import pink.zak.minestom.towerdefence.model.tower.placed.types.CharityTower;
-import pink.zak.minestom.towerdefence.model.tower.placed.types.LightningTower;
+import pink.zak.minestom.towerdefence.model.tower.placed.types.*;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 
 import java.util.Set;
@@ -60,7 +57,7 @@ public abstract class PlacedTower<T extends TowerLevel> {
         this.placeBase();
     }
 
-    public static PlacedTower<?> create(TowerDefencePlugin plugin, GameHandler gameHandler, Instance instance, Tower tower, Material towerBaseMaterial, int id, GameUser owner, Point basePoint, Direction facing) {
+    public static PlacedTower<?> create(TowerDefenceModule plugin, GameHandler gameHandler, Instance instance, Tower tower, Material towerBaseMaterial, int id, GameUser owner, Point basePoint, Direction facing) {
         TowerType towerType = tower.getType();
         return switch (towerType) {
             case BOMBER ->
@@ -68,7 +65,8 @@ public abstract class PlacedTower<T extends TowerLevel> {
             case BLIZZARD -> new BlizzardTower(instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1, gameHandler.getMap());
             case CHARITY -> new CharityTower(instance, tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
             case LIGHTNING ->
-                    new LightningTower(plugin, instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
+                    new LightningTower(instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
+            case NECROMANCER -> new NecromancerTower(instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
             default -> throw new RuntimeException("Missing tower - %s is not coded in but was created".formatted(towerType));
         };
     }

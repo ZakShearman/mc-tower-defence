@@ -1,7 +1,7 @@
 package pink.zak.minestom.towerdefence.scoreboard.types;
 
 import net.minestom.server.entity.Player;
-import pink.zak.minestom.towerdefence.TowerDefencePlugin;
+import pink.zak.minestom.towerdefence.TowerDefenceModule;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.scoreboard.TowerScoreboard;
 import pink.zak.minestom.towerdefence.scoreboard.types.game.GameScoreboard;
@@ -27,7 +27,7 @@ public class GameScoreboardManager implements TowerScoreboard {
         return false;
     }
 
-    public void createScoreboard(TowerDefencePlugin plugin, GameUser gameUser) {
+    public void createScoreboard(TowerDefenceModule plugin, GameUser gameUser) {
         this.scoreboards.put(gameUser.getPlayer().getUuid(), new GameScoreboard(plugin, gameUser));
     }
 }
