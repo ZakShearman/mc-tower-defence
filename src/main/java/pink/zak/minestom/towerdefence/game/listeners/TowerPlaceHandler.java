@@ -23,7 +23,7 @@ import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.storage.TowerStorage;
 
 public class TowerPlaceHandler {
-    private final @NotNull TowerDefenceModule plugin;
+    private final @NotNull TowerDefenceModule module;
     private final @NotNull GameHandler gameHandler;
     private final @NotNull TowerHandler towerHandler;
     private final @NotNull TowerStorage towerStorage;
@@ -31,19 +31,19 @@ public class TowerPlaceHandler {
     private final @NotNull Inventory towerPlaceGui;
     private final @NotNull TowerMap towerMap;
 
-    public TowerPlaceHandler(@NotNull TowerDefenceModule plugin, @NotNull GameHandler gameHandler) {
-        this.plugin = plugin;
+    public TowerPlaceHandler(@NotNull TowerDefenceModule module, @NotNull GameHandler gameHandler) {
+        this.module = module;
         this.gameHandler = gameHandler;
         this.towerHandler = gameHandler.getTowerHandler();
-        this.towerStorage = plugin.getTowerStorage();
+        this.towerStorage = module.getTowerStorage();
 
         this.towerPlaceGui = this.createTowerPlaceGui();
-        this.towerMap = plugin.getMapStorage().getMap();
+        this.towerMap = module.getInstance().getTowerMap();
 
-        plugin.getEventNode()
+        module.getEventNode()
                 .addListener(PlayerBlockInteractEvent.class, event -> {
                     Player player = event.getPlayer();
-                    if (event.getHand() != Player.Hand.MAIN || plugin.getGameState() != GameState.IN_PROGRESS)
+                    if (event.getHand() != Player.Hand.MAIN || module.getGameState() != GameState.IN_PROGRESS)
                         return;
                     GameUser gameUser = this.gameHandler.getGameUser(player);
                     if (gameUser == null || event.getBlock().registry().material() != this.towerMap.getTowerBaseMaterial())
@@ -65,7 +65,7 @@ public class TowerPlaceHandler {
             inventory.setItemStack(tower.getGuiSlot(), tower.getBaseMenuItem());
         }
 
-        this.plugin.getEventNode().addListener(InventoryPreClickEvent.class, event -> {
+        this.module.getEventNode().addListener(InventoryPreClickEvent.class, event -> {
             Inventory checkInventory = event.getInventory();
             if (event.getClickType() == ClickType.START_DOUBLE_CLICK || checkInventory == null || checkInventory.getTitle() != title)
                 return;

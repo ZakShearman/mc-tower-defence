@@ -10,17 +10,16 @@ import net.minestom.server.entity.Player;
 import pink.zak.minestom.towerdefence.TowerDefenceModule;
 import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
-import pink.zak.minestom.towerdefence.storage.MapStorage;
+import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;
 
 public class TowerDefenceCommand extends Command {
 
-    public TowerDefenceCommand(TowerDefenceModule plugin) {
+    public TowerDefenceCommand(TowerDefenceModule module) {
         super("towerdefence", "td");
-        EditorSubCommand editorSubCommand = new EditorSubCommand(plugin);
+        EditorSubCommand editorSubCommand = new EditorSubCommand(module);
 
-        MapStorage mapStorage = plugin.getMapStorage();
-        TowerMap map = mapStorage.getMap();
-
+        TowerDefenceInstance instance = module.getInstance();
+        TowerMap map = instance.getTowerMap();
 
         this.setCondition((sender, commandString) -> { // todo don't just use my username - use a proper permission system
             boolean accessRequest = commandString == null;
@@ -57,12 +56,12 @@ public class TowerDefenceCommand extends Command {
                 case "spectator" -> map.setSpectatorSpawn(player.getPosition());
             }
             player.sendMessage(Component.text("Set the " + teamId + " spawn to your position", NamedTextColor.GREEN));
-            mapStorage.save();
+            instance.saveTowerMapData();
         }, setArg, spawnArg, teamArg);
 
-        GameHandler gameHandler = plugin.getGameHandler();
+        GameHandler gameHandler = module.getGameHandler();
         this.addSyntax((sender, context) -> {
-            gameHandler.start(((Player) sender).getInstance());
+            gameHandler.start();
             sender.sendMessage(Component.text("Force starting the game", NamedTextColor.RED));
         }, forceStartArg);
     }

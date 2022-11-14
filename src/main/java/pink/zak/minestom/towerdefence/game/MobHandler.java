@@ -1,7 +1,6 @@
 package pink.zak.minestom.towerdefence.game;
 
 import net.minestom.server.MinecraftServer;
-import net.minestom.server.instance.Instance;
 import net.minestom.server.timer.Task;
 import net.minestom.server.utils.time.TimeUnit;
 import org.jetbrains.annotations.NotNull;
@@ -13,6 +12,7 @@ import pink.zak.minestom.towerdefence.model.mob.QueuedEnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingEnemyMob;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
+import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -27,29 +27,30 @@ public class MobHandler {
     private final @NotNull Set<LivingEnemyMob> redSideMobs = ConcurrentHashMap.newKeySet();
     private final @NotNull Set<LivingEnemyMob> blueSideMobs = ConcurrentHashMap.newKeySet();
 
-    private final @NotNull TowerDefenceModule plugin;
+    private final @NotNull TowerDefenceModule module;
     private final @NotNull GameHandler gameHandler;
 
     private final @NotNull TowerHandler towerHandler;
+    private final @NotNull TowerDefenceInstance instance;
     private final @NotNull TowerMap map;
-    private Instance instance;
 
     private Task attackUpdateTask;
 
-    public MobHandler(@NotNull TowerDefenceModule plugin, @NotNull GameHandler gameHandler) {
-        this.plugin = plugin;
+    public MobHandler(@NotNull TowerDefenceModule module, @NotNull GameHandler gameHandler) {
+        this.module = module;
         this.gameHandler = gameHandler;
 
         this.towerHandler = gameHandler.getTowerHandler();
-        this.map = gameHandler.getMap();
+        this.instance = module.getInstance();
+        this.map = this.instance.getTowerMap();
 
-        DAMAGE_INDICATOR_CACHE = new DamageIndicatorCache(plugin);
+        DAMAGE_INDICATOR_CACHE = new DamageIndicatorCache(module);
 
         this.startUpdatingAttackingTowers();
     }
 
     public void spawnMob(@NotNull QueuedEnemyMob queuedEnemyMob, @NotNull GameUser spawner) {
-        LivingEnemyMob mob = LivingEnemyMob.create(this.plugin, this.gameHandler, queuedEnemyMob.mob(), queuedEnemyMob.level().getLevel(), this.instance, this.map, spawner);
+        LivingEnemyMob mob = LivingEnemyMob.create(this.module, this.gameHandler, queuedEnemyMob.mob(), queuedEnemyMob.level().getLevel(), this.instance, this.map, spawner);
         // todo invert later
         if (spawner.getTeam() == Team.RED)
             this.redSideMobs.add(mob);
@@ -93,10 +94,6 @@ public class MobHandler {
             }
             tower.setTargets(newTargets);
         }
-    }
-
-    public void setInstance(Instance instance) {
-        this.instance = instance;
     }
 
     public @NotNull Set<LivingEnemyMob> getRedSideMobs() {

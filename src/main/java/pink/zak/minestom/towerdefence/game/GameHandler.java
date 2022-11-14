@@ -32,6 +32,7 @@ import pink.zak.minestom.towerdefence.model.mob.config.EnemyMob;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.model.user.LobbyPlayer;
 import pink.zak.minestom.towerdefence.model.user.TDPlayer;
+import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -47,6 +48,7 @@ import java.util.stream.Collectors;
 
 public class GameHandler {
     private final @NotNull TowerDefenceModule plugin;
+    private final @NotNull TowerDefenceInstance instance;
     private final @NotNull TowerMap map;
     private final @NotNull LobbyManager lobbyManager;
     private final KubernetesModule kubernetesModule;
@@ -61,13 +63,13 @@ public class GameHandler {
     private final @NotNull AtomicInteger blueTowerHealth = new AtomicInteger(10_000);
     private final @NotNull Map<Player, GameUser> users = new HashMap<>();
     private final AtomicBoolean ended = new AtomicBoolean(false);
-    private Instance instance;
     private Hologram redTowerHologram;
     private Hologram blueTowerHologram;
 
     public GameHandler(@NotNull TowerDefenceModule module, @NotNull LobbyManager lobbyManager) {
         this.plugin = module;
-        this.map = module.getMapStorage().getMap();
+        this.instance = module.getInstance();
+        this.map = this.instance.getTowerMap();
         this.lobbyManager = lobbyManager;
         this.kubernetesModule = module.getKubernetesModule();
 
@@ -87,12 +89,8 @@ public class GameHandler {
         module.getEventNode().addListener(PlayerDisconnectEvent.class, event -> this.users.remove(event.getPlayer()));
     }
 
-    public void start(@NotNull Instance instance) {
+    public void start() {
         this.plugin.setGameState(GameState.IN_PROGRESS);
-
-        this.instance = instance;
-        this.mobHandler.setInstance(instance);
-        this.towerHandler.setInstance(instance);
 
         Set<LobbyPlayer> lobbyPlayers = this.lobbyManager.getLobbyPlayers();
         Set<LobbyPlayer> redPlayers = lobbyPlayers.stream().filter(lobbyPlayer -> lobbyPlayer.getTeam() == Team.RED).collect(Collectors.toSet());
@@ -210,10 +208,6 @@ public class GameHandler {
                 })
                 .delay(59, ChronoUnit.SECONDS)
                 .schedule();
-    }
-
-    public @NotNull TowerMap getMap() {
-        return this.map;
     }
 
     public @NotNull MobHandler getMobHandler() {

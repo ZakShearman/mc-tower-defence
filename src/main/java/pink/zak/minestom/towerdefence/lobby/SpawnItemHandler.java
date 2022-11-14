@@ -54,16 +54,9 @@ public class SpawnItemHandler {
                     // call updateTeamItems before adding ItemStacks to inv to save packets :)
                     this.updateTeamItems();
 
-                    Player player = event.getPlayer();
+                    TDPlayer player = (TDPlayer) event.getPlayer();
                     player.getInventory().setItemStack(0, this.redItem);
                     player.getInventory().setItemStack(1, this.blueItem);
-
-                    // todo update timer
-//                    if (this.plugin.getGameState() != GameState.IN_PROGRESS) {
-//                        MinecraftServer.getSchedulerManager().buildTask(() -> {
-//                            this.plugin.getGameHandler().start(player.getInstance());
-//                        }).delay(1, TimeUnit.SECOND).schedule();
-//                    }
                 })
                 .addListener(InventoryPreClickEvent.class, event -> {
                     if (event.getClickType() == ClickType.START_DOUBLE_CLICK) return;
@@ -86,6 +79,7 @@ public class SpawnItemHandler {
                 player.sendMessage(Component.text("You are now on the red team", NamedTextColor.RED));
                 this.lobbyManager.setPlayerTeam(lobbyPlayer, Team.RED);
 
+                player.setDisplayName(Component.text(player.getUsername(), lobbyPlayer.getTeam().getColor()));
                 this.updateTeamItems();
 
                 GLOBAL_EVENT_HANDLER.call(new PlayerTeamSwitchEvent(Team.RED, Team.BLUE, player));
@@ -97,6 +91,7 @@ public class SpawnItemHandler {
                 player.sendMessage(Component.text("You are now on the blue team", NamedTextColor.AQUA));
                 this.lobbyManager.setPlayerTeam(lobbyPlayer, Team.BLUE);
 
+                player.setDisplayName(Component.text(player.getUsername(), lobbyPlayer.getTeam().getColor()));
                 this.updateTeamItems();
 
                 GLOBAL_EVENT_HANDLER.call(new PlayerTeamSwitchEvent(Team.BLUE, Team.RED, player));

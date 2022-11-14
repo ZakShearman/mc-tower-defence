@@ -14,13 +14,10 @@ import net.minestom.server.event.Event;
 import net.minestom.server.event.EventNode;
 import net.minestom.server.event.player.PlayerLoginEvent;
 import net.minestom.server.event.server.ServerTickMonitorEvent;
-import net.minestom.server.instance.Instance;
 import net.minestom.server.monitoring.BenchmarkManager;
 import net.minestom.server.monitoring.TickMonitor;
 import net.minestom.server.utils.MathUtils;
-import net.minestom.server.utils.NamespaceID;
 import net.minestom.server.utils.time.TimeUnit;
-import net.minestom.server.world.DimensionType;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.cache.TDUserLoader;
 import pink.zak.minestom.towerdefence.command.towerdefence.TowerDefenceCommand;
@@ -29,10 +26,10 @@ import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.listener.ProtectionHandler;
 import pink.zak.minestom.towerdefence.lobby.LobbyManager;
 import pink.zak.minestom.towerdefence.scoreboard.ScoreboardManager;
-import pink.zak.minestom.towerdefence.storage.MapStorage;
 import pink.zak.minestom.towerdefence.storage.MobStorage;
 import pink.zak.minestom.towerdefence.storage.TowerStorage;
-import pink.zak.minestom.towerdefence.utils.mechanic.CustomExplosion;
+import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;
+import pink.zak.minestom.towerdefence.world.WorldLoader;
 
 import java.time.Duration;
 import java.util.Collection;
@@ -44,12 +41,13 @@ public class TowerDefenceModule extends Module {
 
     private final KubernetesModule kubernetesModule;
 
+    private TowerDefenceInstance instance;
+
     private GameState gameState = GameState.LOBBY;
 
     private TDUserLoader userCache;
 
     private MobStorage mobStorage;
-    private MapStorage mapStorage;
     private TowerStorage towerStorage;
     private ScoreboardManager scoreboardManager;
 
@@ -71,26 +69,21 @@ public class TowerDefenceModule extends Module {
         EVENT_NODE = this.getEventNode();
         this.startBenchmark();
 
-        DimensionType dimensionType = DimensionType.builder(NamespaceID.from("towerdefence:main"))
-                .fixedTime(1000L)
-                .skylightEnabled(true)
-                .build();
-        MinecraftServer.getDimensionTypeManager().addDimension(dimensionType);
-        Instance instance = MinecraftServer.getInstanceManager().createInstanceContainer(dimensionType);
+        WorldLoader worldLoader = new WorldLoader();
+        this.instance = worldLoader.load();
 
-        instance.setExplosionSupplier((centerX, centerY, centerZ, strength, additionalData) -> new CustomExplosion(centerX, centerY, centerZ, strength));
         this.getEventNode().addListener(PlayerLoginEvent.class, event -> {
             event.getPlayer().setRespawnPoint(new Pos(-1, 67, 4));
-            event.setSpawningInstance(instance);
+            event.setSpawningInstance(this.instance);
         });
 
         this.userCache = new TDUserLoader(this);
 
-        LobbyManager lobbyManager = new LobbyManager(this);
-
         this.mobStorage = new MobStorage(this);
-        this.mapStorage = new MapStorage(this);
         this.towerStorage = new TowerStorage(this);
+
+
+        LobbyManager lobbyManager = new LobbyManager(this);
         this.scoreboardManager = new ScoreboardManager(this, lobbyManager);
 
         this.gameHandler = new GameHandler(this, lobbyManager);
@@ -114,6 +107,10 @@ public class TowerDefenceModule extends Module {
         return this.kubernetesModule;
     }
 
+    public TowerDefenceInstance getInstance() {
+        return instance;
+    }
+
     public GameState getGameState() {
         return this.gameState;
     }
@@ -124,10 +121,6 @@ public class TowerDefenceModule extends Module {
 
     public MobStorage getMobStorage() {
         return this.mobStorage;
-    }
-
-    public MapStorage getMapStorage() {
-        return this.mapStorage;
     }
 
     public TowerStorage getTowerStorage() {

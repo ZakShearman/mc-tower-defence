@@ -1,5 +1,6 @@
 package pink.zak.minestom.towerdefence.lobby;
 
+import net.kyori.adventure.text.Component;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.event.Event;
 import net.minestom.server.event.EventNode;
@@ -35,7 +36,11 @@ public class LobbyManager {
 
         EVENT_NODE.addListener(PlayerSpawnEvent.class, event -> {
             TDPlayer player = (TDPlayer) event.getPlayer();
-            this.lobbyPlayers.put(player, new LobbyPlayer(player, this.pickTeam(player)));
+
+            LobbyPlayer lobbyPlayer = new LobbyPlayer(player, this.pickTeam(player));
+            player.setDisplayName(Component.text(player.getUsername(), lobbyPlayer.getTeam().getColor()));
+
+            this.lobbyPlayers.put(player, lobbyPlayer);
         }).addListener(PlayerDisconnectEvent.class, event -> {
             TDPlayer player = (TDPlayer) event.getPlayer();
             LobbyPlayer lobbyPlayer = this.lobbyPlayers.remove(player);
@@ -46,7 +51,7 @@ public class LobbyManager {
         });
 
         new SpawnItemHandler(this);
-        new LobbyStartingManager(this);
+        new LobbyStartingManager(this, module);
     }
 
     private synchronized @NotNull Team pickTeam(TDPlayer player) {

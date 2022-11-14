@@ -6,7 +6,6 @@ import net.minestom.server.instance.block.Block;
 import net.minestom.server.item.Material;
 import net.minestom.server.tag.Tag;
 import net.minestom.server.utils.Direction;
-import pink.zak.minestom.towerdefence.TowerDefenceModule;
 import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.enums.TowerType;
 import pink.zak.minestom.towerdefence.game.GameHandler;
@@ -17,6 +16,7 @@ import pink.zak.minestom.towerdefence.model.tower.config.relative.RelativeBlock;
 import pink.zak.minestom.towerdefence.model.tower.config.relative.RelativePoint;
 import pink.zak.minestom.towerdefence.model.tower.placed.types.*;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
+import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -57,12 +57,12 @@ public abstract class PlacedTower<T extends TowerLevel> {
         this.placeBase();
     }
 
-    public static PlacedTower<?> create(TowerDefenceModule plugin, GameHandler gameHandler, Instance instance, Tower tower, Material towerBaseMaterial, int id, GameUser owner, Point basePoint, Direction facing) {
+    public static PlacedTower<?> create(GameHandler gameHandler, TowerDefenceInstance instance, Tower tower, Material towerBaseMaterial, int id, GameUser owner, Point basePoint, Direction facing) {
         TowerType towerType = tower.getType();
         return switch (towerType) {
             case BOMBER ->
                     new BomberTower(gameHandler, instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
-            case BLIZZARD -> new BlizzardTower(instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1, gameHandler.getMap());
+            case BLIZZARD -> new BlizzardTower(instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
             case CHARITY -> new CharityTower(instance, tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
             case LIGHTNING ->
                     new LightningTower(instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);

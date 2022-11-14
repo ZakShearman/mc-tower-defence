@@ -20,26 +20,27 @@ import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.model.map.Area;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
-import pink.zak.minestom.towerdefence.storage.MapStorage;
 import pink.zak.minestom.towerdefence.utils.ViewPath;
+import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;
 
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class EditorSubCommand implements CommandExecutor {
-    private final TowerDefenceModule plugin;
-    private final MapStorage mapStorage;
+    private final TowerDefenceModule module;
+    private final TowerDefenceInstance instance;
     private final TowerMap map;
+
     private final Map<Player, EditorInfo> editors = new ConcurrentHashMap<>();
 
     private final ItemStack redTeamWandItem;
     private final ItemStack blueTeamWandItem;
 
-    public EditorSubCommand(TowerDefenceModule plugin) {
-        this.plugin = plugin;
-        this.mapStorage = plugin.getMapStorage();
-        this.map = this.mapStorage.getMap();
+    public EditorSubCommand(TowerDefenceModule module) {
+        this.module = module;
+        this.instance = module.getInstance();
+        this.map = this.instance.getTowerMap();
 
         ItemStack.Builder wandBuilder = ItemStack.builder(Material.DIAMOND_HOE)
                 .lore(
@@ -57,7 +58,7 @@ public class EditorSubCommand implements CommandExecutor {
                 .displayName(Component.text("Team area wand item", NamedTextColor.BLUE)
                         .decoration(TextDecoration.ITALIC, false)).build();
 
-        plugin.getEventNode()
+        module.getEventNode()
                 .addListener(PlayerStartDiggingEvent.class, event -> { // left click block
                     Player player = event.getPlayer();
                     EditorInfo editorInfo = this.editors.get(player);
@@ -127,7 +128,7 @@ public class EditorSubCommand implements CommandExecutor {
             else
                 player.sendMessage(Component.text("Set " + team.name().toLowerCase() + "'s tower area", NamedTextColor.GREEN));
 
-            this.mapStorage.save();
+            this.instance.saveTowerMapData();
         }
     }
 
@@ -142,7 +143,7 @@ public class EditorSubCommand implements CommandExecutor {
     }
 
     private void giveEditorItems(Player player) {
-        if (this.plugin.getGameState() == GameState.LOBBY) {
+        if (this.module.getGameState() == GameState.LOBBY) {
             PlayerInventory inventory = player.getInventory();
             inventory.setItemStack(8, this.redTeamWandItem);
         }

@@ -6,7 +6,6 @@ import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Entity;
 import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.metadata.golem.SnowGolemMeta;
-import net.minestom.server.instance.Instance;
 import net.minestom.server.item.Material;
 import net.minestom.server.network.packet.server.SendablePacket;
 import net.minestom.server.particle.Particle;
@@ -14,7 +13,6 @@ import net.minestom.server.particle.ParticleCreator;
 import net.minestom.server.timer.Task;
 import net.minestom.server.utils.Direction;
 import net.minestom.server.utils.time.TimeUnit;
-import pink.zak.minestom.towerdefence.model.map.TowerMap;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingEnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.statuseffect.FrozenStatusEffect;
 import pink.zak.minestom.towerdefence.model.mob.statuseffect.StatusEffectType;
@@ -22,18 +20,19 @@ import pink.zak.minestom.towerdefence.model.tower.config.AttackingTower;
 import pink.zak.minestom.towerdefence.model.tower.config.towers.BlizzardTowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
+import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;
 
 public class BlizzardTower extends PlacedAttackingTower<BlizzardTowerLevel> {
     private final Pos restSnowmanPos;
     private Entity snowman;
     private Task snowmanTask;
 
-    public BlizzardTower(Instance instance, AttackingTower tower, Material towerBaseMaterial, int id, GameUser owner, Point basePoint, Direction facing, int level, TowerMap map) {
+    public BlizzardTower(TowerDefenceInstance instance, AttackingTower tower, Material towerBaseMaterial, int id, GameUser owner, Point basePoint, Direction facing, int level) {
         super(instance, tower, towerBaseMaterial, id, owner, basePoint, facing, level);
 
         // todo faces the wrong direction
-        Pos spawnPos = map.getMobSpawn(this.team);
-        this.restSnowmanPos = new Pos(basePoint.add(0, 1.5, 0)).withDirection(spawnPos).withPitch(0);
+        Pos mobSpawnPos = instance.getTowerMap().getMobSpawn(this.team);
+        this.restSnowmanPos = new Pos(basePoint.add(0, 1.5, 0)).withDirection(mobSpawnPos).withPitch(0);
 
         this.snowman = new Entity(EntityType.SNOW_GOLEM);
         ((SnowGolemMeta) this.snowman.getEntityMeta()).setHasPumpkinHat(false);

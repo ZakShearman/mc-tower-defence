@@ -10,6 +10,7 @@ import net.minestom.server.event.EventNode;
 import net.minestom.server.event.player.PlayerDisconnectEvent;
 import net.minestom.server.event.player.PlayerSpawnEvent;
 import net.minestom.server.timer.Task;
+import pink.zak.minestom.towerdefence.TowerDefenceModule;
 import pink.zak.minestom.towerdefence.enums.Team;
 
 import java.time.temporal.ChronoUnit;
@@ -21,11 +22,13 @@ public class LobbyStartingManager {
 
     private final AtomicInteger timeLeft = new AtomicInteger();
     private final LobbyManager lobbyManager;
+    private final TowerDefenceModule module;
     private Task countdownTask;
 
-    public LobbyStartingManager(LobbyManager lobbyManager) {
+    public LobbyStartingManager(LobbyManager lobbyManager, TowerDefenceModule module) {
         LobbyManager.getEventNode().addChild(EVENT_NODE);
         this.lobbyManager = lobbyManager;
+        this.module = module;
 
         EVENT_NODE.addListener(PlayerSpawnEvent.class, event -> {
             int playerCount = MinecraftServer.getConnectionManager().getOnlinePlayers().size();
@@ -70,7 +73,7 @@ public class LobbyStartingManager {
 
                         if (this.areTeamsBalanced()) {
                             Audiences.all().sendMessage(Component.text("Game starting!", NamedTextColor.GREEN));
-                            // start game
+                            this.module.getGameHandler().start();
                         } else {
                             Audiences.all().sendMessage(Component.text("The teams are not balanced so the game will not start.", NamedTextColor.RED)
                                     .append(Component.newline())
@@ -79,8 +82,6 @@ public class LobbyStartingManager {
                             this.timeLeft.set(this.skipTimeSeconds(MinecraftServer.getConnectionManager().getOnlinePlayers().size()));
                             this.startCountdown();
                         }
-                        // if balanced: start game
-                        // else: broadcast message to players to wait for more players
                     }
 
                     for (Player player : MinecraftServer.getConnectionManager().getOnlinePlayers()) {
@@ -96,7 +97,6 @@ public class LobbyStartingManager {
         int blueSize = this.lobbyManager.getTeamSize(Team.BLUE).get();
         int redSize = this.lobbyManager.getTeamSize(Team.RED).get();
         int differential = Math.abs(blueSize - redSize);
-        Audiences.all().sendMessage(Component.text("Differential " + differential));
 
         if (blueSize + redSize <= 6) return differential < 2;
         return differential < 3;
