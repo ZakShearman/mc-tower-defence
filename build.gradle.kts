@@ -1,3 +1,5 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
 plugins {
     `java-library`
     id("com.github.johnrengelman.shadow") version "7.1.2"
@@ -28,6 +30,10 @@ dependencies {
 
 application {
     mainClass.set("pink.zak.minestom.towerdefence.TowerDefenceServer")
+}
+
+tasks.named<ShadowJar>("shadowJar") {
+    mergeServiceFiles()
 }
 
 java {

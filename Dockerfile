@@ -13,7 +13,7 @@ FROM eclipse-temurin:17-jre-alpine
 
 RUN mkdir /app
 
-COPY --from=build /home/gradle/src/build/libs/*.jar /app/minestom-tower-defence.jar
+COPY --from=build /home/gradle/src/build/libs/*-all.jar /app/minestom-tower-defence.jar
 COPY run/world /app/world/
 WORKDIR /app
 
