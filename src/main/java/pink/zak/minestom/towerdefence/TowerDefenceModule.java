@@ -19,6 +19,7 @@ import net.minestom.server.monitoring.TickMonitor;
 import net.minestom.server.utils.MathUtils;
 import net.minestom.server.utils.time.TimeUnit;
 import org.jetbrains.annotations.NotNull;
+import pink.zak.minestom.towerdefence.agones.TDAgonesManager;
 import pink.zak.minestom.towerdefence.cache.TDUserLoader;
 import pink.zak.minestom.towerdefence.command.towerdefence.TowerDefenceCommand;
 import pink.zak.minestom.towerdefence.enums.GameState;
@@ -40,6 +41,7 @@ public class TowerDefenceModule extends Module {
     private static EventNode<Event> EVENT_NODE; // todo is this still necessary?
 
     private final KubernetesModule kubernetesModule;
+    private final TDAgonesManager tdAgonesManager;
 
     private TowerDefenceInstance instance;
 
@@ -57,6 +59,7 @@ public class TowerDefenceModule extends Module {
         super(environment);
 
         this.kubernetesModule = environment.moduleManager().getModule(KubernetesModule.class);
+        this.tdAgonesManager = new TDAgonesManager(this.kubernetesModule);
     }
 
     @NotNull
@@ -94,6 +97,8 @@ public class TowerDefenceModule extends Module {
         commandManager.register(new TowerDefenceCommand(this));
 
         MinecraftServer.getConnectionManager().setPlayerProvider(this.userCache);
+        this.tdAgonesManager.setPhase("lobby");
+        this.tdAgonesManager.setBackfill(true);
 
         return true;
     }
@@ -116,6 +121,7 @@ public class TowerDefenceModule extends Module {
     }
 
     public void setGameState(GameState gameState) {
+        this.tdAgonesManager.setPhase(gameState.name().toLowerCase());
         this.gameState = gameState;
     }
 

@@ -10,6 +10,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
+import net.minestom.server.entity.GameMode;
 import net.minestom.server.entity.Player;
 import net.minestom.server.entity.hologram.Hologram;
 import net.minestom.server.event.player.PlayerDisconnectEvent;
@@ -19,7 +20,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pink.zak.minestom.towerdefence.TowerDefenceModule;
 import pink.zak.minestom.towerdefence.api.event.game.CastleDamageEvent;
-import pink.zak.minestom.towerdefence.api.event.game.GameStartEvent;
 import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.game.listeners.MobMenuHandler;
@@ -37,7 +37,6 @@ import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -90,7 +89,7 @@ public class GameHandler {
     }
 
     public void start() {
-        this.plugin.setGameState(GameState.IN_PROGRESS);
+        this.plugin.setGameState(GameState.GAME);
 
         Set<LobbyPlayer> lobbyPlayers = this.lobbyManager.getLobbyPlayers();
         Set<LobbyPlayer> redPlayers = lobbyPlayers.stream().filter(lobbyPlayer -> lobbyPlayer.getTeam() == Team.RED).collect(Collectors.toSet());
@@ -107,8 +106,6 @@ public class GameHandler {
             this.mobMenuHandler.onGameStart();
             this.userSettingsMenuHandler.onGameStart();
         }
-
-        MinecraftServer.getGlobalEventHandler().call(new GameStartEvent(Collections.unmodifiableCollection(this.users.values())));
 
         /*EnemyMob enemyMob = this.plugin.getMobStorage().getEnemyMob(EntityType.LLAMA);
         EnemyMobLevel enemyMobLevel = enemyMob.level(1);
@@ -138,6 +135,7 @@ public class GameHandler {
             tdPlayer.setFlyingSpeed(tdPlayer.getFlySpeed().getSpeed());
             tdPlayer.teleport(spawnPoint);
             tdPlayer.setFlying(true); // set flying here so they don't fall after teleporting
+            tdPlayer.setGameMode(GameMode.CREATIVE); // todo remove
         }
     }
 

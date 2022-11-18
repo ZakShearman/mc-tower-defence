@@ -42,11 +42,6 @@ public abstract class PlacedAttackingTower<T extends AttackingTowerLevel> extend
     public abstract int getMaxTargets();
 
     @Override
-    public @NotNull PlacedAttackingTower<T> getSourceTower() {
-        return this;
-    }
-
-    @Override
     public void upgrade() {
         AttackingTowerLevel oldLevel = this.level;
         super.upgrade();

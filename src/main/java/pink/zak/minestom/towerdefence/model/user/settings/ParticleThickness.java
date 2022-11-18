@@ -1,9 +1,9 @@
 package pink.zak.minestom.towerdefence.model.user.settings;
 
 public enum ParticleThickness {
-    THIN(0.4),
-    STANDARD(0.25),
-    THICK(0.175);
+    THIN(0.75),
+    STANDARD(0.5),
+    THICK(0.35);
 
     private final double spacing;
 

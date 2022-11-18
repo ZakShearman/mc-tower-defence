@@ -9,6 +9,7 @@ import pink.zak.minestom.towerdefence.model.tower.config.TowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.config.towers.BlizzardTowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.config.towers.CharityTowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.config.towers.LightningTowerLevel;
+import pink.zak.minestom.towerdefence.model.tower.config.towers.NecromancerTowerLevel;
 
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -19,7 +20,7 @@ public enum TowerType {
     BOMBER(Size.THREE, false, AttackingTower::new, AttackingTowerLevel::new),
     BLIZZARD(Size.THREE, true, AttackingTower::new, BlizzardTowerLevel::new),
     LIGHTNING(Size.THREE, true, AttackingTower::new, LightningTowerLevel::new),
-    NECROMANCER(Size.FIVE, true, AttackingTower::new, AttackingTowerLevel::new),
+    NECROMANCER(Size.FIVE, true, AttackingTower::new, NecromancerTowerLevel::new),
     CHARITY(Size.THREE, false, Tower::new, CharityTowerLevel::new);
 
     private final @NotNull Size size;

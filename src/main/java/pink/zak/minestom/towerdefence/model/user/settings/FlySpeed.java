@@ -1,10 +1,10 @@
 package pink.zak.minestom.towerdefence.model.user.settings;
 
 public enum FlySpeed {
-    SLOW(0.025f),
-    NORMAL(0.05f),
-    FAST(0.075f),
-    SUPER_FAST(0.1f);
+    SLOW(0.05f),
+    NORMAL(0.075f),
+    FAST(0.1f),
+    SUPER_FAST(0.15f);
 
     private final float speed;
 

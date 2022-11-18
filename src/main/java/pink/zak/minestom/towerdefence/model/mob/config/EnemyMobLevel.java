@@ -66,6 +66,9 @@ public class EnemyMobLevel {
         return this.damage;
     }
 
+    /**
+     * @return Distance moved per tick
+     */
     public double getMovementSpeed() {
         return this.movementSpeed;
     }

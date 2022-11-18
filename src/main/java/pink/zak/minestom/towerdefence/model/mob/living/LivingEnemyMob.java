@@ -4,28 +4,21 @@ import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.attribute.Attribute;
 import net.minestom.server.coordinate.Pos;
-import net.minestom.server.entity.EntityCreature;
 import net.minestom.server.entity.EntityType;
-import net.minestom.server.entity.Metadata;
 import net.minestom.server.entity.Player;
 import net.minestom.server.entity.damage.DamageType;
 import net.minestom.server.instance.Instance;
-import net.minestom.server.network.packet.server.LazyPacket;
 import net.minestom.server.network.packet.server.play.EntityAnimationPacket;
-import net.minestom.server.network.packet.server.play.EntityHeadLookPacket;
-import net.minestom.server.network.packet.server.play.EntityMetaDataPacket;
 import net.minestom.server.network.packet.server.play.SoundEffectPacket;
 import net.minestom.server.sound.SoundEvent;
 import net.minestom.server.timer.Task;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import pink.zak.minestom.towerdefence.TowerDefenceModule;
-import pink.zak.minestom.towerdefence.api.event.tower.TowerDamageMobEvent;
 import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.game.MobHandler;
@@ -37,15 +30,18 @@ import pink.zak.minestom.towerdefence.model.mob.config.EnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.config.EnemyMobLevel;
 import pink.zak.minestom.towerdefence.model.mob.living.types.BeeLivingEnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.living.types.LlamaLivingEnemyMob;
+import pink.zak.minestom.towerdefence.model.mob.living.types.SkeletonLivingEnemyMob;
+import pink.zak.minestom.towerdefence.model.mob.living.types.ZombieLivingEnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.modifier.SpeedModifier;
 import pink.zak.minestom.towerdefence.model.mob.statuseffect.StatusEffect;
 import pink.zak.minestom.towerdefence.model.mob.statuseffect.StatusEffectType;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedTower;
 import pink.zak.minestom.towerdefence.model.tower.placed.types.CharityTower;
+import pink.zak.minestom.towerdefence.model.tower.placed.types.NecromancerTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.model.user.TDPlayer;
-import pink.zak.minestom.towerdefence.utils.DirectionUtils;
+import pink.zak.minestom.towerdefence.utils.DirectionUtil;
 import pink.zak.minestom.towerdefence.utils.StringUtils;
 
 import java.time.temporal.ChronoUnit;
@@ -54,8 +50,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class LivingEnemyMob extends EntityCreature {
-    private static final Logger LOGGER = LoggerFactory.getLogger(LivingEnemyMob.class);
+public class LivingEnemyMob extends LivingTDMob {
     protected final TowerHandler towerHandler;
     protected final MobHandler mobHandler;
     protected final EnemyMob enemyMob;
@@ -83,8 +78,14 @@ public class LivingEnemyMob extends EntityCreature {
 
     private Task attackTask;
 
-    protected LivingEnemyMob(TowerDefenceModule plugin, GameHandler gameHandler, EnemyMob enemyMob, Instance instance, TowerMap map, GameUser gameUser, int level) {
-        super(enemyMob.getEntityType());
+    protected LivingEnemyMob(GameHandler gameHandler, EnemyMob enemyMob, Instance instance, TowerMap map, GameUser gameUser, int level, boolean customName) {
+        this(gameHandler, enemyMob.getEntityType(), enemyMob, instance, map, gameUser, level, customName);
+    }
+
+    protected LivingEnemyMob(GameHandler gameHandler, EntityType entityType,
+                             EnemyMob enemyMob, Instance instance, TowerMap map,
+                             GameUser gameUser, int level, boolean customName) {
+        super(entityType, customName);
 
         this.gameHandler = gameHandler;
 
@@ -110,29 +111,31 @@ public class LivingEnemyMob extends EntityCreature {
         if (enemyMob.isFlying())
             this.setNoGravity(true);
 
-        this.setCustomNameVisible(true);
-
         Pos spawnPos = this.team == Team.RED ? map.getRedMobSpawn() : map.getBlueMobSpawn();
-        // todo the issue might be here? Adding the position modifier has a very different effect based on direction
         this.setInstance(instance, spawnPos.add(this.positionModifier, enemyMob.isFlying() ? 5 : 0, this.positionModifier));
     }
 
     public static LivingEnemyMob create(TowerDefenceModule plugin, GameHandler gameHandler, EnemyMob enemyMob, int level, Instance instance, TowerMap map, GameUser gameUser) {
-        if (enemyMob.getEntityType() == EntityType.LLAMA)
-            return new LlamaLivingEnemyMob(plugin, gameHandler, enemyMob, instance, map, gameUser, level);
-        else if (enemyMob.getEntityType() == EntityType.BEE)
-            return new BeeLivingEnemyMob(plugin, gameHandler, enemyMob, instance, map, gameUser, level);
-        else
-            return new LivingEnemyMob(plugin, gameHandler, enemyMob, instance, map, gameUser, level);
+        EntityType entityType = enemyMob.getEntityType();
+
+        return switch (entityType.name()) {
+            case "minecraft:llama" -> new LlamaLivingEnemyMob(gameHandler, enemyMob, instance, map, gameUser, level);
+            case "minecraft:bee" -> new BeeLivingEnemyMob(gameHandler, enemyMob, instance, map, gameUser, level);
+            case "minecraft:zombie" -> new ZombieLivingEnemyMob(gameHandler, enemyMob, instance, map, gameUser, level);
+            case "minecraft:skeleton" -> new SkeletonLivingEnemyMob(gameHandler, enemyMob, instance, map, gameUser, level);
+            default -> new LivingEnemyMob(gameHandler, enemyMob, instance, map, gameUser, level, true);
+        };
     }
 
-    private Component createNameComponent(@NotNull Player player) {
+    @Override
+    protected Component createNameComponent(@NotNull Player player) {
         TDPlayer tdPlayer = (TDPlayer) player;
         String health = tdPlayer.getHealthMode().resolve(this);
         TextComponent.Builder builder = Component.text()
                 .append(Component.text(StringUtils.namespaceToName(this.entityType.name()) + " " + StringUtils.integerToCardinal(this.level.getLevel()), NamedTextColor.DARK_GREEN))
                 .append(Component.text(" | ", NamedTextColor.GREEN))
-                .append(Component.text(health, NamedTextColor.DARK_GREEN));
+                .append(Component.text(health, NamedTextColor.DARK_GREEN))
+                .style(Style.style(TextDecoration.BOLD));
 
         // add status effect icons
         if (!this.statusEffects.isEmpty()) {
@@ -185,7 +188,7 @@ public class LivingEnemyMob extends EntityCreature {
             default ->
                     throw new IllegalArgumentException("Direction must be NORTH, EAST, SOUTH or WEST. Provided direction was %s".formatted(this.currentCorner.direction()));
         };
-        return newPos.withView(DirectionUtils.getYaw(this.currentCorner.direction()), 0); // todo this can be removed in the majority of cases to reduce pos creations
+        return newPos.withView(DirectionUtil.getYaw(this.currentCorner.direction()), 0); // todo this can be removed in the majority of cases to reduce pos creations
     }
 
     private void nextCorner() {
@@ -241,43 +244,12 @@ public class LivingEnemyMob extends EntityCreature {
         super.kill();
     }
 
-    // todo all of this needs to be fixed up. Metadata/Metadata.Entry is no longer accessible
-    @Override
-    public void updateNewViewer(@NotNull Player player) {
-        super.updateNewViewer(player);
-
-        player.sendPacket(this.getEntityType().registry().spawnType().getSpawnPacket(this));
-        if (this.hasVelocity()) player.sendPacket(this.getVelocityPacket());
-
-        Map<Integer, Metadata.Entry<?>> entries = new HashMap<>(this.metadata.getEntries());
-        Metadata.Entry<?> nameEntry = Metadata.OptChat(this.createNameComponent(player));
-        entries.put(2, nameEntry);
-        player.sendPacket(new LazyPacket(() -> new EntityMetaDataPacket(getEntityId(), entries)));
-        // Passengers are removed here as i don't need them
-
-        // Head position
-        player.sendPacket(new EntityHeadLookPacket(getEntityId(), this.position.yaw()));
-    }
-
-    public void updateCustomName() {
-        for (Player player : this.getViewers()) {
-            Component value = this.createNameComponent(player);
-            Metadata.Entry<?> nameEntry = Metadata.OptChat(value);
-            player.sendPacket(new EntityMetaDataPacket(this.getEntityId(), Map.of(2, nameEntry)));
-        }
-    }
-
-    @Override
-    public void setCustomName(@Nullable Component customName) {
-        LOGGER.warn("setCustomName called for a LivingEnemyMob. This action is not supported");
-    }
-
     /**
      * @param source
      * @param value
      * @return The amount of damage dealt
      */
-    public float towerDamage(@NotNull DamageSource source, float value) {
+    public float damage(@NotNull DamageSource source, float value) {
         if (this.isDead) return 0;
         if (this.enemyMob.isDamageTypeIgnored(source.getDamageType())) return 0;
 
@@ -291,9 +263,16 @@ public class LivingEnemyMob extends EntityCreature {
         if (this.isDead) {
             Set<PlacedTower<?>> towers = this.team == Team.RED ? this.towerHandler.getRedTowers() : this.towerHandler.getBlueTowers();
             double multiplier = 1;
+            boolean necromanced = false;
+
             for (PlacedTower<?> tower : towers) {
-                if (tower instanceof CharityTower charityTower && tower.getBasePoint().distance(this.position) <= tower.getLevel().getRange()) {
-                    multiplier = charityTower.getLevel().getMultiplier();
+                if (tower.getBasePoint().distance(this.position) > tower.getLevel().getRange()) continue;
+                if (tower instanceof CharityTower charityTower) {
+                    double tempMultiplier = charityTower.getLevel().getMultiplier();
+                    if (tempMultiplier > multiplier) multiplier = tempMultiplier;
+                } else if (!necromanced && tower instanceof NecromancerTower necromancerTower) {
+                    necromancerTower.createNecromancedMob(this);
+                    necromanced = true;
                 }
             }
             double finalMultiplier = multiplier;
@@ -309,7 +288,6 @@ public class LivingEnemyMob extends EntityCreature {
             this.sendPacketToViewersAndSelf(damageSoundPacket);
         }
 
-        MinecraftServer.getGlobalEventHandler().call(new TowerDamageMobEvent(source.getSourceTower(), this, damageDealt));
         return damageDealt;
     }
 
@@ -350,10 +328,10 @@ public class LivingEnemyMob extends EntityCreature {
     @Override
     public void setHealth(float health) {
         this.health = health;
-        if (this.health <= 0 && !isDead)
+        if (this.health <= 0 && !this.isDead)
             this.kill();
 
-        if (this.level != null)
+        if (this.level != null && this.isCustomNameVisible())
             this.updateCustomName();
     }
 
@@ -378,6 +356,10 @@ public class LivingEnemyMob extends EntityCreature {
 
     public EnemyMob getEnemyMob() {
         return this.enemyMob;
+    }
+
+    public EnemyMobLevel getLevel() {
+        return this.level;
     }
 
     public Team getGameTeam() {

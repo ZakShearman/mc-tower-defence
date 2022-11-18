@@ -41,7 +41,7 @@ public class UserSettingsMenuHandler {
 
     public void onGameStart() {
         this.plugin.getEventNode().addListener(PlayerUseItemEvent.class, event -> {
-            if (this.plugin.getGameState() == GameState.IN_PROGRESS && event.getItemStack().material() == Material.COMMAND_BLOCK_MINECART) {
+            if (this.plugin.getGameState() == GameState.GAME && event.getItemStack().material() == Material.COMMAND_BLOCK_MINECART) {
                 this.createGui((TDPlayer) event.getPlayer());
             }
         });

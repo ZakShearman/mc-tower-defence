@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.TowerDefenceModule;
 import pink.zak.minestom.towerdefence.api.event.player.PlayerTowerPlaceEvent;
 import pink.zak.minestom.towerdefence.enums.Team;
+import pink.zak.minestom.towerdefence.game.listeners.NecromancerDamageListener;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
 import pink.zak.minestom.towerdefence.model.tower.config.Tower;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedTower;
@@ -32,6 +33,8 @@ public class TowerHandler {
         this.gameHandler = gameHandler;
         this.instance = module.getInstance();
         this.map = this.instance.getTowerMap();
+
+        new NecromancerDamageListener(module.getEventNode());
     }
 
     public void createTower(@NotNull Tower tower, @NotNull GameUser gameUser) {
@@ -82,7 +85,10 @@ public class TowerHandler {
                 int tempDistance = Math.abs(x);
                 if (tempDistance < distance) {
                     distance = tempDistance;
-                    // todo direction
+                    if (x > basePoint.blockX())
+                        direction = Direction.EAST;
+                    else
+                        direction = Direction.WEST;
                 }
             }
             for (int z = basePoint.blockZ() - 15; z < basePoint.blockZ() + 15; z++) {
@@ -92,8 +98,11 @@ public class TowerHandler {
 
                 int tempDistance = Math.abs(z);
                 if (tempDistance < distance) {
+                    if (z > basePoint.blockZ())
+                        direction = Direction.SOUTH;
+                    else
+                        direction = Direction.NORTH;
                     distance = tempDistance;
-                    // todo direction
                 }
             }
         }

@@ -1,18 +1,20 @@
-FROM gradle:7.4.1-jdk17 AS gradle
-COPY --chown=gradle:gradle . /gradleBuild
-WORKDIR /gradleBuild
+FROM gradle:7.2.0-jdk17 AS build
 
-RUN gradle clean shadowJar --no-daemon
+WORKDIR /home/gradle/src
+COPY --chown=gradle:gradle build.gradle.kts settings.gradle.kts ./
 
+RUN gradle build
 
-FROM azul/zulu-openjdk-alpine:17.0.3
-MAINTAINER ZakShearman
+COPY --chown=gradle:gradle . .
 
-RUN mkdir -p /app/extensions
+RUN gradle clean shadowJar
+
+FROM eclipse-temurin:17-jre-alpine
+
+RUN mkdir /app
+
+COPY --from=build /home/gradle/src/build/libs/*.jar /app/minestom-tower-defence.jar
+COPY run/world /app/world/
 WORKDIR /app
 
-ADD https://github.com/ZakShearman/Operadora/releases/download/1.1.0/Operadora-1.1.0-29.jar server.jar
-COPY --from=gradle /gradleBuild/build/libs/*.jar /app/extensions/tower-defence.jar
-RUN ls -R /app
-
-CMD ["java", "-jar", "server.jar"]
+CMD ["java", "-jar", "/app/minestom-tower-defence.jar"]

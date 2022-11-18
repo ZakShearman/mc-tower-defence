@@ -13,9 +13,10 @@ import pink.zak.minestom.towerdefence.model.tower.config.AttackingTower;
 import pink.zak.minestom.towerdefence.model.tower.config.Tower;
 import pink.zak.minestom.towerdefence.model.tower.config.TowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.config.relative.RelativeBlock;
-import pink.zak.minestom.towerdefence.model.tower.config.relative.RelativePoint;
 import pink.zak.minestom.towerdefence.model.tower.placed.types.*;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
+import pink.zak.minestom.towerdefence.utils.DirectionUtil;
+import pink.zak.minestom.towerdefence.utils.properties.PropertyRotatorRegistry;
 import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;
 
 import java.util.Set;
@@ -80,11 +81,13 @@ public abstract class PlacedTower<T extends TowerLevel> {
     }
 
     private void placeLevel() {
+        int turns = DirectionUtil.fromDirection(this.facing).getTurns();
         for (RelativeBlock relativeBlock : this.level.getRelativeBlocks()) {
             int x = this.basePoint.blockX() + relativeBlock.getXOffset(this.facing);
             int z = this.basePoint.blockZ() + relativeBlock.getZOffset(this.facing);
             int y = this.basePoint.blockY() + relativeBlock.getYOffset();
-            Block block = relativeBlock.getBlock().withTag(ID_TAG, this.id);
+
+            Block block = PropertyRotatorRegistry.rotateProperties(relativeBlock.getBlock(), turns).withTag(ID_TAG, this.id);
 
             this.instance.setBlock(x, y, z, block);
         }
@@ -100,14 +103,14 @@ public abstract class PlacedTower<T extends TowerLevel> {
     }
 
     private void removeUnUpdatedBlocks(TowerLevel oldLevel, TowerLevel newLevel) {
-        Set<RelativePoint> oldPoints = oldLevel.getRelativeBlocks().stream().map(RelativeBlock::getRelativePoint).collect(Collectors.toSet());
-        Set<RelativePoint> newPoints = newLevel.getRelativeBlocks().stream().map(RelativeBlock::getRelativePoint).collect(Collectors.toSet());
+        Set<RelativeBlock> oldPoints = oldLevel.getRelativeBlocks();
+        Set<RelativeBlock> newPoints = newLevel.getRelativeBlocks();
 
-        for (RelativePoint relativePoint : oldPoints) {
-            if (!newPoints.contains(relativePoint)) {
-                int x = (int) (this.basePoint.blockX() + relativePoint.getXOffset());
-                int z = (int) (this.basePoint.blockZ() + relativePoint.getZOffset());
-                int y = (int) (this.basePoint.blockY() + relativePoint.getYOffset());
+        for (RelativeBlock relativeBlock : oldPoints) {
+            if (!newPoints.contains(relativeBlock)) {
+                int x = this.basePoint.blockX() + relativeBlock.getXOffset(this.facing);
+                int z = this.basePoint.blockZ() + relativeBlock.getZOffset(this.facing);
+                int y = this.basePoint.blockY() + relativeBlock.getYOffset();
                 this.instance.setBlock(x, y, z, Block.AIR);
             }
         }

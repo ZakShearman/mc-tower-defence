@@ -43,7 +43,7 @@ public class TowerPlaceHandler {
         module.getEventNode()
                 .addListener(PlayerBlockInteractEvent.class, event -> {
                     Player player = event.getPlayer();
-                    if (event.getHand() != Player.Hand.MAIN || module.getGameState() != GameState.IN_PROGRESS)
+                    if (event.getHand() != Player.Hand.MAIN || module.getGameState() != GameState.GAME)
                         return;
                     GameUser gameUser = this.gameHandler.getGameUser(player);
                     if (gameUser == null || event.getBlock().registry().material() != this.towerMap.getTowerBaseMaterial())

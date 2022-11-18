@@ -10,8 +10,8 @@ import pink.zak.minestom.towerdefence.model.user.settings.ParticleThickness;
 import java.util.UUID;
 
 public class TDPlayer extends Player {
-    private @NotNull HealthDisplayMode healthMode = HealthDisplayMode.PERCENTAGE;
-    private @NotNull ParticleThickness particleThickness = ParticleThickness.STANDARD;
+    private @NotNull HealthDisplayMode healthMode = HealthDisplayMode.RAW;
+    private @NotNull ParticleThickness particleThickness = ParticleThickness.THIN;
     private @NotNull FlySpeed flySpeed = FlySpeed.NORMAL;
     private boolean damageIndicators = true;
 

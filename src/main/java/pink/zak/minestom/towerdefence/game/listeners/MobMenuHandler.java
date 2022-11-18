@@ -61,7 +61,7 @@ public class MobMenuHandler {
 
     public void onGameStart() {
         this.plugin.getEventNode().addListener(PlayerUseItemEvent.class, event -> {
-            if (this.plugin.getGameState() == GameState.IN_PROGRESS && event.getItemStack().material() == Material.CHEST) {
+            if (this.plugin.getGameState() == GameState.GAME && event.getItemStack().material() == Material.CHEST) {
                 this.createGui(this.gameHandler, event.getPlayer());
             }
         });

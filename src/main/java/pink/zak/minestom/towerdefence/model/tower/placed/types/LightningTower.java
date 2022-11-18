@@ -45,7 +45,7 @@ public class LightningTower extends PlacedAttackingTower<LightningTowerLevel> {
         this.drawParticles();
 
         for (LivingEnemyMob enemyMob : this.targets)
-            enemyMob.towerDamage(this, this.level.getDamage());
+            enemyMob.damage(this, this.level.getDamage());
     }
 
     private void drawParticles() {

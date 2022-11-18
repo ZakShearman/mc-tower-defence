@@ -67,7 +67,7 @@ public class TowerUpgradeHandler {
         plugin.getEventNode()
                 .addListener(PlayerBlockInteractEvent.class, event -> {
                     Player player = event.getPlayer();
-                    if (event.getHand() != Player.Hand.MAIN || plugin.getGameState() != GameState.IN_PROGRESS)
+                    if (event.getHand() != Player.Hand.MAIN || plugin.getGameState() != GameState.GAME)
                         return;
                     GameUser gameUser = this.gameHandler.getGameUser(player);
                     Integer towerId = event.getBlock().getTag(PlacedTower.ID_TAG);

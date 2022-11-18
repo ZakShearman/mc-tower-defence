@@ -2,7 +2,7 @@
   "entityType": "minecraft:bee",
   "commonName": "Bee",
   "damageType": "ACID",
-  "guiSlot": 0,
+  "guiSlot": 3,
   "flying": true,
   "ignoredEffects": ["BURNING"],
   "ignoredDamageTypes": ["FIRE"],
@@ -22,7 +22,7 @@
     {
       "level": 1,
       "cost": 150,
-      "health": 100,
+      "health": 1,
       "damage": 1,
       "movementSpeed": 3.0,
       "manaCost": 500,

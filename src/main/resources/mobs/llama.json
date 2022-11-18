@@ -2,7 +2,7 @@
   "entityType": "minecraft:llama",
   "commonName": "Llama",
   "damageType": "ACID",
-  "guiSlot": 1,
+  "guiSlot": 2,
   "flying": false,
   "ignoredEffects": [],
   "ignoredDamageTypes": [],

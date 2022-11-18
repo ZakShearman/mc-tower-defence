@@ -51,7 +51,7 @@ public class BomberTower extends PlacedAttackingTower<AttackingTowerLevel> {
 
         for (LivingEnemyMob enemyMob : enemyMobs) {
             if (enemyMob.getDistance(center) <= 4) {
-                enemyMob.towerDamage(this, this.level.getDamage());
+                enemyMob.damage(this, this.level.getDamage());
             }
         }
     }

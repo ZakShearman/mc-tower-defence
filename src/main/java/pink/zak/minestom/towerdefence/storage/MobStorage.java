@@ -20,12 +20,12 @@ public class MobStorage {
             "zombie.json"
     );
 
-    private final TowerDefenceModule plugin;
+    private final TowerDefenceModule module;
 
     private final Map<EntityType, EnemyMob> enemyMobs = new HashMap<>();
 
-    public MobStorage(TowerDefenceModule plugin) {
-        this.plugin = plugin;
+    public MobStorage(TowerDefenceModule module) {
+        this.module = module;
 
         this.load();
     }
