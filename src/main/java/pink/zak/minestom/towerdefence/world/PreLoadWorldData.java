@@ -4,7 +4,7 @@ import com.google.gson.*;
 
 import java.lang.reflect.Type;
 
-public record PreLoadWorldData(int minX, int maxX, int minZ, int maxZ) {
+public record PreLoadWorldData(int minX, int maxX, int minZ, int maxZ, boolean autoChunkLoad) {
 
     public static class GsonConverter implements JsonSerializer<PreLoadWorldData>, JsonDeserializer<PreLoadWorldData> {
         public static GsonConverter INSTANCE = new GsonConverter();
@@ -13,7 +13,11 @@ public record PreLoadWorldData(int minX, int maxX, int minZ, int maxZ) {
         public PreLoadWorldData deserialize(JsonElement jsonElement, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             JsonObject json = jsonElement.getAsJsonObject();
 
-            return new PreLoadWorldData(json.get("minX").getAsInt(), json.get("maxX").getAsInt(), json.get("minZ").getAsInt(), json.get("maxZ").getAsInt());
+            return new PreLoadWorldData(
+                    json.get("minX").getAsInt(), json.get("maxX").getAsInt(),
+                    json.get("minZ").getAsInt(), json.get("maxZ").getAsInt(),
+                    json.get("autoChunkLoad").getAsBoolean()
+            );
         }
 
         @Override
@@ -24,6 +28,7 @@ public record PreLoadWorldData(int minX, int maxX, int minZ, int maxZ) {
             json.addProperty("maxX", data.maxX());
             json.addProperty("minZ", data.minZ());
             json.addProperty("maxZ", data.maxZ());
+            json.addProperty("autoChunkLoad", data.autoChunkLoad());
 
             return json;
         }

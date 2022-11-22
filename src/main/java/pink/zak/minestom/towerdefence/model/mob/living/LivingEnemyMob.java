@@ -1,5 +1,6 @@
 package pink.zak.minestom.towerdefence.model.mob.living;
 
+import cc.towerdefence.minestom.Environment;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -93,7 +94,9 @@ public class LivingEnemyMob extends LivingTDMob {
         this.mobHandler = gameHandler.getMobHandler();
         this.enemyMob = enemyMob;
         this.level = enemyMob.getLevel(level);
-        this.team = gameUser.getTeam() /*gameUser.getTeam() == Team.RED ? Team.BLUE : Team.RED*/;
+
+        if (Environment.isProduction()) this.team = gameUser.getTeam() == Team.RED ? Team.BLUE : Team.RED;
+        else this.team = gameUser.getTeam();
 
         this.sender = gameUser;
 
@@ -122,7 +125,8 @@ public class LivingEnemyMob extends LivingTDMob {
             case "minecraft:llama" -> new LlamaLivingEnemyMob(gameHandler, enemyMob, instance, map, gameUser, level);
             case "minecraft:bee" -> new BeeLivingEnemyMob(gameHandler, enemyMob, instance, map, gameUser, level);
             case "minecraft:zombie" -> new ZombieLivingEnemyMob(gameHandler, enemyMob, instance, map, gameUser, level);
-            case "minecraft:skeleton" -> new SkeletonLivingEnemyMob(gameHandler, enemyMob, instance, map, gameUser, level);
+            case "minecraft:skeleton" ->
+                    new SkeletonLivingEnemyMob(gameHandler, enemyMob, instance, map, gameUser, level);
             default -> new LivingEnemyMob(gameHandler, enemyMob, instance, map, gameUser, level, true);
         };
     }

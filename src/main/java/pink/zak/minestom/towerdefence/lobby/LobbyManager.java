@@ -23,14 +23,17 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class LobbyManager {
     private static final GlobalEventHandler GLOBAL_EVENT_HANDLER = MinecraftServer.getGlobalEventHandler();
 
+    private static final @NotNull EventNode<Event> EVENT_NODE = EventNode.all("lobby-manager");
+
     private final Map<Team, AtomicInteger> teamPlayerCount = new EnumMap<>(Team.class);
     private final Map<TDPlayer, LobbyPlayer> lobbyPlayers = new WeakHashMap<>();
 
-    private static final @NotNull EventNode<Event> EVENT_NODE = EventNode.all("lobby-manager");
+    private final TowerDefenceModule module;
 
     public LobbyManager(TowerDefenceModule module) {
         this.teamPlayerCount.put(Team.RED, new AtomicInteger(0));
         this.teamPlayerCount.put(Team.BLUE, new AtomicInteger(0));
+        this.module = module;
 
         module.getEventNode().addChild(EVENT_NODE);
 
@@ -64,6 +67,10 @@ public class LobbyManager {
             GLOBAL_EVENT_HANDLER.call(new PlayerTeamSwitchEvent(Team.BLUE, null, player));
             return Team.BLUE;
         }
+    }
+
+    public void destroy() {
+        this.module.getEventNode().removeChild(EVENT_NODE);
     }
 
     public LobbyPlayer getLobbyPlayer(TDPlayer player) {

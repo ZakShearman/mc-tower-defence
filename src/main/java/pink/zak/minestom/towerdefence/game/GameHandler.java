@@ -3,6 +3,7 @@ package pink.zak.minestom.towerdefence.game;
 import cc.towerdefence.api.agonessdk.IgnoredStreamObserver;
 import cc.towerdefence.minestom.Environment;
 import cc.towerdefence.minestom.module.kubernetes.KubernetesModule;
+import cc.towerdefence.minestom.utils.MinestomPlayerUtils;
 import cc.towerdefence.minestom.utils.ProgressBar;
 import dev.agones.sdk.AgonesSDKProto;
 import net.kyori.adventure.bossbar.BossBar;
@@ -201,7 +202,9 @@ public class GameHandler {
                     task.cancel();
 
                     if (Environment.isProduction()) {
-                        this.kubernetesModule.getSdk().shutdown(AgonesSDKProto.Empty.getDefaultInstance(), new IgnoredStreamObserver<>());
+                        MinestomPlayerUtils.sendAllToLobby(() -> {
+                            this.kubernetesModule.getSdk().shutdown(AgonesSDKProto.Empty.getDefaultInstance(), new IgnoredStreamObserver<>());
+                        });
                     }
                 })
                 .delay(59, ChronoUnit.SECONDS)

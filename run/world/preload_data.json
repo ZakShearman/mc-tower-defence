@@ -2,5 +2,6 @@
   "minX": -8,
   "maxX": 6,
   "minZ": -9,
-  "maxZ": 7
+  "maxZ": 7,
+  "autoChunkLoad": false
 }

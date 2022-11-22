@@ -74,6 +74,7 @@ public class LobbyStartingManager {
                         if (this.areTeamsBalanced()) {
                             Audiences.all().sendMessage(Component.text("Game starting!", NamedTextColor.GREEN));
                             this.module.getGameHandler().start();
+                            this.destroy();
                         } else {
                             Audiences.all().sendMessage(Component.text("The teams are not balanced so the game will not start.", NamedTextColor.RED)
                                     .append(Component.newline())
@@ -91,6 +92,11 @@ public class LobbyStartingManager {
                 })
                 .repeat(1, ChronoUnit.SECONDS)
                 .schedule();
+    }
+
+    private void destroy() {
+        this.lobbyManager.destroy();
+        this.countdownTask.cancel();
     }
 
     private boolean areTeamsBalanced() {

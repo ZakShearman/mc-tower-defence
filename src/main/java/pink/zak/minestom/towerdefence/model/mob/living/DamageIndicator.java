@@ -4,12 +4,10 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.coordinate.Vec;
 import net.minestom.server.entity.Entity;
 import net.minestom.server.entity.EntityType;
-import net.minestom.server.entity.Player;
 import net.minestom.server.entity.metadata.other.AreaEffectCloudMeta;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.utils.time.TimeUnit;
@@ -37,14 +35,12 @@ public class DamageIndicator extends Entity {
 
         meta.setHasNoGravity(true);
         meta.setNotifyAboutChanges(false);
-        this.setAutoViewable(false);
+        this.updateViewableRule(player -> {
+            TDPlayer tdPlayer = (TDPlayer) player;
+            return tdPlayer.isDamageIndicators() && tdPlayer.getDistance(this) < 20;
+        });
 
         this.setInstance(instance, spawnPosition.add(0, OFFSET_Y, 0));
-        for (Player player : MinecraftServer.getConnectionManager().getOnlinePlayers()) {
-            TDPlayer tdPlayer = (TDPlayer) player;
-            if (tdPlayer.isDamageIndicators() &&  tdPlayer.getDistance(this) < 20) // distance check probably isn't necessary but save some packets
-                this.addViewer(tdPlayer);
-        }
 
         this.position = spawnPosition;
     }
