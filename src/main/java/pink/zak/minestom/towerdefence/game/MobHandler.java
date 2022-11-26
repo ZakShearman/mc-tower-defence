@@ -1,5 +1,6 @@
 package pink.zak.minestom.towerdefence.game;
 
+import cc.towerdefence.minestom.Environment;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.timer.Task;
 import net.minestom.server.utils.time.TimeUnit;
@@ -9,7 +10,7 @@ import pink.zak.minestom.towerdefence.cache.DamageIndicatorCache;
 import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
 import pink.zak.minestom.towerdefence.model.mob.QueuedEnemyMob;
-import pink.zak.minestom.towerdefence.model.mob.living.LivingEnemyMob;
+import pink.zak.minestom.towerdefence.model.mob.living.LivingTDEnemyMob;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;
@@ -24,8 +25,8 @@ import java.util.stream.Collectors;
 public class MobHandler {
     public static DamageIndicatorCache DAMAGE_INDICATOR_CACHE; // todo spend time to not use static here.
 
-    private final @NotNull Set<LivingEnemyMob> redSideMobs = ConcurrentHashMap.newKeySet();
-    private final @NotNull Set<LivingEnemyMob> blueSideMobs = ConcurrentHashMap.newKeySet();
+    private final @NotNull Set<LivingTDEnemyMob> redSideMobs = ConcurrentHashMap.newKeySet();
+    private final @NotNull Set<LivingTDEnemyMob> blueSideMobs = ConcurrentHashMap.newKeySet();
 
     private final @NotNull TowerDefenceModule module;
     private final @NotNull GameHandler gameHandler;
@@ -49,10 +50,16 @@ public class MobHandler {
         this.startUpdatingAttackingTowers();
     }
 
-    public void spawnMob(@NotNull QueuedEnemyMob queuedEnemyMob, @NotNull GameUser spawner) {
-        LivingEnemyMob mob = LivingEnemyMob.create(this.module, this.gameHandler, queuedEnemyMob.mob(), queuedEnemyMob.level().getLevel(), this.instance, this.map, spawner);
-        // todo invert later
-        if (spawner.getTeam() == Team.RED)
+    public void spawnMob(@NotNull QueuedEnemyMob queuedEnemyMob, @NotNull GameUser spawningUser) {
+        LivingTDEnemyMob mob = LivingTDEnemyMob.create(
+                this.gameHandler, queuedEnemyMob.mob(), queuedEnemyMob.level().getLevel(),
+                this.instance, this.map, spawningUser
+        );
+        Team team;
+        if (Environment.isProduction()) team = spawningUser.getTeam() == Team.RED ? Team.BLUE : Team.RED;
+        else team = spawningUser.getTeam();
+
+        if (team == Team.RED)
             this.redSideMobs.add(mob);
         else
             this.blueSideMobs.add(mob);
@@ -72,8 +79,8 @@ public class MobHandler {
 
     // todo is there a way other than recalculating every time? Sure this is easy, but not great on performance
     private void updateAttackingTowers(@NotNull Team team) {
-        List<LivingEnemyMob> distanceSortedMobs = new ArrayList<>(team == Team.RED ? this.redSideMobs : this.blueSideMobs);
-        distanceSortedMobs.sort(Comparator.comparingDouble(LivingEnemyMob::getTotalDistanceMoved).reversed());
+        List<LivingTDEnemyMob> distanceSortedMobs = new ArrayList<>(team == Team.RED ? this.redSideMobs : this.blueSideMobs);
+        distanceSortedMobs.sort(Comparator.comparingDouble(LivingTDEnemyMob::getTotalDistanceMoved).reversed());
 
         for (PlacedAttackingTower<?> tower : (team == Team.RED ? this.towerHandler.getRedTowers() : this.towerHandler.getBlueTowers())
                 .stream()
@@ -81,10 +88,10 @@ public class MobHandler {
                 .map(tower -> (PlacedAttackingTower<?>) tower)
                 .collect(Collectors.toUnmodifiableSet())
         ) {
-            List<LivingEnemyMob> newTargets = new ArrayList<>();
+            List<LivingTDEnemyMob> newTargets = new ArrayList<>();
             int i = 0;
             while (newTargets.size() < tower.getMaxTargets() && i < distanceSortedMobs.size()) {
-                LivingEnemyMob enemyMob = distanceSortedMobs.get(i);
+                LivingTDEnemyMob enemyMob = distanceSortedMobs.get(i);
                 double distance = tower.getBasePoint().distance(enemyMob.getPosition());
 
                 if (distance < tower.getLevel().getRange() && (tower.getTower().getType().isTargetAir() || !enemyMob.getEnemyMob().isFlying()))
@@ -96,11 +103,11 @@ public class MobHandler {
         }
     }
 
-    public @NotNull Set<LivingEnemyMob> getRedSideMobs() {
+    public @NotNull Set<LivingTDEnemyMob> getRedSideMobs() {
         return this.redSideMobs;
     }
 
-    public @NotNull Set<LivingEnemyMob> getBlueSideMobs() {
+    public @NotNull Set<LivingTDEnemyMob> getBlueSideMobs() {
         return this.blueSideMobs;
     }
 }

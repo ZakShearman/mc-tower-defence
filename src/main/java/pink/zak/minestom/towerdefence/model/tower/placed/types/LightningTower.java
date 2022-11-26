@@ -9,7 +9,7 @@ import net.minestom.server.network.packet.server.SendablePacket;
 import net.minestom.server.particle.Particle;
 import net.minestom.server.particle.ParticleCreator;
 import net.minestom.server.utils.Direction;
-import pink.zak.minestom.towerdefence.model.mob.living.LivingEnemyMob;
+import pink.zak.minestom.towerdefence.model.mob.living.LivingTDEnemyMob;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTower;
 import pink.zak.minestom.towerdefence.model.tower.config.towers.LightningTowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
@@ -44,14 +44,14 @@ public class LightningTower extends PlacedAttackingTower<LightningTowerLevel> {
     protected void fire() {
         this.drawParticles();
 
-        for (LivingEnemyMob enemyMob : this.targets)
+        for (LivingTDEnemyMob enemyMob : this.targets)
             enemyMob.damage(this, this.level.getDamage());
     }
 
     private void drawParticles() {
         Map<ParticleThickness, Set<SendablePacket>> thicknessPackets = new HashMap<>();
 
-        LivingEnemyMob target = this.targets.get(0);
+        LivingTDEnemyMob target = this.targets.get(0);
 
         for (ParticleThickness thickness : ParticleThickness.values()) {
             Set<SendablePacket> packets = new HashSet<>();

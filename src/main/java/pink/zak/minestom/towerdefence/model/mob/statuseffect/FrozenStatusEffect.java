@@ -3,13 +3,13 @@ package pink.zak.minestom.towerdefence.model.mob.statuseffect;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.jetbrains.annotations.NotNull;
-import pink.zak.minestom.towerdefence.model.mob.living.LivingEnemyMob;
+import pink.zak.minestom.towerdefence.model.mob.living.LivingTDEnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.modifier.SpeedModifier;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class FrozenStatusEffect implements StatusEffect<FrozenStatusEffect>, SpeedModifier {
-    private final LivingEnemyMob mob;
+    private final LivingTDEnemyMob mob;
     private final double speedModifier;
     private final int maxTicks;
 
@@ -17,7 +17,7 @@ public class FrozenStatusEffect implements StatusEffect<FrozenStatusEffect>, Spe
 
     private boolean removed = false;
 
-    public FrozenStatusEffect(LivingEnemyMob mob, double speedModifier, int maxTicks) {
+    public FrozenStatusEffect(LivingTDEnemyMob mob, double speedModifier, int maxTicks) {
         this.mob = mob;
         this.speedModifier = speedModifier;
         this.maxTicks = maxTicks;

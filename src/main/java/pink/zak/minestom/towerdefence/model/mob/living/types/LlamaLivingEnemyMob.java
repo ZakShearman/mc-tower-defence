@@ -10,14 +10,14 @@ import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
 import pink.zak.minestom.towerdefence.model.mob.config.EnemyMob;
-import pink.zak.minestom.towerdefence.model.mob.living.LivingEnemyMob;
+import pink.zak.minestom.towerdefence.model.mob.living.SingleEnemyTDMob;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.utils.DirectionUtil;
 
-public class LlamaLivingEnemyMob extends LivingEnemyMob {
+public class LlamaLivingEnemyMob extends SingleEnemyTDMob {
 
     public LlamaLivingEnemyMob(GameHandler gameHandler, @NotNull EnemyMob enemyMob, Instance instance, TowerMap map, GameUser gameUser, int level) {
-        super(gameHandler, enemyMob, instance, map, gameUser, level, true);
+        super(gameHandler, enemyMob, level, instance, map, gameUser);
     }
 
     @Override

@@ -3,7 +3,6 @@ package pink.zak.minestom.towerdefence.model.tower.placed.types;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.coordinate.Vec;
-import net.minestom.server.entity.Entity;
 import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.LivingEntity;
 import net.minestom.server.entity.metadata.other.PrimedTntMeta;
@@ -14,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.game.MobHandler;
-import pink.zak.minestom.towerdefence.model.mob.living.LivingEnemyMob;
+import pink.zak.minestom.towerdefence.model.mob.living.LivingTDEnemyMob;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTower;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
@@ -47,10 +46,10 @@ public class BomberTower extends PlacedAttackingTower<AttackingTowerLevel> {
 
     private void damageTroops(@NotNull BombTnt tnt) {
         Pos center = tnt.getPosition();
-        Set<LivingEnemyMob> enemyMobs = super.team == Team.RED ? this.mobHandler.getRedSideMobs() : this.mobHandler.getBlueSideMobs();
+        Set<LivingTDEnemyMob> enemyMobs = super.team == Team.RED ? this.mobHandler.getRedSideMobs() : this.mobHandler.getBlueSideMobs();
 
-        for (LivingEnemyMob enemyMob : enemyMobs) {
-            if (enemyMob.getDistance(center) <= 4) {
+        for (LivingTDEnemyMob enemyMob : enemyMobs) {
+            if (enemyMob.getPosition().distance(center) <= 4) {
                 enemyMob.damage(this, this.level.getDamage());
             }
         }
@@ -63,7 +62,7 @@ public class BomberTower extends PlacedAttackingTower<AttackingTowerLevel> {
 
     private static class BombTnt extends LivingEntity {
         private final BomberTower tower;
-        private final LivingEntity target;
+        private final LivingTDEnemyMob target;
         private double xVel;
         private double zVel;
         private boolean set;
@@ -104,7 +103,7 @@ public class BomberTower extends PlacedAttackingTower<AttackingTowerLevel> {
                     this.setGravity(0, 0.0777777778);
                     // update the velocity if the target isn't dead yet
                     if (!this.target.isDead()) {
-                        Entity target = this.tower.getTargets().get(0);
+                        LivingTDEnemyMob target = this.tower.getTargets().get(0);
                         // takes 40 ticks to land, -14 for the initial upwards velocity.
                         // When vertical maps are supported, we'll have to do projectile motion calculations live or weird explosion behaviour will be experienced
                         this.xVel = (target.getPosition().x() - this.tower.spawnPos.x());

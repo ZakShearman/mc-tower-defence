@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ForkJoinPool;
 
 public class TowerDefenceInstance extends InstanceContainer {
     private static final Logger LOGGER = LoggerFactory.getLogger(TowerDefenceInstance.class);
@@ -70,10 +71,20 @@ public class TowerDefenceInstance extends InstanceContainer {
     private void loadPreloadChunks(PreLoadWorldData preLoadWorldData) {
         Instant start = Instant.now();
 
+        LOGGER.info("java.util.concurrent.ForkJoinPool.common.threadFactory: {}", System.getProperty("java.util.concurrent.ForkJoinPool.common.threadFactory"));
+        LOGGER.info("java.util.concurrent.ForkJoinPool.common.exceptionHandler: {}", System.getProperty("java.util.concurrent.ForkJoinPool.common.exceptionHandler"));
+        LOGGER.info("java.util.concurrent.ForkJoinPool.common.parallelism: {}", System.getProperty("java.util.concurrent.ForkJoinPool.common.parallelism"));
+
+        LOGGER.info("System available processors: {}", Runtime.getRuntime().availableProcessors());
+        LOGGER.info("Common pool intended parallelism value: {}", ForkJoinPool.getCommonPoolParallelism());
+        LOGGER.info("Common pool parallelism value: {}", ForkJoinPool.commonPool().getParallelism());
         Set<CompletableFuture<Chunk>> futures = new HashSet<>();
         for (int x = preLoadWorldData.minX(); x <= preLoadWorldData.maxX(); x++) {
             for (int z = preLoadWorldData.minZ(); z <= preLoadWorldData.maxZ(); z++) {
-                futures.add(this.loadChunk(x, z));
+                futures.add(this.loadChunk(x, z).thenApply(chunk -> {
+                    LOGGER.info("Loaded chunk at {}, {}", chunk.getChunkX(), chunk.getChunkZ());
+                    return chunk;
+                }));
             }
         }
         CompletableFuture.allOf(futures.toArray(new CompletableFuture[]{})).join();
@@ -84,14 +95,16 @@ public class TowerDefenceInstance extends InstanceContainer {
         Point origin = this.towerMap.getMobSpawn(team);
         List<PathCorner> corners = this.towerMap.getCorners(team);
 
-        Point current = origin;
+        Point current = origin.sub(0, 1, 0);
         for (PathCorner corner : corners) {
             Direction direction = corner.direction();
             for (int i = 0; i < corner.distance(); i++) {
                 current = current.add(direction.normalX(), direction.normalY(), direction.normalZ());
                 Block block = this.getBlock(current);
 
-                Block newBlock = (Environment.isProduction() ? block : Block.BEDROCK).withTag(TOWER_PATH_TAG, team.name());
+                Block newBlock = (Environment.isProduction() || System.getenv("TD_PROD_PATH") != null ? block : Block.BEDROCK)
+                        .withTag(TOWER_PATH_TAG, team.name());
+
                 this.setBlock(current.withY(current.y() - 1), newBlock);
             }
         }
@@ -107,6 +120,6 @@ public class TowerDefenceInstance extends InstanceContainer {
     }
 
     public TowerMap getTowerMap() {
-        return towerMap;
+        return this.towerMap;
     }
 }

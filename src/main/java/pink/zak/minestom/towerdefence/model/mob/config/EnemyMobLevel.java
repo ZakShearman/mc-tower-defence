@@ -2,6 +2,7 @@ package pink.zak.minestom.towerdefence.model.mob.config;
 
 import com.google.gson.JsonObject;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.minestom.server.MinecraftServer;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import pink.zak.minestom.towerdefence.utils.ItemUtils;
@@ -27,7 +28,7 @@ public class EnemyMobLevel {
         this.manaKillReward = this.cost / 8; // todo balance
         this.health = jsonObject.get("health").getAsInt();
         this.damage = jsonObject.get("damage").getAsInt();
-        this.movementSpeed = jsonObject.get("movementSpeed").getAsDouble() / 20;
+        this.movementSpeed = jsonObject.get("movementSpeed").getAsDouble() / MinecraftServer.TICK_PER_SECOND;
         this.manaCost = jsonObject.get("manaCost").getAsInt();
         this.sendItem = ItemUtils.fromJsonObject(jsonObject.get("sendItem").getAsJsonObject());
         ItemStack ownedUpgradeItem = ItemUtils.fromJsonObject(jsonObject.get("upgradeItem").getAsJsonObject());

@@ -7,15 +7,15 @@ import net.minestom.server.item.Material;
 import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
 import pink.zak.minestom.towerdefence.model.mob.config.EnemyMob;
-import pink.zak.minestom.towerdefence.model.mob.living.LivingEnemyMob;
+import pink.zak.minestom.towerdefence.model.mob.living.SingleEnemyTDMob;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 
-public class ZombieLivingEnemyMob extends LivingEnemyMob {
+public class ZombieLivingEnemyMob extends SingleEnemyTDMob {
 
     public ZombieLivingEnemyMob(GameHandler gameHandler, EnemyMob enemyMob, Instance instance, TowerMap map, GameUser gameUser, int level) {
-        super(gameHandler, enemyMob, instance, map, gameUser, level, true);
+        super(gameHandler, enemyMob, level, instance, map, gameUser);
 
-        ItemStack chestplateItem = ItemStack.of(switch (super.getLevel().getLevel()) {
+        ItemStack chestplateItem = ItemStack.of(switch (super.getEnemyMobLevel().getLevel()) {
             case 1 -> Material.LEATHER_CHESTPLATE;
             case 2 -> Material.CHAINMAIL_CHESTPLATE;
             case 3 -> Material.GOLDEN_CHESTPLATE;
@@ -24,7 +24,7 @@ public class ZombieLivingEnemyMob extends LivingEnemyMob {
             default -> Material.AIR;
         });
 
-        ItemStack heldItem = ItemStack.of(switch (super.getLevel().getLevel()) {
+        ItemStack heldItem = ItemStack.of(switch (super.getEnemyMobLevel().getLevel()) {
             case 1 -> Material.WOODEN_SWORD;
             case 2 -> Material.STONE_SWORD;
             case 3 -> Material.GOLDEN_SWORD;

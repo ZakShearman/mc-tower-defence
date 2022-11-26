@@ -108,8 +108,12 @@ public class TowerDefenceModule extends Module {
     }
 
     public void setGameState(GameState gameState) {
-        this.tdAgonesManager.setPhase(gameState.name().toLowerCase());
         this.gameState = gameState;
+
+        this.tdAgonesManager.setPhase(gameState.name().toLowerCase());
+        if (gameState == GameState.END) {
+            this.tdAgonesManager.setBackfill(false);
+        }
     }
 
     public MobStorage getMobStorage() {

@@ -1,7 +1,7 @@
 package pink.zak.minestom.towerdefence.model.user.settings;
 
-import net.minestom.server.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
+import pink.zak.minestom.towerdefence.model.mob.living.LivingTDMob;
 
 import java.util.function.BiFunction;
 
@@ -16,7 +16,7 @@ public enum HealthDisplayMode {
         this.healthResolver = healthResolver;
     }
 
-    public String resolve(LivingEntity entity) {
+    public String resolve(LivingTDMob entity) {
         return this.healthResolver.apply(entity.getHealth(), entity.getMaxHealth());
     }
 

@@ -45,9 +45,9 @@ public class DamageIndicator extends Entity {
         this.position = spawnPosition;
     }
 
-    public static void create(LivingEnemyMob enemyMob, double damage) {
+    public static void create(LivingTDEnemyMob enemyMob, double damage) {
         Component text = NAME_CACHE.get(damage, key -> Component.text(damage, NamedTextColor.RED));
-        new DamageIndicator(enemyMob.getInstance(), enemyMob.getPosition().add(0, enemyMob.getEntityType().height(), 0), text);
+        new DamageIndicator(enemyMob.getInstance(), enemyMob.getPosition().add(0, enemyMob.getTDEntityType().height(), 0), text);
     }
 
     @Override

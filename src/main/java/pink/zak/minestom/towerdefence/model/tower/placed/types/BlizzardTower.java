@@ -13,7 +13,7 @@ import net.minestom.server.particle.ParticleCreator;
 import net.minestom.server.timer.Task;
 import net.minestom.server.utils.Direction;
 import net.minestom.server.utils.time.TimeUnit;
-import pink.zak.minestom.towerdefence.model.mob.living.LivingEnemyMob;
+import pink.zak.minestom.towerdefence.model.mob.living.LivingTDEnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.statuseffect.FrozenStatusEffect;
 import pink.zak.minestom.towerdefence.model.mob.statuseffect.StatusEffectType;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTower;
@@ -46,7 +46,7 @@ public class BlizzardTower extends PlacedAttackingTower<BlizzardTowerLevel> {
         double speedModifier = this.level.getSpeedModifier();
         int tickDuration = this.level.getTickDuration();
 
-        for (LivingEnemyMob target : this.targets) {
+        for (LivingTDEnemyMob target : this.targets) {
             FrozenStatusEffect currentEffect = (FrozenStatusEffect) target.getStatusEffects().get(StatusEffectType.FROZEN);
 
             // if it: A) has no effect, B) current effect is worse than this one, or C) current effect is the same but has less time left
@@ -96,7 +96,7 @@ public class BlizzardTower extends PlacedAttackingTower<BlizzardTowerLevel> {
         this.snowmanTask = MinecraftServer.getSchedulerManager().buildTask(() -> {
                     if (this.snowman != null) {
                         if (this.targets.size() > 0) {
-                            this.snowman.lookAt(this.targets.get(0));
+                            this.snowman.lookAt(this.targets.get(0).getPosition());
                         } else if (this.snowman.getPosition() != this.restSnowmanPos) {
                             this.snowman.setView(this.restSnowmanPos.yaw(), 0);
                         }

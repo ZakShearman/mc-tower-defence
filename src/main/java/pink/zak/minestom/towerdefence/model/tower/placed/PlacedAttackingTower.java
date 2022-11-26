@@ -10,7 +10,7 @@ import net.minestom.server.utils.time.TimeUnit;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.model.DamageSource;
 import pink.zak.minestom.towerdefence.model.mob.TDDamageType;
-import pink.zak.minestom.towerdefence.model.mob.living.LivingEnemyMob;
+import pink.zak.minestom.towerdefence.model.mob.living.LivingTDEnemyMob;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTower;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTowerLevel;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class PlacedAttackingTower<T extends AttackingTowerLevel> extends PlacedTower<T> implements DamageSource {
-    protected List<LivingEnemyMob> targets = new ArrayList<>();
+    protected List<LivingTDEnemyMob> targets = new ArrayList<>();
     protected Task attackTask;
 
     protected PlacedAttackingTower(Instance instance, AttackingTower tower, Material towerBaseMaterial, int id, GameUser owner, Point basePoint, Direction facing, int level) {
@@ -57,11 +57,11 @@ public abstract class PlacedAttackingTower<T extends AttackingTowerLevel> extend
         super.destroy();
     }
 
-    public List<LivingEnemyMob> getTargets() {
+    public List<LivingTDEnemyMob> getTargets() {
         return this.targets;
     }
 
-    public void setTargets(List<LivingEnemyMob> targets) {
+    public void setTargets(List<LivingTDEnemyMob> targets) {
         this.targets = targets;
     }
 

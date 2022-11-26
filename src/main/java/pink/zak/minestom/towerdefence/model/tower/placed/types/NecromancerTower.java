@@ -22,8 +22,8 @@ import pink.zak.minestom.towerdefence.model.DamageSource;
 import pink.zak.minestom.towerdefence.model.mob.TDDamageType;
 import pink.zak.minestom.towerdefence.model.mob.config.EnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.config.EnemyMobLevel;
-import pink.zak.minestom.towerdefence.model.mob.living.LivingEnemyMob;
-import pink.zak.minestom.towerdefence.model.mob.living.LivingTDMob;
+import pink.zak.minestom.towerdefence.model.mob.living.LivingTDEnemyMob;
+import pink.zak.minestom.towerdefence.model.mob.living.SingleTDMob;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTower;
 import pink.zak.minestom.towerdefence.model.tower.config.towers.NecromancerTowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedTower;
@@ -40,14 +40,14 @@ public class NecromancerTower extends PlacedTower<NecromancerTowerLevel> {
         super(instance, tower, towerBaseMaterial, id, owner, basePoint, facing, level);
     }
 
-    public void createNecromancedMob(LivingEnemyMob livingEnemyMob) {
+    public void createNecromancedMob(LivingTDEnemyMob livingEnemyMob) {
         if (this.necromancedMobCount.get() >= this.level.getMaxNecromancedMobs()) return;
         this.necromancedMobCount.incrementAndGet();
 
-        new NecromancedMob(this, livingEnemyMob, this.getLevel(), super.owner);
+        NecromancedMob necromancedMob = livingEnemyMob.necromancedVersion(this, this.getLevel(), super.owner);
     }
 
-    public static class NecromancedMob extends LivingTDMob implements DamageSource {
+    public static class NecromancedMob extends SingleTDMob implements DamageSource {
         private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
         private static final String CUSTOM_NAME = "<dark_purple><mob_type> <level> <light_purple>| <dark_purple><health>";
 
@@ -56,26 +56,26 @@ public class NecromancerTower extends PlacedTower<NecromancerTowerLevel> {
         private final @NotNull EnemyMobLevel enemyMobLevel;
         private final @NotNull GameUser owner;
 
-        public NecromancedMob(@NotNull NecromancerTower originTower, @NotNull LivingEnemyMob originalMob,
-                              @NotNull NecromancerTowerLevel enemyMobLevel, @NotNull GameUser owner) {
+        public NecromancedMob(@NotNull NecromancerTower originTower, @NotNull NecromancerTowerLevel towerLevel,
+                              @NotNull LivingTDEnemyMob originalMob, @NotNull GameUser owner) {
 
-            super(originalMob.getEntityType(), true);
+            super(originalMob.getTDEntityType(), originalMob.getLevel());
 
             this.originTower = originTower;
             this.enemyMob = originalMob.getEnemyMob();
-            this.enemyMobLevel = originalMob.getLevel();
+            this.enemyMobLevel = originalMob.getEnemyMobLevel();
             this.owner = owner;
 
             this.getAttribute(Attribute.MOVEMENT_SPEED).setBaseValue((float) this.enemyMobLevel.getMovementSpeed() + 0.050f);
-            this.getAttribute(Attribute.MAX_HEALTH).setBaseValue(enemyMobLevel.getNecromancedHealth());
+            this.getAttribute(Attribute.MAX_HEALTH).setBaseValue(towerLevel.getNecromancedHealth());
 
             Navigator navigator = this.getNavigator();
             PFPathingEntity pathingEntity = navigator.getPathingEntity();
 
-            this.setNoGravity(originalMob.hasNoGravity());
-            pathingEntity.setAvian(originalMob.hasNoGravity());
+            this.setNoGravity(originalMob.getEnemyMob().isFlying());
+            pathingEntity.setAvian(this.hasNoGravity());
 
-            this.setHealth(enemyMobLevel.getNecromancedHealth());
+            this.setHealth(towerLevel.getNecromancedHealth());
             this.setCustomNameVisible(true);
 
             HydrazinePathFinder pathFinder = new HydrazinePathFinder(this.getNavigator().getPathingEntity(), originalMob.getInstance().getInstanceSpace());
@@ -85,9 +85,9 @@ public class NecromancerTower extends PlacedTower<NecromancerTowerLevel> {
 
             this.addAIGroup(
                     new EntityAIGroupBuilder()
-                            .addGoalSelector(new MeleeAttackGoal(this, 1.2, 20, TimeUnit.SERVER_TICK))
+                            .addGoalSelector(new MeleeAttackGoal(this, 1.2, 1000, TimeUnit.MILLISECOND))
                             .addTargetSelector(new ClosestEntityTarget(this, 15, entity -> {
-                                return entity instanceof LivingEnemyMob livingEnemyMob && !livingEnemyMob.isDead();
+                                return entity instanceof LivingTDEnemyMob livingEnemyMob && !livingEnemyMob.isDead();
                             }))
                             .build()
             );
@@ -117,7 +117,7 @@ public class NecromancerTower extends PlacedTower<NecromancerTowerLevel> {
         }
 
         @Override
-        protected Component createNameComponent(Player player) {
+        public @NotNull Component createNameComponent(@NotNull Player player) {
             TDPlayer tdPlayer = (TDPlayer) player;
             String health = tdPlayer.getHealthMode().resolve(this);
 

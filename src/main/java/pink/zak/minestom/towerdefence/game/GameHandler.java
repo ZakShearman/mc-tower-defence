@@ -47,7 +47,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 public class GameHandler {
-    private final @NotNull TowerDefenceModule plugin;
+    private final @NotNull TowerDefenceModule module;
     private final @NotNull TowerDefenceInstance instance;
     private final @NotNull TowerMap map;
     private final @NotNull LobbyManager lobbyManager;
@@ -67,7 +67,7 @@ public class GameHandler {
     private Hologram blueTowerHologram;
 
     public GameHandler(@NotNull TowerDefenceModule module, @NotNull LobbyManager lobbyManager) {
-        this.plugin = module;
+        this.module = module;
         this.instance = module.getInstance();
         this.map = this.instance.getTowerMap();
         this.lobbyManager = lobbyManager;
@@ -90,7 +90,7 @@ public class GameHandler {
     }
 
     public void start() {
-        this.plugin.setGameState(GameState.GAME);
+        this.module.setGameState(GameState.GAME);
 
         Set<LobbyPlayer> lobbyPlayers = this.lobbyManager.getLobbyPlayers();
         Set<LobbyPlayer> redPlayers = lobbyPlayers.stream().filter(lobbyPlayer -> lobbyPlayer.getTeam() == Team.RED).collect(Collectors.toSet());
@@ -98,7 +98,7 @@ public class GameHandler {
 
         this.configureTeam(Team.RED, redPlayers);
         this.configureTeam(Team.BLUE, bluePlayers);
-        this.plugin.getScoreboardManager().startGame();
+        this.module.getScoreboardManager().startGame();
 
         for (Player player : this.users.keySet()) {
             player.getInventory().clear();
@@ -157,7 +157,10 @@ public class GameHandler {
         AtomicInteger health = team == Team.RED ? this.redTowerHealth : this.blueTowerHealth;
         Hologram hologram = team == Team.RED ? this.redTowerHologram : this.blueTowerHologram;
 
-        int newHealth = health.updateAndGet(currentHealth -> currentHealth - damage);
+        int oldHealth = health.getAndUpdate(currentHealth -> currentHealth - damage);
+        int newHealth = health.get();
+
+        if (oldHealth > 0) hologram.setText(this.createTowerHologram(team));
 
         if (newHealth <= 0) {
             if (this.ended.compareAndSet(false, true)) {
@@ -166,12 +169,11 @@ public class GameHandler {
             return;
         }
 
-        hologram.setText(this.createTowerHologram(team));
-
         MinecraftServer.getGlobalEventHandler().call(new CastleDamageEvent(team, damage, newHealth));
     }
 
     public void endGame(Team winningTeam) {
+        this.module.setGameState(GameState.END);
         this.shutdownTask();
         // todo properly clean up
     }
