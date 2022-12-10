@@ -81,10 +81,7 @@ public class TowerDefenceInstance extends InstanceContainer {
         Set<CompletableFuture<Chunk>> futures = new HashSet<>();
         for (int x = preLoadWorldData.minX(); x <= preLoadWorldData.maxX(); x++) {
             for (int z = preLoadWorldData.minZ(); z <= preLoadWorldData.maxZ(); z++) {
-                futures.add(this.loadChunk(x, z).thenApply(chunk -> {
-                    LOGGER.info("Loaded chunk at {}, {}", chunk.getChunkX(), chunk.getChunkZ());
-                    return chunk;
-                }));
+                futures.add(this.loadChunk(x, z));
             }
         }
         CompletableFuture.allOf(futures.toArray(new CompletableFuture[]{})).join();

@@ -17,11 +17,12 @@ import java.util.function.Function;
 
 public enum TowerType {
     ARCHER(Size.THREE, true, AttackingTower::new, AttackingTowerLevel::new),
-    BOMBER(Size.THREE, false, AttackingTower::new, AttackingTowerLevel::new),
     BLIZZARD(Size.THREE, true, AttackingTower::new, BlizzardTowerLevel::new),
+    BOMBER(Size.THREE, false, AttackingTower::new, AttackingTowerLevel::new),
+    CHARITY(Size.FIVE, false, Tower::new, CharityTowerLevel::new),
+    EARTHQUAKE(Size.THREE, false, AttackingTower::new, AttackingTowerLevel::new),
     LIGHTNING(Size.THREE, true, AttackingTower::new, LightningTowerLevel::new),
-    NECROMANCER(Size.FIVE, true, AttackingTower::new, NecromancerTowerLevel::new),
-    CHARITY(Size.FIVE, false, Tower::new, CharityTowerLevel::new);
+    NECROMANCER(Size.FIVE, true, AttackingTower::new, NecromancerTowerLevel::new);
 
     private final @NotNull Size size;
     private final boolean targetAir;

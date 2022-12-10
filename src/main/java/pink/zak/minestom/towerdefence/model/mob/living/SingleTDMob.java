@@ -52,7 +52,6 @@ public class SingleTDMob extends EntityCreature implements LivingTDMob {
         Metadata.Entry<?> nameEntry = Metadata.OptChat(this.createNameComponent(player));
         entries.put(2, nameEntry);
         player.sendPacket(new LazyPacket(() -> new EntityMetaDataPacket(getEntityId(), entries)));
-        // Passengers are removed here as I don't need them
 
         // Head position
         player.sendPacket(new EntityHeadLookPacket(getEntityId(), this.position.yaw()));

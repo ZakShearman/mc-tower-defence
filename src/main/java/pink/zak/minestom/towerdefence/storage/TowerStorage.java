@@ -11,23 +11,15 @@ import pink.zak.minestom.towerdefence.model.tower.config.Tower;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class TowerStorage {
     private static final Logger LOGGER = LoggerFactory.getLogger(TowerStorage.class);
-    private static final Set<String> TOWER_NAMES = Arrays.stream(TowerType.values()).map(towerType -> towerType.name().toLowerCase() + ".json").collect(Collectors.toUnmodifiableSet());
-
-    private final TowerDefenceModule plugin;
 
     private final Map<TowerType, Tower> towers = new HashMap<>();
 
     public TowerStorage(TowerDefenceModule plugin) {
-        this.plugin = plugin;
-
         this.load();
     }
 

@@ -182,10 +182,10 @@ public class GameHandler {
         Instant startTime = Instant.now();
         AtomicReference<BossBar> lastBossBar = new AtomicReference<>(null);
         Task task = MinecraftServer.getSchedulerManager().buildTask(() -> {
-                    int remainingSeconds = 60 - (int) Duration.between(startTime, Instant.now()).getSeconds();
-                    float progress = remainingSeconds / 60f;
+                    int remainingSeconds = 30 - (int) Duration.between(startTime, Instant.now()).getSeconds();
+                    float progress = remainingSeconds / 30f;
                     Component text;
-                    if (remainingSeconds > 30)
+                    if (remainingSeconds > 10)
                         text = Component.text("Game over!").color(NamedTextColor.RED);
                     else
                         text = Component.text("Server will close in %s seconds".formatted(remainingSeconds), NamedTextColor.RED);

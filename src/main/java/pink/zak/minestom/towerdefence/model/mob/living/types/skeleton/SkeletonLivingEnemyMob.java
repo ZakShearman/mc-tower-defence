@@ -1,6 +1,8 @@
 package pink.zak.minestom.towerdefence.model.mob.living.types.skeleton;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.minestom.server.adventure.audience.Audiences;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.*;
 import net.minestom.server.entity.metadata.animal.AbstractHorseMeta;
@@ -25,6 +27,7 @@ import pink.zak.minestom.towerdefence.model.user.GameUser;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class SkeletonLivingEnemyMob extends SingleEnemyTDMob {
     private static final Logger LOGGER = LoggerFactory.getLogger(SkeletonLivingEnemyMob.class);
@@ -57,7 +60,7 @@ public class SkeletonLivingEnemyMob extends SingleEnemyTDMob {
     }
 
     public static LivingTDEnemyMob create(@NotNull GameHandler gameHandler, @NotNull EnemyMob enemyMob, int level, @NotNull Instance instance, @NotNull TowerMap map, @NotNull GameUser gameUser) {
-        if (level == 1) return new SingleEnemyTDMob(gameHandler, enemyMob, level, instance, map, gameUser);
+        if (level == 1) return new BasicSkeletonEnemyMob(gameHandler, enemyMob, level, instance, map, gameUser);
         return new SkeletonLivingEnemyMob(gameHandler, enemyMob, level, instance, map, gameUser);
     }
 
@@ -84,7 +87,7 @@ public class SkeletonLivingEnemyMob extends SingleEnemyTDMob {
 
     @Override
     public void refreshPosition(@NotNull Pos newPosition, boolean ignoreView) {
-        this.mountedSkeletonMob.teleport(this.mountedSkeletonMob.getPosition().withYaw(newPosition.yaw()));
+//        this.mountedSkeletonMob.teleport(this.mountedSkeletonMob.getPosition().withYaw(newPosition.yaw()));
         super.refreshPosition(newPosition, ignoreView);
     }
 
@@ -111,6 +114,22 @@ public class SkeletonLivingEnemyMob extends SingleEnemyTDMob {
 
             // Head position
             player.sendPacket(new EntityHeadLookPacket(getEntityId(), this.position.yaw()));
+
+            // Passengers
+            final Set<Entity> passengers = this.getPassengers();
+            if (!passengers.isEmpty()) {
+                for (Entity passenger : passengers) {
+                    if (passenger != player) passenger.updateNewViewer(player);
+                }
+                player.sendPacket(getPassengersPacket());
+            }
+        }
+
+        @Override
+        public void tick(long time) {
+            super.tick(time);
+            Audiences.all().sendMessage(Component.text(this.parent.getPosition().toString(), NamedTextColor.RED));
+            Audiences.all().sendMessage(Component.text(this.getPosition().toString(), NamedTextColor.GREEN));
         }
     }
 

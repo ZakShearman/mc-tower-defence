@@ -2,7 +2,9 @@ package pink.zak.minestom.towerdefence.game;
 
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Point;
+import net.minestom.server.coordinate.Pos;
 import net.minestom.server.instance.block.Block;
+import net.minestom.server.network.packet.server.play.ChangeGameStatePacket;
 import net.minestom.server.utils.Direction;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.TowerDefenceModule;
@@ -38,14 +40,6 @@ public class TowerHandler {
     }
 
     public void createTower(@NotNull Tower tower, @NotNull GameUser gameUser) {
-        // todo calculate facing
-        /*
-        from base of tower:
-  for y - 3 and + 3
-  for +x, -x, +z, -z for 15 blocks
-  if intersection with path block, log distance and direction.
-  shortest direction to path wins and tower faces towards the cast direction
-         */
         Point basePoint = gameUser.getLastClickedTowerBlock();
         Direction direction = this.determineFacing(gameUser.getTeam(), basePoint);
         PlacedTower<?> placedTower = PlacedTower.create(this.gameHandler, this.instance, tower, this.map.getTowerBaseMaterial(), this.generateTowerId(), gameUser, basePoint, direction);
@@ -74,39 +68,35 @@ public class TowerHandler {
     }
 
     private Direction determineFacing(@NotNull Team team, Point basePoint) {
-        int distance = 100;
-        Direction direction = Direction.NORTH;
-        for (int y = basePoint.blockY() - 5; y < basePoint.blockY() + 5; y++) {
-            for (int x = basePoint.blockX() - 15; x < basePoint.blockX() + 15; x++) {
-                Block block = this.instance.getBlock(x, y, basePoint.blockZ());
-                String tagValue = block.getTag(TowerDefenceInstance.TOWER_PATH_TAG);
-                if (tagValue == null || !tagValue.equals(team.toString())) continue;
+        double currentDistanceSquared = Integer.MAX_VALUE;
+        Direction currentDirection = Direction.NORTH;
 
-                int tempDistance = Math.abs(x);
-                if (tempDistance < distance) {
-                    distance = tempDistance;
-                    if (x > basePoint.blockX())
-                        direction = Direction.EAST;
-                    else
-                        direction = Direction.WEST;
-                }
-            }
-            for (int z = basePoint.blockZ() - 15; z < basePoint.blockZ() + 15; z++) {
-                Block block = this.instance.getBlock(basePoint.blockX(), y, z);
-                String tagValue = block.getTag(TowerDefenceInstance.TOWER_PATH_TAG);
-                if (tagValue == null || !tagValue.equals(team.toString())) continue;
+        for (int yDist = -5; yDist < 5; yDist++) {
+            for (int xDist = -15; xDist < 15; xDist++) {
+                for (int zDist = -15; zDist < 15; zDist++) {
+                    Point point = new Pos(xDist + basePoint.blockX(), yDist + basePoint.blockY(), zDist + basePoint.blockZ());
+                    Block block = this.instance.getBlock(point);
+                    String tagValue = block.getTag(TowerDefenceInstance.TOWER_PATH_TAG);
+                    if (tagValue == null || !tagValue.equals(team.toString())) continue;
 
-                int tempDistance = Math.abs(z);
-                if (tempDistance < distance) {
-                    if (z > basePoint.blockZ())
-                        direction = Direction.SOUTH;
-                    else
-                        direction = Direction.NORTH;
-                    distance = tempDistance;
+                    int xDistance = Math.abs(xDist);
+                    int zDistance = Math.abs(zDist);
+                    double distanceSquared = point.distanceSquared(basePoint);
+                    if (distanceSquared < currentDistanceSquared) {
+                        // figure out facing
+                        if (xDistance > zDistance) {
+                            currentDirection = xDist > 0 ? Direction.EAST : Direction.WEST;
+                        } else {
+                            currentDirection = zDist > 0 ? Direction.SOUTH : Direction.NORTH;
+                        }
+                        currentDistanceSquared = distanceSquared;
+                    }
                 }
             }
         }
-        return direction;
+
+        new ChangeGameStatePacket(ChangeGameStatePacket.Reason.ENABLE_RESPAWN_SCREEN, 1);
+        return currentDirection;
     }
 
     public @NotNull Set<PlacedTower<?>> getRedTowers() {

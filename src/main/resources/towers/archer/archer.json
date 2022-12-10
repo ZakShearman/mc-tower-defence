@@ -1,0 +1,6 @@
+{
+  "type": "ARCHER",
+  "name": "archer",
+  "damageType": "BLUDGEONING",
+  "guiSlot": 15
+}
