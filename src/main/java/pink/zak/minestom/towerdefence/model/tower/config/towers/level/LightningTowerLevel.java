@@ -1,4 +1,4 @@
-package pink.zak.minestom.towerdefence.model.tower.config.towers;
+package pink.zak.minestom.towerdefence.model.tower.config.towers.level;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;

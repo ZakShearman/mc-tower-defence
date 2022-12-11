@@ -1,12 +1,16 @@
 package pink.zak.minestom.towerdefence.model.mob.config;
 
 import com.google.gson.JsonObject;
+import lombok.ToString;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.MinecraftServer;
+import net.minestom.server.entity.EntityType;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
+import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.utils.ItemUtils;
 
+@ToString
 public class EnemyMobLevel {
     private final int level;
     private final int cost;
@@ -16,6 +20,7 @@ public class EnemyMobLevel {
     private final int damage;
     private final double movementSpeed;
     private final int manaCost;
+    private final @NotNull EntityType entityType;
     private final ItemStack sendItem;
     private final ItemStack ownedUpgradeItem;
     private final ItemStack buyUpgradeItem;
@@ -30,6 +35,7 @@ public class EnemyMobLevel {
         this.damage = jsonObject.get("damage").getAsInt();
         this.movementSpeed = jsonObject.get("movementSpeed").getAsDouble() / MinecraftServer.TICK_PER_SECOND;
         this.manaCost = jsonObject.get("manaCost").getAsInt();
+        this.entityType = EntityType.fromNamespaceId(jsonObject.get("entityType").getAsString());
         this.sendItem = ItemUtils.fromJsonObject(jsonObject.get("sendItem").getAsJsonObject());
         ItemStack ownedUpgradeItem = ItemUtils.fromJsonObject(jsonObject.get("upgradeItem").getAsJsonObject());
 
@@ -76,6 +82,10 @@ public class EnemyMobLevel {
 
     public int getManaCost() {
         return this.manaCost;
+    }
+
+    public @NotNull EntityType getEntityType() {
+        return this.entityType;
     }
 
     public ItemStack getSendItem() {

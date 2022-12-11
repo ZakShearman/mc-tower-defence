@@ -78,7 +78,7 @@ public class GameHandler {
         this.mobMenuHandler = new MobMenuHandler(module, this);
         this.userSettingsMenuHandler = new UserSettingsMenuHandler(module);
 
-        this.defaultEnemyMobs = module.getMobStorage().getEnemyMobs().values()
+        this.defaultEnemyMobs = module.getMobStorage().getEnemyMobs()
                 .stream()
                 .filter(mob -> mob.getLevel(1).getManaCost() <= 0)
                 .collect(Collectors.toUnmodifiableSet());

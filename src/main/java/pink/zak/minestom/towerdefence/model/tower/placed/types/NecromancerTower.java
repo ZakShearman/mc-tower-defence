@@ -25,7 +25,7 @@ import pink.zak.minestom.towerdefence.model.mob.config.EnemyMobLevel;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingTDEnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.living.SingleTDMob;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTower;
-import pink.zak.minestom.towerdefence.model.tower.config.towers.NecromancerTowerLevel;
+import pink.zak.minestom.towerdefence.model.tower.config.towers.level.NecromancerTowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.model.user.TDPlayer;

@@ -69,7 +69,7 @@ public class TowerDefenceModule extends Module {
 
         this.userCache = new TDUserLoader(this);
 
-        this.mobStorage = new MobStorage(this);
+        this.mobStorage = new MobStorage();
         this.towerStorage = new TowerStorage(this);
 
 

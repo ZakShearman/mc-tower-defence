@@ -75,7 +75,7 @@ public class SingleEnemyTDMob extends SingleTDMob implements LivingTDEnemyMob {
     public SingleEnemyTDMob(@NotNull GameHandler gameHandler, @NotNull EnemyMob enemyMob, int level,
                             @NotNull Instance instance, @NotNull TowerMap map,
                             @NotNull GameUser gameUser) {
-        this(gameHandler, enemyMob, level, instance, map, gameUser, enemyMob.getEntityType());
+        this(gameHandler, enemyMob, level, instance, map, gameUser, enemyMob.getLevel(level).getEntityType());
     }
 
     public SingleEnemyTDMob(@NotNull GameHandler gameHandler, @NotNull EnemyMob enemyMob, int level,

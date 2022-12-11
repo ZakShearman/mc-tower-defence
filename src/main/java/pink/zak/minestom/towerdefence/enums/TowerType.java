@@ -6,19 +6,17 @@ import pink.zak.minestom.towerdefence.model.tower.config.AttackingTower;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.config.Tower;
 import pink.zak.minestom.towerdefence.model.tower.config.TowerLevel;
-import pink.zak.minestom.towerdefence.model.tower.config.towers.BlizzardTowerLevel;
-import pink.zak.minestom.towerdefence.model.tower.config.towers.CharityTowerLevel;
-import pink.zak.minestom.towerdefence.model.tower.config.towers.LightningTowerLevel;
-import pink.zak.minestom.towerdefence.model.tower.config.towers.NecromancerTowerLevel;
+import pink.zak.minestom.towerdefence.model.tower.config.towers.*;
+import pink.zak.minestom.towerdefence.model.tower.config.towers.level.*;
 
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public enum TowerType {
-    ARCHER(Size.THREE, true, AttackingTower::new, AttackingTowerLevel::new),
+    ARCHER(Size.THREE, true, ArcherTowerConfig::new, AttackingTowerLevel::new),
     BLIZZARD(Size.THREE, true, AttackingTower::new, BlizzardTowerLevel::new),
-    BOMBER(Size.THREE, false, AttackingTower::new, AttackingTowerLevel::new),
+    BOMBER(Size.THREE, false, AttackingTower::new, BomberTowerLevel::new),
     CHARITY(Size.FIVE, false, Tower::new, CharityTowerLevel::new),
     EARTHQUAKE(Size.THREE, false, AttackingTower::new, AttackingTowerLevel::new),
     LIGHTNING(Size.THREE, true, AttackingTower::new, LightningTowerLevel::new),

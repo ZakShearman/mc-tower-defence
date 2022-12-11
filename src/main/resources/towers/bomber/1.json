@@ -5,6 +5,12 @@
   "damage": 1,
   "range": 20,
 
+  "relativeTntSpawnPoint": {
+    "xOffset": 0,
+    "yOffset": 2,
+    "zOffset": 0
+  },
+
   "menuItem": {
     "material": "minecraft:tnt",
     "displayName": "<yellow>Bomber ($undefined)",

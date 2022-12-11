@@ -11,7 +11,7 @@ import net.minestom.server.particle.ParticleCreator;
 import net.minestom.server.utils.Direction;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingTDEnemyMob;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTower;
-import pink.zak.minestom.towerdefence.model.tower.config.towers.LightningTowerLevel;
+import pink.zak.minestom.towerdefence.model.tower.config.towers.level.LightningTowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.model.user.TDPlayer;

@@ -4,6 +4,13 @@
   "fireDelay": 15,
   "damage": 1,
   "range": 20,
+
+  "relativeTntSpawnPoint": {
+    "xOffset": 0,
+    "yOffset": 6,
+    "zOffset": 0
+  },
+
   "menuItem": {
     "material": "minecraft:tnt",
     "displayName": "<yellow>Bomber Lvl. IV",

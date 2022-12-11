@@ -25,11 +25,6 @@ public class SingleTDMob extends EntityCreature implements LivingTDMob {
     }
 
     @Override
-    public @NotNull Component createNameComponent(@NotNull Player player) {
-        return LivingTDMob.super.createNameComponent(player);
-    }
-
-    @Override
     public void updateCustomName() {
         for (Player player : this.getViewers()) {
             Component value = this.createNameComponent(player);

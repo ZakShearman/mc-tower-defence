@@ -5,7 +5,7 @@ import net.minestom.server.instance.Instance;
 import net.minestom.server.item.Material;
 import net.minestom.server.utils.Direction;
 import pink.zak.minestom.towerdefence.model.tower.config.Tower;
-import pink.zak.minestom.towerdefence.model.tower.config.towers.CharityTowerLevel;
+import pink.zak.minestom.towerdefence.model.tower.config.towers.level.CharityTowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 

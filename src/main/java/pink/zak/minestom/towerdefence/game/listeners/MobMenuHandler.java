@@ -38,7 +38,7 @@ public class MobMenuHandler {
     private final @NotNull ItemStack upgradeItem;
 
     public MobMenuHandler(@NotNull TowerDefenceModule plugin, @NotNull GameHandler gameHandler) {
-        for (EnemyMob enemyMob : plugin.getMobStorage().getEnemyMobs().values())
+        for (EnemyMob enemyMob : plugin.getMobStorage().getEnemyMobs())
             MOB_UPGRADE_TITLES.put(enemyMob, Component.text("Upgrade " + enemyMob.getCommonName()));
 
         this.plugin = plugin;
@@ -74,7 +74,7 @@ public class MobMenuHandler {
 
         Inventory inventory = new Inventory(InventoryType.CHEST_4_ROW, SEND_TITLE);
         Map<EnemyMob, Integer> levels = gameUser.getMobLevels();
-        for (EnemyMob enemyMob : this.mobStorage.getEnemyMobs().values()) {
+        for (EnemyMob enemyMob : this.mobStorage.getEnemyMobs()) {
             Integer userLevel = levels.get(enemyMob);
             ItemStack itemStack = userLevel == null ? enemyMob.getUnownedItem() : enemyMob.getLevel(userLevel).getSendItem().withAmount(userLevel);
             inventory.setItemStack(enemyMob.getSlot(), itemStack);
@@ -131,7 +131,7 @@ public class MobMenuHandler {
                 return;
             }
 
-            Optional<EnemyMob> optionalClickedMob = this.mobStorage.getEnemyMobs().values()
+            Optional<EnemyMob> optionalClickedMob = this.mobStorage.getEnemyMobs()
                     .stream()
                     .filter(enemyMob -> enemyMob.getSlot() == slot)
                     .findFirst();
@@ -160,7 +160,7 @@ public class MobMenuHandler {
             event.setCancelled(true);
             int slot = event.getSlot();
 
-            Optional<EnemyMob> optionalClickedMob = this.mobStorage.getEnemyMobs().values()
+            Optional<EnemyMob> optionalClickedMob = this.mobStorage.getEnemyMobs()
                     .stream()
                     .filter(enemyMob -> enemyMob.getSlot() == slot)
                     .findFirst();

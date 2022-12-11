@@ -2,5 +2,27 @@
   "type": "ARCHER",
   "name": "archer",
   "damageType": "BLUDGEONING",
-  "guiSlot": 15
+  "guiSlot": 15,
+  "relativeFiringPoints": [
+    {
+      "xOffset": -1.5,
+      "yOffset": 5,
+      "zOffset": 0
+    },
+    {
+      "xOffset": 1.5,
+      "yOffset": 5,
+      "zOffset": 0
+    },
+    {
+      "xOffset": 0,
+      "yOffset": 5,
+      "zOffset": -1.5
+    },
+    {
+      "xOffset": 0,
+      "yOffset": 5,
+      "zOffset": 1.5
+    }
+  ]
 }

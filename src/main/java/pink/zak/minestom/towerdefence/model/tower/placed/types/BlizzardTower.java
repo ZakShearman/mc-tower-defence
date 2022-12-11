@@ -17,7 +17,7 @@ import pink.zak.minestom.towerdefence.model.mob.living.LivingTDEnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.statuseffect.FrozenStatusEffect;
 import pink.zak.minestom.towerdefence.model.mob.statuseffect.StatusEffectType;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTower;
-import pink.zak.minestom.towerdefence.model.tower.config.towers.BlizzardTowerLevel;
+import pink.zak.minestom.towerdefence.model.tower.config.towers.level.BlizzardTowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;

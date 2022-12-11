@@ -2,11 +2,8 @@
   "level": 1,
   "cost": 1,
   "fireDelay": 15,
-  "damage": 0,
-  "range": 15,
-
-  "speedModifier": 0.9,
-  "tickDuration": 20,
+  "damage": 1,
+  "range": 20,
 
   "menuItem": {
     "material": "minecraft:bow",

@@ -1,5 +1,4 @@
 {
-  "entityType": "minecraft:llama",
   "commonName": "Llama",
   "damageType": "ACID",
   "guiSlot": 2,
@@ -26,6 +25,7 @@
       "damage": 1,
       "movementSpeed": 1.7,
       "manaCost": 200,
+      "entityType": "minecraft:llama",
       "sendItem": {
         "material": "minecraft:player_head",
         "displayName": "<yellow>Llama",

@@ -2,7 +2,7 @@ package pink.zak.minestom.towerdefence.model.mob.config;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minestom.server.entity.EntityType;
+import lombok.ToString;
 import net.minestom.server.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.model.mob.TDDamageType;
@@ -15,8 +15,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+@ToString
 public class EnemyMob {
-    private final @NotNull EntityType entityType;
     private final @NotNull String commonName;
     private final @NotNull TDDamageType damageType;
     private final int slot;
@@ -28,7 +28,6 @@ public class EnemyMob {
     private final @NotNull Map<Integer, EnemyMobLevel> levels = new HashMap<>();
 
     public EnemyMob(JsonObject jsonObject) {
-        this.entityType = EntityType.fromNamespaceId(jsonObject.get("entityType").getAsString());
         this.commonName = jsonObject.get("commonName").getAsString();
         this.damageType = TDDamageType.valueOf(jsonObject.get("damageType").getAsString());
         this.slot = jsonObject.get("guiSlot").getAsInt();
@@ -51,10 +50,6 @@ public class EnemyMob {
                 .map(JsonElement::getAsJsonObject)
                 .map(EnemyMobLevel::new)
                 .forEach(mobLevel -> this.levels.put(mobLevel.getLevel(), mobLevel));
-    }
-
-    public @NotNull EntityType getEntityType() {
-        return this.entityType;
     }
 
     public @NotNull String getCommonName() {

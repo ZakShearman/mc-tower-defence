@@ -1,6 +1,8 @@
 package pink.zak.minestom.towerdefence.model.tower.config;
 
 import com.google.gson.JsonObject;
+import org.jetbrains.annotations.NotNull;
+import pink.zak.minestom.towerdefence.model.tower.config.relative.RelativePoint;
 
 public class AttackingTowerLevel extends TowerLevel {
     private final int fireDelay;

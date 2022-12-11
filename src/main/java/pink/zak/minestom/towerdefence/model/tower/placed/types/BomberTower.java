@@ -1,5 +1,6 @@
 package pink.zak.minestom.towerdefence.model.tower.placed.types;
 
+import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.coordinate.Vec;
@@ -15,28 +16,52 @@ import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.game.MobHandler;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingTDEnemyMob;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTower;
-import pink.zak.minestom.towerdefence.model.tower.config.AttackingTowerLevel;
+import pink.zak.minestom.towerdefence.model.tower.config.towers.level.BomberTowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 
 import java.util.Set;
 
-public class BomberTower extends PlacedAttackingTower<AttackingTowerLevel> {
-    private final Pos spawnPos;
+public class BomberTower extends PlacedAttackingTower<BomberTowerLevel> {
+    private static final double GRAVITY_PER_TICK = 0.04;
+    private static final double DRAG_PER_TICK = 0;
+
+    private static final int RAISE_TICKS = 6;
+    private static final double RAISE_BLOCKS = 1.5;
+
+    private static final int FLYING_TICKS = 10;
+    private static final @NotNull Vec RAISE_VELOCITY;
+
+    static {
+        RAISE_VELOCITY = new Vec(0, findVelocity(RAISE_BLOCKS, -GRAVITY_PER_TICK, RAISE_TICKS), 0);
+    }
+
     private final MobHandler mobHandler;
     private final GameUser owner;
+
+    private Point spawnPoint;
 
     public BomberTower(GameHandler gameHandler, Instance instance, AttackingTower tower, Material towerBaseMaterial, int id, GameUser owner, Point basePoint, Direction facing, int level) {
         super(instance, tower, towerBaseMaterial, id, owner, basePoint, facing, level);
         this.mobHandler = gameHandler.getMobHandler();
         this.owner = owner;
 
-        this.spawnPos = new Pos(basePoint.add(0, 2.5, 0));
+        this.updateSpawnPoint();
     }
 
     @Override
     public int getMaxTargets() {
         return 1;
+    }
+
+    private void updateSpawnPoint() {
+        this.spawnPoint = this.getLevel().getRelativeTntSpawnPoint().apply(this.getBasePoint());
+    }
+
+    @Override
+    public void upgrade() {
+        super.upgrade();
+        this.updateSpawnPoint();
     }
 
     @Override
@@ -62,60 +87,55 @@ public class BomberTower extends PlacedAttackingTower<AttackingTowerLevel> {
 
     private static class BombTnt extends LivingEntity {
         private final BomberTower tower;
-        private final LivingTDEnemyMob target;
-        private double xVel;
-        private double zVel;
-        private boolean set;
+        private final Pos fallbackPos;
 
         BombTnt(BomberTower tower) {
             super(EntityType.TNT);
             this.tower = tower;
 
-            // takes 50 ticks to land, -14 for the initial upwards velocity
-            // When vertical maps are supported, this cannot be hardcoded or weird explosion behaviour will be experienced
-            this.target = tower.getTargets().get(0);
-            Pos targetPos = this.target.getPosition();
-            this.xVel = (targetPos.x() - this.tower.spawnPos.x());
-            this.zVel = (targetPos.z() - this.tower.spawnPos.z());
 
             super.hasPhysics = false;
-            ((PrimedTntMeta) this.getEntityMeta()).setFuseTime(34);
+            ((PrimedTntMeta) this.getEntityMeta()).setFuseTime(RAISE_TICKS + FLYING_TICKS);
 
-            this.setInstance(tower.instance, tower.spawnPos);
-            this.setVelocity(new Vec(0, 12, 0));
+            this.setInstance(tower.instance, tower.spawnPoint);
+            this.setGravity(DRAG_PER_TICK, GRAVITY_PER_TICK);
+            this.setVelocity(RAISE_VELOCITY);
+
+            LivingTDEnemyMob target = tower.getTargets().get(0);
+            this.fallbackPos = target.getPosition();
         }
 
         @Override
         public void tick(long time) {
             super.tick(time);
-
             long aliveTicks = super.getAliveTicks();
-            if (aliveTicks == 34) {
+
+            if (aliveTicks == RAISE_TICKS) {
+                Pos targetPos = this.tower.getTargets().isEmpty() ? this.fallbackPos : this.tower.getTargets().get(0).getPosition();
+                targetPos = targetPos.add(0, 1.5, 0);
+                this.setVelocity(this.tower.calculateLaunchVec(this.position, targetPos));
+
+            } else if (aliveTicks == RAISE_TICKS + FLYING_TICKS) {
                 Pos pos = this.getPosition();
                 this.instance.explode(pos.blockX(), pos.blockY(), pos.blockZ(), 1f);
                 this.tower.damageTroops(this);
                 this.remove();
-                return;
             }
-
-            if (this.getVelocity().y() <= 0) {
-                if (!this.set) {
-                    this.setGravity(0, 0.0777777778);
-                    // update the velocity if the target isn't dead yet
-                    if (!this.target.isDead()) {
-                        LivingTDEnemyMob target = this.tower.getTargets().get(0);
-                        // takes 40 ticks to land, -14 for the initial upwards velocity.
-                        // When vertical maps are supported, we'll have to do projectile motion calculations live or weird explosion behaviour will be experienced
-                        this.xVel = (target.getPosition().x() - this.tower.spawnPos.x());
-                        this.zVel = (target.getPosition().z() - this.tower.spawnPos.z());
-                    }
-
-                    this.setVelocity(new Vec(this.xVel, 10, this.zVel));
-                    this.set = true;
-                }
-            }
-            if (this.set)
-                this.setVelocity(new Vec(this.xVel, this.getVelocity().y(), this.zVel));
         }
+    }
+
+    public Vec calculateLaunchVec(Point current, Point target) {
+        double x = target.x() - current.x();
+        double z = target.z() - current.z();
+        double y = target.y() - current.y();
+
+        double xVel = findVelocity(x, -DRAG_PER_TICK, FLYING_TICKS);
+        double zVel = findVelocity(z, -DRAG_PER_TICK, FLYING_TICKS);
+        double yVel = findVelocity(y, -GRAVITY_PER_TICK, FLYING_TICKS);
+        return new Vec(xVel, yVel, zVel);
+    }
+
+    private static double findVelocity(double s, double a, int t) {
+        return (s / t - 0.5 * a * t) * MinecraftServer.TICK_PER_SECOND; // a Vec is blocks/s, not blocks/tick
     }
 }

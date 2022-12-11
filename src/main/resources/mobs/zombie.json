@@ -1,5 +1,4 @@
 {
-  "entityType": "minecraft:zombie",
   "commonName": "Zombie",
   "damageType": "BLUDGEONING",
   "guiSlot": 0,
@@ -22,6 +21,7 @@
       "damage": 1,
       "movementSpeed": 2.1,
       "manaCost": -1,
+      "entityType": "minecraft:zombie",
       "sendItem": {
         "material": "minecraft:zombie_head",
         "displayName": "<yellow>Zombie",
@@ -50,6 +50,7 @@
       "damage": 1.5,
       "movementSpeed": 2.1,
       "manaCost": 50,
+      "entityType": "minecraft:zombie",
       "sendItem": {
         "material": "minecraft:zombie_head",
         "displayName": "<yellow>Zombie",
@@ -78,6 +79,7 @@
       "damage": 2,
       "movementSpeed": 2.1,
       "manaCost": 50,
+      "entityType": "minecraft:zombie",
       "sendItem": {
         "material": "minecraft:zombie_head",
         "displayName": "<yellow>Zombie",
@@ -106,6 +108,7 @@
       "damage": 2,
       "movementSpeed": 2.1,
       "manaCost": 50,
+      "entityType": "minecraft:zombie",
       "sendItem": {
         "material": "minecraft:zombie_head",
         "displayName": "<yellow>Zombie",
@@ -134,6 +137,7 @@
       "damage": 3,
       "movementSpeed": 2.1,
       "manaCost": 50,
+      "entityType": "minecraft:zombie",
       "sendItem": {
         "material": "minecraft:zombie_head",
         "displayName": "<yellow>Zombie",

@@ -1,5 +1,4 @@
 {
-  "entityType": "minecraft:bee",
   "commonName": "Bee",
   "damageType": "ACID",
   "guiSlot": 3,
@@ -26,6 +25,7 @@
       "damage": 1,
       "movementSpeed": 3.0,
       "manaCost": 500,
+      "entityType": "minecraft:bee",
       "sendItem": {
         "material": "minecraft:player_head",
         "displayName": "<yellow>Bee <gold>(<yellow>Lvl. I<gold>)",
@@ -57,6 +57,7 @@
       "damage": 1,
       "movementSpeed": 3.2,
       "manaCost": 750,
+      "entityType": "minecraft:bee",
       "sendItem": {
         "material": "minecraft:player_head",
         "displayName": "<yellow>Bee <gold>(<yellow>Lvl. II<gold>)",
@@ -88,6 +89,7 @@
       "damage": 1,
       "movementSpeed": 3.4,
       "manaCost": 1000,
+      "entityType": "minecraft:bee",
       "sendItem": {
         "material": "minecraft:player_head",
         "displayName": "<yellow>Bee <gold>(<yellow>Lvl. III<gold>)",
@@ -119,6 +121,7 @@
       "damage": 1,
       "movementSpeed": 3.8,
       "manaCost": 1500,
+      "entityType": "minecraft:bee",
       "sendItem": {
         "material": "minecraft:player_head",
         "displayName": "<yellow>Bee <gold>(<yellow>Lvl. IV<gold>)",
@@ -150,6 +153,7 @@
       "damage": 1,
       "movementSpeed": 4.2,
       "manaCost": 2000,
+      "entityType": "minecraft:bee",
       "sendItem": {
         "material": "minecraft:player_head",
         "displayName": "<yellow>Bee <gold>(<yellow>Lvl. V<gold>)",
