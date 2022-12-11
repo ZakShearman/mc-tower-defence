@@ -28,7 +28,6 @@ public class MobHandler {
     private final @NotNull Set<LivingTDEnemyMob> redSideMobs = ConcurrentHashMap.newKeySet();
     private final @NotNull Set<LivingTDEnemyMob> blueSideMobs = ConcurrentHashMap.newKeySet();
 
-    private final @NotNull TowerDefenceModule module;
     private final @NotNull GameHandler gameHandler;
 
     private final @NotNull TowerHandler towerHandler;
@@ -38,7 +37,6 @@ public class MobHandler {
     private Task attackUpdateTask;
 
     public MobHandler(@NotNull TowerDefenceModule module, @NotNull GameHandler gameHandler) {
-        this.module = module;
         this.gameHandler = gameHandler;
 
         this.towerHandler = gameHandler.getTowerHandler();
@@ -59,10 +57,7 @@ public class MobHandler {
         if (Environment.isProduction()) team = spawningUser.getTeam() == Team.RED ? Team.BLUE : Team.RED;
         else team = spawningUser.getTeam();
 
-        if (team == Team.RED)
-            this.redSideMobs.add(mob);
-        else
-            this.blueSideMobs.add(mob);
+        this.getMobs(team).add(mob);
     }
 
     private void startUpdatingAttackingTowers() {
@@ -79,7 +74,7 @@ public class MobHandler {
 
     // todo is there a way other than recalculating every time? Sure this is easy, but not great on performance
     private void updateAttackingTowers(@NotNull Team team) {
-        List<LivingTDEnemyMob> distanceSortedMobs = new ArrayList<>(team == Team.RED ? this.redSideMobs : this.blueSideMobs);
+        List<LivingTDEnemyMob> distanceSortedMobs = new ArrayList<>(this.getMobs(team));
         distanceSortedMobs.sort(Comparator.comparingDouble(LivingTDEnemyMob::getTotalDistanceMoved).reversed());
 
         for (PlacedAttackingTower<?> tower : (team == Team.RED ? this.towerHandler.getRedTowers() : this.towerHandler.getBlueTowers())
@@ -103,11 +98,7 @@ public class MobHandler {
         }
     }
 
-    public @NotNull Set<LivingTDEnemyMob> getRedSideMobs() {
-        return this.redSideMobs;
-    }
-
-    public @NotNull Set<LivingTDEnemyMob> getBlueSideMobs() {
-        return this.blueSideMobs;
+    public @NotNull Set<LivingTDEnemyMob> getMobs(@NotNull Team team) {
+        return team == Team.RED ? this.redSideMobs : this.blueSideMobs;
     }
 }

@@ -210,10 +210,7 @@ public class SingleEnemyTDMob extends SingleTDMob implements LivingTDEnemyMob {
         for (PlacedAttackingTower<?> tower : this.attackingTowers)
             tower.getTargets().remove(this);
 
-        if (this.team == Team.RED)
-            this.mobHandler.getRedSideMobs().remove(this);
-        else
-            this.mobHandler.getBlueSideMobs().remove(this);
+        this.getMobHandler().getMobs(this.getTDTeam()).remove(this);
 
         super.kill();
     }

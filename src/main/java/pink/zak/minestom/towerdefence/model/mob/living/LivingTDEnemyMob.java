@@ -101,11 +101,7 @@ public interface LivingTDEnemyMob extends LivingTDMob {
         for (PlacedAttackingTower<?> tower : this.getAttackingTowers())
             tower.getTargets().remove(this);
 
-        if (this.getTDTeam() == Team.RED)
-            this.getMobHandler().getRedSideMobs().remove(this);
-        else
-            this.getMobHandler().getBlueSideMobs().remove(this);
-
+        this.getMobHandler().getMobs(this.getTDTeam()).remove(this);
     }
 
     // status effects

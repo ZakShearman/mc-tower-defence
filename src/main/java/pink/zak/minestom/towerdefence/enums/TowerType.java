@@ -6,7 +6,7 @@ import pink.zak.minestom.towerdefence.model.tower.config.AttackingTower;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.config.Tower;
 import pink.zak.minestom.towerdefence.model.tower.config.TowerLevel;
-import pink.zak.minestom.towerdefence.model.tower.config.towers.*;
+import pink.zak.minestom.towerdefence.model.tower.config.towers.ArcherTowerConfig;
 import pink.zak.minestom.towerdefence.model.tower.config.towers.level.*;
 
 import java.util.Map;
