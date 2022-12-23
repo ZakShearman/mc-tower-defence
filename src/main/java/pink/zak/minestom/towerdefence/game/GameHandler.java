@@ -209,7 +209,7 @@ public class GameHandler {
                         });
                     }
                 })
-                .delay(59, ChronoUnit.SECONDS)
+                .delay(29, ChronoUnit.SECONDS)
                 .schedule();
     }
 

@@ -26,9 +26,11 @@ public class TowerLevel {
         this.cost = jsonObject.get("cost").getAsInt();
         this.range = jsonObject.get("range").getAsDouble();
 
-        this.menuItem = ItemUtils.fromJsonObject(jsonObject.get("menuItem").getAsJsonObject());
+        // todo placeholders
 
-        ItemStack ownedUpgradeItem = ItemUtils.fromJsonObject(jsonObject.get("upgradeItem").getAsJsonObject());
+        this.menuItem = ItemUtils.fromJsonObject(jsonObject.get("menuItem").getAsJsonObject(), null);
+
+        ItemStack ownedUpgradeItem = ItemUtils.fromJsonObject(jsonObject.get("upgradeItem").getAsJsonObject(), null);
         this.ownedUpgradeItem = ownedUpgradeItem.withDisplayName(ownedUpgradeItem.getDisplayName().color(NamedTextColor.GREEN));
 
         this.buyUpgradeItem = ItemUtils.withMaterialBuilder(this.ownedUpgradeItem, Material.ORANGE_STAINED_GLASS_PANE)

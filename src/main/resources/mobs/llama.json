@@ -5,7 +5,6 @@
   "flying": false,
   "ignoredEffects": [],
   "ignoredDamageTypes": [],
-  "unitCost": 1.0,
   "unownedItem": {
     "material": "minecraft:player_head",
     "displayName": "<yellow>Llama <gold>(<yellow>Not Owned<gold>)",
@@ -41,12 +40,12 @@
         "displayName": "Lvl. I",
         "lore": [
           "",
-          "<gold>Mana Cost: <yellow>200",
+          "<gold>Mana Cost: <yellow><mana_cost>",
           "",
-          "<gold>Send Cost: <yellow>$150",
-          "<gold>Health: <yellow>100",
-          "<gold>Damage: <yellow>1",
-          "<gold>Speed: <yellow>1.7"
+          "<gold>Send Cost: <yellow>$<send_cost>",
+          "<gold>Health: <yellow><health>",
+          "<gold>Damage: <yellow><damage>",
+          "<gold>Speed: <yellow><movement_speed>"
         ]
       }
     }

@@ -19,13 +19,14 @@ repositories {
 }
 
 dependencies {
-    implementation("cc.towerdefence.minestom:core:3e7ecb5") {
+    implementation("cc.towerdefence.minestom:core:e61ae73") {
         exclude("net.minestom.server", "Minestom")
     }
     implementation("net.minestom.server:Minestom:1.0")
     implementation("net.kyori:adventure-text-minimessage:4.11.0")
 
     implementation("com.github.ben-manes.caffeine:caffeine:3.1.2")
+    implementation("com.github.EmortalMC:TNT:4ef1b53482")
 }
 
 application {

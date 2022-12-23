@@ -35,16 +35,16 @@ import java.util.Set;
 
 public class TowerUpgradeHandler {
     private static final @NotNull ItemStack RADIUS_MENU_ITEM = ItemStack.builder(Material.REDSTONE)
-            .displayName(StringUtils.parseMessage("<red>Preview Tower Radius"))
-            .lore(StringUtils.parseMessages(
+            .displayName(StringUtils.parseMessage("<red>Preview Tower Radius", null))
+            .lore(StringUtils.parseMessages(null,
                     "",
                     "<red>Shows a particle outline of the tower's radius"
             ))
             .build();
 
     private static final @NotNull ItemStack REMOVE_TOWER_ITEM = ItemStack.builder(Material.BARRIER)
-            .displayName(StringUtils.parseMessage("<red>Remove Tower"))
-            .lore(StringUtils.parseMessages(
+            .displayName(StringUtils.parseMessage("<red>Remove Tower", null))
+            .lore(StringUtils.parseMessages(null,
                     "",
                     "<red>Removes the tower"
             ))

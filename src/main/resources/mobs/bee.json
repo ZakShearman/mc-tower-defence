@@ -5,7 +5,6 @@
   "flying": true,
   "ignoredEffects": ["BURNING"],
   "ignoredDamageTypes": ["FIRE"],
-  "unitCost": 0.25,
   "unownedItem": {
     "material": "minecraft:player_head",
     "displayName": "<yellow>Bee <gold>(<yellow>Not Owned<gold>)",
@@ -41,12 +40,12 @@
         "displayName": "Lvl. I",
         "lore": [
           "",
-          "<gold>Mana Cost: <yellow>500",
+          "<gold>Mana Cost: <yellow><mana_cost>",
           "",
-          "<gold>Send Cost: <yellow>$150",
-          "<gold>Health: <yellow>100",
-          "<gold>Damage: <yellow>1",
-          "<gold>Speed: <yellow>3"
+          "<gold>Send Cost: <yellow>$<send_cost>",
+          "<gold>Health: <yellow><health>",
+          "<gold>Damage: <yellow><damage>",
+          "<gold>Speed: <yellow><movement_speed>"
         ]
       }
     },
@@ -73,12 +72,12 @@
         "displayName": "Lvl. II",
         "lore": [
           "",
-          "<gold>Mana Cost: <yellow>750",
+          "<gold>Mana Cost: <yellow><mana_cost>",
           "",
-          "<gold>Send Cost: <yellow>$170",
-          "<gold>Health: <yellow>150",
-          "<gold>Damage: <yellow>1",
-          "<gold>Speed: <yellow>3.2"
+          "<gold>Send Cost: <yellow>$<send_cost>",
+          "<gold>Health: <yellow><health>",
+          "<gold>Damage: <yellow><damage>",
+          "<gold>Speed: <yellow><movement_speed>"
         ]
       }
     },
@@ -105,12 +104,12 @@
         "displayName": "Lvl. III",
         "lore": [
           "",
-          "<gold>Mana Cost: <yellow>1000",
+          "<gold>Mana Cost: <yellow><mana_cost>",
           "",
-          "<gold>Send Cost: <yellow>$200",
-          "<gold>Health: <yellow>200",
-          "<gold>Damage: <yellow>1",
-          "<gold>Speed: <yellow>3.4"
+          "<gold>Send Cost: <yellow>$<send_cost>",
+          "<gold>Health: <yellow><health>",
+          "<gold>Damage: <yellow><damage>",
+          "<gold>Speed: <yellow><movement_speed>"
         ]
       }
     },
@@ -137,12 +136,12 @@
         "displayName": "Lvl. IV",
         "lore": [
           "",
-          "<gold>Mana Cost: <yellow>1500",
+          "<gold>Mana Cost: <yellow><mana_cost>",
           "",
-          "<gold>Send Cost: <yellow>$250",
-          "<gold>Health: <yellow>300",
-          "<gold>Damage: <yellow>1",
-          "<gold>Speed: <yellow>3.8"
+          "<gold>Send Cost: <yellow>$<send_cost>",
+          "<gold>Health: <yellow><health>",
+          "<gold>Damage: <yellow><damage>",
+          "<gold>Speed: <yellow><movement_speed>"
         ]
       }
     },
@@ -169,12 +168,12 @@
         "displayName": "Lvl. V",
         "lore": [
           "",
-          "<gold>Mana Cost: <yellow>2000",
+          "<gold>Mana Cost: <yellow><mana_cost>",
           "",
-          "<gold>Send Cost: <yellow>$350",
-          "<gold>Health: <yellow>600",
-          "<gold>Damage: <yellow>1",
-          "<gold>Speed: <yellow>4.2"
+          "<gold>Send Cost: <yellow>$<send_cost>",
+          "<gold>Health: <yellow><health>",
+          "<gold>Damage: <yellow><damage>",
+          "<gold>Speed: <yellow><movement_speed>"
         ]
       }
     }

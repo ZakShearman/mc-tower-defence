@@ -12,6 +12,7 @@ import net.minestom.server.inventory.InventoryType;
 import net.minestom.server.inventory.click.ClickType;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
+import net.minestom.server.item.metadata.BundleMeta;
 import net.minestom.server.utils.time.TimeUnit;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.TowerDefenceModule;
@@ -86,35 +87,36 @@ public class MobMenuHandler {
     }
 
     private @NotNull ItemStack createQueueItem(@NotNull GameUser gameUser) {
-        List<Component> loreLines = new ArrayList<>();
+        List<ItemStack> bundleItems = new ArrayList<>();
 
         EnemyMob currentTrackedMob = null;
         int count = 0; // count of the current iterated mob
-        int iterations = 0; // total iterations
         for (QueuedEnemyMob queuedMob : gameUser.getQueuedMobs()) {
             EnemyMob enemyMob = queuedMob.mob();
             if (currentTrackedMob != enemyMob) {
                 if (currentTrackedMob != null) {
-                    loreLines.add(Component.text(count + "x " + currentTrackedMob.getCommonName(), NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false));
+                    bundleItems.add(currentTrackedMob.getLevel(gameUser.getMobLevels().get(currentTrackedMob)).getSendItem().withAmount(count));
                     count = 0;
                 }
 
-                if (loreLines.size() >= 6) {
-                    loreLines.add(Component.text("And " + (gameUser.getQueuedMobs().size() - iterations) + " more...", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, false));
-                    break;
-                }
+                // we +1 at the end, so it gets to 150 :)
+                // also this is an arbitrary limit, not Minecraft's.
+                if (bundleItems.size() == 149) break;
+
                 currentTrackedMob = enemyMob;
             }
             count++;
-            iterations++;
         }
-        if (currentTrackedMob != null && loreLines.size() < 6)
-            loreLines.add(Component.text(count + "x " + currentTrackedMob.getCommonName(), NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false));
+        if (currentTrackedMob != null) {
+            bundleItems.add(currentTrackedMob.getLevel(gameUser.getMobLevels().get(currentTrackedMob)).getSendItem().withAmount(count));
+        }
 
-        double size = gameUser.getQueuedMobsUnitSize(); // unit size applied
-        return ItemStack.builder(Material.PAPER)
-                .displayName(Component.text("Current Queue (" + size + "/" + gameUser.getMaxQueueSize() + ")", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
-                .lore(loreLines)
+        return ItemStack.builder(Material.BUNDLE)
+                .displayName(Component.text("Current Queue", NamedTextColor.YELLOW)
+                        .decoration(TextDecoration.ITALIC, false))
+                .meta(BundleMeta.class, meta -> {
+                    meta.items(bundleItems);
+                })
                 .build();
     }
 

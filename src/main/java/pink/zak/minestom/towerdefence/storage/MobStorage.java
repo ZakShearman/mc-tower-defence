@@ -36,7 +36,6 @@ public class MobStorage {
             EnemyMob enemyMob = new EnemyMob(json);
             enemyMobs.add(enemyMob);
         }
-        System.out.println("Loaded " + enemyMobs.size() + " mobs: " + enemyMobs);
         return Collections.unmodifiableList(enemyMobs);
     }
 

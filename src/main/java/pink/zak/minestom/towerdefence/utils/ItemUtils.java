@@ -2,11 +2,13 @@ package pink.zak.minestom.towerdefence.utils;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.minestom.server.entity.PlayerSkin;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import net.minestom.server.item.metadata.PlayerHeadMeta;
 import net.minestom.server.utils.mojang.MojangUtils;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -14,7 +16,7 @@ import java.util.stream.StreamSupport;
 
 public class ItemUtils {
 
-    public static ItemStack fromJsonObject(JsonObject jsonObject) {
+    public static ItemStack fromJsonObject(JsonObject jsonObject, @Nullable TagResolver tagResolver) {
         Material material = Material.fromNamespaceId(jsonObject.get("material").getAsString());
         ItemStack.Builder builder = ItemStack.builder(material);
 
@@ -37,13 +39,14 @@ public class ItemUtils {
         }
 
         if (jsonObject.has("displayName"))
-            builder.displayName(StringUtils.parseMessage(jsonObject.get("displayName").getAsString()));
+            builder.displayName(StringUtils.parseMessage(jsonObject.get("displayName").getAsString(), tagResolver));
 
         if (jsonObject.has("lore"))
             builder.lore(StringUtils.parseMessages(
                     StreamSupport.stream(jsonObject.get("lore").getAsJsonArray().spliterator(), false)
                             .map(JsonElement::getAsString)
-                            .collect(Collectors.toList())
+                            .collect(Collectors.toList()),
+                    tagResolver
             ));
 
         if (jsonObject.has("amount"))

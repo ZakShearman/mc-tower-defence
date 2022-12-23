@@ -3,6 +3,8 @@ package pink.zak.minestom.towerdefence.model.mob.config;
 import com.google.gson.JsonObject;
 import lombok.ToString;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.EntityType;
 import net.minestom.server.item.ItemStack;
@@ -10,8 +12,11 @@ import net.minestom.server.item.Material;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.utils.ItemUtils;
 
+import java.text.DecimalFormat;
+
 @ToString
 public class EnemyMobLevel {
+    private static final DecimalFormat MOVEMENT_SPEED_FORMAT = new DecimalFormat("#.##");
     private final int level;
     private final int cost;
     private final int killReward;
@@ -36,8 +41,17 @@ public class EnemyMobLevel {
         this.movementSpeed = jsonObject.get("movementSpeed").getAsDouble() / MinecraftServer.TICK_PER_SECOND;
         this.manaCost = jsonObject.get("manaCost").getAsInt();
         this.entityType = EntityType.fromNamespaceId(jsonObject.get("entityType").getAsString());
-        this.sendItem = ItemUtils.fromJsonObject(jsonObject.get("sendItem").getAsJsonObject());
-        ItemStack ownedUpgradeItem = ItemUtils.fromJsonObject(jsonObject.get("upgradeItem").getAsJsonObject());
+
+        TagResolver tagResolver = TagResolver.resolver(
+                Placeholder.unparsed("send_cost", String.valueOf(this.cost)),
+                Placeholder.unparsed("health", String.valueOf(this.health)),
+                Placeholder.unparsed("damage", String.valueOf(this.damage)),
+                Placeholder.unparsed("movement_speed", MOVEMENT_SPEED_FORMAT.format(this.movementSpeed * MinecraftServer.TICK_PER_SECOND)),
+                Placeholder.unparsed("mana_cost", String.valueOf(this.manaCost))
+        );
+
+        this.sendItem = ItemUtils.fromJsonObject(jsonObject.get("sendItem").getAsJsonObject(), tagResolver);
+        ItemStack ownedUpgradeItem = ItemUtils.fromJsonObject(jsonObject.get("upgradeItem").getAsJsonObject(), tagResolver);
 
         this.ownedUpgradeItem = ownedUpgradeItem.withDisplayName(ownedUpgradeItem.getDisplayName().color(NamedTextColor.GREEN));
         this.buyUpgradeItem = ItemUtils.withMaterialBuilder(this.ownedUpgradeItem, Material.ORANGE_STAINED_GLASS_PANE)

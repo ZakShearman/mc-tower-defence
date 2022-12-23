@@ -3,6 +3,9 @@ package pink.zak.minestom.towerdefence.utils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,20 +14,26 @@ import java.util.StringJoiner;
 public class StringUtils {
     private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
 
-    public static Component parseMessage(String message) {
-        return MINI_MESSAGE.deserialize(message).decoration(TextDecoration.ITALIC, false);
+    public static @NotNull Component parseMessage(@NotNull String message, @Nullable TagResolver tagResolver) {
+        Component component;
+        if (tagResolver == null) {
+            component = MINI_MESSAGE.deserialize(message);
+        } else {
+            component = MINI_MESSAGE.deserialize(message, tagResolver);
+        }
+        return component.decoration(TextDecoration.ITALIC, false);
     }
 
-    public static List<Component> parseMessages(List<String> messages) {
+    public static @NotNull List<Component> parseMessages(List<String> messages, @Nullable TagResolver tagResolver) {
         List<Component> components = new ArrayList<>();
         for (String message : messages)
-            components.add(parseMessage(message));
+            components.add(parseMessage(message, tagResolver));
 
         return components;
     }
 
-    public static List<Component> parseMessages(String... messages) {
-        return parseMessages(List.of(messages));
+    public static @NotNull List<Component> parseMessages(@Nullable TagResolver tagResolver, @NotNull String... messages) {
+        return parseMessages(List.of(messages), tagResolver);
     }
 
     public static String integerToCardinal(int level) {

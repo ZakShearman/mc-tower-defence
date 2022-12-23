@@ -21,7 +21,6 @@ public class EnemyMob {
     private final @NotNull TDDamageType damageType;
     private final int slot;
     private final boolean flying;
-    private final double unitCost;
     private final @NotNull ItemStack unownedItem;
     private final @NotNull Set<StatusEffectType> ignoredEffects;
     private final @NotNull Set<TDDamageType> ignoredDamageTypes;
@@ -32,9 +31,8 @@ public class EnemyMob {
         this.damageType = TDDamageType.valueOf(jsonObject.get("damageType").getAsString());
         this.slot = jsonObject.get("guiSlot").getAsInt();
         this.flying = jsonObject.get("flying").getAsBoolean();
-        this.unitCost = jsonObject.get("unitCost").getAsDouble();
 
-        this.unownedItem = jsonObject.has("unownedItem") ? ItemUtils.fromJsonObject(jsonObject.get("unownedItem").getAsJsonObject()) : null;
+        this.unownedItem = jsonObject.has("unownedItem") ? ItemUtils.fromJsonObject(jsonObject.get("unownedItem").getAsJsonObject(), null) : null;
 
         this.ignoredEffects = StreamSupport.stream(jsonObject.get("ignoredEffects").getAsJsonArray().spliterator(), false)
                 .map(JsonElement::getAsString)
@@ -66,10 +64,6 @@ public class EnemyMob {
 
     public boolean isFlying() {
         return this.flying;
-    }
-
-    public double getUnitCost() {
-        return this.unitCost;
     }
 
     public @NotNull ItemStack getUnownedItem() {

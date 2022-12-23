@@ -68,6 +68,11 @@ public class FrozenStatusEffect implements StatusEffect<FrozenStatusEffect>, Spe
 
     @Override
     public boolean isBetterThan(FrozenStatusEffect other) {
+        if (this.speedModifier < other.speedModifier) // smaller than 1 = slower
+            return true;
+        else if (this.speedModifier == other.speedModifier)
+            return this.remainingTicks() > other.remainingTicks();
+
         return false;
     }
 }

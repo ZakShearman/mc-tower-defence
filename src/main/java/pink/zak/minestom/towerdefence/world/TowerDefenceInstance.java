@@ -4,8 +4,10 @@ import cc.towerdefence.minestom.Environment;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import dev.emortal.tnt.TNTLoader;
+import dev.emortal.tnt.source.FileTNTSource;
+import lombok.SneakyThrows;
 import net.minestom.server.coordinate.Point;
-import net.minestom.server.instance.AnvilLoader;
 import net.minestom.server.instance.Chunk;
 import net.minestom.server.instance.InstanceContainer;
 import net.minestom.server.instance.block.Block;
@@ -30,7 +32,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ForkJoinPool;
 
 public class TowerDefenceInstance extends InstanceContainer {
     private static final Logger LOGGER = LoggerFactory.getLogger(TowerDefenceInstance.class);
@@ -46,8 +47,11 @@ public class TowerDefenceInstance extends InstanceContainer {
     private final Path towerMapPath;
     private final TowerMap towerMap;
 
+    @SneakyThrows
     public TowerDefenceInstance(DimensionType dimensionType, String worldName) {
-        super(UUID.randomUUID(), dimensionType, new AnvilLoader(worldName));
+        super(UUID.randomUUID(), dimensionType, null);
+        TNTLoader loader = new TNTLoader(new FileTNTSource(Path.of(worldName + ".tnt")));
+        this.setChunkLoader(loader);
 
         this.preLoadDataPath = Path.of(worldName, "preload_data.json");
 
@@ -67,24 +71,16 @@ public class TowerDefenceInstance extends InstanceContainer {
         this.setExplosionSupplier((centerX, centerY, centerZ, strength, additionalData) -> new CustomExplosion(centerX, centerY, centerZ, strength));
     }
 
-    // todo add timing stats
     private void loadPreloadChunks(PreLoadWorldData preLoadWorldData) {
         Instant start = Instant.now();
 
-        LOGGER.info("java.util.concurrent.ForkJoinPool.common.threadFactory: {}", System.getProperty("java.util.concurrent.ForkJoinPool.common.threadFactory"));
-        LOGGER.info("java.util.concurrent.ForkJoinPool.common.exceptionHandler: {}", System.getProperty("java.util.concurrent.ForkJoinPool.common.exceptionHandler"));
-        LOGGER.info("java.util.concurrent.ForkJoinPool.common.parallelism: {}", System.getProperty("java.util.concurrent.ForkJoinPool.common.parallelism"));
-
-        LOGGER.info("System available processors: {}", Runtime.getRuntime().availableProcessors());
-        LOGGER.info("Common pool intended parallelism value: {}", ForkJoinPool.getCommonPoolParallelism());
-        LOGGER.info("Common pool parallelism value: {}", ForkJoinPool.commonPool().getParallelism());
         Set<CompletableFuture<Chunk>> futures = new HashSet<>();
         for (int x = preLoadWorldData.minX(); x <= preLoadWorldData.maxX(); x++) {
             for (int z = preLoadWorldData.minZ(); z <= preLoadWorldData.maxZ(); z++) {
                 futures.add(this.loadChunk(x, z));
             }
         }
-        CompletableFuture.allOf(futures.toArray(new CompletableFuture[]{})).join();
+        CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new)).join();
         LOGGER.info("Loaded {} chunks in {}ms", futures.size(), Instant.now().toEpochMilli() - start.toEpochMilli());
     }
 

@@ -5,7 +5,6 @@
   "flying": false,
   "ignoredEffects": ["POISONED"],
   "ignoredDamageTypes": ["POISON"],
-  "unitCost": 1.0,
   "unownedItem": {
     "material": "minecraft:zombie_head",
     "displayName": "<yellow>Zombie <gold>(<yellow>Not Owned<gold>)",
@@ -36,10 +35,10 @@
         "displayName": "Lvl. I",
         "lore": [
           "",
-          "<gold>Send Cost: <yellow>$15",
-          "<gold>Health: <yellow>20",
-          "<gold>Damage: <yellow>1",
-          "<gold>Speed: <yellow>2.1"
+          "<gold>Send Cost: <yellow>$<send_cost>",
+          "<gold>Health: <yellow><health>",
+          "<gold>Damage: <yellow><damage>",
+          "<gold>Speed: <yellow><movement_speed>"
         ]
       }
     },
@@ -65,10 +64,10 @@
         "displayName": "Lvl. II",
         "lore": [
           "",
-          "<gold>Send Cost: <yellow>$18",
-          "<gold>Health: <yellow>30",
-          "<gold>Damage: <yellow>1.5",
-          "<gold>Speed: <yellow>2.1"
+          "<gold>Send Cost: <yellow>$<send_cost>",
+          "<gold>Health: <yellow><health>",
+          "<gold>Damage: <yellow><damage>",
+          "<gold>Speed: <yellow><movement_speed>"
         ]
       }
     },
@@ -94,10 +93,10 @@
         "displayName": "Lvl. III",
         "lore": [
           "",
-          "<gold>Send Cost: <yellow>$24",
-          "<gold>Health: <yellow>45",
-          "<gold>Damage: <yellow>2",
-          "<gold>Speed: <yellow>2.1"
+          "<gold>Send Cost: <yellow>$<send_cost>",
+          "<gold>Health: <yellow><health>",
+          "<gold>Damage: <yellow><damage>",
+          "<gold>Speed: <yellow><movement_speed>"
         ]
       }
     },
@@ -123,10 +122,10 @@
         "displayName": "Lvl. IV",
         "lore": [
           "",
-          "<gold>Send Cost: <yellow>$35",
-          "<gold>Health: <yellow>85",
-          "<gold>Damage: <yellow>2",
-          "<gold>Speed: <yellow>2.1"
+          "<gold>Send Cost: <yellow>$<send_cost>",
+          "<gold>Health: <yellow><health>",
+          "<gold>Damage: <yellow><damage>",
+          "<gold>Speed: <yellow><movement_speed>"
         ]
       }
     },
@@ -152,10 +151,10 @@
         "displayName": "Lvl. V",
         "lore": [
           "",
-          "<gold>Send Cost: <yellow>$40",
-          "<gold>Health: <yellow>125",
-          "<gold>Damage: <yellow>3",
-          "<gold>Speed: <yellow>2.1"
+          "<gold>Send Cost: <yellow>$<send_cost>",
+          "<gold>Health: <yellow><health>",
+          "<gold>Damage: <yellow><damage>",
+          "<gold>Speed: <yellow><movement_speed>"
         ]
       }
     }
