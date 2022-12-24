@@ -99,11 +99,7 @@ public class TowerHandler {
         return currentDirection;
     }
 
-    public @NotNull Set<PlacedTower<?>> getRedTowers() {
-        return this.redTowers;
-    }
-
-    public @NotNull Set<PlacedTower<?>> getBlueTowers() {
-        return this.blueTowers;
+    public @NotNull Set<PlacedTower<?>> getTowers(Team team) {
+        return team == Team.RED ? this.redTowers : this.blueTowers;
     }
 }

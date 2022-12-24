@@ -226,11 +226,10 @@ public class SingleEnemyTDMob extends SingleTDMob implements LivingTDEnemyMob {
         float damageDealt = this.isDead ? value : value - Math.abs(this.health);
 
         if (this.isDead) {
-            Set<PlacedTower<?>> towers = this.team == Team.RED ? this.towerHandler.getRedTowers() : this.towerHandler.getBlueTowers();
             double multiplier = 1;
             boolean necromanced = false;
 
-            for (PlacedTower<?> tower : towers) {
+            for (PlacedTower<?> tower : this.towerHandler.getTowers(this.team)) {
                 if (tower.getBasePoint().distance(this.position) > tower.getLevel().getRange()) continue;
                 if (tower instanceof CharityTower charityTower) {
                     double tempMultiplier = charityTower.getLevel().getMultiplier();

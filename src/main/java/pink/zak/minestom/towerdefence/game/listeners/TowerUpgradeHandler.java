@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Point;
+import net.minestom.server.coordinate.Vec;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.inventory.InventoryPreClickEvent;
 import net.minestom.server.event.player.PlayerBlockInteractEvent;
@@ -32,13 +33,17 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class TowerUpgradeHandler {
-    private static final @NotNull ItemStack RADIUS_MENU_ITEM = ItemStack.builder(Material.REDSTONE)
+    private static final @NotNull Function<PlacedTower<?>, ItemStack> RADIUS_MENU_ITEM_FUNCTION = tower -> ItemStack.builder(Material.REDSTONE)
             .displayName(StringUtils.parseMessage("<red>Preview Tower Radius", null))
             .lore(StringUtils.parseMessages(null,
                     "",
-                    "<red>Shows a particle outline of the tower's radius"
+                    "<dark_red>Left-click</dark_red><red> shows the tower's range",
+                    "<dark_red>Right-click</dark_red><red> shows the range of all %s towers"
+                            .formatted(tower.getTower().getName())
             ))
             .build();
 
@@ -99,7 +104,7 @@ public class TowerUpgradeHandler {
         }
 
         inventory.setItemStack(17, REMOVE_TOWER_ITEM);
-        inventory.setItemStack(26, RADIUS_MENU_ITEM);
+        inventory.setItemStack(26, RADIUS_MENU_ITEM_FUNCTION.apply(placedTower));
 
         gameUser.getPlayer().openInventory(inventory);
     }
@@ -120,7 +125,7 @@ public class TowerUpgradeHandler {
             int slot = event.getSlot();
 
             if (slot == 26) {
-                this.showTowerRadius(player, placedTower);
+                this.showTowerRadius(gameUser, player, placedTower, event.getClickType());
                 return;
             }
 
@@ -155,25 +160,21 @@ public class TowerUpgradeHandler {
         });
     }
 
-    private void showTowerRadius(@NotNull Player player, @NotNull PlacedTower<?> tower) {
-        Point center = tower.getBasePoint();
-        double radius = tower.getLevel().getRange();
+    private void showTowerRadius(@NotNull GameUser gameUser, @NotNull Player player, @NotNull PlacedTower<?> tower, ClickType clickType) {
+        Set<SendablePacket> packets = clickType == ClickType.LEFT_CLICK ? this.createRadiusPackets(tower, Set.of()) : new HashSet<>();
 
-        Set<SendablePacket> packets = new HashSet<>();
-        for (int i = 0; i <= 360; i += 1) {
-            double c1 = radius * Math.cos(i);
-            double c2 = radius * Math.sin(i);
+        if (clickType == ClickType.RIGHT_CLICK) {
+            Set<PlacedTower<?>> towers = this.towerHandler.getTowers(gameUser.getTeam()).stream()
+                    .filter(testTower -> testTower.getTower().getType() == tower.getTower().getType())
+                    .collect(Collectors.toUnmodifiableSet());
 
-            packets.add(ParticleCreator.createParticlePacket(Particle.DUST, true,
-                    center.x() + c1, center.y() + 1.5, center.z() + c2,
-                    0, 0, 0, 0f, 1,
-                    binaryWriter -> {
-                        binaryWriter.writeFloat(1);
-                        binaryWriter.writeFloat(0);
-                        binaryWriter.writeFloat(0);
-                        binaryWriter.writeFloat(1.5f);
-                    }));
+            for (PlacedTower<?> placedTower : towers) {
+                Set<PlacedTower<?>> otherTowers = new HashSet<>(towers);
+                otherTowers.remove(placedTower);
+                packets.addAll(this.createRadiusPackets(placedTower, otherTowers));
+            }
         }
+
         player.sendPackets(packets);
 
         Task task = MinecraftServer.getSchedulerManager()
@@ -185,6 +186,41 @@ public class TowerUpgradeHandler {
                 .buildTask(task::cancel)
                 .delay(5, TimeUnit.SECOND)
                 .schedule();
+    }
+
+    private Set<SendablePacket> createRadiusPackets(@NotNull PlacedTower<?> tower, Set<PlacedTower<?>> otherTowers) {
+        Point center = tower.getBasePoint();
+        double radius = tower.getLevel().getRange();
+
+        Set<SendablePacket> packets = new HashSet<>();
+        for (int i = 0; i <= 360; i += 1) {
+            double c1 = radius * Math.cos(i);
+            double c2 = radius * Math.sin(i);
+
+            Vec vec = new Vec(center.x() + c1, center.y() + 1.5, center.z() + c2);
+
+            boolean isOverlapping = false;
+            for (PlacedTower<?> otherTower : otherTowers) {
+                if (vec.distance(otherTower.getBasePoint()) < otherTower.getLevel().getRange()) {
+                    isOverlapping = true;
+                    break;
+                }
+            }
+
+            if (isOverlapping) continue;
+
+            packets.add(ParticleCreator.createParticlePacket(Particle.DUST, true,
+                    center.x() + c1, center.y() + 1.5, center.z() + c2,
+                    0, 0, 0, 0f, 1,
+                    binaryWriter -> {
+                        binaryWriter.writeFloat(1);
+                        binaryWriter.writeFloat(0);
+                        binaryWriter.writeFloat(0);
+                        binaryWriter.writeFloat(1.5f);
+                    }));
+        }
+
+        return packets;
     }
 
     private void removeTower(GameUser gameUser, PlacedTower<?> placedTower) {
