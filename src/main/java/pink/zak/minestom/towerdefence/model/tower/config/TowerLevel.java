@@ -2,6 +2,8 @@ package pink.zak.minestom.towerdefence.model.tower.config;
 
 import com.google.gson.JsonObject;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import pink.zak.minestom.towerdefence.model.tower.config.relative.RelativeBlock;
@@ -26,11 +28,15 @@ public class TowerLevel {
         this.cost = jsonObject.get("cost").getAsInt();
         this.range = jsonObject.get("range").getAsDouble();
 
-        // todo placeholders
+        // todo placeholders, allow for custom towers to add their own
 
-        this.menuItem = ItemUtils.fromJsonObject(jsonObject.get("menuItem").getAsJsonObject(), null);
+        TagResolver tagResolver = TagResolver.resolver(
+                Placeholder.unparsed("cost", String.valueOf(this.cost))
+        );
 
-        ItemStack ownedUpgradeItem = ItemUtils.fromJsonObject(jsonObject.get("upgradeItem").getAsJsonObject(), null);
+        this.menuItem = ItemUtils.fromJsonObject(jsonObject.get("menuItem").getAsJsonObject(), tagResolver);
+
+        ItemStack ownedUpgradeItem = ItemUtils.fromJsonObject(jsonObject.get("upgradeItem").getAsJsonObject(), tagResolver);
         this.ownedUpgradeItem = ownedUpgradeItem.withDisplayName(ownedUpgradeItem.getDisplayName().color(NamedTextColor.GREEN));
 
         this.buyUpgradeItem = ItemUtils.withMaterialBuilder(this.ownedUpgradeItem, Material.ORANGE_STAINED_GLASS_PANE)

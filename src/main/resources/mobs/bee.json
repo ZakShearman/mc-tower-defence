@@ -20,6 +20,7 @@
     {
       "level": 1,
       "cost": 150,
+      "manaKillReward": -1,
       "health": 1,
       "damage": 1,
       "movementSpeed": 3.0,
@@ -52,6 +53,7 @@
     {
       "level": 2,
       "cost": 175,
+      "manaKillReward": -1,
       "health": 150,
       "damage": 1,
       "movementSpeed": 3.2,
@@ -84,6 +86,7 @@
     {
       "level": 3,
       "cost": 200,
+      "manaKillReward": -1,
       "health": 200,
       "damage": 1,
       "movementSpeed": 3.4,
@@ -116,6 +119,7 @@
     {
       "level": 4,
       "cost": 250,
+      "manaKillReward": -1,
       "health": 300,
       "damage": 1,
       "movementSpeed": 3.8,
@@ -148,6 +152,7 @@
     {
       "level": 5,
       "cost": 350,
+      "manaKillReward": -1,
       "health": 600,
       "damage": 1,
       "movementSpeed": 4.2,

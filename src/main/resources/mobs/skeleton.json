@@ -20,6 +20,7 @@
     {
       "level": 1,
       "cost": 30,
+      "manaKillReward": -1,
       "health": 40,
       "damage": 2,
       "movementSpeed": 2.1,
@@ -50,6 +51,7 @@
     {
       "level": 2,
       "cost": 50,
+      "manaKillReward": -1,
       "health": 80,
       "damage": 3,
       "movementSpeed": 2.1,

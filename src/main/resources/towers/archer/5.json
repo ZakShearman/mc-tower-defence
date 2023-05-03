@@ -1,9 +1,9 @@
 {
   "level": 5,
-  "cost": 1,
-  "fireDelay": 15,
-  "damage": 1,
-  "range": 20,
+  "cost": 8000,
+  "fireDelay": 5,
+  "damage": 12,
+  "range": 30,
 
   "menuItem": {
     "material": "minecraft:bow",
@@ -16,7 +16,7 @@
   },
   "upgradeItem": {
     "material": "minecraft:bow",
-    "displayName": "<yellow>Archer Lvl. V",
+    "displayName": "<yellow>Archer Lvl. V ($<cost>)",
     "lore": [
       "",
       "<yellow>Shoots enemies with arrows",

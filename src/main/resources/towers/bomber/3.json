@@ -11,6 +11,8 @@
     "zOffset": 0
   },
 
+  "explosionRadius": -1,
+
   "menuItem": {
     "material": "minecraft:tnt",
     "displayName": "<yellow>Bomber Lvl. III",
