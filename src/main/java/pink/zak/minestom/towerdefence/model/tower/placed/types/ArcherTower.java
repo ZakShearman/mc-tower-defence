@@ -41,13 +41,11 @@ public class ArcherTower extends PlacedAttackingTower<AttackingTowerLevel> {
         Point fPoint = this.getFiringPoint(this.targets.get(0).getPosition());
 
         double scheduleDistance = fPoint.distance(targetPoint) - 1;
-        int tickLifespan = (int) Math.ceil(scheduleDistance / (double) ARROW_BLOCKS_PER_SECOND * MinecraftServer.TICK_MS);
+        int lifespanTicks = (int) Math.ceil(scheduleDistance / (double) ARROW_BLOCKS_PER_SECOND * MinecraftServer.TICK_MS);
 
         Entity entity = new Entity(EntityType.ARROW);
         entity.setVelocity(targetPoint.sub(fPoint).asVec().normalize().mul(0.5 * ARROW_BLOCKS_PER_SECOND));
         entity.lookAt(targetPoint);
-        entity.setGravity(0, 0);
-        entity.setNoGravity(true);
 
         entity.setInstance(this.instance, fPoint);
 
@@ -58,7 +56,7 @@ public class ArcherTower extends PlacedAttackingTower<AttackingTowerLevel> {
                     entity.remove();
                     target.damage(this, this.getLevel().getDamage());
                 })
-                .delay(tickLifespan, TimeUnit.SERVER_TICK)
+                .delay(lifespanTicks, TimeUnit.SERVER_TICK)
                 .schedule();
     }
 
