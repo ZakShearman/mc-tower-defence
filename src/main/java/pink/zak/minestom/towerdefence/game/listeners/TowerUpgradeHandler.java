@@ -42,7 +42,7 @@ public class TowerUpgradeHandler {
             .lore(StringUtils.parseMessages(null,
                     "",
                     "<dark_red>Left-click</dark_red><red> shows the tower's range",
-                    "<dark_red>Right-click</dark_red><red> shows the range of all %s towers"
+                    "<dark_red>Right-click</dark_red><red> shows all %s tower ranges"
                             .formatted(tower.getTower().getName())
             ))
             .build();

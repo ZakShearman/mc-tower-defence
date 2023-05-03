@@ -1,9 +1,9 @@
 package pink.zak.minestom.towerdefence.world;
 
-import cc.towerdefence.minestom.Environment;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import dev.emortal.minestom.core.Environment;
 import dev.emortal.tnt.TNTLoader;
 import dev.emortal.tnt.source.FileTNTSource;
 import lombok.SneakyThrows;

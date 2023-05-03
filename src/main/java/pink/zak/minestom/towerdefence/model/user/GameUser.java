@@ -1,9 +1,9 @@
 package pink.zak.minestom.towerdefence.model.user;
 
+import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Point;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import pink.zak.minestom.towerdefence.TowerDefenceModule;
 import pink.zak.minestom.towerdefence.api.event.player.PlayerCoinChangeEvent;
 import pink.zak.minestom.towerdefence.api.event.player.PlayerManaChangeEvent;
 import pink.zak.minestom.towerdefence.enums.Team;
@@ -65,13 +65,13 @@ public class GameUser {
 
     public int updateAndGetCoins(@NotNull IntUnaryOperator intOperator) {
         int newCoins = this.coins.updateAndGet(intOperator);
-        TowerDefenceModule.getCallingEventNode().call(new PlayerCoinChangeEvent(this, newCoins));
+        MinecraftServer.getGlobalEventHandler().call(new PlayerCoinChangeEvent(this, newCoins));
         return newCoins;
     }
 
     public int updateAndGetMana(@NotNull IntUnaryOperator intOperator) {
         int newMana = this.mana.updateAndGet(intOperator);
-        TowerDefenceModule.getCallingEventNode().call(new PlayerManaChangeEvent(this, newMana));
+        MinecraftServer.getGlobalEventHandler().call(new PlayerManaChangeEvent(this, newMana));
         return newMana;
     }
 

@@ -1,6 +1,6 @@
 package pink.zak.minestom.towerdefence.model.mob.living;
 
-import cc.towerdefence.minestom.Environment;
+import dev.emortal.minestom.core.Environment;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.MinecraftServer;

@@ -1,17 +1,15 @@
 package pink.zak.minestom.towerdefence;
 
-import cc.towerdefence.minestom.module.Module;
-import cc.towerdefence.minestom.module.ModuleData;
-import cc.towerdefence.minestom.module.ModuleEnvironment;
-import cc.towerdefence.minestom.module.kubernetes.KubernetesModule;
+import dev.emortal.minestom.core.module.Module;
+import dev.emortal.minestom.core.module.ModuleData;
+import dev.emortal.minestom.core.module.ModuleEnvironment;
+import dev.emortal.minestom.core.module.kubernetes.KubernetesModule;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.command.CommandManager;
 import net.minestom.server.coordinate.Pos;
-import net.minestom.server.event.Event;
-import net.minestom.server.event.EventNode;
 import net.minestom.server.event.player.PlayerLoginEvent;
 import org.jetbrains.annotations.NotNull;
-import pink.zak.minestom.towerdefence.agones.TDAgonesManager;
+import pink.zak.minestom.towerdefence.agones.AgonesManager;
 import pink.zak.minestom.towerdefence.cache.TDUserLoader;
 import pink.zak.minestom.towerdefence.command.towerdefence.TowerDefenceCommand;
 import pink.zak.minestom.towerdefence.enums.GameState;
@@ -24,12 +22,10 @@ import pink.zak.minestom.towerdefence.storage.TowerStorage;
 import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;
 import pink.zak.minestom.towerdefence.world.WorldLoader;
 
-@ModuleData(name = "towerdefence", required = false)
+@ModuleData(name = "towerdefence", required = false, softDependencies = {KubernetesModule.class})
 public class TowerDefenceModule extends Module {
-    private static EventNode<Event> EVENT_NODE; // todo is this still necessary?
-
     private final KubernetesModule kubernetesModule;
-    private final TDAgonesManager tdAgonesManager;
+    private final AgonesManager agonesManager;
 
     private TowerDefenceInstance instance;
 
@@ -47,18 +43,11 @@ public class TowerDefenceModule extends Module {
         super(environment);
 
         this.kubernetesModule = environment.moduleManager().getModule(KubernetesModule.class);
-        this.tdAgonesManager = new TDAgonesManager(this, this.kubernetesModule);
-    }
-
-    @NotNull
-    public static EventNode<Event> getCallingEventNode() {
-        return EVENT_NODE;
+        this.agonesManager = new AgonesManager(this.kubernetesModule);
     }
 
     @Override
     public boolean onLoad() {
-        EVENT_NODE = this.getEventNode();
-
         WorldLoader worldLoader = new WorldLoader();
         this.instance = worldLoader.load();
 
@@ -72,8 +61,7 @@ public class TowerDefenceModule extends Module {
         this.mobStorage = new MobStorage();
         this.towerStorage = new TowerStorage(this);
 
-
-        LobbyManager lobbyManager = new LobbyManager(this);
+        LobbyManager lobbyManager = new LobbyManager(this, this.agonesManager);
         this.scoreboardManager = new ScoreboardManager(this, lobbyManager);
 
         this.gameHandler = new GameHandler(this, lobbyManager);
@@ -84,8 +72,6 @@ public class TowerDefenceModule extends Module {
         commandManager.register(new TowerDefenceCommand(this));
 
         MinecraftServer.getConnectionManager().setPlayerProvider(this.userCache);
-        this.tdAgonesManager.setPhase("lobby");
-        this.tdAgonesManager.setBackfill(true);
 
         return true;
     }
@@ -109,11 +95,6 @@ public class TowerDefenceModule extends Module {
 
     public void setGameState(GameState gameState) {
         this.gameState = gameState;
-
-        this.tdAgonesManager.setPhase(gameState.name().toLowerCase());
-        if (gameState == GameState.END) {
-            this.tdAgonesManager.setBackfill(false);
-        }
     }
 
     public MobStorage getMobStorage() {

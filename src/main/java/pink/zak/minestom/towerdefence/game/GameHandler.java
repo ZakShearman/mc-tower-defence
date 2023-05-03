@@ -1,11 +1,12 @@
 package pink.zak.minestom.towerdefence.game;
 
-import cc.towerdefence.api.agonessdk.IgnoredStreamObserver;
-import cc.towerdefence.minestom.Environment;
-import cc.towerdefence.minestom.module.kubernetes.KubernetesModule;
-import cc.towerdefence.minestom.utils.MinestomPlayerUtils;
-import cc.towerdefence.minestom.utils.ProgressBar;
+
 import dev.agones.sdk.AgonesSDKProto;
+import dev.emortal.api.agonessdk.IgnoredStreamObserver;
+import dev.emortal.api.kurushimi.KurushimiMinestomUtils;
+import dev.emortal.minestom.core.Environment;
+import dev.emortal.minestom.core.module.kubernetes.KubernetesModule;
+import dev.emortal.minestom.core.utils.ProgressBar;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -204,7 +205,12 @@ public class GameHandler {
                     task.cancel();
 
                     if (Environment.isProduction()) {
-                        MinestomPlayerUtils.sendAllToLobby(() -> {
+                        KurushimiMinestomUtils.sendToLobby(MinecraftServer.getConnectionManager().getOnlinePlayers(), () -> {
+                            this.kubernetesModule.getSdk().shutdown(AgonesSDKProto.Empty.getDefaultInstance(), new IgnoredStreamObserver<>());
+                        }, () -> {
+                            for (Player player : MinecraftServer.getConnectionManager().getOnlinePlayers()) {
+                                player.kick(Component.text("Server shutting down"));
+                            }
                             this.kubernetesModule.getSdk().shutdown(AgonesSDKProto.Empty.getDefaultInstance(), new IgnoredStreamObserver<>());
                         });
                     }

@@ -1,6 +1,6 @@
 package pink.zak.minestom.towerdefence.game;
 
-import cc.towerdefence.minestom.Environment;
+import dev.emortal.minestom.core.Environment;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.timer.Task;
 import net.minestom.server.utils.time.TimeUnit;

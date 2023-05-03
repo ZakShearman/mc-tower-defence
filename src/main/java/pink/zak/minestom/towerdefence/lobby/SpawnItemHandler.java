@@ -25,12 +25,9 @@ import pink.zak.minestom.towerdefence.model.user.TDPlayer;
 import java.util.List;
 
 public class SpawnItemHandler {
-    private static final EventNode<Event> EVENT_NODE = EventNode.all("spawn-items");
     private static final GlobalEventHandler GLOBAL_EVENT_HANDLER = MinecraftServer.getGlobalEventHandler();
 
-    static {
-        LobbyManager.getEventNode().addChild(EVENT_NODE);
-    }
+    private final EventNode<Event> eventNode = EventNode.all("spawn-items");
 
     private final LobbyManager lobbyManager;
 
@@ -40,6 +37,8 @@ public class SpawnItemHandler {
     public SpawnItemHandler(LobbyManager lobbyManager) {
         this.lobbyManager = lobbyManager;
 
+        this.lobbyManager.getEventNode().addChild(this.eventNode);
+
         // todo update item on join
         this.handleTeamSwitchers();
     }
@@ -48,8 +47,7 @@ public class SpawnItemHandler {
         this.updateTeamItem(Team.RED);
         this.updateTeamItem(Team.BLUE);
 
-        EVENT_NODE
-                .addListener(PlayerSpawnEvent.class, event -> {
+        this.eventNode.addListener(PlayerSpawnEvent.class, event -> {
                     // this is called after the new player is assigned a team.
                     // call updateTeamItems before adding ItemStacks to inv to save packets :)
                     this.updateTeamItems();

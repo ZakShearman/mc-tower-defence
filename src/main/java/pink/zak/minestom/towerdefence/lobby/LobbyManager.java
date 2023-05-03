@@ -9,8 +9,11 @@ import net.minestom.server.event.player.PlayerDisconnectEvent;
 import net.minestom.server.event.player.PlayerSpawnEvent;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.TowerDefenceModule;
+import pink.zak.minestom.towerdefence.agones.AgonesManager;
 import pink.zak.minestom.towerdefence.api.event.player.PlayerTeamSwitchEvent;
 import pink.zak.minestom.towerdefence.enums.Team;
+import pink.zak.minestom.towerdefence.lobby.starting.DevLobbyStartingManager;
+import pink.zak.minestom.towerdefence.lobby.starting.ProdLobbyStartingManager;
 import pink.zak.minestom.towerdefence.model.user.LobbyPlayer;
 import pink.zak.minestom.towerdefence.model.user.TDPlayer;
 
@@ -23,21 +26,23 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class LobbyManager {
     private static final GlobalEventHandler GLOBAL_EVENT_HANDLER = MinecraftServer.getGlobalEventHandler();
 
-    private static final @NotNull EventNode<Event> EVENT_NODE = EventNode.all("lobby-manager");
+    private static final Boolean DEV_MODE = Boolean.valueOf(System.getenv("DEV_MODE"));
+
+    private final @NotNull EventNode<Event> eventNode = EventNode.all("lobby-manager");
 
     private final Map<Team, AtomicInteger> teamPlayerCount = new EnumMap<>(Team.class);
     private final Map<TDPlayer, LobbyPlayer> lobbyPlayers = new WeakHashMap<>();
 
     private final TowerDefenceModule module;
 
-    public LobbyManager(TowerDefenceModule module) {
+    public LobbyManager(TowerDefenceModule module, AgonesManager agonesManager) {
         this.teamPlayerCount.put(Team.RED, new AtomicInteger(0));
         this.teamPlayerCount.put(Team.BLUE, new AtomicInteger(0));
         this.module = module;
 
-        module.getEventNode().addChild(EVENT_NODE);
+        module.getEventNode().addChild(this.eventNode);
 
-        EVENT_NODE.addListener(PlayerSpawnEvent.class, event -> {
+        this.eventNode.addListener(PlayerSpawnEvent.class, event -> {
             TDPlayer player = (TDPlayer) event.getPlayer();
 
             LobbyPlayer lobbyPlayer = new LobbyPlayer(player, this.pickTeam(player));
@@ -54,7 +59,11 @@ public class LobbyManager {
         });
 
         new SpawnItemHandler(this);
-        new LobbyStartingManager(this, module);
+        if (DEV_MODE) {
+            new DevLobbyStartingManager(this, module);
+        } else {
+            new ProdLobbyStartingManager(this, module, agonesManager);
+        }
     }
 
     private synchronized @NotNull Team pickTeam(TDPlayer player) {
@@ -70,7 +79,7 @@ public class LobbyManager {
     }
 
     public void destroy() {
-        this.module.getEventNode().removeChild(EVENT_NODE);
+        this.module.getEventNode().removeChild(this.eventNode);
     }
 
     public LobbyPlayer getLobbyPlayer(TDPlayer player) {
@@ -94,7 +103,7 @@ public class LobbyManager {
         return this.teamPlayerCount.get(team);
     }
 
-    public static @NotNull EventNode<Event> getEventNode() {
-        return EVENT_NODE;
+    public @NotNull EventNode<Event> getEventNode() {
+        return this.eventNode;
     }
 }
