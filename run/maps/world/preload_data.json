@@ -1,0 +1,7 @@
+{
+  "minX": -9,
+  "maxX": 7,
+  "minZ": -10,
+  "maxZ": 8,
+  "autoChunkLoad": false
+}

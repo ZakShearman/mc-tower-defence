@@ -4,8 +4,9 @@
 # Common working directory
 /run/**
 # include the world for now
-!run/world/
-!run/world/**
+!run/maps
+!run/maps/*
+!run/maps/**/*
 
 *.iml
 *.ipr

@@ -40,6 +40,8 @@ public class TowerDefenceInstance extends InstanceContainer {
             }.getType(), PreLoadWorldData.GsonConverter.INSTANCE)
             .create();
 
+    private static final Path MAP_PATH = Path.of("maps");
+
     public static final Tag<String> TOWER_PATH_TAG = Tag.String("path_team");
 
     private final Path preLoadDataPath;
@@ -50,12 +52,14 @@ public class TowerDefenceInstance extends InstanceContainer {
     @SneakyThrows
     public TowerDefenceInstance(DimensionType dimensionType, String worldName) {
         super(UUID.randomUUID(), dimensionType, null);
-        TNTLoader loader = new TNTLoader(new FileTNTSource(Path.of(worldName + ".tnt")));
+        Path mapPath = MAP_PATH.resolve(worldName);
+
+        TNTLoader loader = new TNTLoader(new FileTNTSource(mapPath.resolve("world.tnt")));
         this.setChunkLoader(loader);
 
-        this.preLoadDataPath = Path.of(worldName, "preload_data.json");
+        this.preLoadDataPath = mapPath.resolve("preload_data.json");
+        this.towerMapPath = mapPath.resolve("map_data.json");
 
-        this.towerMapPath = Path.of(worldName, "map.json");
         this.towerMap = TowerMap.fromJson(FileUtils.fileToJsonObject(this.towerMapPath.toFile()));
 
         try {

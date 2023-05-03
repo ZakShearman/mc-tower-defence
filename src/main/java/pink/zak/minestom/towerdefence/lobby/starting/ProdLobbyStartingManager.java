@@ -79,7 +79,7 @@ public class ProdLobbyStartingManager {
 
             // Note that we run both playerCount == gameCount and playerCount == 1 because in testing there may only be one player.
             if (playerCount == gameCreationInfo.playerIds().size()) {
-                this.startGameIfPossible();
+                this.startGameIfPossible(); // TODO maybe we don't start here and give players time to change team.
             }
 
             // Null check in case a player joins, leaves then another joins.
