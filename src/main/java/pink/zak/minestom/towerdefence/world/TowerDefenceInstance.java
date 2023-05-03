@@ -21,7 +21,6 @@ import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.model.map.PathCorner;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
 import pink.zak.minestom.towerdefence.utils.FileUtils;
-import pink.zak.minestom.towerdefence.utils.mechanic.CustomExplosion;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -72,7 +71,6 @@ public class TowerDefenceInstance extends InstanceContainer {
 
         this.tagMobPath(Team.RED);
         this.tagMobPath(Team.BLUE);
-        this.setExplosionSupplier((centerX, centerY, centerZ, strength, additionalData) -> new CustomExplosion(centerX, centerY, centerZ, strength));
     }
 
     private void loadPreloadChunks(PreLoadWorldData preLoadWorldData) {

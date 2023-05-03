@@ -1,5 +1,6 @@
 package pink.zak.minestom.towerdefence.model.tower.placed.types;
 
+import net.kyori.adventure.sound.Sound;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Pos;
@@ -9,6 +10,11 @@ import net.minestom.server.entity.LivingEntity;
 import net.minestom.server.entity.metadata.other.PrimedTntMeta;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.item.Material;
+import net.minestom.server.network.packet.server.ServerPacket;
+import net.minestom.server.network.packet.server.play.NamedSoundEffectPacket;
+import net.minestom.server.particle.Particle;
+import net.minestom.server.particle.ParticleCreator;
+import net.minestom.server.sound.SoundEvent;
 import net.minestom.server.utils.Direction;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.game.GameHandler;
@@ -20,6 +26,7 @@ import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 
 import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class BomberTower extends PlacedAttackingTower<BomberTowerLevel> {
     private static final double GRAVITY_PER_TICK = 0.04;
@@ -73,7 +80,7 @@ public class BomberTower extends PlacedAttackingTower<BomberTowerLevel> {
         Set<LivingTDEnemyMob> enemyMobs = this.mobHandler.getMobs(super.team);
 
         for (LivingTDEnemyMob enemyMob : enemyMobs) {
-            if (enemyMob.getPosition().distance(center) <= 4) {
+            if (enemyMob.getPosition().distance(center) <= this.level.getExplosionRadius()) {
                 enemyMob.damage(this, this.level.getDamage());
             }
         }
@@ -91,7 +98,6 @@ public class BomberTower extends PlacedAttackingTower<BomberTowerLevel> {
         BombTnt(BomberTower tower) {
             super(EntityType.TNT);
             this.tower = tower;
-
 
             super.hasPhysics = false;
             ((PrimedTntMeta) this.getEntityMeta()).setFuseTime(RAISE_TICKS + FLYING_TICKS);
@@ -113,10 +119,18 @@ public class BomberTower extends PlacedAttackingTower<BomberTowerLevel> {
                 Pos targetPos = this.tower.getTargets().isEmpty() ? this.fallbackPos : this.tower.getTargets().get(0).getPosition();
                 targetPos = targetPos.add(0, 1.5, 0);
                 this.setVelocity(this.tower.calculateLaunchVec(this.position, targetPos));
-
             } else if (aliveTicks == RAISE_TICKS + FLYING_TICKS) {
                 Pos pos = this.getPosition();
-                this.instance.explode(pos.blockX(), pos.blockY(), pos.blockZ(), 1f);
+
+                ServerPacket soundPacket =  new NamedSoundEffectPacket(SoundEvent.ENTITY_GENERIC_EXPLODE.name(), Sound.Source.PLAYER,
+                        pos.blockX(), pos.blockY(), pos.blockZ(), 1f, 1f, ThreadLocalRandom.current().nextLong());
+
+                ServerPacket particlePacket = ParticleCreator.createParticlePacket(
+                        Particle.EXPLOSION, pos.x(), pos.y(), pos.z(), 0, 0, 0, 1
+                );
+                this.instance.sendGroupedPacket(particlePacket);
+                this.instance.sendGroupedPacket(soundPacket);
+
                 this.tower.damageTroops(this);
                 this.remove();
             }
