@@ -20,11 +20,11 @@
     {
       "level": 1,
       "cost": 150,
-      "manaKillReward": -1,
+      "incomeIncrease": -1,
       "health": 100,
       "damage": 1,
       "movementSpeed": 1.7,
-      "manaCost": 200,
+      "incomeCost": 200,
       "entityType": "minecraft:llama",
       "sendItem": {
         "material": "minecraft:player_head",

@@ -20,11 +20,11 @@
     {
       "level": 1,
       "cost": 150,
-      "manaKillReward": -1,
+      "incomeIncrease": -1,
       "health": 1,
       "damage": 1,
       "movementSpeed": 3.0,
-      "manaCost": 500,
+      "incomeCost": 500,
       "entityType": "minecraft:bee",
       "sendItem": {
         "material": "minecraft:player_head",
@@ -53,11 +53,11 @@
     {
       "level": 2,
       "cost": 175,
-      "manaKillReward": -1,
+      "incomeIncrease": -1,
       "health": 150,
       "damage": 1,
       "movementSpeed": 3.2,
-      "manaCost": 750,
+      "incomeCost": 750,
       "entityType": "minecraft:bee",
       "sendItem": {
         "material": "minecraft:player_head",
@@ -86,11 +86,11 @@
     {
       "level": 3,
       "cost": 200,
-      "manaKillReward": -1,
+      "incomeIncrease": -1,
       "health": 200,
       "damage": 1,
       "movementSpeed": 3.4,
-      "manaCost": 1000,
+      "incomeCost": 1000,
       "entityType": "minecraft:bee",
       "sendItem": {
         "material": "minecraft:player_head",
@@ -119,11 +119,11 @@
     {
       "level": 4,
       "cost": 250,
-      "manaKillReward": -1,
+      "incomeIncrease": -1,
       "health": 300,
       "damage": 1,
       "movementSpeed": 3.8,
-      "manaCost": 1500,
+      "incomeCost": 1500,
       "entityType": "minecraft:bee",
       "sendItem": {
         "material": "minecraft:player_head",
@@ -152,11 +152,11 @@
     {
       "level": 5,
       "cost": 350,
-      "manaKillReward": -1,
+      "incomeIncrease": -1,
       "health": 600,
       "damage": 1,
       "movementSpeed": 4.2,
-      "manaCost": 2000,
+      "incomeCost": 2000,
       "entityType": "minecraft:bee",
       "sendItem": {
         "material": "minecraft:player_head",
