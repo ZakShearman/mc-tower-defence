@@ -1,7 +1,7 @@
 {
   "type": "ARCHER",
   "name": "archer",
-  "damageType": "BLUDGEONING",
+  "damageType": "PIERCING",
   "guiSlot": 15,
   "relativeFiringPoints": [
     {

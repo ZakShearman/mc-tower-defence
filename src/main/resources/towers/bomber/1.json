@@ -1,9 +1,9 @@
 {
   "level": 1,
   "cost": 1,
-  "fireDelay": 15,
-  "damage": 1,
-  "range": 20,
+  "fireDelay": 30,
+  "damage": 2,
+  "range": 10,
 
   "relativeTntSpawnPoint": {
     "xOffset": 0,
@@ -11,7 +11,7 @@
     "zOffset": 0
   },
 
-  "explosionRadius": -1,
+  "explosionRadius": 2,
 
   "menuItem": {
     "material": "minecraft:tnt",
