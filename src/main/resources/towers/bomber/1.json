@@ -11,7 +11,7 @@
     "zOffset": 0
   },
 
-  "explosionRadius": 2,
+  "explosionRadius": 3,
 
   "menuItem": {
     "material": "minecraft:tnt",
