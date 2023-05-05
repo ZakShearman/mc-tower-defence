@@ -21,10 +21,10 @@ repositories {
 }
 
 dependencies {
-    implementation("dev.emortal.minestom:core:eb555db") {
+    implementation("dev.emortal.minestom:core:c302f8f") {
         exclude("net.minestom.server", "Minestom")
     }
-    implementation("dev.emortal.api:kurushimi-sdk:684e7c4")
+    implementation("dev.emortal.api:kurushimi-sdk:a1dcf4d")
 
 //    implementation("net.minestom.server:Minestom:1.0")
     implementation("com.github.Minestom.Minestom:Minestom:8ad2c7701f")

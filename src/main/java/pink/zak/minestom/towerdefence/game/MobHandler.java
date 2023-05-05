@@ -86,13 +86,14 @@ public class MobHandler {
             List<LivingTDEnemyMob> newTargets = new ArrayList<>();
             int i = 0;
             while (newTargets.size() < tower.getMaxTargets() && i < distanceSortedMobs.size()) {
-                LivingTDEnemyMob enemyMob = distanceSortedMobs.get(i);
+                LivingTDEnemyMob enemyMob = distanceSortedMobs.get(i++); // get mob and increment i
+
+                if (enemyMob.getEnemyMob().getIgnoredDamageTypes().contains(tower.getDamageType())) continue;
+                
                 double distance = tower.getBasePoint().distance(enemyMob.getPosition());
 
                 if (distance < tower.getLevel().getRange() && (tower.getTower().getType().isTargetAir() || !enemyMob.getEnemyMob().isFlying()))
                     newTargets.add(enemyMob);
-
-                i++;
             }
             tower.setTargets(newTargets);
         }
