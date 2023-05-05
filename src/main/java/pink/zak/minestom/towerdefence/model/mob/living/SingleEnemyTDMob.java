@@ -240,8 +240,7 @@ public class SingleEnemyTDMob extends SingleTDMob implements LivingTDEnemyMob {
                 }
             }
             double finalMultiplier = multiplier;
-            source.getOwningUser().updateAndGetCoins(current -> (int) Math.floor(current + (this.level.getKillReward() * finalMultiplier)));
-            source.getOwningUser().updateAndGetMana(current -> current + this.level.getManaKillReward());
+            source.getOwningUser().updateCoins(current -> (int) Math.floor(current + (this.level.getKillReward() * finalMultiplier)));
         }
 
         final SoundEvent sound = DamageType.VOID.getSound(this);

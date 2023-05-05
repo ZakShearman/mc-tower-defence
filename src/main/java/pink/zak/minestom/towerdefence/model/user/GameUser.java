@@ -5,7 +5,7 @@ import net.minestom.server.coordinate.Point;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pink.zak.minestom.towerdefence.api.event.player.PlayerCoinChangeEvent;
-import pink.zak.minestom.towerdefence.api.event.player.PlayerManaChangeEvent;
+import pink.zak.minestom.towerdefence.api.event.player.PlayerIncomeChangeEvent;
 import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.model.mob.QueuedEnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.config.EnemyMob;
@@ -26,7 +26,9 @@ public class GameUser {
     private final @NotNull Queue<QueuedEnemyMob> queuedMobs = new ConcurrentLinkedQueue<>();
 
     private final @NotNull AtomicInteger coins = new AtomicInteger(1000000);
-    private final @NotNull AtomicInteger mana = new AtomicInteger(10000);
+    // incomeRate is the amount of coins the player gets per 10 seconds.
+    private final @NotNull AtomicInteger incomeRate = new AtomicInteger(101);
+
     private final @NotNull AtomicInteger maxQueueSize = new AtomicInteger(2);
 
     private @Nullable Point lastClickedTowerBlock;
@@ -63,20 +65,20 @@ public class GameUser {
         return this.coins.get();
     }
 
-    public int updateAndGetCoins(@NotNull IntUnaryOperator intOperator) {
+    public int updateCoins(@NotNull IntUnaryOperator intOperator) {
         int newCoins = this.coins.updateAndGet(intOperator);
         MinecraftServer.getGlobalEventHandler().call(new PlayerCoinChangeEvent(this, newCoins));
         return newCoins;
     }
 
-    public int updateAndGetMana(@NotNull IntUnaryOperator intOperator) {
-        int newMana = this.mana.updateAndGet(intOperator);
-        MinecraftServer.getGlobalEventHandler().call(new PlayerManaChangeEvent(this, newMana));
-        return newMana;
+    public int updateIncomeRate(@NotNull IntUnaryOperator intOperator) {
+        int newRate = this.incomeRate.updateAndGet(intOperator);
+        MinecraftServer.getGlobalEventHandler().call(new PlayerIncomeChangeEvent(this, newRate));
+        return newRate;
     }
 
-    public int getMana() {
-        return this.mana.get();
+    public int getIncomeRate() {
+        return this.incomeRate.get();
     }
 
     public @NotNull AtomicInteger getMaxQueueSize() {

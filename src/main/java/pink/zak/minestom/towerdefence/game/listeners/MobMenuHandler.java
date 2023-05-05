@@ -145,7 +145,7 @@ public class MobMenuHandler {
                     return;
                 EnemyMobLevel mobLevel = clickedMob.getLevel(mobLevelInt);
                 if (gameUser.getCoins() >= mobLevel.getCost()) {
-                    gameUser.updateAndGetCoins(current -> current - mobLevel.getCost());
+                    gameUser.updateCoins(current -> current - mobLevel.getCost());
 
                     this.sendTroops(gameUser, clickedMob, mobLevel);
                     inventory.setItemStack(35, this.createQueueItem(gameUser));
@@ -202,16 +202,17 @@ public class MobMenuHandler {
             if (currentLevel >= clickedLevelInt)
                 return;
 
-            int manaCost = 0;
+            int incomeCost = 0;
             for (int i = currentLevel + 1; i <= clickedLevelInt; i++) {
-                manaCost += mob.getLevel(i).getManaCost();
+                incomeCost += mob.getLevel(i).getIncomeCost();
             }
 
             EnemyMobLevel clickedLevel = mob.getLevel(clickedLevelInt);
 
-            if (gameUser.getMana() >= manaCost) {
-                int finalManaCost = manaCost;
-                gameUser.updateAndGetMana(current -> current - finalManaCost);
+            if (gameUser.getIncomeRate() >= incomeCost) {
+                int finalIncomeCost = incomeCost;
+                gameUser.updateIncomeRate(current -> current - finalIncomeCost); // reduce user income rate
+
                 gameUser.getMobLevels().put(mob, clickedLevelInt);
 
                 // update inventory items
@@ -237,7 +238,7 @@ public class MobMenuHandler {
         for (int i = 1; i <= maxLevel; i++) {
             EnemyMobLevel enemyMobLevel = clickedMob.getLevel(i);
             boolean purchased = i <= currentLevel;
-            boolean canAfford = gameUser.getMana() >= enemyMobLevel.getManaCost();
+            boolean canAfford = gameUser.getIncomeRate() >= enemyMobLevel.getIncomeCost();
             ItemStack itemStack = purchased ? enemyMobLevel.getOwnedUpgradeItem() : canAfford ? enemyMobLevel.getBuyUpgradeItem() : enemyMobLevel.getCantAffordUpgradeItem();
             inventory.setItemStack(10 + i, itemStack);
         }

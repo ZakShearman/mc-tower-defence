@@ -7,12 +7,19 @@ import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
 
 public class StringUtils {
     private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
+    private static final NumberFormat COMMA_FORMAT;
+
+    static {
+        COMMA_FORMAT = NumberFormat.getNumberInstance();
+        COMMA_FORMAT.setGroupingUsed(true);
+    }
 
     public static @NotNull Component parseMessage(@NotNull String message, @Nullable TagResolver tagResolver) {
         Component component;
@@ -66,7 +73,16 @@ public class StringUtils {
         return capitalise(name);
     }
 
-    public static String capitalise(String word) {
+    public static @NotNull String capitalise(@NotNull String word) {
         return Character.toUpperCase(word.charAt(0)) + word.substring(1);
+    }
+
+    // TODO use this for user coins
+    public static @NotNull String commaSeparateNumber(int number) {
+        return COMMA_FORMAT.format(number);
+    }
+
+    public static @NotNull String commaSeparateNumber(long number) {
+        return COMMA_FORMAT.format(number);
     }
 }

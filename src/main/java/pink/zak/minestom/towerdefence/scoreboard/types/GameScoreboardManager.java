@@ -1,6 +1,7 @@
 package pink.zak.minestom.towerdefence.scoreboard.types;
 
 import net.minestom.server.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.TowerDefenceModule;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.scoreboard.TowerScoreboard;
@@ -18,7 +19,7 @@ public class GameScoreboardManager implements TowerScoreboard {
     }
 
     @Override
-    public boolean removeViewer(Player player) {
+    public boolean removeViewer(@NotNull Player player) {
         GameScoreboard scoreboard = this.scoreboards.get(player.getUuid());
         if (scoreboard != null) {
             scoreboard.destroy();
@@ -27,7 +28,7 @@ public class GameScoreboardManager implements TowerScoreboard {
         return false;
     }
 
-    public void createScoreboard(TowerDefenceModule plugin, GameUser gameUser) {
+    public void createScoreboard(TowerDefenceModule plugin, @NotNull GameUser gameUser) {
         this.scoreboards.put(gameUser.getPlayer().getUuid(), new GameScoreboard(plugin, gameUser));
     }
 }

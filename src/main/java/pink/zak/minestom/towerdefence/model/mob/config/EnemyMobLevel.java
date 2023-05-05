@@ -20,11 +20,11 @@ public class EnemyMobLevel {
     private final int level;
     private final int cost;
     private final int killReward;
-    private final int manaKillReward;
+    private final int incomeIncrease;
     private final int health;
     private final int damage;
     private final double movementSpeed;
-    private final int manaCost;
+    private final int incomeCost;
     private final @NotNull EntityType entityType;
     private final ItemStack sendItem;
     private final ItemStack ownedUpgradeItem;
@@ -35,19 +35,19 @@ public class EnemyMobLevel {
         this.level = jsonObject.get("level").getAsInt();
         this.cost = jsonObject.get("cost").getAsInt();
         this.killReward = this.cost / 4; // todo balance
-        this.manaKillReward = jsonObject.get("manaKillReward").getAsInt(); // TODO add this to every single mob level
+        this.incomeIncrease = jsonObject.get("incomeIncrease").getAsInt();
         this.health = jsonObject.get("health").getAsInt();
         this.damage = jsonObject.get("damage").getAsInt();
         this.movementSpeed = jsonObject.get("movementSpeed").getAsDouble() / MinecraftServer.TICK_PER_SECOND;
-        this.manaCost = jsonObject.get("manaCost").getAsInt();
+        this.incomeCost = jsonObject.get("incomeCost").getAsInt();
         this.entityType = EntityType.fromNamespaceId(jsonObject.get("entityType").getAsString());
 
         TagResolver tagResolver = TagResolver.resolver(
                 Placeholder.unparsed("send_cost", String.valueOf(this.cost)),
+                Placeholder.unparsed("income_increase", String.valueOf(this.incomeIncrease)),
                 Placeholder.unparsed("health", String.valueOf(this.health)),
                 Placeholder.unparsed("damage", String.valueOf(this.damage)),
-                Placeholder.unparsed("movement_speed", MOVEMENT_SPEED_FORMAT.format(this.movementSpeed * MinecraftServer.TICK_PER_SECOND)),
-                Placeholder.unparsed("mana_cost", String.valueOf(this.manaCost))
+                Placeholder.unparsed("movement_speed", MOVEMENT_SPEED_FORMAT.format(this.movementSpeed * MinecraftServer.TICK_PER_SECOND))
         );
 
         this.sendItem = ItemUtils.fromJsonObject(jsonObject.get("sendItem").getAsJsonObject(), tagResolver);
@@ -75,8 +75,11 @@ public class EnemyMobLevel {
         return this.killReward;
     }
 
-    public int getManaKillReward() {
-        return manaKillReward;
+    /**
+     * @return Income increase when this mob is sent.
+     */
+    public int getIncomeIncrease() {
+        return this.incomeIncrease;
     }
 
     public int getHealth() {
@@ -94,8 +97,8 @@ public class EnemyMobLevel {
         return this.movementSpeed;
     }
 
-    public int getManaCost() {
-        return this.manaCost;
+    public int getIncomeCost() {
+        return this.incomeCost;
     }
 
     public @NotNull EntityType getEntityType() {

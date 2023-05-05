@@ -96,7 +96,7 @@ public class TowerPlaceHandler {
             player.sendMessage(Component.text("Cannot place a tower as the area is not clear", NamedTextColor.RED));
             return;
         }
-        gameUser.updateAndGetCoins(current -> current - level.getCost());
+        gameUser.updateCoins(current -> current - level.getCost());
         this.towerHandler.createTower(tower, gameUser);
     }
 }
