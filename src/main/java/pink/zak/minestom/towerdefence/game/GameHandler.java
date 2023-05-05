@@ -109,6 +109,8 @@ public class GameHandler {
             this.userSettingsMenuHandler.onGameStart();
         }
 
+        new IncomeHandler(this);
+
         /*EnemyMob enemyMob = this.plugin.getMobStorage().getEnemyMob(EntityType.LLAMA);
         EnemyMobLevel enemyMobLevel = enemyMob.level(1);
         QueuedEnemyMob queuedEnemyMob = new QueuedEnemyMob(enemyMob,enemyMobLevel);
@@ -133,11 +135,11 @@ public class GameHandler {
             GameUser gameUser = new GameUser(tdPlayer, this.defaultEnemyMobs, team);
             this.users.put(tdPlayer, gameUser);
 
-            tdPlayer.setAllowFlying(true);
             tdPlayer.setFlyingSpeed(tdPlayer.getFlySpeed().getSpeed());
             tdPlayer.teleport(spawnPoint);
+            tdPlayer.setGameMode(GameMode.SURVIVAL);
+            tdPlayer.setAllowFlying(true);
             tdPlayer.setFlying(true); // set flying here so they don't fall after teleporting
-            tdPlayer.setGameMode(GameMode.CREATIVE); // todo remove
         }
     }
 
