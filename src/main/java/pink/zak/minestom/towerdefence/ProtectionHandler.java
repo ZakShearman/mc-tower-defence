@@ -1,4 +1,4 @@
-package pink.zak.minestom.towerdefence.listener;
+package pink.zak.minestom.towerdefence;
 
 import net.minestom.server.event.item.ItemDropEvent;
 import net.minestom.server.event.player.PlayerBlockBreakEvent;

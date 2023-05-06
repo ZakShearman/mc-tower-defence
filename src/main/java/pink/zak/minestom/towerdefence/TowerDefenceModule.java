@@ -14,7 +14,6 @@ import pink.zak.minestom.towerdefence.cache.TDUserLoader;
 import pink.zak.minestom.towerdefence.command.towerdefence.TowerDefenceCommand;
 import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.game.GameHandler;
-import pink.zak.minestom.towerdefence.listener.ProtectionHandler;
 import pink.zak.minestom.towerdefence.lobby.LobbyManager;
 import pink.zak.minestom.towerdefence.scoreboard.ScoreboardManager;
 import pink.zak.minestom.towerdefence.storage.MobStorage;

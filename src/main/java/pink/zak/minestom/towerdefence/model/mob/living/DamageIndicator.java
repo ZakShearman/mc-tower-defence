@@ -4,23 +4,26 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.coordinate.Vec;
 import net.minestom.server.entity.Entity;
 import net.minestom.server.entity.EntityType;
+import net.minestom.server.entity.Player;
 import net.minestom.server.entity.metadata.other.AreaEffectCloudMeta;
 import net.minestom.server.instance.Instance;
-import net.minestom.server.utils.time.TimeUnit;
+import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.game.MobHandler;
 import pink.zak.minestom.towerdefence.model.user.TDPlayer;
-
-import java.time.Duration;
 
 public class DamageIndicator extends Entity {
     private static final float OFFSET_Y = -0.5f;
     private static final Cache<Double, Component> NAME_CACHE = Caffeine.newBuilder()
-            .expireAfterAccess(Duration.of(30, TimeUnit.SECOND))
+            .maximumSize(10_000)
             .build();
+
+    private static final int VIEW_DISTANCE = 10;
+    private static final int VIEW_DISTANCE_SQUARED = VIEW_DISTANCE * VIEW_DISTANCE;
 
     private final Vec[] vectors = MobHandler.DAMAGE_INDICATOR_CACHE.getPreCalculatedVelocity();
 
@@ -37,7 +40,7 @@ public class DamageIndicator extends Entity {
         meta.setNotifyAboutChanges(false);
         this.updateViewableRule(player -> {
             TDPlayer tdPlayer = (TDPlayer) player;
-            return tdPlayer.isDamageIndicators() && tdPlayer.getDistance(this) < 20;
+            return tdPlayer.isDamageIndicators() && tdPlayer.getDistanceSquared(this) < VIEW_DISTANCE_SQUARED;
         });
 
         this.setInstance(instance, spawnPosition.add(0, OFFSET_Y, 0));
@@ -45,9 +48,25 @@ public class DamageIndicator extends Entity {
         this.position = spawnPosition;
     }
 
-    public static void create(LivingTDEnemyMob enemyMob, double damage) {
+    /**
+     * Creates a damage indicator for the given mob with the given damage
+     * NOTE: A damage indicator will not be created if it will not be visible to any players.
+     *
+     * @param enemyMob The mob to create the damage indicator for
+     * @param damage   The damage to display
+     */
+    public static void create(@NotNull LivingTDEnemyMob enemyMob, double damage) {
         Component text = NAME_CACHE.get(damage, key -> Component.text(damage, NamedTextColor.RED));
-        new DamageIndicator(enemyMob.getInstance(), enemyMob.getPosition().add(0, enemyMob.getTDEntityType().height(), 0), text);
+
+        boolean visible = false;
+        for (Player player : MinecraftServer.getConnectionManager().getOnlinePlayers()) {
+            if (player.getPosition().distanceSquared(enemyMob.getPosition()) < VIEW_DISTANCE_SQUARED) {
+                visible = true;
+                break;
+            }
+        }
+        if (visible)
+            new DamageIndicator(enemyMob.getInstance(), enemyMob.getPosition().add(0, enemyMob.getTDEntityType().height(), 0), text);
     }
 
     @Override
