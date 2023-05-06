@@ -3,7 +3,7 @@
   "cost": 1,
   "fireDelay": 15,
   "damage": 0,
-  "range": 10,
+  "range": 12,
 
   "speedModifier": 0.8,
   "tickDuration": 20,
