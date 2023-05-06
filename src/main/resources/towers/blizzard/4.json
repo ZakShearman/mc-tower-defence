@@ -1,7 +1,7 @@
 {
   "level": 4,
   "cost": 1,
-  "fireDelay": 4,
+  "fireDelay": 20,
   "damage": 1,
   "range": 18,
 

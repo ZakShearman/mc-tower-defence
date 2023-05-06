@@ -1,8 +1,8 @@
 {
   "level": 5,
   "cost": 1,
-  "fireDelay": 2,
-  "damage": 2,
+  "fireDelay": 4,
+  "damage": 1,
   "range": 18,
 
   "speedModifier": 0.7,
