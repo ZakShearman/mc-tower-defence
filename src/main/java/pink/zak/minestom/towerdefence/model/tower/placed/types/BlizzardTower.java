@@ -22,6 +22,8 @@ import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;
 
+import java.util.List;
+
 public class BlizzardTower extends PlacedAttackingTower<BlizzardTowerLevel> {
     private final Pos restSnowmanPos;
     private Entity snowman;
@@ -46,7 +48,9 @@ public class BlizzardTower extends PlacedAttackingTower<BlizzardTowerLevel> {
         double speedModifier = this.level.getSpeedModifier();
         int tickDuration = this.level.getTickDuration();
 
-        for (LivingTDEnemyMob target : this.targets) {
+        List<LivingTDEnemyMob> targets = this.getTargetsNotImmune(StatusEffectType.FROZEN);
+
+        for (LivingTDEnemyMob target : targets) {
             FrozenStatusEffect currentEffect = (FrozenStatusEffect) target.getStatusEffects().get(StatusEffectType.FROZEN);
 
             // if it: A) has no effect, B) current effect is worse than this one, or C) current effect is the same but has less time left
@@ -59,7 +63,7 @@ public class BlizzardTower extends PlacedAttackingTower<BlizzardTowerLevel> {
             }
         }
 
-        if (this.targets.size() > 0) {
+        if (targets.size() > 0) {
             if (this.levelInt >= 4) {
                 double x = this.basePoint.x();
                 double y = this.basePoint.y() + 3.5;

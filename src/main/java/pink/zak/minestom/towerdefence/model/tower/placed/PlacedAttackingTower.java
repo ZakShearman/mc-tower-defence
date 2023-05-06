@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.model.DamageSource;
 import pink.zak.minestom.towerdefence.model.mob.TDDamageType;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingTDEnemyMob;
+import pink.zak.minestom.towerdefence.model.mob.statuseffect.StatusEffectType;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTower;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTowerLevel;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
@@ -59,6 +60,12 @@ public abstract class PlacedAttackingTower<T extends AttackingTowerLevel> extend
 
     public List<LivingTDEnemyMob> getTargets() {
         return this.targets;
+    }
+
+    public List<LivingTDEnemyMob> getTargetsNotImmune(@NotNull StatusEffectType statusEffect) {
+        return this.targets.stream()
+                .filter(target -> !target.getEnemyMob().isEffectIgnored(statusEffect))
+                .toList();
     }
 
     public void setTargets(List<LivingTDEnemyMob> targets) {
