@@ -3,10 +3,10 @@ package pink.zak.minestom.towerdefence.scoreboard.types.game;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.scoreboard.Sidebar;
+import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.TowerDefenceModule;
 import pink.zak.minestom.towerdefence.api.event.game.CastleDamageEvent;
 import pink.zak.minestom.towerdefence.api.event.player.PlayerCoinChangeEvent;
-import pink.zak.minestom.towerdefence.api.event.player.PlayerIncomeChangeEvent;
 import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.scoreboard.TowerScoreboard;
@@ -24,9 +24,8 @@ public class GameScoreboard {
     public GameScoreboard(TowerDefenceModule plugin, GameUser gameUser) {
         this.gameUser = gameUser;
 
-        this.sidebar.createLine(new Sidebar.ScoreboardLine("empty-6", Component.empty(), 7));
-        this.sidebar.createLine(new Sidebar.ScoreboardLine("coins", this.createCoins(), 6));
-        this.sidebar.createLine(new Sidebar.ScoreboardLine("income", this.createIncome(), 5));
+        this.sidebar.createLine(new Sidebar.ScoreboardLine("empty-6", Component.empty(), 6));
+        this.sidebar.createLine(new Sidebar.ScoreboardLine("coins", this.createCoins(), 5));
         this.sidebar.createLine(new Sidebar.ScoreboardLine("empty-4", Component.empty(), 4));
         this.sidebar.createLine(new Sidebar.ScoreboardLine("red-health", this.createRedHealth(new CastleDamageEvent(Team.RED, 0, (int) this.maxHealth)), 3));
         this.sidebar.createLine(new Sidebar.ScoreboardLine("blue-health", this.createBlueHealth(new CastleDamageEvent(Team.BLUE, 0, (int) this.maxHealth)), 2));
@@ -42,8 +41,7 @@ public class GameScoreboard {
                     else
                         this.sidebar.updateLineContent("blue-health", this.createBlueHealth(event));
                 })
-                .addListener(PlayerCoinChangeEvent.class, event -> this.sidebar.updateLineContent("coins", this.createCoins()))
-                .addListener(PlayerIncomeChangeEvent.class, event -> this.sidebar.updateLineContent("income", this.createIncome()));
+                .addListener(PlayerCoinChangeEvent.class, event -> this.sidebar.updateLineContent("coins", this.createCoins()));
     }
 
     public void destroy() {
@@ -56,16 +54,11 @@ public class GameScoreboard {
                 .append(Component.text(StringUtils.commaSeparateNumber(this.gameUser.getCoins()), NamedTextColor.YELLOW));
     }
 
-    private Component createIncome() {
-        return Component.text("Income: ", NamedTextColor.WHITE)
-                .append(Component.text(StringUtils.commaSeparateNumber(this.gameUser.getIncomeRate()) + "/10s", NamedTextColor.AQUA));
-    }
-
-    private Component createRedHealth(CastleDamageEvent event) {
+    private @NotNull Component createRedHealth(@NotNull CastleDamageEvent event) {
         return Component.text("Health: " + DECIMAL_FORMAT.format((event.health() / this.maxHealth) * 100) + "%", NamedTextColor.RED);
     }
 
-    private Component createBlueHealth(CastleDamageEvent event) {
+    private @NotNull Component createBlueHealth(@NotNull CastleDamageEvent event) {
         return Component.text("Health: " + DECIMAL_FORMAT.format((event.health() / this.maxHealth) * 100) + "%", NamedTextColor.AQUA);
     }
 }

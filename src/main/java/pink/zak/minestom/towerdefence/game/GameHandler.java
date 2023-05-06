@@ -21,6 +21,7 @@ import net.minestom.server.timer.Task;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pink.zak.minestom.towerdefence.TowerDefenceModule;
+import pink.zak.minestom.towerdefence.actionbar.ActionBarHandler;
 import pink.zak.minestom.towerdefence.api.event.game.CastleDamageEvent;
 import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.enums.Team;
@@ -110,6 +111,7 @@ public class GameHandler {
         }
 
         new IncomeHandler(this);
+        new ActionBarHandler(this, MinecraftServer.getGlobalEventHandler());
 
         /*EnemyMob enemyMob = this.plugin.getMobStorage().getEnemyMob(EntityType.LLAMA);
         EnemyMobLevel enemyMobLevel = enemyMob.level(1);
@@ -157,22 +159,23 @@ public class GameHandler {
     }
 
     public void damageTower(@NotNull Team team, int damage) {
+        if (this.ended.get()) return;
+
         AtomicInteger health = team == Team.RED ? this.redTowerHealth : this.blueTowerHealth;
         Hologram hologram = team == Team.RED ? this.redTowerHologram : this.blueTowerHologram;
 
         int oldHealth = health.getAndUpdate(currentHealth -> currentHealth - damage);
         int newHealth = health.get();
 
-        if (oldHealth > 0) hologram.setText(this.createTowerHologram(team));
+        hologram.setText(this.createTowerHologram(team));
 
         if (newHealth <= 0) {
             if (this.ended.compareAndSet(false, true)) {
                 this.endGame(team == Team.RED ? Team.BLUE : Team.RED);
             }
-            return;
         }
 
-        MinecraftServer.getGlobalEventHandler().call(new CastleDamageEvent(team, damage, newHealth));
+        MinecraftServer.getGlobalEventHandler().call(new CastleDamageEvent(team, damage, Math.max(newHealth, 0)));
     }
 
     public void endGame(Team winningTeam) {
@@ -227,6 +230,10 @@ public class GameHandler {
 
     public @NotNull TowerHandler getTowerHandler() {
         return this.towerHandler;
+    }
+
+    public int getCastleHealth(@NotNull Team team) {
+        return team == Team.RED ? this.redTowerHealth.get() : this.blueTowerHealth.get();
     }
 
     public boolean isInGame(Player player) {
