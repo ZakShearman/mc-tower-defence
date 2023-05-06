@@ -7,7 +7,7 @@ import net.minestom.server.entity.Entity;
 import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.metadata.golem.SnowGolemMeta;
 import net.minestom.server.item.Material;
-import net.minestom.server.network.packet.server.SendablePacket;
+import net.minestom.server.network.packet.server.play.ParticlePacket;
 import net.minestom.server.particle.Particle;
 import net.minestom.server.particle.ParticleCreator;
 import net.minestom.server.timer.Task;
@@ -22,9 +22,17 @@ import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;
 
-import java.util.List;
+import java.util.function.Function;
 
 public class BlizzardTower extends PlacedAttackingTower<BlizzardTowerLevel> {
+    private static final Function<Point, ParticlePacket> LEVEL_4_PACKET = point -> ParticleCreator.createParticlePacket(
+            Particle.SNOWFLAKE, point.x(), point.y(), point.z(), 0.8f, 0.9f, 0.8f, 100
+    );
+
+    private static final Function<Point, ParticlePacket> LEVEL_5_PACKET = point -> ParticleCreator.createParticlePacket(
+            Particle.SNOWFLAKE, point.x(), point.y(), point.z(), 0.9f, 1.3f, 0.9f, 150
+    );
+
     private final Pos restSnowmanPos;
     private Entity snowman;
     private Task snowmanTask;
@@ -48,9 +56,7 @@ public class BlizzardTower extends PlacedAttackingTower<BlizzardTowerLevel> {
         double speedModifier = this.level.getSpeedModifier();
         int tickDuration = this.level.getTickDuration();
 
-        List<LivingTDEnemyMob> targets = this.getTargetsNotImmune(StatusEffectType.FROZEN);
-
-        for (LivingTDEnemyMob target : targets) {
+        for (LivingTDEnemyMob target : this.getTargetsNotImmune(StatusEffectType.FROZEN)) {
             FrozenStatusEffect currentEffect = (FrozenStatusEffect) target.getStatusEffects().get(StatusEffectType.FROZEN);
 
             // if it: A) has no effect, B) current effect is worse than this one, or C) current effect is the same but has less time left
@@ -63,14 +69,19 @@ public class BlizzardTower extends PlacedAttackingTower<BlizzardTowerLevel> {
             }
         }
 
-        if (targets.size() > 0) {
+        // The below uses all targets because they may be immune to being frozen but not cold damage.
+        if (this.targets.size() > 0) {
             if (this.levelInt >= 4) {
-                double x = this.basePoint.x();
-                double y = this.basePoint.y() + 3.5;
-                double z = this.basePoint.z();
-                SendablePacket particlePacket = ParticleCreator.createParticlePacket(Particle.SNOWFLAKE, x, y, z, 0.9f, 1.5f, 0.9f, 150);
+                Point point = this.basePoint.add(0, this.levelInt == 4 ? 3.5 : 4.5, 0);
+                ParticlePacket particlePacket = (this.levelInt == 4 ? LEVEL_4_PACKET : LEVEL_5_PACKET).apply(point);
 
                 MinecraftServer.getConnectionManager().getOnlinePlayers().forEach(player -> player.sendPacket(particlePacket));
+            }
+        }
+
+        if (this.level.getDamage() > 0) {
+            for (LivingTDEnemyMob target : this.targets) { //
+                target.damage(this, this.level.getDamage());
             }
         }
     }
