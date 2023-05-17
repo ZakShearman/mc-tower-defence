@@ -89,17 +89,28 @@ public class TowerUpgradeHandler {
         TowerLevel currentLevel = placedTower.getLevel();
         Tower tower = placedTower.getTower();
 
-        Inventory inventory = new Inventory(InventoryType.CHEST_3_ROW, towerUpgradeTitles.get(tower));
+        Inventory inventory = new Inventory(InventoryType.CHEST_3_ROW, this.towerUpgradeTitles.get(tower));
         inventory.setTag(PlacedTower.ID_TAG, placedTower.getId());
         inventory.setItemStack(0, currentLevel.getMenuItem());
 
         inventory.setItemStack(11, tower.getLevel(1).getOwnedUpgradeItem());
         for (int i = 2; i <= tower.getMaxLevel(); i++) {
-            TowerLevel towerLevel = tower.getLevel(i);
+            TowerLevel targetLevel = tower.getLevel(i);
             boolean purchased = i <= currentLevel.getLevel();
-            boolean canAfford = gameUser.getCoins() >= towerLevel.getCost();
 
-            ItemStack itemStack = purchased ? towerLevel.getOwnedUpgradeItem() : canAfford ? towerLevel.getBuyUpgradeItem() : towerLevel.getCantAffordUpgradeItem();
+            ItemStack itemStack;
+            if (purchased) {
+                itemStack = targetLevel.getOwnedUpgradeItem();
+            } else {
+                int cost = 0;
+                for (int j = currentLevel.getLevel() + 1; j <= targetLevel.getLevel(); j++) {
+                    cost += tower.getLevel(j).getCost();
+                }
+
+                boolean canAfford = gameUser.getCoins() >= cost;
+                itemStack = targetLevel.createBuyUpgradeItem(canAfford, cost, currentLevel);
+            }
+
             inventory.setItemStack(10 + i, itemStack);
         }
 

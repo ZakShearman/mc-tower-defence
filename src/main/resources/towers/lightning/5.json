@@ -14,15 +14,6 @@
       ""
     ]
   },
-  "upgradeItem": {
-    "material": "minecraft:end_rod",
-    "displayName": "<yellow>Lightning Lvl. V",
-    "lore": [
-      "",
-      "<yellow>Fires lightning bolts at enemies",
-      ""
-    ]
-  },
   "relativeCastPoint": {
     "xOffset": 0,
     "yOffset": 7.5,

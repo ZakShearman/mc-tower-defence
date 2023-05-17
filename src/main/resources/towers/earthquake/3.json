@@ -17,14 +17,5 @@
       ""
     ]
   },
-  "upgradeItem": {
-    "material": "minecraft:cracked_stone_bricks",
-    "displayName": "<yellow>Earthquake Lvl. III",
-    "lore": [
-      "",
-      "<yellow>Makes 'em quake",
-      ""
-    ]
-  },
   "relativeBlocks":[{"xOffset":-1,"yOffset":1,"zOffset":-1,"block":{"material":"minecraft:yellow_concrete"}},{"xOffset":0,"yOffset":1,"zOffset":-1,"block":{"material":"minecraft:black_concrete"}},{"xOffset":1,"yOffset":1,"zOffset":-1,"block":{"material":"minecraft:yellow_concrete"}},{"xOffset":-1,"yOffset":1,"zOffset":0,"block":{"material":"minecraft:black_concrete"}},{"xOffset":0,"yOffset":1,"zOffset":0,"block":{"material":"minecraft:iron_block"}},{"xOffset":1,"yOffset":1,"zOffset":0,"block":{"material":"minecraft:black_concrete"}},{"xOffset":-1,"yOffset":1,"zOffset":1,"block":{"material":"minecraft:yellow_concrete"}},{"xOffset":0,"yOffset":1,"zOffset":1,"block":{"material":"minecraft:black_concrete"}},{"xOffset":1,"yOffset":1,"zOffset":1,"block":{"material":"minecraft:yellow_concrete"}},{"xOffset":-1,"yOffset":2,"zOffset":-1,"block":{"material":"minecraft:iron_block"}},{"xOffset":0,"yOffset":2,"zOffset":-1,"block":{"material":"minecraft:red_shulker_box","properties":["facing=north"]}},{"xOffset":1,"yOffset":2,"zOffset":-1,"block":{"material":"minecraft:iron_block"}},{"xOffset":-1,"yOffset":2,"zOffset":0,"block":{"material":"minecraft:red_shulker_box","properties":["facing=west"]}},{"xOffset":0,"yOffset":2,"zOffset":0,"block":{"material":"minecraft:iron_block"}},{"xOffset":1,"yOffset":2,"zOffset":0,"block":{"material":"minecraft:red_shulker_box","properties":["facing=east"]}},{"xOffset":-1,"yOffset":2,"zOffset":1,"block":{"material":"minecraft:iron_block"}},{"xOffset":0,"yOffset":2,"zOffset":1,"block":{"material":"minecraft:red_shulker_box","properties":["facing=south"]}},{"xOffset":1,"yOffset":2,"zOffset":1,"block":{"material":"minecraft:iron_block"}},{"xOffset":-1,"yOffset":3,"zOffset":-1,"block":{"material":"minecraft:yellow_concrete"}},{"xOffset":0,"yOffset":3,"zOffset":-1,"block":{"material":"minecraft:iron_bars","properties":["east=true","west=true"]}},{"xOffset":1,"yOffset":3,"zOffset":-1,"block":{"material":"minecraft:black_concrete"}},{"xOffset":-1,"yOffset":3,"zOffset":0,"block":{"material":"minecraft:iron_bars","properties":["north=true","south=true"]}},{"xOffset":0,"yOffset":3,"zOffset":0,"block":{"material":"minecraft:red_shulker_box","properties":["facing=up"]}},{"xOffset":1,"yOffset":3,"zOffset":0,"block":{"material":"minecraft:iron_bars","properties":["north=true","south=true"]}},{"xOffset":-1,"yOffset":3,"zOffset":1,"block":{"material":"minecraft:black_concrete"}},{"xOffset":0,"yOffset":3,"zOffset":1,"block":{"material":"minecraft:iron_bars","properties":["east=true","west=true"]}},{"xOffset":1,"yOffset":3,"zOffset":1,"block":{"material":"minecraft:yellow_concrete"}}]
 }

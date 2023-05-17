@@ -14,11 +14,11 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public enum TowerType {
-    ARCHER(Size.THREE, true, ArcherTowerConfig::new, AttackingTowerLevel::new),
+    ARCHER(Size.THREE, true, ArcherTowerConfig::new, json -> new AttackingTowerLevel("Archer", json)),
     BLIZZARD(Size.THREE, true, AttackingTower::new, BlizzardTowerLevel::new),
     BOMBER(Size.THREE, false, AttackingTower::new, BomberTowerLevel::new),
     CHARITY(Size.FIVE, false, Tower::new, CharityTowerLevel::new),
-    EARTHQUAKE(Size.THREE, false, AttackingTower::new, AttackingTowerLevel::new),
+    EARTHQUAKE(Size.THREE, false, AttackingTower::new, json -> new AttackingTowerLevel("Earthquake", json)),
     LIGHTNING(Size.THREE, true, AttackingTower::new, LightningTowerLevel::new),
     NECROMANCER(Size.FIVE, true, AttackingTower::new, NecromancerTowerLevel::new);
 

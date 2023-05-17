@@ -17,14 +17,5 @@
       ""
     ]
   },
-  "upgradeItem": {
-    "material": "minecraft:ice",
-    "displayName": "<yellow>Blizzard Lvl. II",
-    "lore": [
-      "",
-      "<yellow>Slows down enemies near it",
-      ""
-    ]
-  },
   "relativeBlocks": [{"xOffset":-1,"yOffset":1,"zOffset":-1,"block":{"material":"minecraft:light_blue_glazed_terracotta","properties":["facing=north"]}},{"xOffset":0,"yOffset":1,"zOffset":-1,"block":{"material":"minecraft:smooth_quartz_slab","properties":["type=bottom"]}},{"xOffset":1,"yOffset":1,"zOffset":-1,"block":{"material":"minecraft:light_blue_glazed_terracotta","properties":["facing=east"]}},{"xOffset":-1,"yOffset":1,"zOffset":0,"block":{"material":"minecraft:smooth_quartz_slab","properties":["type=bottom"]}},{"xOffset":0,"yOffset":1,"zOffset":0,"block":{"material":"minecraft:packed_ice"}},{"xOffset":1,"yOffset":1,"zOffset":0,"block":{"material":"minecraft:smooth_quartz_slab","properties":["type=bottom"]}},{"xOffset":-1,"yOffset":1,"zOffset":1,"block":{"material":"minecraft:light_blue_glazed_terracotta","properties":["facing=west"]}},{"xOffset":0,"yOffset":1,"zOffset":1,"block":{"material":"minecraft:smooth_quartz_slab","properties":["type=bottom"]}},{"xOffset":1,"yOffset":1,"zOffset":1,"block":{"material":"minecraft:light_blue_glazed_terracotta","properties":["facing=south"]}},{"xOffset":-1,"yOffset":2,"zOffset":-1,"block":{"material":"minecraft:prismarine_wall","properties":["up=true"]}},{"xOffset":1,"yOffset":2,"zOffset":-1,"block":{"material":"minecraft:prismarine_wall","properties":["up=true"]}},{"xOffset":0,"yOffset":2,"zOffset":0,"block":{"material":"minecraft:sea_lantern"}},{"xOffset":-1,"yOffset":2,"zOffset":1,"block":{"material":"minecraft:prismarine_wall","properties":["up=true"]}},{"xOffset":1,"yOffset":2,"zOffset":1,"block":{"material":"minecraft:prismarine_wall","properties":["up=true"]}}]
 }

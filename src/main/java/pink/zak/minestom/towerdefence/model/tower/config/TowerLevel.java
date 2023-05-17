@@ -1,32 +1,43 @@
 package pink.zak.minestom.towerdefence.model.tower.config;
 
 import com.google.gson.JsonObject;
-import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
+import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.model.tower.config.relative.RelativeBlock;
+import pink.zak.minestom.towerdefence.statdiff.Diffable;
+import pink.zak.minestom.towerdefence.statdiff.StatDiffCollection;
+import pink.zak.minestom.towerdefence.statdiff.types.IntStatDiff;
 import pink.zak.minestom.towerdefence.utils.ItemUtils;
+import pink.zak.minestom.towerdefence.utils.NumberUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
-public class TowerLevel {
+public class TowerLevel implements Diffable<TowerLevel> {
+    private static final String UPGRADE_ITEM_NAME = "<i:false><%s><tower_name> <level_numeral> (<yellow>$<cost></yellow>)";
+
+    private final @NotNull String towerName;
+
     private final int level;
     private final int cost;
-    private final double range;
+    private final int range;
 
     private final ItemStack menuItem;
-    private final ItemStack cantAffordUpgradeItem;
-    private final ItemStack ownedUpgradeItem;
-    private final ItemStack buyUpgradeItem;
 
     private final Set<RelativeBlock> relativeBlocks;
 
-    public TowerLevel(JsonObject jsonObject) {
+    public TowerLevel(@NotNull String towerName, @NotNull JsonObject jsonObject) {
+        this.towerName = towerName;
+
         this.level = jsonObject.get("level").getAsInt();
         this.cost = jsonObject.get("cost").getAsInt();
-        this.range = jsonObject.get("range").getAsDouble();
+        this.range = jsonObject.get("range").getAsInt();
 
         // todo placeholders, allow for custom towers to add their own
 
@@ -36,17 +47,21 @@ public class TowerLevel {
 
         this.menuItem = ItemUtils.fromJsonObject(jsonObject.get("menuItem").getAsJsonObject(), tagResolver);
 
-        ItemStack ownedUpgradeItem = ItemUtils.fromJsonObject(jsonObject.get("upgradeItem").getAsJsonObject(), tagResolver);
-        this.ownedUpgradeItem = ownedUpgradeItem.withDisplayName(ownedUpgradeItem.getDisplayName().color(NamedTextColor.GREEN));
-
-        this.buyUpgradeItem = ItemUtils.withMaterialBuilder(this.ownedUpgradeItem, Material.ORANGE_STAINED_GLASS_PANE)
-                .displayName(this.ownedUpgradeItem.getDisplayName().color(NamedTextColor.GOLD))
-                .build();
-        this.cantAffordUpgradeItem = ItemUtils.withMaterialBuilder(this.ownedUpgradeItem, Material.RED_STAINED_GLASS_PANE)
-                .displayName(this.ownedUpgradeItem.getDisplayName().color(NamedTextColor.RED))
-                .build();
-
         this.relativeBlocks = RelativeBlock.setFromJson(jsonObject.get("relativeBlocks").getAsJsonArray());
+    }
+
+    private ItemStack createOwnedUpgradeItem() {
+        return ItemStack.builder(Material.GREEN_STAINED_GLASS_PANE)
+                .displayName(MiniMessage.miniMessage().deserialize(UPGRADE_ITEM_NAME.formatted("green"),
+                        Placeholder.unparsed("tower_name", this.towerName),
+                        Placeholder.unparsed("level_numeral", NumberUtils.toRomanNumerals(this.level)),
+                        Placeholder.unparsed("cost", String.valueOf(this.cost))))
+                .lore(this.createStatLore())
+                .build();
+    }
+
+    public @NotNull String getTowerName() {
+        return towerName;
     }
 
     public int getLevel() {
@@ -57,7 +72,7 @@ public class TowerLevel {
         return this.cost;
     }
 
-    public double getRange() {
+    public int getRange() {
         return this.range;
     }
 
@@ -65,19 +80,46 @@ public class TowerLevel {
         return this.menuItem;
     }
 
-    public ItemStack getCantAffordUpgradeItem() {
-        return this.cantAffordUpgradeItem;
-    }
-
     public ItemStack getOwnedUpgradeItem() {
-        return this.ownedUpgradeItem;
+        return this.createOwnedUpgradeItem(); // todo this can be cached/replaced with a single instance for each level.
     }
 
-    public ItemStack getBuyUpgradeItem() {
-        return this.buyUpgradeItem;
+    public @NotNull ItemStack createBuyUpgradeItem(boolean canAfford, int cost, @NotNull TowerLevel currentLevel) {
+        String itemName = UPGRADE_ITEM_NAME.formatted(canAfford ? "gold" : "red");
+
+        return ItemStack.builder(canAfford ? Material.ORANGE_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE)
+                .displayName(MiniMessage.miniMessage().deserialize(itemName,
+                        Placeholder.unparsed("tower_name", this.towerName),
+                        Placeholder.unparsed("level_numeral", NumberUtils.toRomanNumerals(this.level)),
+                        Placeholder.unparsed("cost", String.valueOf(cost))))
+                .lore(this.createUpgradeLore(currentLevel))
+                .build();
+    }
+
+    private @NotNull List<Component> createUpgradeLore(@NotNull TowerLevel currentLevel) {
+        List<Component> components = new ArrayList<>();
+        components.add(Component.empty());
+        components.addAll(currentLevel.generateDiff(this).generateComparisonLines());
+        return components;
+    }
+
+    /**
+     * Creates the same lore as upgrades but without comparison to another level
+     * @return the lore
+     */
+    private @NotNull List<Component> createStatLore() {
+        List<Component> components = new ArrayList<>();
+        components.add(Component.empty());
+        components.addAll(this.generateDiff(this).generateStatLines());
+        return components;
     }
 
     public Set<RelativeBlock> getRelativeBlocks() {
         return this.relativeBlocks;
+    }
+
+    @Override
+    public @NotNull StatDiffCollection generateDiff(@NotNull TowerLevel other) {
+        return new StatDiffCollection().addDiff("Range", new IntStatDiff(this.range, other.range));
     }
 }

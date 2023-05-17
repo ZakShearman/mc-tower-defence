@@ -14,15 +14,6 @@
       ""
     ]
   },
-  "upgradeItem": {
-    "material": "minecraft:end_rod",
-    "displayName": "<yellow>Lightning Lvl. I",
-    "lore": [
-      "",
-      "<yellow>Fires lightning bolts at enemies",
-      ""
-    ]
-  },
   "relativeSpawnPoints": [],
   "relativeCastPoint": {
     "xOffset": 0,
