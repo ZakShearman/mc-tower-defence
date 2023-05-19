@@ -37,5 +37,4 @@ public class AttackingTowerLevel extends TowerLevel {
                 ))
                 .addDiff("Damage", new FloatStatDiff(this.getDamage(), other.getDamage()));
     }
-
 }

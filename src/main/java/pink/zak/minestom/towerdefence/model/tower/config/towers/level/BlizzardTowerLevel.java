@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.config.TowerLevel;
 import pink.zak.minestom.towerdefence.statdiff.StatDiffCollection;
-import pink.zak.minestom.towerdefence.statdiff.types.DoubleRateStatDiff;
+import pink.zak.minestom.towerdefence.statdiff.types.DoubleStatDiff;
 import pink.zak.minestom.towerdefence.statdiff.types.DurationStatDiff;
 
 import java.time.Duration;
@@ -35,7 +35,7 @@ public class BlizzardTowerLevel extends AttackingTowerLevel {
             throw new IllegalArgumentException("Cannot compare BlizzardTowerLevel to " + uncastOther.getClass().getSimpleName());
 
         return super.generateDiff(uncastOther)
-                .addDiff("Speed Modifier", new DoubleRateStatDiff(this.getSpeedModifier(), other.getSpeedModifier()))
+                .addDiff("Speed Modifier", new DoubleStatDiff(this.getSpeedModifier(), other.getSpeedModifier(), null, "x"))
                 .addDiff("Slow Duration", new DurationStatDiff(
                         Duration.ofMillis(this.getTickDuration() * 50L), Duration.ofMillis(other.getTickDuration() * 50L)
                 ));

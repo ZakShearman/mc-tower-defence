@@ -6,7 +6,11 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 
 // TODO can we handle when there is no change?
 public record StatDiffCollection(@NotNull Map<String, StatDiff<?>> statDiffMap) {
@@ -27,9 +31,9 @@ public record StatDiffCollection(@NotNull Map<String, StatDiff<?>> statDiffMap) 
 
             TagResolver tags = TagResolver.resolver(
                     Placeholder.unparsed("stat_name", entry.getKey()),
-                    Placeholder.unparsed("original_value", diff.getOriginal()),
-                    Placeholder.unparsed("new_value", diff.getNew()),
-                    Placeholder.unparsed("value_diff", diff.getDiffText())
+                    Placeholder.unparsed("original_value", diff.getFormattedOriginal()),
+                    Placeholder.unparsed("new_value", diff.getFormattedNew()),
+                    Placeholder.unparsed("value_diff", diff.getFormattedDiff())
             );
 
             lines.add(MINI_MESSAGE.deserialize(COMP_LINE_TEMPLATE, tags));
@@ -46,7 +50,7 @@ public record StatDiffCollection(@NotNull Map<String, StatDiff<?>> statDiffMap) 
 
             TagResolver tags = TagResolver.resolver(
                     Placeholder.unparsed("stat_name", entry.getKey()),
-                    Placeholder.unparsed("value", diff.getOriginal())
+                    Placeholder.unparsed("value", diff.getFormattedOriginal())
             );
 
             lines.add(MINI_MESSAGE.deserialize(STAT_LINE_TEMPLATE, tags));

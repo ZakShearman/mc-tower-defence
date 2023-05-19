@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.model.tower.config.TowerLevel;
 import pink.zak.minestom.towerdefence.statdiff.StatDiffCollection;
-import pink.zak.minestom.towerdefence.statdiff.types.DoubleRateStatDiff;
+import pink.zak.minestom.towerdefence.statdiff.types.DoubleStatDiff;
 import pink.zak.minestom.towerdefence.statdiff.types.IntStatDiff;
 
 public class NecromancerTowerLevel extends TowerLevel {
@@ -40,6 +40,6 @@ public class NecromancerTowerLevel extends TowerLevel {
         return super.generateDiff(uncastOther)
                 .addDiff("Necromanced Troops", new IntStatDiff(this.getMaxNecromancedMobs(), other.getMaxNecromancedMobs()))
                 .addDiff("Troop Health", new IntStatDiff(this.getNecromancedHealth(), other.getNecromancedHealth()))
-                .addDiff("Troop Damage", new DoubleRateStatDiff(this.getDamageMultiplier(), other.getDamageMultiplier()));
+                .addDiff("Troop Damage", new DoubleStatDiff(this.getDamageMultiplier(), other.getDamageMultiplier(), null, "x"));
     }
 }

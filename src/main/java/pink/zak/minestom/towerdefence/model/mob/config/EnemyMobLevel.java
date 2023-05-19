@@ -2,7 +2,8 @@ package pink.zak.minestom.towerdefence.model.mob.config;
 
 import com.google.gson.JsonObject;
 import lombok.ToString;
-import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.minestom.server.MinecraftServer;
@@ -10,65 +11,122 @@ import net.minestom.server.entity.EntityType;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import org.jetbrains.annotations.NotNull;
+import pink.zak.minestom.towerdefence.statdiff.Diffable;
+import pink.zak.minestom.towerdefence.statdiff.StatDiffCollection;
+import pink.zak.minestom.towerdefence.statdiff.types.DoubleStatDiff;
+import pink.zak.minestom.towerdefence.statdiff.types.IntStatDiff;
 import pink.zak.minestom.towerdefence.utils.ItemUtils;
+import pink.zak.minestom.towerdefence.utils.NumberUtils;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 @ToString
-public class EnemyMobLevel {
+public class EnemyMobLevel implements Diffable<EnemyMobLevel> {
+    private static final String SEND_ITEM_NAME = "<i:false><mob_name> <level_numeral> (<yellow>$<cost></yellow>)";
+    private static final String UPGRADE_ITEM_NAME = "<i:false><%s><level_numeral> (<yellow>$<cost>/s</yellow>)";
+
     private static final DecimalFormat MOVEMENT_SPEED_FORMAT = new DecimalFormat("#.##");
+
+    private final @NotNull String name;
+
     private final int level;
-    private final int cost;
+    private final @NotNull EntityType entityType;
+    private final int upgradeCost;
+    private final int sendIncomeIncrease;
+
+    private final int sendCost;
     private final int killReward;
-    private final int incomeIncrease;
+
     private final int health;
     private final int damage;
     private final double movementSpeed;
-    private final int incomeCost;
-    private final @NotNull EntityType entityType;
     private final ItemStack sendItem;
-    private final ItemStack ownedUpgradeItem;
-    private final ItemStack buyUpgradeItem;
-    private final ItemStack cantAffordUpgradeItem;
 
-    public EnemyMobLevel(JsonObject jsonObject) {
+    public EnemyMobLevel(@NotNull String name, @NotNull JsonObject jsonObject) {
+        this.name = name;
+
         this.level = jsonObject.get("level").getAsInt();
-        this.cost = jsonObject.get("cost").getAsInt();
-        this.killReward = this.cost / 4; // todo balance
-        this.incomeIncrease = jsonObject.get("incomeIncrease").getAsInt();
+        this.entityType = EntityType.fromNamespaceId(jsonObject.get("entityType").getAsString());
+        this.upgradeCost = jsonObject.get("upgradeCost").getAsInt(); // Cost to upgrade to this level (in income)
+        this.sendIncomeIncrease = jsonObject.get("sendIncomeIncrease").getAsInt(); // Income increase from sending this level
+
+        this.sendCost = jsonObject.get("sendCost").getAsInt();
+        this.killReward = this.sendCost / 4; // Coins gained from killing this level mob // todo balance
+
         this.health = jsonObject.get("health").getAsInt();
         this.damage = jsonObject.get("damage").getAsInt();
         this.movementSpeed = jsonObject.get("movementSpeed").getAsDouble() / MinecraftServer.TICK_PER_SECOND;
-        this.incomeCost = jsonObject.get("incomeCost").getAsInt();
-        this.entityType = EntityType.fromNamespaceId(jsonObject.get("entityType").getAsString());
 
         TagResolver tagResolver = TagResolver.resolver(
-                Placeholder.unparsed("send_cost", String.valueOf(this.cost)),
-                Placeholder.unparsed("income_increase", String.valueOf(this.incomeIncrease)),
+                Placeholder.unparsed("send_cost", String.valueOf(this.sendCost)),
+                Placeholder.unparsed("income_increase", String.valueOf(this.sendIncomeIncrease)),
                 Placeholder.unparsed("health", String.valueOf(this.health)),
                 Placeholder.unparsed("damage", String.valueOf(this.damage)),
                 Placeholder.unparsed("movement_speed", MOVEMENT_SPEED_FORMAT.format(this.movementSpeed * MinecraftServer.TICK_PER_SECOND))
         );
 
         this.sendItem = ItemUtils.fromJsonObject(jsonObject.get("sendItem").getAsJsonObject(), tagResolver);
-        ItemStack ownedUpgradeItem = ItemUtils.fromJsonObject(jsonObject.get("upgradeItem").getAsJsonObject(), tagResolver);
+//        ItemStack ownedUpgradeItem = ItemUtils.fromJsonObject(jsonObject.get("upgradeItem").getAsJsonObject(), tagResolver); todo remove
+    }
 
-        this.ownedUpgradeItem = ownedUpgradeItem.withDisplayName(ownedUpgradeItem.getDisplayName().color(NamedTextColor.GREEN));
-        this.buyUpgradeItem = ItemUtils.withMaterialBuilder(this.ownedUpgradeItem, Material.ORANGE_STAINED_GLASS_PANE)
-                .displayName(this.ownedUpgradeItem.getDisplayName().color(NamedTextColor.GOLD))
+    public ItemStack createSendItem() {
+        return ItemStack.builder(this.sendItem.material())
+                .displayName(MiniMessage.miniMessage().deserialize(SEND_ITEM_NAME,
+                        Placeholder.unparsed("mob_name", this.name),
+                        Placeholder.unparsed("level_numeral", NumberUtils.toRomanNumerals(this.level)),
+                        Placeholder.unparsed("cost", String.valueOf(this.sendCost))))
+                .lore(this.createStatLore())
                 .build();
-        this.cantAffordUpgradeItem = ItemUtils.withMaterialBuilder(ownedUpgradeItem, Material.RED_STAINED_GLASS_PANE)
-                .displayName(this.ownedUpgradeItem.getDisplayName().color(NamedTextColor.RED))
-                .build();
+    }
 
+    public ItemStack createStatUpgradeItem(boolean owned, boolean canAfford) {
+        return ItemStack.builder(owned ? Material.GREEN_STAINED_GLASS_PANE : canAfford ? Material.ORANGE_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE)
+                .displayName(MiniMessage.miniMessage().deserialize(
+                        UPGRADE_ITEM_NAME.formatted(owned ? "green" : canAfford ? "gold" : "red"),
+                        Placeholder.unparsed("level_numeral", NumberUtils.toRomanNumerals(this.level)),
+                        Placeholder.unparsed("cost", String.valueOf(this.upgradeCost))))
+                .lore(this.createStatLore())
+                .build();
+    }
+
+    public @NotNull ItemStack createBuyUpgradeItem(boolean canAfford, int cost, @NotNull EnemyMobLevel currentLevel) {
+        String itemName = UPGRADE_ITEM_NAME.formatted(canAfford ? "gold" : "red");
+
+        return ItemStack.builder(canAfford ? Material.ORANGE_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE)
+                .displayName(MiniMessage.miniMessage().deserialize(itemName,
+                        Placeholder.unparsed("level_numeral", NumberUtils.toRomanNumerals(this.level)),
+                        Placeholder.unparsed("cost", String.valueOf(cost))))
+                .lore(this.createUpgradeLore(currentLevel))
+                .build();
+    }
+
+    private @NotNull List<Component> createUpgradeLore(@NotNull EnemyMobLevel currentLevel) {
+        List<Component> components = new ArrayList<>();
+        components.add(Component.empty());
+        components.addAll(currentLevel.generateDiff(this).generateComparisonLines());
+        return components;
+    }
+
+    /**
+     * Creates the same lore as upgrades but without comparison to another level
+     *
+     * @return the lore
+     */
+    private @NotNull List<Component> createStatLore() {
+        List<Component> components = new ArrayList<>();
+        components.add(Component.empty());
+        components.addAll(this.generateDiff(this).generateStatLines());
+        return components;
     }
 
     public int getLevel() {
         return this.level;
     }
 
-    public int getCost() {
-        return this.cost;
+    public int getSendCost() {
+        return this.sendCost;
     }
 
     public int getKillReward() {
@@ -78,8 +136,8 @@ public class EnemyMobLevel {
     /**
      * @return Income increase when this mob is sent.
      */
-    public int getIncomeIncrease() {
-        return this.incomeIncrease;
+    public int getSendIncomeIncrease() {
+        return this.sendIncomeIncrease;
     }
 
     public int getHealth() {
@@ -97,27 +155,24 @@ public class EnemyMobLevel {
         return this.movementSpeed;
     }
 
-    public int getIncomeCost() {
-        return this.incomeCost;
+    public int getUpgradeCost() {
+        return this.upgradeCost;
     }
 
     public @NotNull EntityType getEntityType() {
         return this.entityType;
     }
 
-    public ItemStack getSendItem() {
-        return this.sendItem;
-    }
-
-    public ItemStack getOwnedUpgradeItem() {
-        return this.ownedUpgradeItem;
-    }
-
-    public ItemStack getBuyUpgradeItem() {
-        return this.buyUpgradeItem;
-    }
-
-    public ItemStack getCantAffordUpgradeItem() {
-        return this.cantAffordUpgradeItem;
+    @Override
+    public @NotNull StatDiffCollection generateDiff(@NotNull EnemyMobLevel other) {
+        return new StatDiffCollection()
+                .addDiff("Send Income", new IntStatDiff(this.sendIncomeIncrease, other.sendIncomeIncrease, "$", "/s"))
+                .addDiff("Health", new IntStatDiff(this.health, other.health))
+                .addDiff("Damage", new IntStatDiff(this.damage, other.damage))
+                .addDiff("Movement Speed", new DoubleStatDiff(
+                        this.movementSpeed * MinecraftServer.TICK_PER_SECOND,
+                        other.movementSpeed * MinecraftServer.TICK_PER_SECOND,
+                        null, "b/s"
+                ));
     }
 }

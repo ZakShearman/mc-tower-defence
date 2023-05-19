@@ -9,7 +9,6 @@ import pink.zak.minestom.towerdefence.model.mob.TDDamageType;
 import pink.zak.minestom.towerdefence.model.mob.statuseffect.StatusEffectType;
 import pink.zak.minestom.towerdefence.utils.ItemUtils;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -24,9 +23,9 @@ public class EnemyMob {
     private final @NotNull ItemStack unownedItem;
     private final @NotNull Set<StatusEffectType> ignoredEffects;
     private final @NotNull Set<TDDamageType> ignoredDamageTypes;
-    private final @NotNull Map<Integer, EnemyMobLevel> levels = new HashMap<>();
+    private final @NotNull Map<Integer, EnemyMobLevel> levels;
 
-    public EnemyMob(JsonObject jsonObject) {
+    public EnemyMob(@NotNull JsonObject jsonObject) {
         this.commonName = jsonObject.get("commonName").getAsString();
         this.damageType = TDDamageType.valueOf(jsonObject.get("damageType").getAsString());
         this.slot = jsonObject.get("guiSlot").getAsInt();
@@ -44,10 +43,10 @@ public class EnemyMob {
                 .map(TDDamageType::valueOf)
                 .collect(Collectors.toUnmodifiableSet());
 
-        StreamSupport.stream(jsonObject.get("levels").getAsJsonArray().spliterator(), false)
+        this.levels = StreamSupport.stream(jsonObject.get("levels").getAsJsonArray().spliterator(), false)
                 .map(JsonElement::getAsJsonObject)
-                .map(EnemyMobLevel::new)
-                .forEach(mobLevel -> this.levels.put(mobLevel.getLevel(), mobLevel));
+                .map(json -> new EnemyMobLevel(this.commonName, json))
+                .collect(Collectors.toUnmodifiableMap(EnemyMobLevel::getLevel, enemyMobLevel -> enemyMobLevel));
     }
 
     public @NotNull String getCommonName() {
@@ -74,7 +73,7 @@ public class EnemyMob {
         return this.ignoredEffects;
     }
 
-    public boolean isEffectIgnored(StatusEffectType statusEffectType) {
+    public boolean isEffectIgnored(@NotNull StatusEffectType statusEffectType) {
         return this.ignoredEffects.contains(statusEffectType);
     }
 

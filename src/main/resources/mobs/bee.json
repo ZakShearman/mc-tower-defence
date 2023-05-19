@@ -19,12 +19,12 @@
   "levels": [
     {
       "level": 1,
-      "cost": 150,
-      "incomeIncrease": -1,
+      "sendCost": 150,
+      "sendIncomeIncrease": -1,
       "health": 1,
       "damage": 1,
       "movementSpeed": 3.0,
-      "incomeCost": 500,
+      "upgradeCost": 500,
       "entityType": "minecraft:bee",
       "sendItem": {
         "material": "minecraft:player_head",
@@ -52,12 +52,12 @@
     },
     {
       "level": 2,
-      "cost": 175,
-      "incomeIncrease": -1,
+      "sendCost": 175,
+      "sendIncomeIncrease": -1,
       "health": 150,
       "damage": 1,
       "movementSpeed": 3.2,
-      "incomeCost": 750,
+      "upgradeCost": 750,
       "entityType": "minecraft:bee",
       "sendItem": {
         "material": "minecraft:player_head",
@@ -85,12 +85,12 @@
     },
     {
       "level": 3,
-      "cost": 200,
-      "incomeIncrease": -1,
+      "sendCost": 200,
+      "sendIncomeIncrease": -1,
       "health": 200,
       "damage": 1,
       "movementSpeed": 3.4,
-      "incomeCost": 1000,
+      "upgradeCost": 1000,
       "entityType": "minecraft:bee",
       "sendItem": {
         "material": "minecraft:player_head",
@@ -118,12 +118,12 @@
     },
     {
       "level": 4,
-      "cost": 250,
-      "incomeIncrease": -1,
+      "sendCost": 250,
+      "sendIncomeIncrease": -1,
       "health": 300,
       "damage": 1,
       "movementSpeed": 3.8,
-      "incomeCost": 1500,
+      "upgradeCost": 1500,
       "entityType": "minecraft:bee",
       "sendItem": {
         "material": "minecraft:player_head",
@@ -151,12 +151,12 @@
     },
     {
       "level": 5,
-      "cost": 350,
-      "incomeIncrease": -1,
+      "sendCost": 350,
+      "sendIncomeIncrease": -1,
       "health": 600,
       "damage": 1,
       "movementSpeed": 4.2,
-      "incomeCost": 2000,
+      "upgradeCost": 2000,
       "entityType": "minecraft:bee",
       "sendItem": {
         "material": "minecraft:player_head",

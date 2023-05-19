@@ -1,14 +1,21 @@
 package pink.zak.minestom.towerdefence.statdiff.types;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import pink.zak.minestom.towerdefence.statdiff.StatDiff;
 
 import java.time.Duration;
 
 public class DurationStatDiff extends StatDiff<Duration> {
 
+    public DurationStatDiff(@NotNull Duration originalValue, @NotNull Duration newValue,
+                            @Nullable String prefix, @Nullable String suffix) {
+
+        super(originalValue, newValue, DurationStatDiff::format, prefix, suffix);
+    }
+
     public DurationStatDiff(@NotNull Duration originalValue, @NotNull Duration newValue) {
-        super(originalValue, newValue, DurationStatDiff::format);
+        this(originalValue, newValue, null, null);
     }
 
     /**
@@ -22,7 +29,7 @@ public class DurationStatDiff extends StatDiff<Duration> {
     }
 
     @Override
-    public @NotNull String getDiffText() {
+    public @NotNull String getDiff() {
         Duration diff = this.newValue.minus(this.originalValue);
 
         if (diff.isZero()) {

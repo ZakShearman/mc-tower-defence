@@ -82,7 +82,7 @@ public class GameHandler {
 
         this.defaultEnemyMobs = module.getMobStorage().getEnemyMobs()
                 .stream()
-                .filter(mob -> mob.getLevel(1).getIncomeCost() <= 0)
+                .filter(mob -> mob.getLevel(1).getUpgradeCost() <= 0)
                 .collect(Collectors.toUnmodifiableSet());
 
         new TowerPlaceHandler(module, this);
