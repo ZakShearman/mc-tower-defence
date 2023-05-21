@@ -73,6 +73,7 @@ public class EnemyMobLevel implements Diffable<EnemyMobLevel> {
 
     public ItemStack createSendItem() {
         return ItemStack.builder(this.sendItem.material())
+                .meta(this.sendItem.meta())
                 .displayName(MiniMessage.miniMessage().deserialize(SEND_ITEM_NAME,
                         Placeholder.unparsed("mob_name", this.name),
                         Placeholder.unparsed("level_numeral", NumberUtils.toRomanNumerals(this.level)),
