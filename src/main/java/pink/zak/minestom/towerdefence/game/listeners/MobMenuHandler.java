@@ -282,6 +282,8 @@ public class MobMenuHandler {
                         QueuedEnemyMob enemyMob = gameUser.getQueuedMobs().poll();
                         if (enemyMob != null) {
                             this.mobHandler.spawnMob(enemyMob, gameUser);
+                            gameUser.updateIncomeRate(current -> current + enemyMob.level().getSendIncomeIncrease());
+
                             Inventory inventory = gameUser.getPlayer().getOpenInventory();
                             if (inventory != null && inventory.getTitle() == SEND_TITLE)
                                 inventory.setItemStack(35, this.createQueueItem(gameUser));
