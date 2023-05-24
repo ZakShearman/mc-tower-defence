@@ -149,10 +149,10 @@ public class MobMenuHandler {
                 if (mobLevelInt == 0)
                     return;
                 EnemyMobLevel mobLevel = clickedMob.getLevel(mobLevelInt);
-                if (gameUser.getCoins() >= mobLevel.getSendCost()) {
+                if (gameUser.getCoins() >= mobLevel.getSendCost() && gameUser.getQueuedMobs().size() < gameUser.getMaxQueueSize().get()) {
                     gameUser.updateCoins(current -> current - mobLevel.getSendCost());
 
-                    this.sendTroops(gameUser, clickedMob, mobLevel);
+                    this.queueTroop(gameUser, clickedMob, mobLevel);
                     inventory.setItemStack(35, this.createQueueItem(gameUser));
                 }
             });
@@ -272,7 +272,7 @@ public class MobMenuHandler {
         }
     }
 
-    private void sendTroops(@NotNull GameUser gameUser, @NotNull EnemyMob enemyMob, @NotNull EnemyMobLevel enemyMobLevel) {
+    private void queueTroop(@NotNull GameUser gameUser, @NotNull EnemyMob enemyMob, @NotNull EnemyMobLevel enemyMobLevel) {
         gameUser.getQueuedMobs().add(new QueuedEnemyMob(enemyMob, enemyMobLevel));
     }
 

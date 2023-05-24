@@ -4,7 +4,6 @@ import dev.emortal.minestom.core.Environment;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.MinecraftServer;
-import net.minestom.server.adventure.audience.Audiences;
 import net.minestom.server.attribute.Attribute;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Entity;
@@ -158,7 +157,6 @@ public class SingleEnemyTDMob extends SingleTDMob implements LivingTDEnemyMob {
 
         // TODO go fix in Minestom, teleport should call setView internally as it never updates
         this.sendPacketsToViewers(new EntityHeadLookPacket(this.getEntityId(), newPos.yaw()));
-        Audiences.all().sendMessage(Component.text("Yaw: " + newPos.yaw()));
     }
 
     private Pos modifyPosition(double movement) {
@@ -255,9 +253,9 @@ public class SingleEnemyTDMob extends SingleTDMob implements LivingTDEnemyMob {
 
         final SoundEvent sound = DamageType.VOID.getSound(this);
         if (sound != null) {
-            Sound.Source soundCategory = Sound.Source.PLAYER;
+            Sound.Source soundSource = Sound.Source.PLAYER;
 
-            SoundEffectPacket damageSoundPacket = new SoundEffectPacket(sound, soundCategory, this.getPosition(), 1.0f, 1.0f);
+            SoundEffectPacket damageSoundPacket = new SoundEffectPacket(sound, null, soundSource, this.getPosition(), 1.0f, 1.0f, 0);
             this.sendPacketToViewersAndSelf(damageSoundPacket);
         }
 

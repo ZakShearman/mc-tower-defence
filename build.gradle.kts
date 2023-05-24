@@ -26,18 +26,25 @@ dependencies {
     }
     implementation("dev.emortal.api:kurushimi-sdk:a1dcf4d") {
         exclude("dev.emortal.api", "common-proto-sdk")
+        exclude("net.minestom.server")
     }
 
 //    implementation("net.minestom.server:Minestom:1.0")
-    implementation("com.github.Minestom.Minestom:Minestom:8ad2c7701f")
-    implementation("net.kyori:adventure-text-minimessage:4.11.0")
+//    implementation("com.github.Minestom.Minestom:Minestom:8ad2c7701f")
+    implementation("dev.hollowcube:minestom-ce:7f3144337d")
+
+    implementation("com.github.Minestom:MinestomDataGenerator:e6ebd0fb9b") {
+        version {
+            strictly("e6ebd0fb9b")
+        }
+    }
+    implementation("net.kyori:adventure-text-minimessage:4.13.0")
 
     // TNT world format
-    implementation("com.github.EmortalMC:TNT:4ef1b53482")
+    implementation("dev.emortal.tnt:TNT:1.19.4_2")
 
     implementation("com.github.ben-manes.caffeine:caffeine:3.1.5")
 }
-
 application {
     mainClass.set("pink.zak.minestom.towerdefence.TowerDefenceServer")
 }

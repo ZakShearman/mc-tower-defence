@@ -29,7 +29,7 @@ public class GameUser {
     // incomeRate is the amount of coins the player gets per 10 seconds.
     private final @NotNull AtomicInteger incomeRate = new AtomicInteger(10000);
 
-    private final @NotNull AtomicInteger maxQueueSize = new AtomicInteger(2);
+    private final @NotNull AtomicInteger maxQueueSize = new AtomicInteger(12);
 
     private @Nullable Point lastClickedTowerBlock;
 
