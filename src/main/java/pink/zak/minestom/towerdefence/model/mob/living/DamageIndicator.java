@@ -12,8 +12,13 @@ import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.Metadata;
 import net.minestom.server.entity.Player;
 import net.minestom.server.entity.metadata.EntityMeta;
-import net.minestom.server.entity.metadata.other.AreaEffectCloudMeta;
-import net.minestom.server.network.packet.server.play.*;
+import net.minestom.server.entity.metadata.display.AbstractDisplayMeta;
+import net.minestom.server.entity.metadata.display.TextDisplayMeta;
+import net.minestom.server.network.packet.server.play.DestroyEntitiesPacket;
+import net.minestom.server.network.packet.server.play.EntityMetaDataPacket;
+import net.minestom.server.network.packet.server.play.EntityPositionPacket;
+import net.minestom.server.network.packet.server.play.EntityVelocityPacket;
+import net.minestom.server.network.packet.server.play.SpawnEntityPacket;
 import net.minestom.server.timer.Task;
 import net.minestom.server.timer.TaskSchedule;
 import net.minestom.server.utils.PacketUtils;
@@ -50,19 +55,19 @@ public class DamageIndicator {
 
         SpawnEntityPacket spawnPacket = new SpawnEntityPacket(
                 this.entityId, UUID.randomUUID(),
-                EntityType.AREA_EFFECT_CLOUD.id(), spawnPosition,
+                EntityType.TEXT_DISPLAY.id(), spawnPosition,
                 0, 0, (short) 0, (short) 0, (short) 0
         );
 
         int entityOffset = EntityMeta.OFFSET;
-        int areaEffectCloudOffset = AreaEffectCloudMeta.OFFSET;
+        int displayOffset = AbstractDisplayMeta.OFFSET;
+        int textDisplayOffset = TextDisplayMeta.OFFSET;
 
         EntityMetaDataPacket metaDataPacket = new EntityMetaDataPacket(
                 this.entityId, Map.of(
-                areaEffectCloudOffset, Metadata.Float(0f), // Radius
+                displayOffset + 6, Metadata.Byte((byte) AbstractDisplayMeta.BillboardConstraints.CENTER.ordinal()),
+                textDisplayOffset, Metadata.Chat(text),
                 entityOffset + 4, Metadata.Boolean(true), // Silent
-                entityOffset + 2, Metadata.OptChat(text), // Custom name
-                entityOffset + 3, Metadata.Boolean(true), // Custom name visible
                 entityOffset + 5, Metadata.Boolean(true) // Has no gravity
         ));
 
