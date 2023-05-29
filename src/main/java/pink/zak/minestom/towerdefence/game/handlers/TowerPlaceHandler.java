@@ -1,4 +1,4 @@
-package pink.zak.minestom.towerdefence.game.listeners;
+package pink.zak.minestom.towerdefence.game.handlers;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;

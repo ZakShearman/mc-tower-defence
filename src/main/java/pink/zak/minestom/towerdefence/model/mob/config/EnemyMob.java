@@ -20,6 +20,7 @@ public class EnemyMob {
     private final @NotNull TDDamageType damageType;
     private final int slot;
     private final boolean flying;
+    private final int sendTime; // in milliseconds
     private final @NotNull ItemStack unownedItem;
     private final @NotNull Set<StatusEffectType> ignoredEffects;
     private final @NotNull Set<TDDamageType> ignoredDamageTypes;
@@ -30,6 +31,7 @@ public class EnemyMob {
         this.damageType = TDDamageType.valueOf(jsonObject.get("damageType").getAsString());
         this.slot = jsonObject.get("guiSlot").getAsInt();
         this.flying = jsonObject.get("flying").getAsBoolean();
+        this.sendTime = jsonObject.get("sendTime").getAsInt();
 
         this.unownedItem = jsonObject.has("unownedItem") ? ItemUtils.fromJsonObject(jsonObject.get("unownedItem").getAsJsonObject(), null) : null;
 
@@ -63,6 +65,10 @@ public class EnemyMob {
 
     public boolean isFlying() {
         return this.flying;
+    }
+
+    public int getSendTime() {
+        return this.sendTime;
     }
 
     public @NotNull ItemStack getUnownedItem() {

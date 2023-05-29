@@ -3,6 +3,7 @@
   "damageType": "ACID",
   "guiSlot": 3,
   "flying": true,
+  "sendTime": 1000,
   "ignoredEffects": ["BURNING"],
   "ignoredDamageTypes": ["FIRE"],
   "unownedItem": {

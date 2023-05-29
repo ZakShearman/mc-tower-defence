@@ -1,9 +1,8 @@
-package pink.zak.minestom.towerdefence.game.listeners;
+package pink.zak.minestom.towerdefence.game.handlers;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.inventory.InventoryPreClickEvent;
 import net.minestom.server.event.player.PlayerUseItemEvent;
@@ -13,7 +12,7 @@ import net.minestom.server.inventory.click.ClickType;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import net.minestom.server.item.metadata.BundleMeta;
-import net.minestom.server.utils.time.TimeUnit;
+import net.minestom.server.tag.Tag;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pink.zak.minestom.towerdefence.TowerDefenceModule;
@@ -33,12 +32,13 @@ import java.util.Map;
 import java.util.Optional;
 
 public class MobMenuHandler {
+    public static final Tag<Boolean> SEND_GUI_TAG = Tag.Boolean("send_gui");
+
     private static final @NotNull Component SEND_TITLE = Component.text("Send Troops", NamedTextColor.DARK_GRAY);
     private static final @NotNull Component UPGRADE_TITLE = Component.text("Upgrade Troops", NamedTextColor.DARK_GRAY);
     private static final @NotNull Map<EnemyMob, Component> MOB_UPGRADE_TITLES = new HashMap<>();
     private final @NotNull TowerDefenceModule plugin;
     private final @NotNull GameHandler gameHandler;
-    private final @NotNull MobHandler mobHandler;
     private final @NotNull MobStorage mobStorage;
     private final @NotNull ItemStack chestItem;
     private final @NotNull ItemStack upgradeItem;
@@ -49,7 +49,7 @@ public class MobMenuHandler {
 
         this.plugin = plugin;
         this.gameHandler = gameHandler;
-        this.mobHandler = gameHandler.getMobHandler();
+        @NotNull MobHandler mobHandler = gameHandler.getMobHandler();
         this.mobStorage = plugin.getMobStorage();
         this.chestItem = ItemStack.builder(Material.CHEST)
                 .displayName(Component.text("Send Troops", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
@@ -62,7 +62,8 @@ public class MobMenuHandler {
         this.startSendGuiListener();
         this.startUpgradeGuiListener();
         this.startMobUpgradeGuiListener();
-        this.startQueueProcessor();
+
+        new QueueHandler(gameHandler, mobHandler, this);
     }
 
     public void onGameStart() {
@@ -79,6 +80,8 @@ public class MobMenuHandler {
             return;
 
         Inventory inventory = new Inventory(InventoryType.CHEST_4_ROW, SEND_TITLE);
+        inventory.setTag(SEND_GUI_TAG, true);
+
         Map<EnemyMob, Integer> levels = gameUser.getMobLevels();
         for (EnemyMob enemyMob : this.mobStorage.getEnemyMobs()) {
             Integer userLevel = levels.get(enemyMob);
@@ -96,7 +99,7 @@ public class MobMenuHandler {
 
         EnemyMob currentTrackedMob = null;
         int count = 0; // count of the current iterated mob
-        for (QueuedEnemyMob queuedMob : gameUser.getQueuedMobs()) {
+        for (QueuedEnemyMob queuedMob : gameUser.getQueue().getQueuedMobs()) {
             EnemyMob enemyMob = queuedMob.mob();
             if (currentTrackedMob != enemyMob) {
                 if (currentTrackedMob != null) {
@@ -149,10 +152,10 @@ public class MobMenuHandler {
                 if (mobLevelInt == 0)
                     return;
                 EnemyMobLevel mobLevel = clickedMob.getLevel(mobLevelInt);
-                if (gameUser.getCoins() >= mobLevel.getSendCost() && gameUser.getQueuedMobs().size() < gameUser.getMaxQueueSize().get()) {
+                if (gameUser.getCoins() >= mobLevel.getSendCost() && gameUser.getQueue().canQueue(clickedMob)) {
                     gameUser.updateCoins(current -> current - mobLevel.getSendCost());
 
-                    this.queueTroop(gameUser, clickedMob, mobLevel);
+                    gameUser.getQueue().queue(new QueuedEnemyMob(clickedMob, mobLevel));
                     inventory.setItemStack(35, this.createQueueItem(gameUser));
                 }
             });
@@ -272,26 +275,9 @@ public class MobMenuHandler {
         }
     }
 
-    private void queueTroop(@NotNull GameUser gameUser, @NotNull EnemyMob enemyMob, @NotNull EnemyMobLevel enemyMobLevel) {
-        gameUser.getQueuedMobs().add(new QueuedEnemyMob(enemyMob, enemyMobLevel));
-    }
+    public void updateSendMobGui(@NotNull GameUser user, @NotNull Inventory inventory) {
+        inventory.setItemStack(35, this.createQueueItem(user));
 
-    private void startQueueProcessor() {
-        MinecraftServer.getSchedulerManager().buildTask(() -> {
-                    for (GameUser gameUser : this.gameHandler.getUsers().values()) {
-                        QueuedEnemyMob enemyMob = gameUser.getQueuedMobs().poll();
-                        if (enemyMob != null) {
-                            this.mobHandler.spawnMob(enemyMob, gameUser);
-                            gameUser.updateIncomeRate(current -> current + enemyMob.level().getSendIncomeIncrease());
-
-                            Inventory inventory = gameUser.getPlayer().getOpenInventory();
-                            if (inventory != null && inventory.getTitle() == SEND_TITLE)
-                                inventory.setItemStack(35, this.createQueueItem(gameUser));
-                        }
-                    }
-                })
-                .repeat(1, TimeUnit.SECOND)
-                .schedule();
     }
 
     public @NotNull ItemStack getChestItem() {

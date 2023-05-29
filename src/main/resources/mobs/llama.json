@@ -3,6 +3,7 @@
   "damageType": "ACID",
   "guiSlot": 2,
   "flying": false,
+  "sendTime": 1000,
   "ignoredEffects": [],
   "ignoredDamageTypes": [],
   "unownedItem": {

@@ -3,6 +3,7 @@
   "damageType": "BLUDGEONING",
   "guiSlot": 4,
   "flying": false,
+  "sendTime": 1000,
   "ignoredEffects": ["FROZEN"],
   "ignoredDamageTypes": ["BLUDGEONING"],
   "unownedItem": {

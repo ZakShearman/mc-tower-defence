@@ -1,4 +1,4 @@
-package pink.zak.minestom.towerdefence.game.listeners;
+package pink.zak.minestom.towerdefence.game.handlers;
 
 import net.minestom.server.event.Event;
 import net.minestom.server.event.EventNode;

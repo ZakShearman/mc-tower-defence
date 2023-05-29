@@ -3,6 +3,7 @@
   "damageType": "BLUDGEONING",
   "guiSlot": 0,
   "flying": false,
+  "sendTime": 1000,
   "ignoredEffects": ["POISONED"],
   "ignoredDamageTypes": ["POISON"],
   "unownedItem": {
