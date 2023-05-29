@@ -11,7 +11,7 @@ import net.minestom.server.entity.metadata.other.PrimedTntMeta;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.item.Material;
 import net.minestom.server.network.packet.server.ServerPacket;
-import net.minestom.server.network.packet.server.play.NamedSoundEffectPacket;
+import net.minestom.server.network.packet.server.play.SoundEffectPacket;
 import net.minestom.server.particle.Particle;
 import net.minestom.server.particle.ParticleCreator;
 import net.minestom.server.sound.SoundEvent;
@@ -122,8 +122,8 @@ public class BomberTower extends PlacedAttackingTower<BomberTowerLevel> {
             } else if (aliveTicks == RAISE_TICKS + FLYING_TICKS) {
                 Pos pos = this.getPosition();
 
-                ServerPacket soundPacket =  new NamedSoundEffectPacket(SoundEvent.ENTITY_GENERIC_EXPLODE.name(), Sound.Source.PLAYER,
-                        pos.blockX(), pos.blockY(), pos.blockZ(), 1f, 1f, ThreadLocalRandom.current().nextLong());
+                ServerPacket soundPacket =  new SoundEffectPacket(SoundEvent.ENTITY_GENERIC_EXPLODE, 20f, Sound.Source.PLAYER,
+                        pos, 1f, 1f, ThreadLocalRandom.current().nextLong());
 
                 ServerPacket particlePacket = ParticleCreator.createParticlePacket(
                         Particle.EXPLOSION, pos.x(), pos.y(), pos.z(), 0, 0, 0, 1
