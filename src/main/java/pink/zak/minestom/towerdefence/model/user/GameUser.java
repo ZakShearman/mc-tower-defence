@@ -25,9 +25,9 @@ public class GameUser {
     private final @NotNull Map<EnemyMob, Integer> mobLevels = new ConcurrentHashMap<>();
     private final @NotNull Queue<QueuedEnemyMob> queuedMobs = new ConcurrentLinkedQueue<>();
 
-    private final @NotNull AtomicInteger coins = new AtomicInteger(1000000);
+    private final @NotNull AtomicInteger coins = new AtomicInteger(1000);
     // incomeRate is the amount of coins the player gets per 10 seconds.
-    private final @NotNull AtomicInteger incomeRate = new AtomicInteger(10000);
+    private final @NotNull AtomicInteger incomeRate = new AtomicInteger(100);
 
     private final @NotNull AtomicInteger maxQueueSize = new AtomicInteger(12);
 

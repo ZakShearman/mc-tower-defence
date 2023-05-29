@@ -16,7 +16,7 @@
     {
       "level": 1,
       "sendCost": 15,
-      "sendIncomeIncrease": 8,
+      "sendIncomeIncrease": 2,
       "health": 5,
       "damage": 1,
       "movementSpeed": 2,
@@ -46,11 +46,11 @@
     {
       "level": 2,
       "sendCost": 20,
-      "sendIncomeIncrease": -1,
+      "sendIncomeIncrease": 3,
       "health": 8,
       "damage": 1.3,
       "movementSpeed": 2,
-      "upgradeCost": 80,
+      "upgradeCost": 120,
       "entityType": "minecraft:zombie",
       "sendItem": {
         "material": "minecraft:zombie_head",
@@ -76,11 +76,11 @@
     {
       "level": 3,
       "sendCost": 40,
-      "sendIncomeIncrease": -1,
+      "sendIncomeIncrease": 6,
       "health": 20,
       "damage": 2,
       "movementSpeed": 2.4,
-      "upgradeCost": 50,
+      "upgradeCost": 350,
       "entityType": "minecraft:zombie",
       "sendItem": {
         "material": "minecraft:zombie_head",
@@ -106,11 +106,11 @@
     {
       "level": 4,
       "sendCost": 75,
-      "sendIncomeIncrease": -1,
+      "sendIncomeIncrease": 10,
       "health": 60,
       "damage": 4,
       "movementSpeed": 2.4,
-      "upgradeCost": 50,
+      "upgradeCost": 900,
       "entityType": "minecraft:zombie",
       "sendItem": {
         "material": "minecraft:zombie_head",
@@ -136,11 +136,11 @@
     {
       "level": 5,
       "sendCost": 200,
-      "sendIncomeIncrease": -1,
+      "sendIncomeIncrease": 15,
       "health": 125,
       "damage": 6,
       "movementSpeed": 3,
-      "upgradeCost": 50,
+      "upgradeCost": 1500,
       "entityType": "minecraft:zombie",
       "sendItem": {
         "material": "minecraft:zombie_head",
