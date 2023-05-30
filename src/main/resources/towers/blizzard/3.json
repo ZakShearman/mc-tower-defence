@@ -1,11 +1,11 @@
 {
   "level": 3,
-  "cost": 1,
+  "cost": 2500,
   "fireDelay": 15,
-  "damage": 0,
+  "damage": 4,
   "range": 15,
 
-  "speedModifier": 0.7,
+  "speedModifier": 0.68,
   "tickDuration": 20,
 
   "menuItem": {

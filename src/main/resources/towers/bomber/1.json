@@ -1,6 +1,6 @@
 {
   "level": 1,
-  "cost": 1,
+  "cost": 500,
   "fireDelay": 30,
   "damage": 2,
   "range": 10,

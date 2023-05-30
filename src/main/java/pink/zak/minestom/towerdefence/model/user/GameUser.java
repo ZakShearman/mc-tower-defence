@@ -21,7 +21,7 @@ import java.util.function.IntUnaryOperator;
 
 public class GameUser {
     public static final int DEFAULT_COINS = 1000;
-    public static final int DEFAULT_INCOME_RATE = 100;
+    public static final int DEFAULT_INCOME_RATE = 50;
     public static final int DEFAULT_MAX_QUEUE_TIME = 45_000; // 45 seconds
 
     private final @NotNull TDPlayer player; // todo in the future we should allow re-joining a game so this will not be final.

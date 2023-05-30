@@ -1,13 +1,13 @@
 {
   "level": 4,
-  "cost": 1,
-  "fireDelay": 15,
-  "damage": 1,
+  "cost": 35000,
+  "fireDelay": 22,
+  "damage": 25,
   "range": 20,
 
-  "maxNecromancedTroops": 4,
-  "necromancedHealth": 20,
-  "necromancedDamageMultiplier": 1.5,
+  "maxNecromancedTroops": 8,
+  "necromancedHealth": 250,
+  "necromancedDamageMultiplier": 1.8,
 
   "menuItem": {
     "material": "minecraft:wither_skeleton_skull",
