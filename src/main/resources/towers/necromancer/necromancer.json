@@ -2,5 +2,13 @@
   "type": "NECROMANCER",
   "name": "necromancer",
   "damageType": "BLUDGEONING",
-  "guiSlot": 13
+  "guiSlot": 13,
+
+  "item": {
+    "material": "minecraft:wither_skeleton_skull"
+  },
+
+  "description": [
+    "<i:false>Insert Tower Description Here"
+  ]
 }

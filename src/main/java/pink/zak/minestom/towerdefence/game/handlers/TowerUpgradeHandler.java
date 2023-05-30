@@ -91,7 +91,7 @@ public class TowerUpgradeHandler {
 
         Inventory inventory = new Inventory(InventoryType.CHEST_3_ROW, this.towerUpgradeTitles.get(tower));
         inventory.setTag(PlacedTower.ID_TAG, placedTower.getId());
-        inventory.setItemStack(0, currentLevel.getMenuItem());
+        inventory.setItemStack(0, tower.getBaseItem());
 
         inventory.setItemStack(11, tower.getLevel(1).getOwnedUpgradeItem());
         for (int i = 2; i <= tower.getMaxLevel(); i++) {
@@ -164,7 +164,7 @@ public class TowerUpgradeHandler {
                     placedTower.upgrade(); // todo better way (reduce blocks being placed many times unnecessarily when skipping levels)
                 TowerLevel towerLevel = placedTower.getLevel();
                 // update inventory items
-                inventory.setItemStack(0, towerLevel.getMenuItem());
+                inventory.setItemStack(0, tower.getBaseItem());
                 for (int i = currentLevel + 1; i <= clickedLevelInt; i++)
                     inventory.setItemStack(10 + i, towerLevel.getOwnedUpgradeItem());
             }

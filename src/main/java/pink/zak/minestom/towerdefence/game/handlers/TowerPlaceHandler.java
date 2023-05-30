@@ -62,7 +62,7 @@ public class TowerPlaceHandler {
         Inventory inventory = new Inventory(InventoryType.CHEST_3_ROW, title);
 
         for (Tower tower : this.towerStorage.getTowers().values()) {
-            inventory.setItemStack(tower.getGuiSlot(), tower.getBaseMenuItem());
+            inventory.setItemStack(tower.getGuiSlot(), tower.getBaseItem());
         }
 
         this.module.getEventNode().addListener(InventoryPreClickEvent.class, event -> {

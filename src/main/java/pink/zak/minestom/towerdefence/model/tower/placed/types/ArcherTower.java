@@ -1,15 +1,12 @@
 package pink.zak.minestom.towerdefence.model.tower.placed.types;
 
-import net.kyori.adventure.text.Component;
 import net.minestom.server.MinecraftServer;
-import net.minestom.server.adventure.audience.Audiences;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.EntityProjectile;
 import net.minestom.server.entity.EntityType;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.item.Material;
-import net.minestom.server.timer.TaskSchedule;
 import net.minestom.server.utils.Direction;
 import net.minestom.server.utils.time.TimeUnit;
 import org.jetbrains.annotations.NotNull;
@@ -51,10 +48,6 @@ public class ArcherTower extends PlacedAttackingTower<AttackingTowerLevel> {
         entity.lookAt(targetPoint);
 
 //        entity.shoot(targetPoint, 1, 0);
-
-        entity.scheduler().buildTask(() -> {
-            Audiences.all().sendMessage(Component.text("Arrow %s velocity: %s".formatted(entity.getEntityId(), entity.getVelocity())));
-        }).repeat(TaskSchedule.nextTick()).schedule();
 
         entity.setInstance(this.instance, fPoint);
 

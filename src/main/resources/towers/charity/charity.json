@@ -1,5 +1,13 @@
 {
   "type": "CHARITY",
   "name": "charity",
-  "guiSlot": 14
+  "guiSlot": 14,
+
+  "item": {
+    "material": "minecraft:gold_ingot"
+  },
+
+  "description": [
+    "<i:false>Insert Tower Description Here"
+  ]
 }

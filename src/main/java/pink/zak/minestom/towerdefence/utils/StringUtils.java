@@ -67,14 +67,22 @@ public class StringUtils {
             String[] words = name.split(" ");
             StringJoiner stringJoiner = new StringJoiner(" ");
             for (String word : words)
-                stringJoiner.add(capitalise(word));
+                stringJoiner.add(capitaliseWord(word));
             name = stringJoiner.toString();
         }
-        return capitalise(name);
+        return capitaliseWord(name);
     }
 
-    public static @NotNull String capitalise(@NotNull String word) {
+    public static @NotNull String capitaliseWord(@NotNull String word) {
         return Character.toUpperCase(word.charAt(0)) + word.substring(1);
+    }
+
+    public static @NotNull String capitaliseSentenceWords(@NotNull String sentence) {
+        String[] words = sentence.split(" ");
+        StringJoiner stringJoiner = new StringJoiner(" ");
+        for (String word : words)
+            stringJoiner.add(capitaliseWord(word));
+        return stringJoiner.toString();
     }
 
     // TODO use this for user coins

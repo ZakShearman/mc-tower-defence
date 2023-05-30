@@ -2,5 +2,13 @@
   "type": "BOMBER",
   "name": "bomber",
   "damageType": "BLUDGEONING",
-  "guiSlot": 12
+  "guiSlot": 12,
+
+  "item": {
+    "material": "minecraft:tnt"
+  },
+
+  "description": [
+    "<i:false>Insert Tower Description Here"
+  ]
 }

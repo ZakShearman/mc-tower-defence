@@ -2,5 +2,13 @@
   "type": "BLIZZARD",
   "name": "blizzard",
   "damageType": "COLD",
-  "guiSlot": 10
+  "guiSlot": 10,
+
+  "item": {
+    "material": "minecraft:ice"
+  },
+
+  "description": [
+    "<i:false>Insert Tower Description Here"
+  ]
 }

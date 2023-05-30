@@ -2,5 +2,13 @@
   "type": "EARTHQUAKE",
   "name": "earthquake",
   "damageType": "BLUDGEONING",
-  "guiSlot": 16
+  "guiSlot": 16,
+
+  "item": {
+    "material": "minecraft:cracked_stone_bricks"
+  },
+
+  "description": [
+    "<i:false>Insert Tower Description Here"
+  ]
 }

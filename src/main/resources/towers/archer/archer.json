@@ -3,6 +3,15 @@
   "name": "archer",
   "damageType": "PIERCING",
   "guiSlot": 15,
+
+  "item": {
+    "material": "minecraft:bow"
+  },
+
+  "description": [
+    "<i:false>Insert Tower Description Here"
+  ],
+
   "relativeFiringPoints": [
     {
       "xOffset": -1.5,
