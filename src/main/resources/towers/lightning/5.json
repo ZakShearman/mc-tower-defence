@@ -1,9 +1,9 @@
 {
   "level": 5,
-  "cost": 1,
-  "fireDelay": 30,
-  "damage": 1,
-  "range": 20,
+  "cost": 150000,
+  "fireDelay": 10,
+  "damage": 1500,
+  "range": 23,
 
   "menuItem": {
     "material": "minecraft:end_rod",

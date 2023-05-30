@@ -3,7 +3,7 @@
   "damageType": "BLUDGEONING",
   "guiSlot": 4,
   "flying": false,
-  "sendTime": 1000,
+  "sendTime": 3500,
   "ignoredEffects": ["FROZEN"],
   "ignoredDamageTypes": ["BLUDGEONING"],
   "unownedItem": {
@@ -20,7 +20,7 @@
   "levels": [
     {
       "level": 1,
-      "sendCost": 120,
+      "sendCost": 150,
       "sendIncomeIncrease": 0,
       "health": 50,
       "damage": 0.2,

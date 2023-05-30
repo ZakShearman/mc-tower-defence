@@ -3,7 +3,7 @@
   "damageType": "ACID",
   "guiSlot": 3,
   "flying": true,
-  "sendTime": 1000,
+  "sendTime": 50,
   "ignoredEffects": ["BURNING"],
   "ignoredDamageTypes": ["FIRE"],
   "unownedItem": {
@@ -20,12 +20,12 @@
   "levels": [
     {
       "level": 1,
-      "sendCost": 150,
-      "sendIncomeIncrease": -1,
+      "sendCost": 1,
+      "sendIncomeIncrease": 100000,
       "health": 1,
       "damage": 1,
       "movementSpeed": 3.0,
-      "upgradeCost": 500,
+      "upgradeCost": 1,
       "entityType": "minecraft:bee",
       "sendItem": {
         "material": "minecraft:player_head",
