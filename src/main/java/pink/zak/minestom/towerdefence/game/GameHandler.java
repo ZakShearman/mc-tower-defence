@@ -61,8 +61,8 @@ public class GameHandler {
     private final @NotNull UserSettingsMenuHandler userSettingsMenuHandler;
 
     private final Set<EnemyMob> defaultEnemyMobs;
-    private final @NotNull AtomicInteger redTowerHealth = new AtomicInteger(10_000);
-    private final @NotNull AtomicInteger blueTowerHealth = new AtomicInteger(10_000);
+    private final @NotNull AtomicInteger redTowerHealth = new AtomicInteger(500);
+    private final @NotNull AtomicInteger blueTowerHealth = new AtomicInteger(500);
     private final @NotNull Map<Player, GameUser> users = new HashMap<>();
     private final AtomicBoolean ended = new AtomicBoolean(false);
     private Hologram redTowerHologram;
