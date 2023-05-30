@@ -1,6 +1,5 @@
 package pink.zak.minestom.towerdefence.model.mob.living;
 
-import dev.emortal.minestom.core.Environment;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.MinecraftServer;
@@ -38,6 +37,7 @@ import pink.zak.minestom.towerdefence.model.tower.placed.types.CharityTower;
 import pink.zak.minestom.towerdefence.model.tower.placed.types.NecromancerTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.utils.DirectionUtil;
+import pink.zak.minestom.towerdefence.utils.TDEnvUtils;
 
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
@@ -96,7 +96,7 @@ public class SingleEnemyTDMob extends SingleTDMob implements LivingTDEnemyMob {
         this.enemyMob = enemyMob;
         this.level = enemyMob.getLevel(level);
 
-        if (Environment.isProduction()) this.team = gameUser.getTeam() == Team.RED ? Team.BLUE : Team.RED;
+        if (!TDEnvUtils.ENABLE_TEST_MODE) this.team = gameUser.getTeam() == Team.RED ? Team.BLUE : Team.RED;
         else this.team = gameUser.getTeam();
 
         this.sender = gameUser;

@@ -18,7 +18,7 @@ import pink.zak.minestom.towerdefence.utils.StringUtils;
 public class ActionBarHandler {
     private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
 
-    private static final String ACTION_BAR_CONTENT = "<gold>⛃ <coins> (+<income>/10s) <gray>| <team_color>❤ <castle_health>";
+    private static final String ACTION_BAR_CONTENT = "<gold>⛃ <coins> (+<income>/6s) <gray>| <team_color>❤ <castle_health>";
 
     private final @NotNull GameHandler gameHandler;
 

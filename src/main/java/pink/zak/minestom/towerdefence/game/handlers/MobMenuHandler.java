@@ -3,6 +3,7 @@ package pink.zak.minestom.towerdefence.game.handlers;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.inventory.InventoryPreClickEvent;
 import net.minestom.server.event.player.PlayerUseItemEvent;
@@ -34,9 +35,22 @@ import java.util.Optional;
 public class MobMenuHandler {
     public static final Tag<Boolean> SEND_GUI_TAG = Tag.Boolean("send_gui");
 
+    private static final List<String> SEND_SHORTCUTS_LORE = List.of(
+            "",
+            "<i:false><yellow>Quick Send Mobs <gold>(</gold> HOLD 1<gold> )</gold>",
+            "<i:false><yellow>Quick Unlock Mob <gold>(</gold> RIGHT CLICK<gold> )</gold>"
+    );
+
+    private static final @NotNull ItemStack SEND_SHORTCUTS_ITEM = ItemStack.builder(Material.PAPER)
+            .displayName(Component.text("Shortcuts", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
+            .lore(
+                    SEND_SHORTCUTS_LORE.stream().map(line -> MiniMessage.miniMessage().deserialize(line)).toList()
+            ).build();
+
     private static final @NotNull Component SEND_TITLE = Component.text("Send Troops", NamedTextColor.DARK_GRAY);
     private static final @NotNull Component UPGRADE_TITLE = Component.text("Upgrade Troops", NamedTextColor.DARK_GRAY);
     private static final @NotNull Map<EnemyMob, Component> MOB_UPGRADE_TITLES = new HashMap<>();
+
     private final @NotNull TowerDefenceModule plugin;
     private final @NotNull GameHandler gameHandler;
     private final @NotNull MobStorage mobStorage;
@@ -90,6 +104,8 @@ public class MobMenuHandler {
         }
         inventory.setItemStack(31, this.upgradeItem);
         inventory.setItemStack(35, this.createQueueItem(gameUser));
+
+        inventory.setItemStack(27, SEND_SHORTCUTS_ITEM);
 
         player.openInventory(inventory);
     }

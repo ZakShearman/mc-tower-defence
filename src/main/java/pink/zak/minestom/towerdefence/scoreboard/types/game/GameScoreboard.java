@@ -8,6 +8,7 @@ import pink.zak.minestom.towerdefence.TowerDefenceModule;
 import pink.zak.minestom.towerdefence.api.event.game.CastleDamageEvent;
 import pink.zak.minestom.towerdefence.api.event.player.PlayerCoinChangeEvent;
 import pink.zak.minestom.towerdefence.enums.Team;
+import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.scoreboard.TowerScoreboard;
 import pink.zak.minestom.towerdefence.utils.StringUtils;
@@ -19,7 +20,6 @@ public class GameScoreboard {
 
     private final Sidebar sidebar = new Sidebar(TowerScoreboard.TITLE);
     private final GameUser gameUser;
-    private final double maxHealth = 10_000;
 
     public GameScoreboard(TowerDefenceModule plugin, GameUser gameUser) {
         this.gameUser = gameUser;
@@ -27,8 +27,12 @@ public class GameScoreboard {
         this.sidebar.createLine(new Sidebar.ScoreboardLine("empty-6", Component.empty(), 6));
         this.sidebar.createLine(new Sidebar.ScoreboardLine("coins", this.createCoins(), 5));
         this.sidebar.createLine(new Sidebar.ScoreboardLine("empty-4", Component.empty(), 4));
-        this.sidebar.createLine(new Sidebar.ScoreboardLine("red-health", this.createRedHealth(new CastleDamageEvent(Team.RED, 0, (int) this.maxHealth)), 3));
-        this.sidebar.createLine(new Sidebar.ScoreboardLine("blue-health", this.createBlueHealth(new CastleDamageEvent(Team.BLUE, 0, (int) this.maxHealth)), 2));
+
+        this.sidebar.createLine(new Sidebar.ScoreboardLine("red-health",
+                this.createRedHealth(new CastleDamageEvent(Team.RED, 0, GameHandler.DEFAULT_TOWER_HEALTH)), 3));
+        this.sidebar.createLine(new Sidebar.ScoreboardLine("blue-health",
+                this.createBlueHealth(new CastleDamageEvent(Team.BLUE, 0, GameHandler.DEFAULT_TOWER_HEALTH)), 2));
+
         this.sidebar.createLine(new Sidebar.ScoreboardLine("empty-1", Component.empty(), 1));
         this.sidebar.createLine(new Sidebar.ScoreboardLine("website", TowerScoreboard.DOMAIN, 0));
 
@@ -55,10 +59,10 @@ public class GameScoreboard {
     }
 
     private @NotNull Component createRedHealth(@NotNull CastleDamageEvent event) {
-        return Component.text("Health: " + DECIMAL_FORMAT.format((event.health() / this.maxHealth) * 100) + "%", NamedTextColor.RED);
+        return Component.text("Health: " + DECIMAL_FORMAT.format((event.health() / GameHandler.DEFAULT_TOWER_HEALTH) * 100) + "%", NamedTextColor.RED);
     }
 
     private @NotNull Component createBlueHealth(@NotNull CastleDamageEvent event) {
-        return Component.text("Health: " + DECIMAL_FORMAT.format((event.health() / this.maxHealth) * 100) + "%", NamedTextColor.AQUA);
+        return Component.text("Health: " + DECIMAL_FORMAT.format((event.health() / GameHandler.DEFAULT_TOWER_HEALTH) * 100) + "%", NamedTextColor.AQUA);
     }
 }

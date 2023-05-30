@@ -1,6 +1,5 @@
 package pink.zak.minestom.towerdefence.game;
 
-import dev.emortal.minestom.core.Environment;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.timer.Task;
 import net.minestom.server.utils.time.TimeUnit;
@@ -13,6 +12,7 @@ import pink.zak.minestom.towerdefence.model.mob.QueuedEnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingTDEnemyMob;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
+import pink.zak.minestom.towerdefence.utils.TDEnvUtils;
 import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;
 
 import java.util.ArrayList;
@@ -54,7 +54,7 @@ public class MobHandler {
                 this.instance, this.map, spawningUser
         );
         Team team;
-        if (Environment.isProduction()) team = spawningUser.getTeam() == Team.RED ? Team.BLUE : Team.RED;
+        if (!TDEnvUtils.ENABLE_TEST_MODE) team = spawningUser.getTeam() == Team.RED ? Team.BLUE : Team.RED;
         else team = spawningUser.getTeam();
 
         this.getMobs(team).add(mob);

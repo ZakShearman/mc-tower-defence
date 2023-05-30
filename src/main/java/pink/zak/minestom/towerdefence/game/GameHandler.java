@@ -11,6 +11,7 @@ import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.MinecraftServer;
+import net.minestom.server.adventure.audience.Audiences;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.GameMode;
 import net.minestom.server.entity.Player;
@@ -49,6 +50,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 public class GameHandler {
+    public static final int DEFAULT_TOWER_HEALTH = 500;
+
     private final @NotNull TowerDefenceModule module;
     private final @NotNull TowerDefenceInstance instance;
     private final @NotNull TowerMap map;
@@ -61,8 +64,8 @@ public class GameHandler {
     private final @NotNull UserSettingsMenuHandler userSettingsMenuHandler;
 
     private final Set<EnemyMob> defaultEnemyMobs;
-    private final @NotNull AtomicInteger redTowerHealth = new AtomicInteger(500);
-    private final @NotNull AtomicInteger blueTowerHealth = new AtomicInteger(500);
+    private final @NotNull AtomicInteger redTowerHealth = new AtomicInteger(DEFAULT_TOWER_HEALTH);
+    private final @NotNull AtomicInteger blueTowerHealth = new AtomicInteger(DEFAULT_TOWER_HEALTH);
     private final @NotNull Map<Player, GameUser> users = new HashMap<>();
     private final AtomicBoolean ended = new AtomicBoolean(false);
     private Hologram redTowerHologram;
@@ -147,8 +150,7 @@ public class GameHandler {
 
     private @NotNull Component createTowerHologram(Team team) {
         int health = team == Team.RED ? this.redTowerHealth.get() : this.blueTowerHealth.get();
-        int maxHealth = 10_000;
-        float percentageRemaining = (float) health / maxHealth;
+        float percentageRemaining = (float) health / DEFAULT_TOWER_HEALTH;
         return ProgressBar.create(
                 percentageRemaining,
                 40,
@@ -164,23 +166,25 @@ public class GameHandler {
         AtomicInteger health = team == Team.RED ? this.redTowerHealth : this.blueTowerHealth;
         Hologram hologram = team == Team.RED ? this.redTowerHologram : this.blueTowerHologram;
 
-        int oldHealth = health.getAndUpdate(currentHealth -> currentHealth - damage);
+        int oldHealth = health.getAndUpdate(currentHealth -> Math.max(currentHealth - damage, 0));
         int newHealth = health.get();
 
         hologram.setText(this.createTowerHologram(team));
 
-        if (newHealth <= 0) {
+        if (newHealth == 0) {
             if (this.ended.compareAndSet(false, true)) {
                 this.endGame(team == Team.RED ? Team.BLUE : Team.RED);
             }
         }
 
-        MinecraftServer.getGlobalEventHandler().call(new CastleDamageEvent(team, damage, Math.max(newHealth, 0)));
+        MinecraftServer.getGlobalEventHandler().call(new CastleDamageEvent(team, damage, newHealth));
     }
 
     public void endGame(Team winningTeam) {
         this.module.setGameState(GameState.END);
         this.shutdownTask();
+
+        Audiences.all().sendMessage(Component.text("Game over! %s team won!".formatted(winningTeam.name()), NamedTextColor.RED));
         // todo properly clean up
     }
 
