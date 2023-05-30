@@ -9,6 +9,7 @@
   },
 
   "description": [
-    "<i:false>Insert Tower Description Here"
+    "<i:false>Does splash explosive damage to enemies",
+    "<i:false>shattering them into pieces."
   ]
 }
