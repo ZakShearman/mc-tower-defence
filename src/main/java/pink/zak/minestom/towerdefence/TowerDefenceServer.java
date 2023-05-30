@@ -9,7 +9,7 @@ public class TowerDefenceServer {
     public static void main(String[] args) {
         new MinestomServer.Builder()
                 .commonModules()
-                .module(MonitoringModule.class, env -> new MonitoringModule(env))
+                .module(MonitoringModule.class, MonitoringModule::new)
                 .module(TowerDefenceModule.class, TowerDefenceModule::new)
                 .build();
     }

@@ -47,7 +47,7 @@ public class Tower {
         this.item = ItemUtils.fromJsonObject(jsonObject.get("item").getAsJsonObject(), null);
 
         this.description = jsonObject.get("description").getAsJsonArray().asList().stream()
-                .map(JsonElement::toString)
+                .map(JsonElement::getAsString)
                 .map(line -> MiniMessage.miniMessage().deserialize(line))
                 .toList();
 
