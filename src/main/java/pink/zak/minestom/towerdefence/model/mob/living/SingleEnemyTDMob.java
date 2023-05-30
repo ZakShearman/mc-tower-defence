@@ -225,7 +225,6 @@ public class SingleEnemyTDMob extends SingleTDMob implements LivingTDEnemyMob {
 
     public float damage(@NotNull DamageSource source, float value) {
         if (this.isDead) return 0;
-        if (this.enemyMob.isDamageTypeIgnored(source.getDamageType())) return 0;
 
         DamageIndicator.create(this, value);
 

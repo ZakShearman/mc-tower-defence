@@ -1,11 +1,9 @@
 {
   "commonName": "Golem",
-  "damageType": "BLUDGEONING",
   "guiSlot": 4,
   "flying": false,
   "sendTime": 3500,
   "ignoredEffects": ["FROZEN"],
-  "ignoredDamageTypes": ["BLUDGEONING"],
   "unownedItem": {
     "material": "minecraft:player_head",
     "displayName": "<yellow>Golem <gold>(<yellow>Not Owned<gold>)",

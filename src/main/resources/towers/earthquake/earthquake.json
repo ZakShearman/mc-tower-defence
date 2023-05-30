@@ -1,7 +1,6 @@
 {
   "type": "EARTHQUAKE",
   "name": "earthquake",
-  "damageType": "BLUDGEONING",
   "guiSlot": 16,
 
   "item": {

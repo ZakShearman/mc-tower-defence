@@ -9,7 +9,6 @@ import net.minestom.server.utils.Direction;
 import net.minestom.server.utils.time.TimeUnit;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.model.DamageSource;
-import pink.zak.minestom.towerdefence.model.mob.TDDamageType;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingTDEnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.statuseffect.StatusEffectType;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTower;
@@ -75,10 +74,5 @@ public abstract class PlacedAttackingTower<T extends AttackingTowerLevel> extend
     @Override
     public @NotNull GameUser getOwningUser() {
         return super.owner;
-    }
-
-    @Override
-    public @NotNull TDDamageType getDamageType() {
-        return ((AttackingTower) this.tower).getDamageType();
     }
 }

@@ -1,7 +1,6 @@
 {
   "type": "BLIZZARD",
   "name": "blizzard",
-  "damageType": "COLD",
   "guiSlot": 10,
 
   "item": {

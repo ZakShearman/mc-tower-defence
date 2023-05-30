@@ -1,11 +1,9 @@
 {
   "commonName": "Bee",
-  "damageType": "ACID",
   "guiSlot": 3,
   "flying": true,
   "sendTime": 50,
   "ignoredEffects": ["BURNING"],
-  "ignoredDamageTypes": ["FIRE"],
   "unownedItem": {
     "material": "minecraft:player_head",
     "displayName": "<yellow>Bee <gold>(<yellow>Not Owned<gold>)",

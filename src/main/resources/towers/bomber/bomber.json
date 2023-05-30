@@ -1,7 +1,6 @@
 {
   "type": "BOMBER",
   "name": "bomber",
-  "damageType": "BLUDGEONING",
   "guiSlot": 12,
 
   "item": {

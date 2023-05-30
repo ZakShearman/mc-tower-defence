@@ -1,11 +1,9 @@
 {
   "commonName": "Zombie",
-  "damageType": "BLUDGEONING",
   "guiSlot": 0,
   "flying": false,
   "sendTime": 500,
   "ignoredEffects": ["POISONED"],
-  "ignoredDamageTypes": ["POISON"],
   "unownedItem": {
     "material": "minecraft:zombie_head",
     "displayName": "<yellow>Zombie <gold>(<yellow>Not Owned<gold>)",

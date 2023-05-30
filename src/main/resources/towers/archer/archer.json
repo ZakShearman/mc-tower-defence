@@ -1,7 +1,6 @@
 {
   "type": "ARCHER",
   "name": "archer",
-  "damageType": "PIERCING",
   "guiSlot": 15,
 
   "item": {

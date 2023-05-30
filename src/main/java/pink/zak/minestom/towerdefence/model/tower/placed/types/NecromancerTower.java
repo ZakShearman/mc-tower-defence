@@ -19,7 +19,6 @@ import net.minestom.server.utils.Direction;
 import net.minestom.server.utils.time.TimeUnit;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.model.DamageSource;
-import pink.zak.minestom.towerdefence.model.mob.TDDamageType;
 import pink.zak.minestom.towerdefence.model.mob.config.EnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.config.EnemyMobLevel;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingTDEnemyMob;
@@ -138,11 +137,6 @@ public class NecromancerTower extends PlacedTower<NecromancerTowerLevel> {
         @Override
         public @NotNull GameUser getOwningUser() {
             return this.owner;
-        }
-
-        @Override
-        public @NotNull TDDamageType getDamageType() {
-            return this.enemyMob.getDamageType();
         }
     }
 

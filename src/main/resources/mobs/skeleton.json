@@ -1,12 +1,10 @@
 {
   "entityType": "minecraft:skeleton",
   "commonName": "Skeleton",
-  "damageType": "BLUDGEONING",
   "guiSlot": 1,
   "flying": false,
   "sendTime": 1000,
   "ignoredEffects": ["POISONED"],
-  "ignoredDamageTypes": ["POISON"],
   "unownedItem": {
     "material": "minecraft:skeleton_skull",
     "displayName": "<yellow>Skeleton <gold>(<yellow>Not Owned<gold>)",

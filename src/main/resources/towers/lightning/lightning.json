@@ -1,7 +1,6 @@
 {
   "type": "LIGHTNING",
   "name": "lightning",
-  "damageType": "LIGHTNING",
   "guiSlot": 11,
 
   "item": {
