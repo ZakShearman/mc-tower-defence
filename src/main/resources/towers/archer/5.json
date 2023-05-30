@@ -1,8 +1,8 @@
 {
   "level": 5,
-  "cost": 16000,
+  "cost": 55000,
   "fireDelay": 5,
-  "damage": 12,
+  "damage": 250,
   "range": 30,
 
   "menuItem": {
