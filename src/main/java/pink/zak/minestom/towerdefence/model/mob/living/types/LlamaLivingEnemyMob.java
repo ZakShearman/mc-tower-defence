@@ -22,18 +22,32 @@ public class LlamaLivingEnemyMob extends SingleEnemyTDMob {
 
     @Override
     protected void attackCastle() {
-        Pos position = this.getPosition();
-        Entity spit = new Entity(EntityType.LLAMA_SPIT);
-        Direction direction = this.currentCorner.direction();
-        spit.setNoGravity(true);
-        spit.setInstance(this.instance, DirectionUtil.add(position.add(0, EntityType.LLAMA.height(), 0), direction, 1));
-        spit.setVelocity(DirectionUtil.createVec(direction, 7));
-        spit.scheduleRemove(10, TimeUnit.SERVER_TICK);
+        new LlamaSpit(this, this.currentCorner.direction());
     }
 
-    @Override
-    public void remove() { // damage the castle when the projectile hits
-        super.damageCastle();
-        super.remove();
+    private static class LlamaSpit extends Entity {
+        private final @NotNull LlamaLivingEnemyMob mob;
+
+        public LlamaSpit(@NotNull LlamaLivingEnemyMob mob, @NotNull Direction direction) {
+            super(EntityType.LLAMA_SPIT);
+
+            this.mob = mob;
+
+            Pos spawnPos = mob.getPosition();
+            spawnPos = spawnPos.add(0, EntityType.LLAMA.height(), 0); // Adjust for the llama's height
+            spawnPos = DirectionUtil.add(spawnPos, direction, 1); // Adjust to the front of the llama (mouth)
+
+            this.setNoGravity(true);
+            this.setInstance(mob.getInstance(), spawnPos);
+
+            this.setVelocity(DirectionUtil.createVec(direction, 7));
+            this.scheduleRemove(10, TimeUnit.SERVER_TICK);
+        }
+
+        @Override
+        public void remove() { // damage the castle when the projectile hits
+            this.mob.damageCastle();
+            super.remove();
+        }
     }
 }
