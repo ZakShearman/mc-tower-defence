@@ -2,7 +2,7 @@
   "level": 2,
   "cost": 1000,
   "fireDelay": 15,
-  "damage": 1,
+  "damage": 0,
   "range": 12,
 
   "speedModifier": 0.78,

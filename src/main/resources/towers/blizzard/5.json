@@ -3,9 +3,9 @@
   "cost": 80000,
   "fireDelay": 4,
   "damage": 15,
-  "range": 18,
+  "range": 22,
 
-  "speedModifier": 0.5,
+  "speedModifier": 0.45,
   "tickDuration": 20,
 
   "menuItem": {
