@@ -4,22 +4,17 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import pink.zak.minestom.towerdefence.TowerDefenceModule;
 import pink.zak.minestom.towerdefence.model.mob.config.EnemyMob;
+import pink.zak.minestom.towerdefence.utils.ResourceUtils;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 public class MobStorage {
-    private static final Set<String> MOB_FILES = Set.of(
-            "bee.json",
-            "golem.json",
-            "llama.json",
-//            "skeleton.json",
-            "zombie.json"
-    );
+    private static final String MOBS_PATH = "mobs";
 
     private final List<EnemyMob> enemyMobs;
 
@@ -29,13 +24,29 @@ public class MobStorage {
 
     private List<EnemyMob> load() {
         List<EnemyMob> enemyMobs = new ArrayList<>();
-        for (String fileName : MOB_FILES) {
-            InputStream inputStream = TowerDefenceModule.class.getClassLoader().getResourceAsStream("mobs/" + fileName);
 
-            JsonObject json = JsonParser.parseReader(new InputStreamReader(inputStream)).getAsJsonObject();
-            EnemyMob enemyMob = new EnemyMob(json);
-            enemyMobs.add(enemyMob);
+        List<String> fileNames;
+        try {
+            fileNames = ResourceUtils.listResources(MOBS_PATH).stream()
+                    .filter(fileName -> fileName.endsWith(".json"))
+                    .toList();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
+
+        for (String fileName : fileNames) {
+            try {
+                InputStream inputStream = TowerDefenceModule.class.getClassLoader().getResourceAsStream("%s/%s".formatted(MOBS_PATH, fileName));
+
+                JsonObject json = JsonParser.parseReader(new InputStreamReader(inputStream)).getAsJsonObject();
+                EnemyMob enemyMob = new EnemyMob(json);
+                enemyMobs.add(enemyMob);
+            } catch (Exception ex) {
+                throw new RuntimeException("Failed to load mob: %s".formatted(fileName), ex);
+            }
+        }
+
+
         return Collections.unmodifiableList(enemyMobs);
     }
 

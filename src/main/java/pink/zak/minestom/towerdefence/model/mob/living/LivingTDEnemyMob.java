@@ -44,7 +44,8 @@ public interface LivingTDEnemyMob extends LivingTDMob {
             case "minecraft:llama" -> new LlamaLivingEnemyMob(gameHandler, enemyMob, instance, map, gameUser, level);
             case "minecraft:bee" -> new BeeLivingEnemyMob(gameHandler, enemyMob, instance, map, gameUser, level);
             case "minecraft:zombie" -> new ZombieLivingEnemyMob(gameHandler, enemyMob, instance, map, gameUser, level);
-            case "minecraft:skeleton" -> SkeletonLivingEnemyMob.create(gameHandler, enemyMob, level, instance, map, gameUser);
+            case "minecraft:skeleton" ->
+                    SkeletonLivingEnemyMob.create(gameHandler, enemyMob, level, instance, map, gameUser);
             default -> new SingleEnemyTDMob(gameHandler, enemyMob, level, instance, map, gameUser);
         };
     }
@@ -75,14 +76,18 @@ public interface LivingTDEnemyMob extends LivingTDMob {
     @Override
     default float getMaxHealth() {
         return this.getEnemyMobLevel().getHealth();
-    };
+    }
+
+    ;
 
     @NotNull EnemyMobLevel getEnemyMobLevel();
 
     @Override
     default int getLevel() {
         return this.getEnemyMobLevel().getLevel();
-    };
+    }
+
+    ;
 
     double getTotalDistanceMoved();
 

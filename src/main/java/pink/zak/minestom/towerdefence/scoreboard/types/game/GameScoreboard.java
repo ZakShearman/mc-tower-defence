@@ -2,6 +2,7 @@ package pink.zak.minestom.towerdefence.scoreboard.types.game;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import net.minestom.server.scoreboard.Sidebar;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.TowerDefenceModule;
@@ -29,9 +30,9 @@ public class GameScoreboard {
         this.sidebar.createLine(new Sidebar.ScoreboardLine("empty-4", Component.empty(), 4));
 
         this.sidebar.createLine(new Sidebar.ScoreboardLine("red-health",
-                this.createRedHealth(new CastleDamageEvent(Team.RED, 0, GameHandler.DEFAULT_TOWER_HEALTH)), 3));
+                this.createHealth(new CastleDamageEvent(Team.RED, 0, GameHandler.DEFAULT_TOWER_HEALTH), Team.RED), 3));
         this.sidebar.createLine(new Sidebar.ScoreboardLine("blue-health",
-                this.createBlueHealth(new CastleDamageEvent(Team.BLUE, 0, GameHandler.DEFAULT_TOWER_HEALTH)), 2));
+                this.createHealth(new CastleDamageEvent(Team.BLUE, 0, GameHandler.DEFAULT_TOWER_HEALTH), Team.BLUE), 2));
 
         this.sidebar.createLine(new Sidebar.ScoreboardLine("empty-1", Component.empty(), 1));
         this.sidebar.createLine(new Sidebar.ScoreboardLine("website", TowerScoreboard.DOMAIN, 0));
@@ -40,10 +41,12 @@ public class GameScoreboard {
 
         plugin.getEventNode()
                 .addListener(CastleDamageEvent.class, event -> {
-                    if (event.team() == Team.RED)
-                        this.sidebar.updateLineContent("red-health", this.createRedHealth(event));
+                    Team team = event.team();
+
+                    if (team == Team.RED)
+                        this.sidebar.updateLineContent("red-health", this.createHealth(event, team));
                     else
-                        this.sidebar.updateLineContent("blue-health", this.createBlueHealth(event));
+                        this.sidebar.updateLineContent("blue-health", this.createHealth(event, team));
                 })
                 .addListener(PlayerCoinChangeEvent.class, event -> this.sidebar.updateLineContent("coins", this.createCoins()));
     }
@@ -58,11 +61,8 @@ public class GameScoreboard {
                 .append(Component.text(StringUtils.commaSeparateNumber(this.gameUser.getCoins()), NamedTextColor.YELLOW));
     }
 
-    private @NotNull Component createRedHealth(@NotNull CastleDamageEvent event) {
-        return Component.text("Health: " + DECIMAL_FORMAT.format((event.health() / GameHandler.DEFAULT_TOWER_HEALTH) * 100) + "%", NamedTextColor.RED);
-    }
-
-    private @NotNull Component createBlueHealth(@NotNull CastleDamageEvent event) {
-        return Component.text("Health: " + DECIMAL_FORMAT.format((event.health() / GameHandler.DEFAULT_TOWER_HEALTH) * 100) + "%", NamedTextColor.AQUA);
+    private @NotNull Component createHealth(@NotNull CastleDamageEvent event, @NotNull Team team) {
+        TextColor color = team == Team.RED ? NamedTextColor.RED : NamedTextColor.AQUA;
+        return Component.text("Health: " + DECIMAL_FORMAT.format((event.health() / GameHandler.DEFAULT_TOWER_HEALTH) * 100) + "%", color);
     }
 }
