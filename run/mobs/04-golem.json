@@ -67,7 +67,7 @@
     },
     {
       "level": 5,
-      "sendCost": 120000,
+      "sendCost": 85000,
       "sendIncomeIncrease": 100,
       "health": 85000,
       "damage": 400,

@@ -26,7 +26,7 @@
     {
       "level": 2,
       "sendCost": 175,
-      "sendIncomeIncrease": 2,
+      "sendIncomeIncrease": 1,
       "health": 3,
       "damage": 1,
       "movementSpeed": 4.5,
@@ -40,7 +40,7 @@
     {
       "level": 3,
       "sendCost": 500,
-      "sendIncomeIncrease": 5,
+      "sendIncomeIncrease": 3,
       "health": 9,
       "damage": 1,
       "movementSpeed": 4.7,

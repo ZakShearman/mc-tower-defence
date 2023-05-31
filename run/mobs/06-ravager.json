@@ -11,12 +11,12 @@
   "levels": [
     {
       "level": 1,
-      "sendCost": 1,
-      "sendIncomeIncrease": 100000,
-      "health": 1,
-      "damage": 1,
-      "movementSpeed": 3.0,
-      "upgradeCost": 1,
+      "sendCost": 300000,
+      "sendIncomeIncrease": -100,
+      "health": 1000000,
+      "damage": 500,
+      "movementSpeed": 2.5,
+      "upgradeCost": 80000,
       "entityType": "minecraft:ravager",
       "sendItem": {
         "material": "minecraft:player_head",
@@ -25,12 +25,12 @@
     },
     {
       "level": 2,
-      "sendCost": 175,
+      "sendCost": 500000,
       "sendIncomeIncrease": -1,
-      "health": 150,
-      "damage": 1,
-      "movementSpeed": 3.2,
-      "upgradeCost": 750,
+      "health": 3000000,
+      "damage": 500,
+      "movementSpeed": 3.0,
+      "upgradeCost": 15000,
       "entityType": "minecraft:ravager",
       "sendItem": {
         "material": "minecraft:player_head",
@@ -39,40 +39,12 @@
     },
     {
       "level": 3,
-      "sendCost": 200,
+      "sendCost": 2000000,
       "sendIncomeIncrease": -1,
-      "health": 200,
-      "damage": 1,
-      "movementSpeed": 3.4,
-      "upgradeCost": 1000,
-      "entityType": "minecraft:ravager",
-      "sendItem": {
-        "material": "minecraft:player_head",
-        "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWM3M2UxNmZhMjkyNjg5OWNmMTg0MzQzNjBlMjE0NGY4NGVmMWViOTgxZjk5NjE0ODkxMjE0OGRkODdlMGIyYSJ9fX0="
-      }
-    },
-    {
-      "level": 4,
-      "sendCost": 250,
-      "sendIncomeIncrease": -1,
-      "health": 300,
-      "damage": 1,
-      "movementSpeed": 3.8,
-      "upgradeCost": 1500,
-      "entityType": "minecraft:ravager",
-      "sendItem": {
-        "material": "minecraft:player_head",
-        "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWM3M2UxNmZhMjkyNjg5OWNmMTg0MzQzNjBlMjE0NGY4NGVmMWViOTgxZjk5NjE0ODkxMjE0OGRkODdlMGIyYSJ9fX0="
-      }
-    },
-    {
-      "level": 5,
-      "sendCost": 350,
-      "sendIncomeIncrease": -1,
-      "health": 600,
-      "damage": 1,
-      "movementSpeed": 4.2,
-      "upgradeCost": 2000,
+      "health": 10000000,
+      "damage": 500,
+      "movementSpeed": 3.5,
+      "upgradeCost": 50000,
       "entityType": "minecraft:ravager",
       "sendItem": {
         "material": "minecraft:player_head",
