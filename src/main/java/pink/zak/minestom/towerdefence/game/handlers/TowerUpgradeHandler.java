@@ -79,6 +79,8 @@ public class TowerUpgradeHandler {
                     if (gameUser == null || towerId == null)
                         return;
                     PlacedTower<?> tower = this.towerHandler.getTower(gameUser, towerId);
+                    if (tower == null) return; // Tower is null if it is from the other team
+
                     this.openUpgradeGui(gameUser, tower);
                 });
 
