@@ -63,6 +63,7 @@ public class GameScoreboard {
 
     private @NotNull Component createHealth(@NotNull CastleDamageEvent event, @NotNull Team team) {
         TextColor color = team == Team.RED ? NamedTextColor.RED : NamedTextColor.AQUA;
-        return Component.text("Health: " + DECIMAL_FORMAT.format((event.health() / GameHandler.DEFAULT_TOWER_HEALTH) * 100) + "%", color);
+        String percentage = DECIMAL_FORMAT.format((event.health() / (double) GameHandler.DEFAULT_TOWER_HEALTH) * 100);
+        return Component.text("Health: " + percentage + "%", color);
     }
 }
