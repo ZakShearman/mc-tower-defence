@@ -25,6 +25,7 @@ import net.minestom.server.utils.PacketUtils;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.game.MobHandler;
 
+import java.text.DecimalFormat;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -32,9 +33,11 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class DamageIndicator {
-    private static final Cache<Double, Component> NAME_CACHE = Caffeine.newBuilder()
+    private static final Cache<Integer, Component> NAME_CACHE = Caffeine.newBuilder()
             .maximumSize(10_000)
             .build();
+
+    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#");
 
     private static final int VIEW_DISTANCE = 10;
     private static final int VIEW_DISTANCE_SQUARED = VIEW_DISTANCE * VIEW_DISTANCE;
@@ -86,10 +89,11 @@ public class DamageIndicator {
      * NOTE: A damage indicator will not be created if it will not be visible to any players.
      *
      * @param enemyMob The mob to create the damage indicator for
-     * @param damage   The damage to display
+     * @param damageDealt   The damage dealt to the mob (will be rounded down)
      */
-    public static void create(@NotNull LivingTDEnemyMob enemyMob, double damage) {
-        Component text = NAME_CACHE.get(damage, key -> Component.text(damage, NamedTextColor.RED));
+    public static void create(@NotNull LivingTDEnemyMob enemyMob, double damageDealt) {
+        int displayDamage = (int) Math.floor(damageDealt);
+        Component text = NAME_CACHE.get(displayDamage, key -> Component.text(displayDamage, NamedTextColor.RED));
 
         Set<Player> players = new HashSet<>();
         for (Player player : MinecraftServer.getConnectionManager().getOnlinePlayers()) {
