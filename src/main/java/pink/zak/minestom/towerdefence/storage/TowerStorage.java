@@ -2,58 +2,83 @@ package pink.zak.minestom.towerdefence.storage;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pink.zak.minestom.towerdefence.TowerDefenceModule;
 import pink.zak.minestom.towerdefence.enums.TowerType;
 import pink.zak.minestom.towerdefence.model.tower.config.Tower;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class TowerStorage {
     private static final Logger LOGGER = LoggerFactory.getLogger(TowerStorage.class);
 
-    private final Map<TowerType, Tower> towers = new HashMap<>();
+    private static final Path TOWERS_PATH = Path.of("towers");
 
-    public TowerStorage(TowerDefenceModule plugin) {
-        this.load();
-    }
+    private final Map<TowerType, Tower> towers;
 
-    private void load() {
-        for (TowerType towerType : TowerType.values()) {
-            this.loadTower(towerType.toString().toLowerCase());
+    public TowerStorage() {
+        try {
+            this.towers = this.load();
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load towers", e);
         }
     }
 
-    private void loadTower(String towerName) {
-        String basePath = "towers/%s".formatted(towerName);
-        String towerJsonPath = "%s/%s.json".formatted(basePath, towerName);
+    private Map<TowerType, Tower> load() throws IOException {
+        try (Stream<Path> pathStream = Files.list(TOWERS_PATH)) {
+            return pathStream.filter(Files::isDirectory)
+                    .filter(path -> {
+                        String enumName = path.getFileName().toString().toUpperCase();
+                        try {
+                            TowerType.valueOf(enumName);
+                            return true;
+                        } catch (IllegalArgumentException e) {
+                            LOGGER.error("Could not find tower type: " + enumName);
+                            return false;
+                        }
+                    })
+                    .map(path -> {
+                        String enumName = path.getFileName().toString().toUpperCase();
+                        TowerType towerType = TowerType.valueOf(enumName);
 
-        InputStream inputStream = TowerDefenceModule.class.getClassLoader().getResourceAsStream(towerJsonPath);
-        if (inputStream == null) {
-            LOGGER.error("Could not find tower file: " + towerJsonPath);
-            return;
+                        return this.loadTowerType(path, towerType);
+                    })
+                    .collect(Collectors.toUnmodifiableMap(Tower::getType, tower -> tower));
         }
-        JsonObject towerJson = JsonParser.parseReader(new InputStreamReader(inputStream)).getAsJsonObject();
-        TowerType towerType = TowerType.valueOf(towerJson.get("type").getAsString());
+    }
+
+    private Tower loadTowerType(@NotNull Path folder, @NotNull TowerType towerType) {
+        String towerTypeName = towerType.toString().toLowerCase();
+
+        JsonObject towerJson;
+        try (BufferedReader reader = Files.newBufferedReader(folder.resolve(towerTypeName + ".json"))) {
+            towerJson = JsonParser.parseReader(reader).getAsJsonObject();
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load tower type: %s".formatted(towerTypeName), e);
+        }
 
         Map<Integer, JsonObject> levelJson = new HashMap<>();
         for (int level = 1; level <= 10; level++) {
-            String levelJsonPath = "%s/%s.json".formatted(basePath, level);
+            Path levelJsonPath = folder.resolve(level + ".json");
+            if (!Files.exists(levelJsonPath)) break;
 
-            InputStream levelInputStream = TowerDefenceModule.class.getClassLoader().getResourceAsStream(levelJsonPath);
-            if (levelInputStream == null) break;
-
-            levelJson.put(level, JsonParser.parseReader(new InputStreamReader(levelInputStream)).getAsJsonObject());
+            try (BufferedReader reader = Files.newBufferedReader(levelJsonPath)) {
+                levelJson.put(level, JsonParser.parseReader(reader).getAsJsonObject());
+            } catch (IOException e) {
+                break;
+            }
         }
 
-        Tower tower = towerType.getTowerFunction().apply(towerJson, levelJson);
-
-        this.towers.put(towerType, tower);
+        return towerType.getTowerFunction().apply(towerJson, levelJson);
     }
 
     public Map<TowerType, Tower> getTowers() {

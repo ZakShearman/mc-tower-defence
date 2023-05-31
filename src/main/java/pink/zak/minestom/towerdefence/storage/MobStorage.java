@@ -2,19 +2,21 @@ package pink.zak.minestom.towerdefence.storage;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import pink.zak.minestom.towerdefence.TowerDefenceModule;
+import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pink.zak.minestom.towerdefence.model.mob.config.EnemyMob;
-import pink.zak.minestom.towerdefence.utils.ResourceUtils;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class MobStorage {
-    private static final String MOBS_PATH = "mobs";
+    private static final Logger LOGGER = LoggerFactory.getLogger(MobStorage.class);
+    private static final Path MOBS_PATH = Path.of("mobs");
 
     private final List<EnemyMob> enemyMobs;
 
@@ -23,31 +25,24 @@ public class MobStorage {
     }
 
     private List<EnemyMob> load() {
-        List<EnemyMob> enemyMobs = new ArrayList<>();
-
-        List<String> fileNames;
-        try {
-            fileNames = ResourceUtils.listResources(MOBS_PATH).stream()
-                    .filter(fileName -> fileName.endsWith(".json"))
+        try (Stream<Path> files = Files.list(MOBS_PATH)) {
+            return files
+                    .filter(Files::isRegularFile)
+                    .filter(path -> path.toString().endsWith(".json"))
+                    .map(this::loadMob)
                     .toList();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
 
-        for (String fileName : fileNames) {
-            try {
-                InputStream inputStream = TowerDefenceModule.class.getClassLoader().getResourceAsStream("%s/%s".formatted(MOBS_PATH, fileName));
-
-                JsonObject json = JsonParser.parseReader(new InputStreamReader(inputStream)).getAsJsonObject();
-                EnemyMob enemyMob = new EnemyMob(json);
-                enemyMobs.add(enemyMob);
-            } catch (Exception ex) {
-                throw new RuntimeException("Failed to load mob: %s".formatted(fileName), ex);
-            }
+    private @NotNull EnemyMob loadMob(@NotNull Path path) {
+        try (BufferedReader reader = Files.newBufferedReader(path)) {
+            JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
+            return new EnemyMob(json);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load mob: %s".formatted(path), e);
         }
-
-
-        return Collections.unmodifiableList(enemyMobs);
     }
 
     public List<EnemyMob> getEnemyMobs() {

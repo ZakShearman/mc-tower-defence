@@ -1,12 +1,14 @@
 # User-specific stuff
 .idea/
 
-# Common working directory
-/run/**
-# include the world for now
-!run/maps
-!run/maps/*
-!run/maps/**/*
+# Ignore run directory
+/run/*
+
+# Exclude run/maps and run/mobs
+!/run/maps/
+!/run/mobs/
+!/run/precalculated
+!/run/towers
 
 *.iml
 *.ipr
