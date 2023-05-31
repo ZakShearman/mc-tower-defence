@@ -39,11 +39,14 @@ public class NecromancerTower extends PlacedTower<NecromancerTowerLevel> {
         super(instance, tower, towerBaseMaterial, id, owner, basePoint, facing, level);
     }
 
-    public void createNecromancedMob(LivingTDEnemyMob livingEnemyMob) {
-        if (this.necromancedMobCount.get() >= this.level.getMaxNecromancedMobs()) return;
+    public void createNecromancedMob(@NotNull LivingTDEnemyMob livingEnemyMob) {
         this.necromancedMobCount.incrementAndGet();
 
         NecromancedMob necromancedMob = livingEnemyMob.necromancedVersion(this, this.getLevel(), super.owner);
+    }
+
+    public boolean canNecromanceMob() {
+        return this.necromancedMobCount.get() < this.level.getMaxNecromancedMobs();
     }
 
     public static class NecromancedMob extends SingleTDMob implements DamageSource {
@@ -131,11 +134,11 @@ public class NecromancerTower extends PlacedTower<NecromancerTowerLevel> {
         }
 
         public @NotNull NecromancerTower getOriginTower() {
-            return originTower;
+            return this.originTower;
         }
 
         public @NotNull EnemyMobLevel getEnemyMobLevel() {
-            return enemyMobLevel;
+            return this.enemyMobLevel;
         }
 
         @Override

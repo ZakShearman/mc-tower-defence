@@ -241,7 +241,7 @@ public class SingleEnemyTDMob extends SingleTDMob implements LivingTDEnemyMob {
                 if (tower instanceof CharityTower charityTower) {
                     double tempMultiplier = charityTower.getLevel().getMultiplier();
                     if (tempMultiplier > multiplier) multiplier = tempMultiplier;
-                } else if (!necromanced && tower instanceof NecromancerTower necromancerTower) {
+                } else if (!necromanced && tower instanceof NecromancerTower necromancerTower && necromancerTower.canNecromanceMob()) {
                     necromancerTower.createNecromancedMob(this);
                     necromanced = true;
                 }
