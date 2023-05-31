@@ -16,7 +16,7 @@
       "health": 1,
       "damage": 1,
       "movementSpeed": 3.0,
-      "upgradeCost": 1,
+      "upgradeCost": -1,
       "entityType": "minecraft:phantom",
       "sendItem": {
         "material": "minecraft:player_head",
