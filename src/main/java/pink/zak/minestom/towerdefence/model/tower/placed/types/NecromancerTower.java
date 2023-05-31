@@ -86,7 +86,11 @@ public class NecromancerTower extends PlacedTower<NecromancerTowerLevel> {
                     new EntityAIGroupBuilder()
                             .addGoalSelector(new MeleeAttackGoal(this, 1.2, 1000, TimeUnit.MILLISECOND))
                             .addTargetSelector(new ClosestEntityTarget(this, 15, entity -> {
-                                return entity instanceof LivingTDEnemyMob livingEnemyMob && !livingEnemyMob.isDead();
+                                if (!(entity instanceof LivingTDEnemyMob livingEnemyMob)) return false;
+                                if (livingEnemyMob.isDead()) return false;
+                                if (!this.enemyMob.isFlying() && livingEnemyMob.getEnemyMob().isFlying()) return false;
+
+                                return true;
                             }))
                             .build()
             );
