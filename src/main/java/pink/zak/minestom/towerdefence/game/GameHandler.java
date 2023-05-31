@@ -148,7 +148,7 @@ public class GameHandler {
         }
     }
 
-    private @NotNull Component createTowerHologram(Team team) {
+    private @NotNull Component createTowerHologram(@NotNull Team team) {
         int health = team == Team.RED ? this.redTowerHealth.get() : this.blueTowerHealth.get();
         float percentageRemaining = (float) health / DEFAULT_TOWER_HEALTH;
         return ProgressBar.create(
@@ -166,8 +166,7 @@ public class GameHandler {
         AtomicInteger health = team == Team.RED ? this.redTowerHealth : this.blueTowerHealth;
         Hologram hologram = team == Team.RED ? this.redTowerHologram : this.blueTowerHologram;
 
-        int oldHealth = health.getAndUpdate(currentHealth -> Math.max(currentHealth - damage, 0));
-        int newHealth = health.get();
+        int newHealth = health.updateAndGet(currentHealth -> Math.max(currentHealth - damage, 0));
 
         hologram.setText(this.createTowerHologram(team));
 
@@ -180,10 +179,11 @@ public class GameHandler {
         MinecraftServer.getGlobalEventHandler().call(new CastleDamageEvent(team, damage, newHealth));
     }
 
-    public void endGame(Team winningTeam) {
+    public void endGame(@NotNull Team winningTeam) {
         this.module.setGameState(GameState.END);
         this.shutdownTask();
 
+        // todo proper win effect
         Audiences.all().sendMessage(Component.text("Game over! %s team won!".formatted(winningTeam.name()), NamedTextColor.RED));
         // todo properly clean up
     }

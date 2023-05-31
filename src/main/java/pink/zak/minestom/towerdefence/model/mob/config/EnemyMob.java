@@ -23,7 +23,7 @@ import java.util.stream.StreamSupport;
 public class EnemyMob {
     private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
 
-    private static final String BASE_ITEM_DISPLAY_NAME = "<i:false><yellow><mob_name> <gold>(<yellow>Not Owned<gold>)";
+    private static final String BASE_ITEM_DISPLAY_NAME = "<i:false><yellow><mob_name> <gold>(<red>Not Owned<gold>)";
     private static final String NOT_OWNED_LORE_LINE = "<i:false><u><gold>Level 1 stats:";
 
     private final @NotNull String commonName;
