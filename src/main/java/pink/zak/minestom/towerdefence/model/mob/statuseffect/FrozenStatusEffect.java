@@ -3,24 +3,40 @@ package pink.zak.minestom.towerdefence.model.mob.statuseffect;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.jetbrains.annotations.NotNull;
+import pink.zak.minestom.towerdefence.model.DamageSource;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingTDEnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.modifier.SpeedModifier;
+import pink.zak.minestom.towerdefence.model.user.GameUser;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class FrozenStatusEffect implements StatusEffect<FrozenStatusEffect>, SpeedModifier {
-    private final LivingTDEnemyMob mob;
+public class FrozenStatusEffect implements StatusEffect<FrozenStatusEffect>, SpeedModifier, DamageSource {
+    private final @NotNull LivingTDEnemyMob mob;
+    private final @NotNull GameUser owningUser;
+
     private final double speedModifier;
     private final int maxTicks;
+
+    private final float damage;
+    private final int damageTickRate;
 
     private final AtomicInteger ticks = new AtomicInteger();
 
     private boolean removed = false;
 
-    public FrozenStatusEffect(LivingTDEnemyMob mob, double speedModifier, int maxTicks) {
+    // TODO use this method
+    public FrozenStatusEffect(@NotNull LivingTDEnemyMob mob, @NotNull GameUser owningUser,
+                              double speedModifier, int maxTicks, float damage, int damageTickRate) {
         this.mob = mob;
+        this.owningUser = owningUser;
         this.speedModifier = speedModifier;
         this.maxTicks = maxTicks;
+        this.damage = damage;
+        this.damageTickRate = damageTickRate;
+    }
+
+    public FrozenStatusEffect(@NotNull LivingTDEnemyMob mob, @NotNull GameUser owningUser, double speedModifier, int maxTicks) {
+        this(mob, owningUser, speedModifier, maxTicks, 0, 0);
     }
 
     @Override
@@ -30,6 +46,11 @@ public class FrozenStatusEffect implements StatusEffect<FrozenStatusEffect>, Spe
             this.remove();
             return;
         }
+
+        if (this.damageTickRate != 0 && this.ticks.get() % this.damageTickRate == 0) {
+            this.mob.damage(this, this.damage);
+        }
+
         this.ticks.incrementAndGet();
     }
 
@@ -74,5 +95,10 @@ public class FrozenStatusEffect implements StatusEffect<FrozenStatusEffect>, Spe
             return this.remainingTicks() > other.remainingTicks();
 
         return false;
+    }
+
+    @Override
+    public @NotNull GameUser getOwningUser() {
+        return this.owningUser;
     }
 }

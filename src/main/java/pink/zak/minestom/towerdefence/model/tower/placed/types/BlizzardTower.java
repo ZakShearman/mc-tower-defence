@@ -63,7 +63,7 @@ public class BlizzardTower extends PlacedAttackingTower<BlizzardTowerLevel> {
             if (currentEffect == null
                     || currentEffect.getModifier() < speedModifier
                     || (currentEffect.getModifier() == speedModifier && currentEffect.remainingTicks() < tickDuration)) {
-                FrozenStatusEffect effect = new FrozenStatusEffect(target, speedModifier, tickDuration);
+                FrozenStatusEffect effect = new FrozenStatusEffect(target, this.owner, speedModifier, tickDuration);
                 target.applyStatusEffect(effect);
                 target.applySpeedModifier(effect);
             }
