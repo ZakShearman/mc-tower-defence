@@ -1,7 +1,7 @@
 {
   "level": 2,
   "cost": 1200,
-  "fireDelay": 30,
+  "fireDelay": 40,
   "damage": 5,
   "range": 10,
 
@@ -11,7 +11,7 @@
     "zOffset": 0
   },
 
-  "explosionRadius": 5,
+  "explosionRadius": 4,
 
   "menuItem": {
     "material": "minecraft:tnt",

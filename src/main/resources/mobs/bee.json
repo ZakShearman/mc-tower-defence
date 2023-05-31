@@ -2,7 +2,7 @@
   "commonName": "Bee",
   "guiSlot": 3,
   "flying": true,
-  "sendTime": 50,
+  "sendTime": 200,
   "ignoredEffects": ["BURNING"],
   "unownedItem": {
     "material": "minecraft:player_head",
@@ -18,12 +18,12 @@
   "levels": [
     {
       "level": 1,
-      "sendCost": 1,
-      "sendIncomeIncrease": 100000,
+      "sendCost": 60,
+      "sendIncomeIncrease": 1,
       "health": 1,
       "damage": 1,
-      "movementSpeed": 3.0,
-      "upgradeCost": 1,
+      "movementSpeed": 4.0,
+      "upgradeCost": 150,
       "entityType": "minecraft:bee",
       "sendItem": {
         "material": "minecraft:player_head",
@@ -52,10 +52,10 @@
     {
       "level": 2,
       "sendCost": 175,
-      "sendIncomeIncrease": -1,
-      "health": 150,
+      "sendIncomeIncrease": 2,
+      "health": 3,
       "damage": 1,
-      "movementSpeed": 3.2,
+      "movementSpeed": 4.5,
       "upgradeCost": 750,
       "entityType": "minecraft:bee",
       "sendItem": {
@@ -84,12 +84,12 @@
     },
     {
       "level": 3,
-      "sendCost": 200,
-      "sendIncomeIncrease": -1,
-      "health": 200,
+      "sendCost": 500,
+      "sendIncomeIncrease": 5,
+      "health": 9,
       "damage": 1,
-      "movementSpeed": 3.4,
-      "upgradeCost": 1000,
+      "movementSpeed": 4.7,
+      "upgradeCost": 1800,
       "entityType": "minecraft:bee",
       "sendItem": {
         "material": "minecraft:player_head",
@@ -104,72 +104,6 @@
       "upgradeItem": {
         "material": "minecraft:lime_stained_glass_pane",
         "displayName": "Lvl. III",
-        "lore": [
-          "",
-          "<gold>Mana Cost: <yellow><mana_cost>",
-          "",
-          "<gold>Send Cost: <yellow>$<send_cost>",
-          "<gold>Health: <yellow><health>",
-          "<gold>Damage: <yellow><damage>",
-          "<gold>Speed: <yellow><movement_speed>"
-        ]
-      }
-    },
-    {
-      "level": 4,
-      "sendCost": 250,
-      "sendIncomeIncrease": -1,
-      "health": 300,
-      "damage": 1,
-      "movementSpeed": 3.8,
-      "upgradeCost": 1500,
-      "entityType": "minecraft:bee",
-      "sendItem": {
-        "material": "minecraft:player_head",
-        "displayName": "<yellow>Bee <gold>(<yellow>Lvl. IV<gold>)",
-        "lore": [
-          "",
-          "<yellow>idk",
-          "<yellow>just testing really"
-        ],
-        "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTI3MjRhOWE0Y2RkNjhiYTQ5NDE1NTYwZTViZTQwYjRhMWM0N2NiNWJlMWQ2NmFlZGI1MmEzMGU2MmVmMmQ0NyJ9fX0="
-      },
-      "upgradeItem": {
-        "material": "minecraft:lime_stained_glass_pane",
-        "displayName": "Lvl. IV",
-        "lore": [
-          "",
-          "<gold>Mana Cost: <yellow><mana_cost>",
-          "",
-          "<gold>Send Cost: <yellow>$<send_cost>",
-          "<gold>Health: <yellow><health>",
-          "<gold>Damage: <yellow><damage>",
-          "<gold>Speed: <yellow><movement_speed>"
-        ]
-      }
-    },
-    {
-      "level": 5,
-      "sendCost": 350,
-      "sendIncomeIncrease": -1,
-      "health": 600,
-      "damage": 1,
-      "movementSpeed": 4.2,
-      "upgradeCost": 2000,
-      "entityType": "minecraft:bee",
-      "sendItem": {
-        "material": "minecraft:player_head",
-        "displayName": "<yellow>Bee <gold>(<yellow>Lvl. V<gold>)",
-        "lore": [
-          "",
-          "<yellow>idk",
-          "<yellow>just testing really"
-        ],
-        "texture": "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTI3MjRhOWE0Y2RkNjhiYTQ5NDE1NTYwZTViZTQwYjRhMWM0N2NiNWJlMWQ2NmFlZGI1MmEzMGU2MmVmMmQ0NyJ9fX0="
-      },
-      "upgradeItem": {
-        "material": "minecraft:lime_stained_glass_pane",
-        "displayName": "Lvl. V",
         "lore": [
           "",
           "<gold>Mana Cost: <yellow><mana_cost>",

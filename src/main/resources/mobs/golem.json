@@ -18,7 +18,7 @@
   "levels": [
     {
       "level": 1,
-      "sendCost": 150,
+      "sendCost": 400,
       "sendIncomeIncrease": 1,
       "health": 75,
       "damage": 5,
@@ -51,7 +51,7 @@
     },
     {
       "level": 2,
-      "sendCost": 500,
+      "sendCost": 1500,
       "sendIncomeIncrease": 3,
       "health": 500,
       "damage": 25,
@@ -84,9 +84,9 @@
     },
     {
       "level": 3,
-      "sendCost": 1500,
+      "sendCost": 4500,
       "sendIncomeIncrease": 5,
-      "health": 2000,
+      "health": 1850,
       "damage": 80,
       "movementSpeed": 1.4,
       "upgradeCost": 1000,
@@ -117,12 +117,12 @@
     },
     {
       "level": 4,
-      "sendCost": 10000,
+      "sendCost": 20000,
       "sendIncomeIncrease": 10,
-      "health": 15000,
+      "health": 8000,
       "damage": 200,
       "movementSpeed": 1.4,
-      "upgradeCost": 2500,
+      "upgradeCost": 3000,
       "entityType": "minecraft:iron_golem",
       "sendItem": {
         "material": "minecraft:player_head",
@@ -150,9 +150,9 @@
     },
     {
       "level": 5,
-      "sendCost": 50000,
+      "sendCost": 120000,
       "sendIncomeIncrease": 100,
-      "health": 120000,
+      "health": 85000,
       "damage": 400,
       "movementSpeed": 1.4,
       "upgradeCost": 10000,
