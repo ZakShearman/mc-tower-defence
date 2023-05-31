@@ -5,11 +5,7 @@
   "sendTime": 500,
   "ignoredEffects": ["POISONED"],
   "unownedItem": {
-    "material": "minecraft:zombie_head",
-    "displayName": "<yellow>Zombie <gold>(<yellow>Not Owned<gold>)",
-    "lore": [
-      "<red>Oopsies you should've never seen this :|"
-    ]
+    "material": "minecraft:zombie_head"
   },
   "levels": [
     {
@@ -22,24 +18,7 @@
       "upgradeCost": -1,
       "entityType": "minecraft:zombie",
       "sendItem": {
-        "material": "minecraft:zombie_head",
-        "displayName": "<yellow>Zombie",
-        "lore": [
-          "",
-          "<yellow>idk",
-          "<yellow>just testing really"
-        ]
-      },
-      "upgradeItem": {
-        "material": "minecraft:lime_stained_glass_pane",
-        "displayName": "Lvl. I",
-        "lore": [
-          "",
-          "<gold>Send Cost: <yellow>$<send_cost>",
-          "<gold>Health: <yellow><health>",
-          "<gold>Damage: <yellow><damage>",
-          "<gold>Speed: <yellow><movement_speed>"
-        ]
+        "material": "minecraft:zombie_head"
       }
     },
     {
@@ -52,24 +31,7 @@
       "upgradeCost": 120,
       "entityType": "minecraft:zombie",
       "sendItem": {
-        "material": "minecraft:zombie_head",
-        "displayName": "<yellow>Zombie",
-        "lore": [
-          "",
-          "<yellow>idk",
-          "<yellow>just testing really"
-        ]
-      },
-      "upgradeItem": {
-        "material": "minecraft:lime_stained_glass_pane",
-        "displayName": "Lvl. II",
-        "lore": [
-          "",
-          "<gold>Send Cost: <yellow>$<send_cost>",
-          "<gold>Health: <yellow><health>",
-          "<gold>Damage: <yellow><damage>",
-          "<gold>Speed: <yellow><movement_speed>"
-        ]
+        "material": "minecraft:zombie_head"
       }
     },
     {
@@ -82,24 +44,7 @@
       "upgradeCost": 350,
       "entityType": "minecraft:zombie",
       "sendItem": {
-        "material": "minecraft:zombie_head",
-        "displayName": "<yellow>Zombie",
-        "lore": [
-          "",
-          "<yellow>idk",
-          "<yellow>just testing really"
-        ]
-      },
-      "upgradeItem": {
-        "material": "minecraft:lime_stained_glass_pane",
-        "displayName": "Lvl. III",
-        "lore": [
-          "",
-          "<gold>Send Cost: <yellow>$<send_cost>",
-          "<gold>Health: <yellow><health>",
-          "<gold>Damage: <yellow><damage>",
-          "<gold>Speed: <yellow><movement_speed>"
-        ]
+        "material": "minecraft:zombie_head"
       }
     },
     {
@@ -112,24 +57,7 @@
       "upgradeCost": 900,
       "entityType": "minecraft:zombie",
       "sendItem": {
-        "material": "minecraft:zombie_head",
-        "displayName": "<yellow>Zombie",
-        "lore": [
-          "",
-          "<yellow>idk",
-          "<yellow>just testing really"
-        ]
-      },
-      "upgradeItem": {
-        "material": "minecraft:lime_stained_glass_pane",
-        "displayName": "Lvl. IV",
-        "lore": [
-          "",
-          "<gold>Send Cost: <yellow>$<send_cost>",
-          "<gold>Health: <yellow><health>",
-          "<gold>Damage: <yellow><damage>",
-          "<gold>Speed: <yellow><movement_speed>"
-        ]
+        "material": "minecraft:zombie_head"
       }
     },
     {
@@ -142,24 +70,7 @@
       "upgradeCost": 1500,
       "entityType": "minecraft:zombie",
       "sendItem": {
-        "material": "minecraft:zombie_head",
-        "displayName": "<yellow>Zombie",
-        "lore": [
-          "",
-          "<yellow>idk",
-          "<yellow>just testing really"
-        ]
-      },
-      "upgradeItem": {
-        "material": "minecraft:lime_stained_glass_pane",
-        "displayName": "Lvl. V",
-        "lore": [
-          "",
-          "<gold>Send Cost: <yellow>$<send_cost>",
-          "<gold>Health: <yellow><health>",
-          "<gold>Damage: <yellow><damage>",
-          "<gold>Speed: <yellow><movement_speed>"
-        ]
+        "material": "minecraft:zombie_head"
       }
     }
   ]
