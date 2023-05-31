@@ -3,11 +3,17 @@ package pink.zak.minestom.towerdefence.model.mob.config;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import lombok.ToString;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.minestom.server.item.ItemStack;
+import net.minestom.server.item.Material;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.model.mob.statuseffect.StatusEffectType;
 import pink.zak.minestom.towerdefence.utils.ItemUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -15,11 +21,16 @@ import java.util.stream.StreamSupport;
 
 @ToString
 public class EnemyMob {
+    private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
+
+    private static final String BASE_ITEM_DISPLAY_NAME = "<i:false><yellow><mob_name> <gold>(<yellow>Not Owned<gold>)";
+    private static final String NOT_OWNED_LORE_LINE = "<i:false><u><gold>Level 1 stats:";
+
     private final @NotNull String commonName;
     private final int slot;
     private final boolean flying;
     private final int sendTime; // in milliseconds
-    private final @NotNull ItemStack unownedItem;
+    private final @NotNull ItemStack baseItem;
     private final @NotNull Set<StatusEffectType> ignoredEffects;
     private final @NotNull Map<Integer, EnemyMobLevel> levels;
 
@@ -28,8 +39,6 @@ public class EnemyMob {
         this.slot = jsonObject.get("guiSlot").getAsInt();
         this.flying = jsonObject.get("flying").getAsBoolean();
         this.sendTime = jsonObject.get("sendTime").getAsInt();
-
-        this.unownedItem = jsonObject.has("unownedItem") ? ItemUtils.fromJsonObject(jsonObject.get("unownedItem").getAsJsonObject(), null) : null;
 
         this.ignoredEffects = StreamSupport.stream(jsonObject.get("ignoredEffects").getAsJsonArray().spliterator(), false)
                 .map(JsonElement::getAsString)
@@ -40,6 +49,22 @@ public class EnemyMob {
                 .map(JsonElement::getAsJsonObject)
                 .map(json -> new EnemyMobLevel(this.commonName, json))
                 .collect(Collectors.toUnmodifiableMap(EnemyMobLevel::getLevel, enemyMobLevel -> enemyMobLevel));
+
+        ItemStack item = jsonObject.has("item") ? ItemUtils.fromJsonObject(jsonObject.get("item").getAsJsonObject(), null) : null;
+        if (item == null) {
+            this.baseItem = ItemStack.builder(Material.BARRIER).displayName(Component.text("No item set")).build();
+        } else {
+            EnemyMobLevel levelOne = this.levels.get(1);
+            List<Component> lore = new ArrayList<>();
+
+            lore.add(Component.empty());
+            lore.add(MINI_MESSAGE.deserialize(NOT_OWNED_LORE_LINE));
+            lore.addAll(levelOne.generateDiff(levelOne).generateStatLines());
+
+            this.baseItem = item
+                    .withDisplayName(MINI_MESSAGE.deserialize(BASE_ITEM_DISPLAY_NAME, Placeholder.unparsed("mob_name", this.commonName)))
+                    .withLore(lore);
+        }
     }
 
     public @NotNull String getCommonName() {
@@ -58,8 +83,8 @@ public class EnemyMob {
         return this.sendTime;
     }
 
-    public @NotNull ItemStack getUnownedItem() {
-        return this.unownedItem;
+    public @NotNull ItemStack getBaseItem() {
+        return this.baseItem;
     }
 
     public @NotNull Set<StatusEffectType> getIgnoredEffects() {

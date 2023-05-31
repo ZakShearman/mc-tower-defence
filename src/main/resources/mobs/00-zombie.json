@@ -4,7 +4,7 @@
   "flying": false,
   "sendTime": 500,
   "ignoredEffects": ["POISONED"],
-  "unownedItem": {
+  "item": {
     "material": "minecraft:zombie_head"
   },
   "levels": [

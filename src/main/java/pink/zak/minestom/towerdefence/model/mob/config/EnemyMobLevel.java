@@ -24,8 +24,8 @@ import java.util.List;
 
 @ToString
 public class EnemyMobLevel implements Diffable<EnemyMobLevel> {
-    private static final String SEND_ITEM_NAME = "<i:false><mob_name> <level_numeral> (<yellow>$<cost></yellow>)";
-    private static final String UPGRADE_ITEM_NAME = "<i:false><%s><level_numeral> (<yellow>$<cost>/s</yellow>)";
+    private static final String SEND_ITEM_NAME = "<i:false><mob_name> <level_numeral>";
+    private static final String UPGRADE_ITEM_NAME = "<i:false><%s><level_numeral> (<yellow>$<cost>/6s</yellow>)";
 
     private static final DecimalFormat MOVEMENT_SPEED_FORMAT = new DecimalFormat("#.##");
 
@@ -68,7 +68,6 @@ public class EnemyMobLevel implements Diffable<EnemyMobLevel> {
         );
 
         this.sendItem = ItemUtils.fromJsonObject(jsonObject.get("sendItem").getAsJsonObject(), tagResolver);
-//        ItemStack ownedUpgradeItem = ItemUtils.fromJsonObject(jsonObject.get("upgradeItem").getAsJsonObject(), tagResolver); todo remove
     }
 
     public ItemStack createSendItem() {
@@ -167,7 +166,8 @@ public class EnemyMobLevel implements Diffable<EnemyMobLevel> {
     @Override
     public @NotNull StatDiffCollection generateDiff(@NotNull EnemyMobLevel other) {
         return new StatDiffCollection()
-                .addDiff("Send Income", new IntStatDiff(this.sendIncomeIncrease, other.sendIncomeIncrease, "$", "/s"))
+                .addDiff("Send Cost", new IntStatDiff(this.sendCost, other.sendCost, "$", null))
+                .addDiff("Send Income", new IntStatDiff(this.sendIncomeIncrease, other.sendIncomeIncrease, "$", "/6s"))
                 .addDiff("Health", new IntStatDiff(this.health, other.health))
                 .addDiff("Damage", new IntStatDiff(this.damage, other.damage))
                 .addDiff("Movement Speed", new DoubleStatDiff(

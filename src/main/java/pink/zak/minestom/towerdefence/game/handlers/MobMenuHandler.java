@@ -99,7 +99,7 @@ public class MobMenuHandler {
         Map<EnemyMob, Integer> levels = gameUser.getMobLevels();
         for (EnemyMob enemyMob : this.mobStorage.getEnemyMobs()) {
             Integer userLevel = levels.get(enemyMob);
-            ItemStack itemStack = userLevel == null ? enemyMob.getUnownedItem() : enemyMob.getLevel(userLevel).createSendItem().withAmount(userLevel);
+            ItemStack itemStack = userLevel == null ? enemyMob.getBaseItem() : enemyMob.getLevel(userLevel).createSendItem().withAmount(userLevel);
             inventory.setItemStack(enemyMob.getSlot(), itemStack);
         }
         inventory.setItemStack(31, this.upgradeItem);
@@ -263,7 +263,7 @@ public class MobMenuHandler {
                                      @Nullable EnemyMobLevel currentLevel) {
         int currentLevelInt = currentLevel == null ? 0 : currentLevel.getLevel();
 
-        inventory.setItemStack(0, currentLevel == null ? enemyMob.getUnownedItem() : currentLevel.createSendItem());
+        inventory.setItemStack(0, currentLevel == null ? enemyMob.getBaseItem() : currentLevel.createSendItem());
 
         int maxLevel = enemyMob.getMaxLevel();
         for (int i = 1; i <= maxLevel; i++) {
