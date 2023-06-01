@@ -2,7 +2,7 @@
   "level": 4,
   "cost": 15000,
   "fireDelay": 40,
-  "damage": 28,
+  "damage": 21,
   "range": 12,
 
   "relativeTntSpawnPoint": {
