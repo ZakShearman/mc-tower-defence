@@ -2,7 +2,7 @@
   "commonName": "Bee",
   "guiSlot": 3,
   "flying": true,
-  "sendTime": 200,
+  "sendTime": 400,
   "ignoredEffects": ["BURNING", "FROZEN"],
   "item": {
     "material": "minecraft:player_head",

@@ -69,9 +69,9 @@
       "level": 5,
       "sendCost": 85000,
       "sendIncomeIncrease": 100,
-      "health": 85000,
+      "health": 75000,
       "damage": 400,
-      "movementSpeed": 1.4,
+      "movementSpeed": 1.2,
       "upgradeCost": 10000,
       "entityType": "minecraft:warden",
       "sendItem": {

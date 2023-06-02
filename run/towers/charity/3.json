@@ -1,8 +1,8 @@
 {
   "level": 3,
-  "cost": 12000,
+  "cost": 15000,
   "range": 20,
-  "multiplier": 2.5,
+  "multiplier": 2,
 
   "menuItem": {
     "material": "minecraft:gold_ingot",
