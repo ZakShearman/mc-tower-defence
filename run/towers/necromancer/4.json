@@ -7,7 +7,7 @@
 
   "maxNecromancedTroops": 8,
   "necromancedHealth": 250,
-  "necromancedDamageMultiplier": 1.8,
+  "necromancedDamage": 1,
 
   "menuItem": {
     "material": "minecraft:wither_skeleton_skull",
