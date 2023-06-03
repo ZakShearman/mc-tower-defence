@@ -81,12 +81,12 @@ public class EnemyMobLevel implements Diffable<EnemyMobLevel> {
                 .build();
     }
 
-    public ItemStack createStatUpgradeItem(boolean owned, boolean canAfford) {
+    public ItemStack createStatUpgradeItem(int cost, boolean owned, boolean canAfford) {
         return ItemStack.builder(owned ? Material.GREEN_STAINED_GLASS_PANE : canAfford ? Material.ORANGE_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE)
                 .displayName(MiniMessage.miniMessage().deserialize(
                         UPGRADE_ITEM_NAME.formatted(owned ? "green" : canAfford ? "gold" : "red"),
                         Placeholder.unparsed("level_numeral", NumberUtils.toRomanNumerals(this.level)),
-                        Placeholder.unparsed("cost", String.valueOf(this.upgradeCost))))
+                        Placeholder.unparsed("cost", String.valueOf(cost))))
                 .lore(this.createStatLore())
                 .build();
     }

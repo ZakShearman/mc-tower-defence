@@ -62,8 +62,7 @@ public class TowerUpgradeHandler {
 
     public TowerUpgradeHandler(@NotNull TowerDefenceModule plugin, @NotNull GameHandler gameHandler) {
         for (Tower tower : plugin.getTowerStorage().getTowers().values())
-            this.towerUpgradeTitles.put(tower, Component.text("Upgrade " + tower.getName()));
-
+            this.towerUpgradeTitles.put(tower, Component.text(tower.getName()));
 
         this.plugin = plugin;
         this.gameHandler = gameHandler;
@@ -91,7 +90,10 @@ public class TowerUpgradeHandler {
         TowerLevel currentLevel = placedTower.getLevel();
         Tower tower = placedTower.getTower();
 
-        Inventory inventory = new Inventory(InventoryType.CHEST_3_ROW, this.towerUpgradeTitles.get(tower));
+        String towerOwnerName = placedTower.getOwner().getPlayer().getUsername();
+        Component title = this.towerUpgradeTitles.get(tower).append(Component.text(" - " + towerOwnerName));
+
+        Inventory inventory = new Inventory(InventoryType.CHEST_3_ROW, title);
         inventory.setTag(PlacedTower.ID_TAG, placedTower.getId());
         inventory.setItemStack(0, tower.getBaseItem());
 

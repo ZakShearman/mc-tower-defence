@@ -6,6 +6,7 @@ import net.minestom.server.instance.block.Block;
 import net.minestom.server.item.Material;
 import net.minestom.server.tag.Tag;
 import net.minestom.server.utils.Direction;
+import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.enums.TowerType;
 import pink.zak.minestom.towerdefence.game.GameHandler;
@@ -34,12 +35,13 @@ public abstract class PlacedTower<T extends TowerLevel> {
     protected final Team team;
     protected final Point basePoint;
     protected final Direction facing;
-    protected final GameUser owner;
+    protected final @NotNull GameUser owner;
 
     protected T level;
     protected int levelInt;
 
-    protected PlacedTower(Instance instance, Tower tower, Material towerBaseMaterial, int id, GameUser owner, Point basePoint, Direction facing, int level) {
+    protected PlacedTower(Instance instance, Tower tower, Material towerBaseMaterial, int id,
+                          @NotNull GameUser owner, Point basePoint, Direction facing, int level) {
         this.instance = instance;
 
         this.tower = tower;
@@ -166,5 +168,9 @@ public abstract class PlacedTower<T extends TowerLevel> {
 
     public int getLevelInt() {
         return this.levelInt;
+    }
+
+    public @NotNull GameUser getOwner() {
+        return this.owner;
     }
 }

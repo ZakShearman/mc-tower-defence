@@ -272,7 +272,7 @@ public class MobMenuHandler {
 
             ItemStack itemStack;
             if (owned) {
-                itemStack = targetLevel.createStatUpgradeItem(true, true); // canAfford doesn't matter
+                itemStack = targetLevel.createStatUpgradeItem(targetLevel.getUpgradeCost(), true, true); // canAfford doesn't matter
             } else {
                 int cost = 0;
                 for (int j = currentLevelInt + 1; j <= targetLevel.getLevel(); j++) {
@@ -281,7 +281,7 @@ public class MobMenuHandler {
 
                 boolean canAfford = gameUser.canAffordWithIncome(cost);
                 if (currentLevel == null) {
-                    itemStack = targetLevel.createStatUpgradeItem(false, canAfford);
+                    itemStack = targetLevel.createStatUpgradeItem(cost, false, canAfford);
                 } else {
                     itemStack = targetLevel.createBuyUpgradeItem(canAfford, cost, currentLevel);
                 }
@@ -293,7 +293,6 @@ public class MobMenuHandler {
 
     public void updateSendMobGui(@NotNull GameUser user, @NotNull Inventory inventory) {
         inventory.setItemStack(35, this.createQueueItem(user));
-
     }
 
     public @NotNull ItemStack getChestItem() {
