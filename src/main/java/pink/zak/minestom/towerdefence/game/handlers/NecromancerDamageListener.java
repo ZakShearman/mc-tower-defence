@@ -13,8 +13,7 @@ public class NecromancerDamageListener {
             if (!(event.getEntity() instanceof NecromancerTower.NecromancedMob necromancedMob)) return;
             if (!(event.getTarget() instanceof LivingTDEnemyMob livingEnemyMob)) return;
 
-            float damage = (float) (necromancedMob.getEnemyMobLevel().getDamage() * necromancedMob.getOriginTower().getLevel().getDamageMultiplier());
-            livingEnemyMob.damage(necromancedMob, damage);
+            livingEnemyMob.damage(necromancedMob, necromancedMob.getOriginTower().getLevel().getNecromancedDamage());
         });
     }
 }
