@@ -5,8 +5,8 @@
   "damage": 12,
   "range": 18,
 
-  "maxNecromancedTroops": 8,
-  "necromancedHealth": 100,
+  "maxNecromancedTroops": 5,
+  "necromancedHealth": 80,
   "necromancedDamage": 1,
 
   "menuItem": {

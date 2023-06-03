@@ -2,11 +2,11 @@
   "level": 4,
   "cost": 35000,
   "fireDelay": 22,
-  "damage": 25,
+  "damage": 35,
   "range": 20,
 
-  "maxNecromancedTroops": 8,
-  "necromancedHealth": 250,
+  "maxNecromancedTroops": 6,
+  "necromancedHealth": 150,
   "necromancedDamage": 1,
 
   "menuItem": {

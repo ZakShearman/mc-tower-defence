@@ -4,7 +4,7 @@
   "fireDelay": 30,
   "damage": 5,
   "range": 16,
-  "maxNecromancedTroops": 4,
+  "maxNecromancedTroops": 3,
   "necromancedHealth": 50,
   "necromancedDamage": 1,
   "menuItem": {
