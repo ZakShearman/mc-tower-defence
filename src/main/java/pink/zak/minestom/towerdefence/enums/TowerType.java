@@ -52,17 +52,23 @@ public enum TowerType {
     }
 
     public enum Size {
-        THREE(1),
-        FIVE(2);
+        THREE(3, 1),
+        FIVE(5, 2);
 
+        private final int numericalValue;
         private final int checkDistance;
 
-        Size(int checkDistance) {
+        Size(int numericalValue, int checkDistance) {
+            this.numericalValue = numericalValue;
             this.checkDistance = checkDistance;
         }
 
         public int getCheckDistance() {
             return this.checkDistance;
+        }
+
+        public @NotNull String getFormattedName() {
+            return this.numericalValue + "x" + this.numericalValue;
         }
     }
 }

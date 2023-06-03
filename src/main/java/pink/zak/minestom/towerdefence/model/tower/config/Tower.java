@@ -3,6 +3,8 @@ package pink.zak.minestom.towerdefence.model.tower.config;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.minestom.server.coordinate.Point;
@@ -39,7 +41,6 @@ public class Tower {
     private final ItemStack baseItem;
 
     public Tower(@NotNull JsonObject jsonObject, @NotNull Map<Integer, JsonObject> levelJsonMap) {
-
         this.type = TowerType.valueOf(jsonObject.get("type").getAsString());
         this.name = StringUtils.capitaliseSentenceWords(jsonObject.get("name").getAsString());
         this.guiSlot = jsonObject.get("guiSlot").getAsInt();
@@ -67,6 +68,10 @@ public class Tower {
             List<Component> description = new ArrayList<>();
             description.add(Component.empty());
             description.addAll(this.description);
+            description.add(Component.empty());
+            description.add(Component.text("Size: ", NamedTextColor.GOLD)
+                    .append(Component.text(this.type.getSize().getFormattedName(), NamedTextColor.YELLOW))
+                    .decoration(TextDecoration.ITALIC, false));
 
             builder.lore(description);
         });
