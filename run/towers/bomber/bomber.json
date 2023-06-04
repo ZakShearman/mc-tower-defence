@@ -8,7 +8,7 @@
   },
 
   "description": [
-    "<i:false>Does splash explosive damage to enemies",
-    "<i:false>shattering them into pieces."
+    "<i:false><gold>Launches bombs that explode on impact",
+    "<i:false><gold>dealing splash damage to nearby enemies."
   ]
 }

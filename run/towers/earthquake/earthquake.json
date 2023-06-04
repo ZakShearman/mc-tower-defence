@@ -8,7 +8,7 @@
   },
 
   "description": [
-    "<i:false>Creates earthquakes stunning ground mobs,",
-    "<i:false>throwing them into the air and dealing mass damage."
+    "<i:false><gold>Creates earthquakes stunning ground mobs",
+    "<i:false><gold>and dealing damage to mobs within its radius."
   ]
 }

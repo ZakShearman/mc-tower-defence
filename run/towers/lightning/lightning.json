@@ -8,6 +8,7 @@
   },
 
   "description": [
-    "<i:false>Charges up and fires lightning bolts at individual targets"
+    "<i:false><gold>Fires high damage lightning bolts",
+    "<i:false><gold>at individual targets."
   ]
 }
