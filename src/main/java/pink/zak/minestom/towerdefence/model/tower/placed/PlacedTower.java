@@ -80,7 +80,7 @@ public abstract class PlacedTower<T extends TowerLevel> {
         T oldLevel = this.level;
         this.level = (T) this.tower.getLevel(++this.levelInt);
 
-        this.removeUnUpdatedBlocks(oldLevel, this.level);
+        this.removeNonUpdatedBlocks(oldLevel, this.level);
         this.placeLevel();
     }
 
@@ -106,7 +106,7 @@ public abstract class PlacedTower<T extends TowerLevel> {
         }
     }
 
-    private void removeUnUpdatedBlocks(TowerLevel oldLevel, TowerLevel newLevel) {
+    private void removeNonUpdatedBlocks(TowerLevel oldLevel, TowerLevel newLevel) {
         Set<RelativeBlock> oldPoints = oldLevel.getRelativeBlocks();
         Set<RelativeBlock> newPoints = newLevel.getRelativeBlocks();
 

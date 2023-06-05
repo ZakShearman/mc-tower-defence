@@ -79,7 +79,8 @@ public class ProdLobbyStartingManager {
 
             // Note that we run both playerCount == gameCount and playerCount == 1 because in testing there may only be one player.
             if (playerCount == gameCreationInfo.playerIds().size()) {
-                this.startGameIfPossible(); // TODO maybe we don't start here and give players time to change team.
+                this.fastForwardCountdown(10);
+//                this.startGameIfPossible(); // TODO maybe we don't start here and give players time to change team.
             }
 
             // Null check in case a player joins, leaves then another joins.
@@ -107,6 +108,12 @@ public class ProdLobbyStartingManager {
                 })
                 .repeat(1, ChronoUnit.SECONDS)
                 .schedule();
+    }
+
+    private void fastForwardCountdown(int secondsLeft) {
+        if (this.timeLeft.get() <= secondsLeft) return; // Don't fast-forward if timeLeft < countdownTime
+
+        this.timeLeft.set(secondsLeft);
     }
 
     private void startGameIfPossible() {
