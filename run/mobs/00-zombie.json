@@ -15,7 +15,7 @@
       "health": 5,
       "damage": 1,
       "movementSpeed": 2,
-      "upgradeCost": -1,
+      "unlockCost": -1,
       "entityType": "minecraft:zombie",
       "sendItem": {
         "material": "minecraft:zombie_head"
@@ -28,7 +28,7 @@
       "health": 8,
       "damage": 2,
       "movementSpeed": 2,
-      "upgradeCost": 120,
+      "unlockCost": 120,
       "entityType": "minecraft:zombie",
       "sendItem": {
         "material": "minecraft:zombie_head"
@@ -41,7 +41,7 @@
       "health": 26,
       "damage": 8,
       "movementSpeed": 2.4,
-      "upgradeCost": 350,
+      "unlockCost": 350,
       "entityType": "minecraft:zombie",
       "sendItem": {
         "material": "minecraft:zombie_head"
@@ -54,7 +54,7 @@
       "health": 85,
       "damage": 15,
       "movementSpeed": 2.5,
-      "upgradeCost": 900,
+      "unlockCost": 900,
       "entityType": "minecraft:zombie",
       "sendItem": {
         "material": "minecraft:zombie_head"
@@ -67,7 +67,7 @@
       "health": 300,
       "damage": 35,
       "movementSpeed": 3,
-      "upgradeCost": 1500,
+      "unlockCost": 1500,
       "entityType": "minecraft:zombie",
       "sendItem": {
         "material": "minecraft:zombie_head"

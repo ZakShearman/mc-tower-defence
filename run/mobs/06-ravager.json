@@ -16,7 +16,7 @@
       "health": 200000,
       "damage": 500,
       "movementSpeed": 2.5,
-      "upgradeCost": 80000,
+      "unlockCost": 80000,
       "entityType": "minecraft:ravager",
       "sendItem": {
         "material": "minecraft:player_head",
@@ -30,7 +30,7 @@
       "health": 5000000,
       "damage": 500,
       "movementSpeed": 3.0,
-      "upgradeCost": 15000,
+      "unlockCost": 15000,
       "entityType": "minecraft:ravager",
       "sendItem": {
         "material": "minecraft:player_head",
@@ -44,7 +44,7 @@
       "health": 1000000,
       "damage": 500,
       "movementSpeed": 3.5,
-      "upgradeCost": 50000,
+      "unlockCost": 50000,
       "entityType": "minecraft:ravager",
       "sendItem": {
         "material": "minecraft:player_head",

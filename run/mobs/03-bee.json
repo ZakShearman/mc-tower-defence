@@ -16,7 +16,7 @@
       "health": 1,
       "damage": 1,
       "movementSpeed": 4.0,
-      "upgradeCost": 150,
+      "unlockCost": 150,
       "entityType": "minecraft:bee",
       "sendItem": {
         "material": "minecraft:player_head",
@@ -30,7 +30,7 @@
       "health": 3,
       "damage": 1,
       "movementSpeed": 4.5,
-      "upgradeCost": 750,
+      "unlockCost": 750,
       "entityType": "minecraft:bee",
       "sendItem": {
         "material": "minecraft:player_head",
@@ -44,7 +44,7 @@
       "health": 9,
       "damage": 1,
       "movementSpeed": 4.7,
-      "upgradeCost": 1800,
+      "unlockCost": 1800,
       "entityType": "minecraft:bee",
       "sendItem": {
         "material": "minecraft:player_head",

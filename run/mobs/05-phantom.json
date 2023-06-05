@@ -16,7 +16,7 @@
       "health": 50000,
       "damage": 120,
       "movementSpeed": 5.5,
-      "upgradeCost": 35000,
+      "unlockCost": 35000,
       "entityType": "minecraft:phantom",
       "sendItem": {
         "material": "minecraft:player_head",
@@ -30,7 +30,7 @@
       "health": 120000,
       "damage": 150,
       "movementSpeed": 6,
-      "upgradeCost": 75000,
+      "unlockCost": 75000,
       "entityType": "minecraft:phantom",
       "sendItem": {
         "material": "minecraft:player_head",
@@ -44,7 +44,7 @@
       "health": 150000,
       "damage": 1,
       "movementSpeed": 8,
-      "upgradeCost": 120000,
+      "unlockCost": 120000,
       "entityType": "minecraft:phantom",
       "sendItem": {
         "material": "minecraft:player_head",

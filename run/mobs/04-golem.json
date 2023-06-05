@@ -16,7 +16,7 @@
       "health": 75,
       "damage": 5,
       "movementSpeed": 1.3,
-      "upgradeCost": 150,
+      "unlockCost": 150,
       "entityType": "minecraft:iron_golem",
       "sendItem": {
         "material": "minecraft:player_head",
@@ -30,7 +30,7 @@
       "health": 500,
       "damage": 25,
       "movementSpeed": 1.4,
-      "upgradeCost": 400,
+      "unlockCost": 400,
       "entityType": "minecraft:iron_golem",
       "sendItem": {
         "material": "minecraft:player_head",
@@ -44,7 +44,7 @@
       "health": 1850,
       "damage": 80,
       "movementSpeed": 1.4,
-      "upgradeCost": 1000,
+      "unlockCost": 1000,
       "entityType": "minecraft:iron_golem",
       "sendItem": {
         "material": "minecraft:player_head",
@@ -58,7 +58,7 @@
       "health": 8000,
       "damage": 200,
       "movementSpeed": 1.4,
-      "upgradeCost": 3000,
+      "unlockCost": 3000,
       "entityType": "minecraft:iron_golem",
       "sendItem": {
         "material": "minecraft:player_head",
@@ -72,7 +72,7 @@
       "health": 75000,
       "damage": 400,
       "movementSpeed": 1.2,
-      "upgradeCost": 10000,
+      "unlockCost": 10000,
       "entityType": "minecraft:warden",
       "sendItem": {
         "material": "minecraft:player_head",

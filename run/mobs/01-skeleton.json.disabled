@@ -23,7 +23,7 @@
       "health": 40,
       "damage": 2,
       "movementSpeed": 2.1,
-      "upgradeCost": 250,
+      "unlockCost": 250,
       "sendItem": {
         "material": "minecraft:skeleton_skull",
         "displayName": "<yellow>Skeleton",
@@ -54,7 +54,7 @@
       "health": 80,
       "damage": 3,
       "movementSpeed": 2.1,
-      "upgradeCost": 350,
+      "unlockCost": 350,
       "sendItem": {
         "material": "minecraft:skeleton_skull",
         "displayName": "<yellow>Skeleton",

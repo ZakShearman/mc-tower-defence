@@ -25,7 +25,7 @@ import java.util.List;
 @ToString
 public class EnemyMobLevel implements Diffable<EnemyMobLevel> {
     private static final String SEND_ITEM_NAME = "<i:false><mob_name> <level_numeral>";
-    private static final String UPGRADE_ITEM_NAME = "<i:false><%s><level_numeral> (<yellow>$<cost>/6s</yellow>)";
+    private static final String UPGRADE_ITEM_NAME = "<i:false><%s><level_numeral> (<yellow>$<cost></yellow>)";
 
     private static final DecimalFormat MOVEMENT_SPEED_FORMAT = new DecimalFormat("#.##");
 
@@ -33,7 +33,7 @@ public class EnemyMobLevel implements Diffable<EnemyMobLevel> {
 
     private final int level;
     private final @NotNull EntityType entityType;
-    private final int upgradeCost;
+    private final int unlockCost;
     private final int sendIncomeIncrease;
 
     private final int sendCost;
@@ -49,7 +49,7 @@ public class EnemyMobLevel implements Diffable<EnemyMobLevel> {
 
         this.level = jsonObject.get("level").getAsInt();
         this.entityType = EntityType.fromNamespaceId(jsonObject.get("entityType").getAsString());
-        this.upgradeCost = jsonObject.get("upgradeCost").getAsInt(); // Cost to upgrade to this level (in income)
+        this.unlockCost = jsonObject.get("unlockCost").getAsInt(); // Cost to upgrade to this level (in coins)
         this.sendIncomeIncrease = jsonObject.get("sendIncomeIncrease").getAsInt(); // Income increase from sending this level
 
         this.sendCost = jsonObject.get("sendCost").getAsInt();
@@ -59,6 +59,7 @@ public class EnemyMobLevel implements Diffable<EnemyMobLevel> {
         this.damage = jsonObject.get("damage").getAsInt();
         this.movementSpeed = jsonObject.get("movementSpeed").getAsDouble() / MinecraftServer.TICK_PER_SECOND;
 
+        // todo can this be removed? we just autogen the lore
         TagResolver tagResolver = TagResolver.resolver(
                 Placeholder.unparsed("send_cost", String.valueOf(this.sendCost)),
                 Placeholder.unparsed("income_increase", String.valueOf(this.sendIncomeIncrease)),
@@ -155,8 +156,8 @@ public class EnemyMobLevel implements Diffable<EnemyMobLevel> {
         return this.movementSpeed;
     }
 
-    public int getUpgradeCost() {
-        return this.upgradeCost;
+    public int getUnlockCost() {
+        return this.unlockCost;
     }
 
     public @NotNull EntityType getEntityType() {

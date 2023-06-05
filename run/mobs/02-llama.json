@@ -16,7 +16,7 @@
       "health": 15,
       "damage": 3,
       "movementSpeed": 6,
-      "upgradeCost": 200,
+      "unlockCost": 200,
       "entityType": "minecraft:llama",
       "sendItem": {
         "material": "minecraft:player_head",
@@ -30,7 +30,7 @@
       "health": 27,
       "damage": 5,
       "movementSpeed": 7.5,
-      "upgradeCost": 1400,
+      "unlockCost": 1400,
       "entityType": "minecraft:llama",
       "sendItem": {
         "material": "minecraft:player_head",

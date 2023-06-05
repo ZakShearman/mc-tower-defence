@@ -226,16 +226,16 @@ public class MobMenuHandler {
             if (currentLevel >= clickedLevelInt)
                 return;
 
-            int incomeCost = 0;
+            int coinCost = 0;
             for (int i = currentLevel + 1; i <= clickedLevelInt; i++) {
-                incomeCost += mob.getLevel(i).getUpgradeCost();
+                coinCost += mob.getLevel(i).getUnlockCost();
             }
 
             EnemyMobLevel clickedLevel = mob.getLevel(clickedLevelInt);
 
-            if (gameUser.canAffordWithIncome(incomeCost)) {
-                int finalIncomeCost = incomeCost;
-                gameUser.updateIncomeRate(current -> current - finalIncomeCost); // reduce user income rate
+            if (gameUser.getCoins() >= coinCost) {
+                int finalCoinCost = coinCost;
+                gameUser.updateCoins(current -> current - finalCoinCost); // reduce user coins
 
                 gameUser.getMobLevels().put(mob, clickedLevelInt);
 
@@ -272,14 +272,14 @@ public class MobMenuHandler {
 
             ItemStack itemStack;
             if (owned) {
-                itemStack = targetLevel.createStatUpgradeItem(targetLevel.getUpgradeCost(), true, true); // canAfford doesn't matter
+                itemStack = targetLevel.createStatUpgradeItem(targetLevel.getUnlockCost(), true, true); // canAfford doesn't matter
             } else {
                 int cost = 0;
                 for (int j = currentLevelInt + 1; j <= targetLevel.getLevel(); j++) {
-                    cost += enemyMob.getLevel(j).getUpgradeCost();
+                    cost += enemyMob.getLevel(j).getUnlockCost();
                 }
 
-                boolean canAfford = gameUser.canAffordWithIncome(cost);
+                boolean canAfford = gameUser.getCoins() >= cost;
                 if (currentLevel == null) {
                     itemStack = targetLevel.createStatUpgradeItem(cost, false, canAfford);
                 } else {
