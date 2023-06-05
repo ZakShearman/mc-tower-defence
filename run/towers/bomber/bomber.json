@@ -8,7 +8,7 @@
   },
 
   "description": [
-    "<i:false><gold>Launches bombs that explode on impact",
-    "<i:false><gold>dealing splash damage to nearby enemies."
+    "<i:false><yellow>Launches bombs that explode on impact",
+    "<i:false><yellow>dealing splash damage to nearby enemies."
   ]
 }

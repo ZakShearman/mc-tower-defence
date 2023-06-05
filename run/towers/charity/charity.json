@@ -8,7 +8,7 @@
   },
 
   "description": [
-    "<i:false><gold>Grants you additional coins for mobs",
-    "<i:false><gold>killed in its radius."
+    "<i:false><yellow>Grants you additional coins for mobs",
+    "<i:false><yellow>killed in its radius."
   ]
 }

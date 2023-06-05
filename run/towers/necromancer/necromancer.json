@@ -8,8 +8,8 @@
   },
 
   "description": [
-    "<i:false><gold>Converts enemy mobs to your side",
-    "<i:false><gold>when they die. Its effect stacks with",
-    "<i:false><gold>multiple necromancer towers."
+    "<i:false><yellow>Converts enemy mobs to your side",
+    "<i:false><yellow>when they die. Its effect stacks with",
+    "<i:false><yellow>multiple necromancer towers."
   ]
 }

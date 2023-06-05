@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 public class Tower {
     private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
 
-    private static final String BASE_ITEM_DISPLAY_NAME = "<i:false><yellow><tower_name> ($<tower_cost>)";
+    private static final String BASE_ITEM_DISPLAY_NAME = "<i:false><gold><tower_name> - <yellow>$<tower_cost>";
 
     private final TowerType type;
     private final String name;

@@ -25,7 +25,7 @@ import java.util.List;
 @ToString
 public class EnemyMobLevel implements Diffable<EnemyMobLevel> {
     private static final String SEND_ITEM_NAME = "<i:false><mob_name> <level_numeral>";
-    private static final String UPGRADE_ITEM_NAME = "<i:false><%s><level_numeral> (<yellow>$<cost></yellow>)";
+    private static final String UPGRADE_ITEM_NAME = "<i:false><%s><level_numeral> - <yellow>$<cost></yellow>";
 
     private static final DecimalFormat MOVEMENT_SPEED_FORMAT = new DecimalFormat("#.##");
 
