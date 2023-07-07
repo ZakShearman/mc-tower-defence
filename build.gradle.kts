@@ -22,21 +22,15 @@ repositories {
 
 dependencies {
     implementation("dev.emortal.minestom:core:9d91cc0")
-    implementation("dev.emortal.api:kurushimi-sdk:a1dcf4d") {
-        exclude("dev.emortal.api", "common-proto-sdk")
-        exclude("net.minestom.server")
-    }
 
 //    implementation("com.github.hollow-cube.common:schem:e297e8f999")
-    implementation("com.github.hollow-cube.common:schem:e297e8f999") {
+    implementation("com.github.ZakShearman.common:schem:fix~argument-block-state-SNAPSHOT") {
         exclude("net.minestom.server", "Minestom")
     }
 
 //    implementation("net.minestom.server:Minestom:1.0")
 //    implementation("com.github.Minestom.Minestom:Minestom:8ad2c7701f")
 //    implementation("dev.hollowcube:minestom-ce:7f3144337d")
-
-    implementation("net.kyori:adventure-text-minimessage:4.14.0")
 
     // TNT world format
     implementation("dev.hollowcube:polar:1.3.1")
