@@ -1,0 +1,21 @@
+name: "Build and deploy"
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: "emortalmc/actions/java/build@main"
+        with:
+          token: "${{ secrets.GITHUB_TOKEN }}"
+
+  deploy:
+    needs: "build"
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: "emortalmc/actions/k8s-sync@main"
+        with:
+          manifest-path: "fleet.yaml"
