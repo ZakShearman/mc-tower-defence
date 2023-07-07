@@ -28,7 +28,7 @@ dependencies {
     }
 
 //    implementation("com.github.hollow-cube.common:schem:e297e8f999")
-    implementation("net.hollowcube.common:schem:unspecified") {
+    implementation("com.github.hollow-cube.common:schem:e297e8f999") {
         exclude("net.minestom.server", "Minestom")
     }
 
