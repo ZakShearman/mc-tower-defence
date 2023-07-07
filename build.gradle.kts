@@ -4,7 +4,7 @@ plugins {
     `java-library`
     id("com.github.johnrengelman.shadow") version "7.1.2"
     id("application")
-    id("io.freefair.lombok") version "6.6"
+    id("io.freefair.lombok") version "6.6.3"
 }
 
 group = "pink.zak.minestom"
