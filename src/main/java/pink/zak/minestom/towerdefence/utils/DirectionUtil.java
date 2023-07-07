@@ -1,8 +1,10 @@
 package pink.zak.minestom.towerdefence.utils;
 
+import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.coordinate.Vec;
 import net.minestom.server.utils.Direction;
+import org.jetbrains.annotations.NotNull;
 
 public enum DirectionUtil {
     NORTH(Direction.NORTH, 0),
@@ -82,4 +84,40 @@ public enum DirectionUtil {
                     throw new IllegalArgumentException("Direction must be NORTH, EAST, SOUTH or WEST. Provided direction was " + direction);
         };
     }
+
+    /**
+     * Takes an offset point part of a structure and flips its x and z values
+     * to make the structure face a different direction.
+     * The point should be facing NORTH originally.
+     *
+     * @param point  The point to correct
+     * @param facing The direction the point should be facing
+     * @return The corrected point
+     */
+    public static Point correctForDirection(@NotNull Point point, @NotNull Direction facing) {
+        int originalX = point.blockX();
+        int originalZ = point.blockZ();
+        int y = point.blockY();
+
+        return switch (facing) {
+            case NORTH -> point;
+            case EAST -> new Vec(-originalZ, y, originalX);
+            case SOUTH -> new Vec(-originalX, y, -originalZ);
+            case WEST -> new Vec(originalZ, y, -originalX);
+            default ->
+                    throw new IllegalArgumentException("Direction must be NORTH, EAST, SOUTH or WEST. Provided direction was " + facing);
+        };
     }
+
+    private static int correctXForDirection(int x, @NotNull Direction facing) {
+        return (int) switch (facing) {
+            case NORTH -> x;
+            case EAST -> -x;
+            case SOUTH -> -x;
+            case WEST -> x;
+            default ->
+                    throw new IllegalArgumentException("Direction must be NORTH, EAST, SOUTH or WEST. Provided direction was " + facing);
+        };
+    }
+
+}

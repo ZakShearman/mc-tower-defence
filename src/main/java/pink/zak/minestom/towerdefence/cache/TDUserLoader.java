@@ -14,8 +14,8 @@ import java.util.UUID;
 public class TDUserLoader implements PlayerProvider {
 //    private final Repository<UUID, TDUser> userRepository; // todo load from gRPC API
 
-    public TDUserLoader(TowerDefenceModule plugin) {
-        plugin.getEventNode().addListener(PlayerDisconnectEvent.class, event -> this.save(event.getPlayer()));
+    public TDUserLoader(TowerDefenceModule module) {
+        module.getEventNode().addListener(PlayerDisconnectEvent.class, event -> this.save(event.getPlayer()));
 
         MinecraftServer.getSchedulerManager().buildShutdownTask(this::saveAll);
     }

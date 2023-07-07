@@ -1,12 +1,14 @@
 package pink.zak.minestom.towerdefence;
 
-import dev.emortal.minestom.core.module.Module;
-import dev.emortal.minestom.core.module.ModuleData;
-import dev.emortal.minestom.core.module.ModuleEnvironment;
+import dev.emortal.api.modules.ModuleData;
+import dev.emortal.api.modules.ModuleEnvironment;
+import dev.emortal.minestom.core.module.MinestomModule;
 import dev.emortal.minestom.core.module.kubernetes.KubernetesModule;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.command.CommandManager;
 import net.minestom.server.coordinate.Pos;
+import net.minestom.server.event.Event;
+import net.minestom.server.event.EventNode;
 import net.minestom.server.event.player.PlayerLoginEvent;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.agones.AgonesManager;
@@ -22,7 +24,7 @@ import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;
 import pink.zak.minestom.towerdefence.world.WorldLoader;
 
 @ModuleData(name = "towerdefence", required = false, softDependencies = {KubernetesModule.class})
-public class TowerDefenceModule extends Module {
+public class TowerDefenceModule extends MinestomModule {
     private final KubernetesModule kubernetesModule;
     private final AgonesManager agonesManager;
 
@@ -41,7 +43,7 @@ public class TowerDefenceModule extends Module {
     protected TowerDefenceModule(@NotNull ModuleEnvironment environment) {
         super(environment);
 
-        this.kubernetesModule = environment.moduleManager().getModule(KubernetesModule.class);
+        this.kubernetesModule = super.getModule(KubernetesModule.class);
         this.agonesManager = new AgonesManager(this.kubernetesModule);
     }
 
@@ -50,7 +52,7 @@ public class TowerDefenceModule extends Module {
         WorldLoader worldLoader = new WorldLoader();
         this.instance = worldLoader.load();
 
-        this.getEventNode().addListener(PlayerLoginEvent.class, event -> {
+        super.eventNode.addListener(PlayerLoginEvent.class, event -> {
             event.getPlayer().setRespawnPoint(new Pos(-1, 67, 4));
             event.setSpawningInstance(this.instance);
         });
@@ -78,6 +80,10 @@ public class TowerDefenceModule extends Module {
     @Override
     public void onUnload() {
         this.userCache.saveAll();
+    }
+
+    public @NotNull EventNode<Event> getEventNode() {
+        return super.eventNode;
     }
 
     public KubernetesModule getKubernetesModule() {

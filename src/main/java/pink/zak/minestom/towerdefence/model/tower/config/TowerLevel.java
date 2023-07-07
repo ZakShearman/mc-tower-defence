@@ -1,6 +1,8 @@
 package pink.zak.minestom.towerdefence.model.tower.config;
 
 import com.google.gson.JsonObject;
+import net.hollowcube.util.schem.Schematic;
+import net.hollowcube.util.schem.SchematicReader;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -15,11 +17,17 @@ import pink.zak.minestom.towerdefence.statdiff.types.IntStatDiff;
 import pink.zak.minestom.towerdefence.utils.ItemUtils;
 import pink.zak.minestom.towerdefence.utils.NumberUtils;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.function.BiFunction;
 
 public class TowerLevel implements Diffable<TowerLevel> {
+    private static final BiFunction<String, String, Path> SCHEMATIC_PATH_FUNCTION = (towerName, level) ->
+            Path.of("towers", towerName.toLowerCase(), "builds", level + ".schem");
+
     private static final String UPGRADE_ITEM_NAME = "<i:false><%s><tower_name> <level_numeral> (<yellow>$<cost></yellow>)";
 
     private final @NotNull String towerName;
@@ -31,6 +39,8 @@ public class TowerLevel implements Diffable<TowerLevel> {
     private final ItemStack menuItem;
 
     private final Set<RelativeBlock> relativeBlocks;
+
+    private final @NotNull Schematic schematic;
 
     public TowerLevel(@NotNull String towerName, @NotNull JsonObject jsonObject) {
         this.towerName = towerName;
@@ -48,6 +58,16 @@ public class TowerLevel implements Diffable<TowerLevel> {
         this.menuItem = ItemUtils.fromJsonObject(jsonObject.get("menuItem").getAsJsonObject(), tagResolver);
 
         this.relativeBlocks = RelativeBlock.setFromJson(jsonObject.get("relativeBlocks").getAsJsonArray());
+
+        Path schematicPath = SCHEMATIC_PATH_FUNCTION.apply(towerName, String.valueOf(this.level));
+        System.out.println("Checking for schematic at " + schematicPath);
+        if (Files.notExists(schematicPath)) {
+            this.schematic = null;
+            return;
+        } else {
+            System.out.println("Schematic found for " + towerName + " level " + this.level);
+        }
+        this.schematic = SchematicReader.read(schematicPath);
     }
 
     private ItemStack createOwnedUpgradeItem() {
@@ -105,6 +125,7 @@ public class TowerLevel implements Diffable<TowerLevel> {
 
     /**
      * Creates the same lore as upgrades but without comparison to another level
+     *
      * @return the lore
      */
     private @NotNull List<Component> createStatLore() {
@@ -116,6 +137,10 @@ public class TowerLevel implements Diffable<TowerLevel> {
 
     public Set<RelativeBlock> getRelativeBlocks() {
         return this.relativeBlocks;
+    }
+
+    public @NotNull Schematic getSchematic() {
+        return schematic;
     }
 
     @Override

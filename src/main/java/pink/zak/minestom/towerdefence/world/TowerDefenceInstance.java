@@ -4,9 +4,8 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dev.emortal.minestom.core.Environment;
-import dev.emortal.tnt.TNTLoader;
-import dev.emortal.tnt.source.FileTNTSource;
 import lombok.SneakyThrows;
+import net.hollowcube.polar.PolarLoader;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.instance.Chunk;
 import net.minestom.server.instance.InstanceContainer;
@@ -53,7 +52,7 @@ public class TowerDefenceInstance extends InstanceContainer {
         super(UUID.randomUUID(), dimensionType, null);
         Path mapPath = MAP_PATH.resolve(worldName);
 
-        TNTLoader loader = new TNTLoader(new FileTNTSource(mapPath.resolve("world.tnt")));
+        PolarLoader loader = new PolarLoader(mapPath.resolve("world.polar"));
         this.setChunkLoader(loader);
 
         this.preLoadDataPath = mapPath.resolve("preload_data.json");

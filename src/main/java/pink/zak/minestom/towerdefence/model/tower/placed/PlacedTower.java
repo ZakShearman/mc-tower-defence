@@ -1,5 +1,6 @@
 package pink.zak.minestom.towerdefence.model.tower.placed;
 
+import net.hollowcube.util.schem.Rotation;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.instance.block.Block;
@@ -14,7 +15,13 @@ import pink.zak.minestom.towerdefence.model.tower.config.AttackingTower;
 import pink.zak.minestom.towerdefence.model.tower.config.Tower;
 import pink.zak.minestom.towerdefence.model.tower.config.TowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.config.relative.RelativeBlock;
-import pink.zak.minestom.towerdefence.model.tower.placed.types.*;
+import pink.zak.minestom.towerdefence.model.tower.placed.types.ArcherTower;
+import pink.zak.minestom.towerdefence.model.tower.placed.types.BlizzardTower;
+import pink.zak.minestom.towerdefence.model.tower.placed.types.BomberTower;
+import pink.zak.minestom.towerdefence.model.tower.placed.types.CharityTower;
+import pink.zak.minestom.towerdefence.model.tower.placed.types.EarthquakeTower;
+import pink.zak.minestom.towerdefence.model.tower.placed.types.LightningTower;
+import pink.zak.minestom.towerdefence.model.tower.placed.types.NecromancerTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.utils.DirectionUtil;
 import pink.zak.minestom.towerdefence.utils.properties.PropertyRotatorRegistry;
@@ -63,16 +70,21 @@ public abstract class PlacedTower<T extends TowerLevel> {
     public static PlacedTower<?> create(GameHandler gameHandler, TowerDefenceInstance instance, Tower tower, Material towerBaseMaterial, int id, GameUser owner, Point basePoint, Direction facing) {
         TowerType towerType = tower.getType();
         return switch (towerType) {
-            case ARCHER -> new ArcherTower(instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
+            case ARCHER ->
+                    new ArcherTower(instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
             case BOMBER ->
                     new BomberTower(gameHandler, instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
-            case BLIZZARD -> new BlizzardTower(instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
+            case BLIZZARD ->
+                    new BlizzardTower(instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
             case CHARITY -> new CharityTower(instance, tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
-            case EARTHQUAKE -> new EarthquakeTower(instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
+            case EARTHQUAKE ->
+                    new EarthquakeTower(instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
             case LIGHTNING ->
                     new LightningTower(instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
-            case NECROMANCER -> new NecromancerTower(instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
-            default -> throw new RuntimeException("Missing tower - %s is not coded in but was created".formatted(towerType));
+            case NECROMANCER ->
+                    new NecromancerTower(instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
+            default ->
+                    throw new RuntimeException("Missing tower - %s is not coded in but was created".formatted(towerType));
         };
     }
 
@@ -86,6 +98,28 @@ public abstract class PlacedTower<T extends TowerLevel> {
 
     private void placeLevel() {
         int turns = DirectionUtil.fromDirection(this.facing).getTurns();
+        if (this.level.getSchematic() != null) { // todo remove old code
+            // TODO move back to block batches when they are fixed
+//            RelativeBlockBatch batch = this.level.getSchematic().build(Rotation.NONE, block ->
+//                    PropertyRotatorRegistry.rotateProperties(block, turns)
+//                            .withTag(ID_TAG, this.id)
+//            );
+
+            this.level.getSchematic().apply(Rotation.NONE, (point, block) -> {
+                Point rotatedPoint = DirectionUtil.correctForDirection(point, this.facing);
+                int x = this.basePoint.blockX() + rotatedPoint.blockX();
+                int z = this.basePoint.blockZ() + rotatedPoint.blockZ();
+                int y = this.basePoint.blockY() + rotatedPoint.blockY();
+
+                Block moddedBlock = PropertyRotatorRegistry.rotateProperties(block, turns)
+                        .withTag(ID_TAG, this.id);
+
+                this.instance.setBlock(x, y, z, moddedBlock);
+            });
+
+//            batch.apply(this.instance, this.basePoint, null);
+            return;
+        } // todo could placeLevel return the block batch so it can also be used to remove old blocks?
         for (RelativeBlock relativeBlock : this.level.getRelativeBlocks()) {
             int x = this.basePoint.blockX() + relativeBlock.getXOffset(this.facing);
             int z = this.basePoint.blockZ() + relativeBlock.getZOffset(this.facing);
