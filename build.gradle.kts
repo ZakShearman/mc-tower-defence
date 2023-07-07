@@ -21,7 +21,7 @@ repositories {
 }
 
 dependencies {
-    implementation("dev.emortal.minestom:core:0379651")
+    implementation("dev.emortal.minestom:core:675b890")
 
 //    implementation("com.github.hollow-cube.common:schem:e297e8f999")
     implementation("com.github.ZakShearman.common:schem:fix~argument-block-state-SNAPSHOT") {
