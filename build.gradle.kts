@@ -41,7 +41,7 @@ dependencies {
     // TNT world format
     implementation("dev.hollowcube:polar:1.3.1")
 
-    implementation("com.github.ben-manes.caffeine:caffeine:3.1.5")
+    implementation("com.github.ben-manes.caffeine:caffeine:3.1.6")
 }
 application {
     mainClass.set("pink.zak.minestom.towerdefence.TowerDefenceServer")
