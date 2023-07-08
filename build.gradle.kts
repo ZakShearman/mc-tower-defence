@@ -28,8 +28,6 @@ dependencies {
         exclude("net.minestom.server", "Minestom")
     }
 
-//    implementation("net.minestom.server:Minestom:1.0")
-//    implementation("com.github.Minestom.Minestom:Minestom:8ad2c7701f")
 //    implementation("dev.hollowcube:minestom-ce:7f3144337d")
 
     // TNT world format
