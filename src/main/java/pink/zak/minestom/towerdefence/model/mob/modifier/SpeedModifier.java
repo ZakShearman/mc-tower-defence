@@ -7,7 +7,7 @@ public interface SpeedModifier {
      *
      * @return The modifier 0-1 where 0 is no movement and 1 is normal movement.
      */
-    double getModifier();
+    double getSpeedModifier();
 
     default ModifierType modifierType() {
         return ModifierType.SPEED;

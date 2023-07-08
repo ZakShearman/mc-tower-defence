@@ -61,8 +61,8 @@ public class BlizzardTower extends PlacedAttackingTower<BlizzardTowerLevel> {
 
             // if it: A) has no effect, B) current effect is worse than this one, or C) current effect is the same but has less time left
             if (currentEffect == null
-                    || currentEffect.getModifier() < speedModifier
-                    || (currentEffect.getModifier() == speedModifier && currentEffect.remainingTicks() < tickDuration)) {
+                    || currentEffect.getSpeedModifier() < speedModifier
+                    || (currentEffect.getSpeedModifier() == speedModifier && currentEffect.getRemainingTicks() < tickDuration)) {
                 FrozenStatusEffect effect = new FrozenStatusEffect(target, this.owner, speedModifier, tickDuration);
                 target.applyStatusEffect(effect);
                 target.applySpeedModifier(effect);

@@ -13,6 +13,7 @@ import java.util.stream.StreamSupport;
 public class EarthquakeTowerLevel extends AttackingTowerLevel {
     private final @NotNull Set<RelativePoint> relativeShulkerBoxes;
     private final int shulkerAnimationTicks;
+    private final int stunTicks;
 
     public EarthquakeTowerLevel(@NotNull JsonObject jsonObject) {
         super("Earthquake", jsonObject);
@@ -23,6 +24,7 @@ public class EarthquakeTowerLevel extends AttackingTowerLevel {
                 .collect(Collectors.toUnmodifiableSet());
 
         this.shulkerAnimationTicks = jsonObject.get("shulkerAnimationTicks").getAsInt();
+        this.stunTicks = jsonObject.get("stunTicks").getAsInt();
     }
 
     public @NotNull Set<RelativePoint> getRelativeShulkerBoxes() {
@@ -31,5 +33,9 @@ public class EarthquakeTowerLevel extends AttackingTowerLevel {
 
     public int getShulkerAnimationTicks() {
         return this.shulkerAnimationTicks;
+    }
+
+    public int getStunTicks() {
+        return this.stunTicks;
     }
 }

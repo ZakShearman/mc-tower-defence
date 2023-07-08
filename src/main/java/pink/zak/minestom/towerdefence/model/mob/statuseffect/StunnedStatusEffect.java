@@ -4,22 +4,24 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.minestom.server.color.Color;
 import org.jetbrains.annotations.NotNull;
+import pink.zak.minestom.towerdefence.model.mob.living.LivingTDEnemyMob;
+import pink.zak.minestom.towerdefence.model.mob.modifier.SpeedModifier;
 
-public class StunnedStatusEffect implements StatusEffect<StunnedStatusEffect> {
+public final class StunnedStatusEffect extends StatusEffect<StunnedStatusEffect> implements SpeedModifier {
+    private final @NotNull LivingTDEnemyMob mob;
+
+    public StunnedStatusEffect(int ticksToLive, @NotNull LivingTDEnemyMob mob) {
+        super(ticksToLive);
+        this.mob = mob;
+
+        this.mob.applyStatusEffect(this);
+        this.mob.applySpeedModifier(this);
+    }
 
     @Override
     public void remove() {
-
-    }
-
-    @Override
-    public boolean isRemoved() {
-        return false;
-    }
-
-    @Override
-    public int remainingTicks() {
-        return 0;
+        this.mob.removeSpeedModifier(this);
+        this.mob.removeStatusEffect(this);
     }
 
     @Override
@@ -33,12 +35,12 @@ public class StunnedStatusEffect implements StatusEffect<StunnedStatusEffect> {
     }
 
     @Override
-    public boolean isBetterThan(StunnedStatusEffect other) {
-        return false;
+    public double getSpeedModifier() {
+        return 0;
     }
 
     @Override
-    public void tick(long time) {
-
+    public int compareTo(@NotNull StunnedStatusEffect o) {
+        return Integer.compare(super.getRemainingTicks(), o.getRemainingTicks());
     }
 }

@@ -8,29 +8,23 @@ import pink.zak.minestom.towerdefence.model.mob.living.LivingTDEnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.modifier.SpeedModifier;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
-public class FrozenStatusEffect implements StatusEffect<FrozenStatusEffect>, SpeedModifier, DamageSource {
+public class FrozenStatusEffect extends StatusEffect<FrozenStatusEffect> implements SpeedModifier, DamageSource {
     private final @NotNull LivingTDEnemyMob mob;
     private final @NotNull GameUser owningUser;
 
     private final double speedModifier;
-    private final int maxTicks;
 
     private final float damage;
     private final int damageTickRate;
 
-    private final AtomicInteger ticks = new AtomicInteger();
-
-    private boolean removed = false;
-
     // TODO use this method
     public FrozenStatusEffect(@NotNull LivingTDEnemyMob mob, @NotNull GameUser owningUser,
                               double speedModifier, int maxTicks, float damage, int damageTickRate) {
+        super(maxTicks);
+
         this.mob = mob;
         this.owningUser = owningUser;
         this.speedModifier = speedModifier;
-        this.maxTicks = maxTicks;
         this.damage = damage;
         this.damageTickRate = damageTickRate;
     }
@@ -41,39 +35,24 @@ public class FrozenStatusEffect implements StatusEffect<FrozenStatusEffect>, Spe
 
     @Override
     public void tick(long time) {
-        if (this.isRemoved()) return;
-        if (this.remainingTicks() <= 0) {
-            this.remove();
-            return;
-        }
+        super.tick(time);
 
-        if (this.damageTickRate != 0 && this.ticks.get() % this.damageTickRate == 0) {
+        if (this.damageTickRate != 0 && this.getTicksAlive() % this.damageTickRate == 0) {
             this.mob.damage(this, this.damage);
         }
 
-        this.ticks.incrementAndGet();
     }
 
     @Override
     public void remove() {
-        this.removed = true;
+        super.remove();
 
         this.mob.removeStatusEffect(this);
         this.mob.removeSpeedModifier(this);
     }
 
     @Override
-    public boolean isRemoved() {
-        return this.removed;
-    }
-
-    @Override
-    public int remainingTicks() {
-        return this.maxTicks - this.ticks.get();
-    }
-
-    @Override
-    public double getModifier() {
+    public double getSpeedModifier() {
         return this.speedModifier;
     }
 
@@ -88,13 +67,11 @@ public class FrozenStatusEffect implements StatusEffect<FrozenStatusEffect>, Spe
     }
 
     @Override
-    public boolean isBetterThan(FrozenStatusEffect other) {
-        if (this.speedModifier < other.speedModifier) // smaller than 1 = slower
-            return true;
-        else if (this.speedModifier == other.speedModifier)
-            return this.remainingTicks() > other.remainingTicks();
+    public int compareTo(@NotNull FrozenStatusEffect o) {
+        int speedComparison = Double.compare(this.speedModifier, o.speedModifier);
+        if (speedComparison == -1 || speedComparison == 1) return speedComparison; // better or worse, not equal
 
-        return false;
+        return Integer.compare(this.getRemainingTicks(), o.getRemainingTicks());
     }
 
     @Override

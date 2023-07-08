@@ -131,7 +131,7 @@ public class SingleEnemyTDMob extends SingleTDMob implements LivingTDEnemyMob {
 
     private void updatePos() {
         double movement = this.level.getMovementSpeed();
-        for (SpeedModifier speedModifier : this.speedModifiers) movement *= speedModifier.getModifier();
+        for (SpeedModifier speedModifier : this.speedModifiers) movement *= speedModifier.getSpeedModifier();
 
         Pos oldPos = this.getPosition();
         Pos newPos = this.modifyPosition(movement);

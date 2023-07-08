@@ -4,21 +4,47 @@ import net.kyori.adventure.text.Component;
 import net.minestom.server.Tickable;
 import org.jetbrains.annotations.NotNull;
 
-public interface StatusEffect<T extends StatusEffect> extends Tickable {
+import java.util.concurrent.atomic.AtomicInteger;
 
-    void remove();
+public abstract class StatusEffect<T extends StatusEffect> implements Tickable, Comparable<T> {
+    private final AtomicInteger ticksAlive = new AtomicInteger();
 
-    boolean isRemoved();
+    private final int ticksToLive;
 
-    int remainingTicks();
+    private boolean removed = false;
 
-    @NotNull StatusEffectType type();
+    protected StatusEffect(int ticksToLive) {
+        this.ticksToLive = ticksToLive;
+    }
 
-    @NotNull Component getIcon();
+    @Override
+    public void tick(long time) {
+        if (this.isRemoved()) return;
+        if (this.getRemainingTicks() <= 0) {
+            this.remove();
+            return;
+        }
 
-    /**
-     * @return true if this is better than the passed in effect
-     */
-    boolean isBetterThan(T other);
+        this.ticksAlive.incrementAndGet();
+    }
 
+    public void remove() {
+        this.removed = true;
+    }
+
+    public boolean isRemoved() {
+        return this.removed;
+    }
+
+    public int getTicksAlive() {
+        return this.ticksAlive.get();
+    }
+
+    public int getRemainingTicks() {
+        return this.ticksToLive - this.ticksAlive.get();
+    }
+
+    public abstract @NotNull StatusEffectType type();
+
+    public abstract @NotNull Component getIcon();
 }
