@@ -58,11 +58,11 @@ public class ArcherTower extends PlacedAttackingTower<AttackingTowerLevel> {
         Point fPoint = this.getFiringPoint(targetPos);
         double distanceToTarget = fPoint.distance(targetPos);
 
-        double speed = (distanceToTarget / 3.5);
+        double speed = (distanceToTarget / 4.5);
 
         // NOTE: We can't expand the bounding box of the arrow MORE, or it will collide with the tower.
         this.fakeShooter.lookAt(targetPos);
-        ArcGuidedProjectile projectile = new ArcGuidedProjectile(this.fakeShooter, EntityType.ARROW, speed, 1.10);
+        ArcGuidedProjectile projectile = new ArcGuidedProjectile(EntityType.ARROW, this.fakeShooter, speed, 1.10);
         projectile.setBoundingBox(projectile.getBoundingBox().expand(0.2, 0.2, 0.2));
         projectile.shoot(this.instance, fPoint, targetPos);
 

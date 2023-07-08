@@ -88,7 +88,7 @@ public abstract class ProjectileParent extends Entity {
 
     protected abstract void onTick(Pos currentPos, Vec stepped);
 
-    abstract CompletableFuture<Pos> updatePosition(long time);
+    protected abstract CompletableFuture<Pos> updatePosition(long time);
 
     @Override
     public void tick(long time) {

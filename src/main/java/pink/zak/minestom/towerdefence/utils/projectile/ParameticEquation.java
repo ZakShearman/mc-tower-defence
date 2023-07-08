@@ -8,20 +8,20 @@ public record ParameticEquation(double a, double b, double c) {
         return a * x * x + b * x + c;
     }
 
-    public static ParameticEquation calculateMovement(double p1x, double p1y, double p2x, double p2y, double p3x, double p3y) {
-        if (Math.abs(p1x - p3x) < 0.01) return new ParameticEquation(0, 0, p1y);
+    public static ParameticEquation calculateMovement(double fromX, double fromY, double maxX, double maxY, double toX, double p3y) {
+        if (Math.abs(fromX - toX) < 0.01) return new ParameticEquation(0, 0, fromY);
 
-        double h0 = p1y / (p1x * p1x);
-        double h1 = 1 / p1x;
-        double h2 = 1 / (p1x * p1x);
+        double h0 = fromY / (fromX * fromX);
+        double h1 = 1 / fromX;
+        double h2 = 1 / (fromX * fromX);
 
-        double h3 = p2y / p2x;
-        double h4 = p2x;
-        double h5 = 1 / p2x;
+        double h3 = maxY / maxX;
+        double h4 = maxX;
+        double h5 = 1 / maxX;
 
         double h6 = p3y;
-        double h7 = p3x * p3x;
-        double h8 = p3x;
+        double h7 = toX * toX;
+        double h8 = toX;
 
         double v = h1 * (h4 - h5 * h7) + h5 * h8 + h2 * (h7 - h4 * h8) - 1;
 

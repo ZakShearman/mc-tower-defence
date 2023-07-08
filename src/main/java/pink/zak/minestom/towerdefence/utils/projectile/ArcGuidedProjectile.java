@@ -16,15 +16,15 @@ import java.util.concurrent.CompletableFuture;
  * @author <a href="https://github.com/iam4722202468">iam4722202468</a>
  */
 public class ArcGuidedProjectile extends ProjectileParent {
-    final double xStep;
-    final double zStep;
-
     private double currentStep = 0;
     private ParameticEquation movement;
     private int percent = 21;
 
+    // Origins
     private double cx;
+    private double cy;
     private double cz;
+
     private double stepX;
     private double stepZ;
     private double stepSize;
@@ -34,17 +34,13 @@ public class ArcGuidedProjectile extends ProjectileParent {
 
     private Vec nextPos;
 
-    public ArcGuidedProjectile(Entity shooter, EntityType type, double speed, double power) {
+    public ArcGuidedProjectile(EntityType type, Entity shooter, double speed, double power) {
         super(shooter, type);
 
         this.setNoGravity(true);
 
         this.speed = Math.max(0.1, speed);
         this.power = Math.max(0.1, power);
-
-        float yaw = shooter.getPosition().yaw();
-        xStep = Math.sin(Math.toRadians(yaw));
-        zStep = Math.cos(Math.toRadians(yaw));
     }
 
     public CompletableFuture<Entity> shoot(Instance instance, Point from, Point to) {
@@ -82,6 +78,7 @@ public class ArcGuidedProjectile extends ProjectileParent {
         double stepZ = dz * stepSize;
 
         this.cx = from.x();
+        this.cy = from.y();
         this.cz = from.z();
 
         this.stepX = stepX;
@@ -98,19 +95,21 @@ public class ArcGuidedProjectile extends ProjectileParent {
         float pitch = -(float) Math.toDegrees(Math.atan2(diff.y(), Math.sqrt(diff.x() * diff.x() + diff.z() * diff.z())));
 
         return this.setInstance(instance, new Pos(from.x(), from.y(), from.z(), yaw, pitch))
-            .whenComplete((result, throwable) -> {
-                if (throwable != null) {
-                    throwable.printStackTrace();
-                } else {
-                    this.setVelocity(diff.div(40));
-                }
-            }).thenApply(entity -> this);
+                .whenComplete((result, throwable) -> {
+                    if (throwable != null) {
+                        throwable.printStackTrace();
+                    } else {
+                        this.setVelocity(diff.div(40));
+                    }
+                }).thenApply(entity -> this);
     }
 
     @Override
-    public void refreshPosition(@NotNull Pos newPosition) { }
+    public void refreshPosition(@NotNull Pos newPosition) {
+    }
 
-    public CompletableFuture<Pos> updatePosition(long time) {
+    @Override
+    protected CompletableFuture<Pos> updatePosition(long time) {
         if (movement == null) return CompletableFuture.completedFuture(null);
         Vec lastPos = nextPos;
 
