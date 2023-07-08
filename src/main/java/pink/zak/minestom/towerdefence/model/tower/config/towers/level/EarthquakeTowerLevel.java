@@ -14,6 +14,7 @@ public class EarthquakeTowerLevel extends AttackingTowerLevel {
     private final @NotNull Set<RelativePoint> relativeShulkerBoxes;
     private final int shulkerAnimationTicks;
     private final int stunTicks;
+    private final int stunCooldownMillis;
 
     public EarthquakeTowerLevel(@NotNull JsonObject jsonObject) {
         super("Earthquake", jsonObject);
@@ -25,6 +26,7 @@ public class EarthquakeTowerLevel extends AttackingTowerLevel {
 
         this.shulkerAnimationTicks = jsonObject.get("shulkerAnimationTicks").getAsInt();
         this.stunTicks = jsonObject.get("stunTicks").getAsInt();
+        this.stunCooldownMillis = jsonObject.get("stunCooldownTicks").getAsInt() * 50;
     }
 
     public @NotNull Set<RelativePoint> getRelativeShulkerBoxes() {
@@ -37,5 +39,9 @@ public class EarthquakeTowerLevel extends AttackingTowerLevel {
 
     public int getStunTicks() {
         return this.stunTicks;
+    }
+
+    public int getStunCooldownMillis() {
+        return this.stunCooldownMillis;
     }
 }

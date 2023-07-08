@@ -13,24 +13,24 @@
 
   "relativeFiringPoints": [
     {
-      "xOffset": -1.5,
+      "xOffset": -2,
       "yOffset": 5,
       "zOffset": 0
     },
     {
-      "xOffset": 1.5,
+      "xOffset": 2,
       "yOffset": 5,
       "zOffset": 0
     },
     {
       "xOffset": 0,
       "yOffset": 5,
-      "zOffset": -1.5
+      "zOffset": -2
     },
     {
       "xOffset": 0,
       "yOffset": 5,
-      "zOffset": 1.5
+      "zOffset": 2
     }
   ]
 }

@@ -8,6 +8,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.Player;
 import net.minestom.server.instance.Instance;
+import net.minestom.server.tag.Taggable;
 import net.minestom.server.timer.Task;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -35,7 +36,7 @@ import pink.zak.minestom.towerdefence.utils.StringUtils;
 import java.util.Map;
 import java.util.Set;
 
-public interface LivingTDEnemyMob extends LivingTDMob {
+public interface LivingTDEnemyMob extends LivingTDMob, Taggable {
 
     static LivingTDEnemyMob create(GameHandler gameHandler, EnemyMob enemyMob, int level, Instance instance, TowerMap map, GameUser gameUser) {
         EntityType entityType = enemyMob.getLevel(level).getEntityType();
@@ -78,16 +79,12 @@ public interface LivingTDEnemyMob extends LivingTDMob {
         return this.getEnemyMobLevel().getHealth();
     }
 
-    ;
-
     @NotNull EnemyMobLevel getEnemyMobLevel();
 
     @Override
     default int getLevel() {
         return this.getEnemyMobLevel().getLevel();
     }
-
-    ;
 
     double getTotalDistanceMoved();
 
@@ -143,4 +140,6 @@ public interface LivingTDEnemyMob extends LivingTDMob {
     default @NotNull NecromancerTower.NecromancedMob necromancedVersion(NecromancerTower tower, NecromancerTowerLevel towerLevel, GameUser towerOwner) {
         return new NecromancerTower.NecromancedMob(tower, towerLevel, this, towerOwner);
     }
+
+
 }

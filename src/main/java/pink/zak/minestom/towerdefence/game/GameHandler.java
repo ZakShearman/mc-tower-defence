@@ -191,7 +191,7 @@ public class GameHandler {
     private void shutdownTask() {
         Instant startTime = Instant.now();
         AtomicReference<BossBar> lastBossBar = new AtomicReference<>(null);
-        Task task = MinecraftServer.getSchedulerManager().buildTask(() -> {
+        Task bossBarTask = MinecraftServer.getSchedulerManager().buildTask(() -> {
                     int remainingSeconds = 30 - (int) Duration.between(startTime, Instant.now()).getSeconds();
                     float progress = remainingSeconds / 30f;
                     Component text;
@@ -211,7 +211,7 @@ public class GameHandler {
                 .schedule();
 
         MinecraftServer.getSchedulerManager().buildTask(() -> {
-                    task.cancel();
+                    bossBarTask.cancel();
 
                     if (Environment.isProduction()) {
                         KurushimiMinestomUtils.sendToLobby(MinecraftServer.getConnectionManager().getOnlinePlayers(), () -> {

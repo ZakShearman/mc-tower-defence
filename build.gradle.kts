@@ -21,14 +21,18 @@ repositories {
 }
 
 dependencies {
-    implementation("dev.emortal.minestom:core:0168925")
+    implementation("dev.emortal.minestom:core:9a188df") {
+        exclude("net.minestom")
+        exclude("dev.hollowcube")
+        exclude("com.github.hollow-cube")
+    }
 
 //    implementation("com.github.hollow-cube.common:schem:e297e8f999")
     implementation("com.github.ZakShearman.common:schem:fix~argument-block-state-SNAPSHOT") {
         exclude("net.minestom.server", "Minestom")
     }
 
-//    implementation("dev.hollowcube:minestom-ce:7f3144337d")
+    implementation("dev.hollowcube:minestom-ce:dev")
 
     // TNT world format
     implementation("dev.hollowcube:polar:1.3.1")

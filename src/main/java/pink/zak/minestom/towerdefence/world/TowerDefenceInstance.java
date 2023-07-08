@@ -8,6 +8,7 @@ import lombok.SneakyThrows;
 import net.hollowcube.polar.PolarLoader;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.instance.Chunk;
+import net.minestom.server.instance.IChunkLoader;
 import net.minestom.server.instance.InstanceContainer;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.tag.Tag;
@@ -49,7 +50,7 @@ public class TowerDefenceInstance extends InstanceContainer {
 
     @SneakyThrows
     public TowerDefenceInstance(DimensionType dimensionType, String worldName) {
-        super(UUID.randomUUID(), dimensionType, null);
+        super(UUID.randomUUID(), dimensionType, (IChunkLoader) null);
         Path mapPath = MAP_PATH.resolve(worldName);
 
         PolarLoader loader = new PolarLoader(mapPath.resolve("world.polar"));

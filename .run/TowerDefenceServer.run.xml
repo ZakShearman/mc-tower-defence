@@ -6,7 +6,6 @@
     </envs>
     <option name="MAIN_CLASS_NAME" value="pink.zak.minestom.towerdefence.TowerDefenceServer" />
     <module name="towerdefence.main" />
-    <option name="VM_PARAMETERS" value="-Dminestom.viewable-packet=false" />
     <option name="WORKING_DIRECTORY" value="run" />
     <extension name="coverage">
       <pattern>
