@@ -21,7 +21,7 @@ repositories {
 }
 
 dependencies {
-    implementation("dev.emortal.minestom:core:9a188df") {
+    implementation("dev.emortal.minestom:core:9d91cc0") {
         exclude("net.minestom")
         exclude("dev.hollowcube")
         exclude("com.github.hollow-cube")
