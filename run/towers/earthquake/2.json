@@ -1,12 +1,9 @@
 {
   "level": 2,
   "cost": 1,
-  "fireDelay": 15,
+  "fireDelay": 55,
   "damage": 0,
   "range": 10,
-
-  "speedModifier": 0.8,
-  "tickDuration": 20,
 
   "menuItem": {
     "material": "minecraft:cracked_stone_bricks",
@@ -17,5 +14,30 @@
       ""
     ]
   },
+
+  "relativeShulkerBoxes": [
+    {
+      "xOffset": -1,
+      "yOffset": 2,
+      "zOffset": 1
+    },
+    {
+      "xOffset": -1,
+      "yOffset": 2,
+      "zOffset": -1
+    },
+    {
+      "xOffset": 1,
+      "yOffset": 2,
+      "zOffset": 1
+    },
+    {
+      "xOffset": 1,
+      "yOffset": 2,
+      "zOffset": -1
+    }
+  ],
+  "shulkerAnimationTicks": 25,
+
   "relativeBlocks": [{"xOffset":-1,"yOffset":1,"zOffset":-1,"block":{"material":"minecraft:polished_andesite"}},{"xOffset":0,"yOffset":1,"zOffset":-1,"block":{"material":"minecraft:andesite"}},{"xOffset":1,"yOffset":1,"zOffset":-1,"block":{"material":"minecraft:polished_andesite"}},{"xOffset":-1,"yOffset":1,"zOffset":0,"block":{"material":"minecraft:andesite"}},{"xOffset":0,"yOffset":1,"zOffset":0,"block":{"material":"minecraft:stone"}},{"xOffset":1,"yOffset":1,"zOffset":0,"block":{"material":"minecraft:andesite"}},{"xOffset":-1,"yOffset":1,"zOffset":1,"block":{"material":"minecraft:polished_andesite"}},{"xOffset":0,"yOffset":1,"zOffset":1,"block":{"material":"minecraft:andesite"}},{"xOffset":1,"yOffset":1,"zOffset":1,"block":{"material":"minecraft:polished_andesite"}},{"xOffset":-1,"yOffset":2,"zOffset":-1,"block":{"material":"minecraft:gray_shulker_box","properties":["facing=up"]}},{"xOffset":1,"yOffset":2,"zOffset":-1,"block":{"material":"minecraft:gray_shulker_box","properties":["facing=up"]}},{"xOffset":0,"yOffset":2,"zOffset":0,"block":{"material":"minecraft:stone"}},{"xOffset":-1,"yOffset":2,"zOffset":1,"block":{"material":"minecraft:gray_shulker_box","properties":["facing=up"]}},{"xOffset":1,"yOffset":2,"zOffset":1,"block":{"material":"minecraft:gray_shulker_box","properties":["facing=up"]}},{"xOffset":0,"yOffset":3,"zOffset":-1,"block":{"material":"minecraft:andesite_wall","properties":["south=low","up=true"]}},{"xOffset":-1,"yOffset":3,"zOffset":0,"block":{"material":"minecraft:andesite_wall","properties":["east=low","up=true"]}},{"xOffset":0,"yOffset":3,"zOffset":0,"block":{"material":"minecraft:stone"}},{"xOffset":1,"yOffset":3,"zOffset":0,"block":{"material":"minecraft:andesite_wall","properties":["up=true","west=low"]}},{"xOffset":0,"yOffset":3,"zOffset":1,"block":{"material":"minecraft:andesite_wall","properties":["north=low","up=true"]}}]
 }

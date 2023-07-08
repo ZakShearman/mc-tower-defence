@@ -18,7 +18,7 @@ public enum TowerType {
     BLIZZARD(Size.THREE, true, AttackingTower::new, BlizzardTowerLevel::new),
     BOMBER(Size.THREE, false, AttackingTower::new, BomberTowerLevel::new),
     CHARITY(Size.FIVE, false, Tower::new, CharityTowerLevel::new),
-    EARTHQUAKE(Size.THREE, false, AttackingTower::new, json -> new AttackingTowerLevel("Earthquake", json)),
+    EARTHQUAKE(Size.THREE, false, AttackingTower::new, json -> new EarthquakeTowerLevel(json)),
     LIGHTNING(Size.THREE, true, AttackingTower::new, LightningTowerLevel::new),
     NECROMANCER(Size.FIVE, true, AttackingTower::new, NecromancerTowerLevel::new);
 

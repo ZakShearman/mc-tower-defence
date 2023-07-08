@@ -21,6 +21,7 @@ public class WorldLoader {
         TowerDefenceInstance instance = new TowerDefenceInstance(DIMENSION_TYPE, "world");
         instanceManager.registerInstance(instance);
 
+        // Remove the chunk loader to save memory (like 50MB, 7MB per most chunks!)
         instance.setChunkLoader(null);
 
         return instance;

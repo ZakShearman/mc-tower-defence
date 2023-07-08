@@ -1,12 +1,9 @@
 {
   "level": 1,
   "cost": 1,
-  "fireDelay": 15,
+  "fireDelay": 60,
   "damage": 0,
   "range": 15,
-
-  "speedModifier": 0.9,
-  "tickDuration": 20,
 
   "menuItem": {
     "material": "minecraft:cracked_stone_bricks",
@@ -17,5 +14,30 @@
       ""
     ]
   },
+
+  "relativeShulkerBoxes": [
+    {
+      "xOffset": 1,
+      "yOffset": 2,
+      "zOffset": 0
+    },
+    {
+      "xOffset": -1,
+      "yOffset": 2,
+      "zOffset": 0
+    },
+    {
+      "xOffset": 0,
+      "yOffset": 2,
+      "zOffset": 1
+    },
+    {
+      "xOffset": 0,
+      "yOffset": 2,
+      "zOffset": -1
+    }
+  ],
+  "shulkerAnimationTicks": 25,
+
   "relativeBlocks": [{"xOffset":-1,"yOffset":1,"zOffset":-1,"block":{"material":"minecraft:gravel"}},{"xOffset":0,"yOffset":1,"zOffset":-1,"block":{"material":"minecraft:gravel"}},{"xOffset":1,"yOffset":1,"zOffset":-1,"block":{"material":"minecraft:gravel"}},{"xOffset":-1,"yOffset":1,"zOffset":0,"block":{"material":"minecraft:gravel"}},{"xOffset":0,"yOffset":1,"zOffset":0,"block":{"material":"minecraft:gravel"}},{"xOffset":1,"yOffset":1,"zOffset":0,"block":{"material":"minecraft:gravel"}},{"xOffset":-1,"yOffset":1,"zOffset":1,"block":{"material":"minecraft:gravel"}},{"xOffset":0,"yOffset":1,"zOffset":1,"block":{"material":"minecraft:gravel"}},{"xOffset":1,"yOffset":1,"zOffset":1,"block":{"material":"minecraft:gravel"}},{"xOffset":0,"yOffset":2,"zOffset":-1,"block":{"material":"minecraft:light_gray_shulker_box","properties":["facing=north"]}},{"xOffset":-1,"yOffset":2,"zOffset":0,"block":{"material":"minecraft:light_gray_shulker_box","properties":["facing=west"]}},{"xOffset":0,"yOffset":2,"zOffset":0,"block":{"material":"minecraft:tuff"}},{"xOffset":1,"yOffset":2,"zOffset":0,"block":{"material":"minecraft:light_gray_shulker_box","properties":["facing=east"]}},{"xOffset":0,"yOffset":2,"zOffset":1,"block":{"material":"minecraft:light_gray_shulker_box","properties":["facing=south"]}}]
 }
