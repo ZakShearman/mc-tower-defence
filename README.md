@@ -5,10 +5,22 @@ A tower defence plugin inspired by Cubecraft's tower defence and Bloons TD
 
 ## Project Status
 
-A live version is availabe on towerdefence.cc, although it's not ready for production yet and is still in dev.
+A live **ALPHA** version is availabe on k8s.emortal.dev. It is still under heavy development and not ready for release.
 Feel free to use the project for fun and experimentation.
 
 ## Requirements
 
   - Java 17+
   - 256MB RAM (recommended 512MB)
+
+## Running Locally
+
+You can run TowerDefence locally! This is only intended for development usage so it functions a bit differently but you can totally play locally.
+
+1. Clone the project
+2. Open the project in your IDE
+3. Create a run configuration to run the class `pink.zak.minestom.towerdefence.TowerDefenceServer`. Set these environment variables: `DEV_MODE=true;ENABLE_TEST_MODE=false`
+4. Run the server and execute `/forcestart` to start the game.
+
+⚠️ Some features may be missing as they depend on our production servers (e.g. player data saving and game history)
+⚠️ You will see quite a few things being logged as disabled. These are other features part of our core production system. That's fine.
