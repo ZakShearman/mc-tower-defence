@@ -26,6 +26,7 @@ import pink.zak.minestom.towerdefence.model.mob.living.types.skeleton.SkeletonLi
 import pink.zak.minestom.towerdefence.model.mob.modifier.SpeedModifier;
 import pink.zak.minestom.towerdefence.model.mob.statuseffect.StatusEffect;
 import pink.zak.minestom.towerdefence.model.mob.statuseffect.StatusEffectType;
+import pink.zak.minestom.towerdefence.model.prediction.DamagePredictable;
 import pink.zak.minestom.towerdefence.model.tower.config.towers.level.NecromancerTowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
 import pink.zak.minestom.towerdefence.model.tower.placed.types.NecromancerTower;
@@ -36,7 +37,7 @@ import pink.zak.minestom.towerdefence.utils.StringUtils;
 import java.util.Map;
 import java.util.Set;
 
-public interface LivingTDEnemyMob extends LivingTDMob, Taggable {
+public interface LivingTDEnemyMob extends LivingTDMob, Taggable, DamagePredictable {
 
     static LivingTDEnemyMob create(GameHandler gameHandler, EnemyMob enemyMob, int level, Instance instance, TowerMap map, GameUser gameUser) {
         EntityType entityType = enemyMob.getLevel(level).getEntityType();

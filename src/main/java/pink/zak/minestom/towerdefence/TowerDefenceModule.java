@@ -4,14 +4,11 @@ import dev.emortal.api.modules.ModuleData;
 import dev.emortal.api.modules.ModuleEnvironment;
 import dev.emortal.minestom.core.module.MinestomModule;
 import dev.emortal.minestom.core.module.kubernetes.KubernetesModule;
-import net.kyori.adventure.text.Component;
 import net.minestom.server.MinecraftServer;
-import net.minestom.server.adventure.audience.Audiences;
 import net.minestom.server.command.CommandManager;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.event.Event;
 import net.minestom.server.event.EventNode;
-import net.minestom.server.event.entity.projectile.ProjectileCollideWithBlockEvent;
 import net.minestom.server.event.player.PlayerLoginEvent;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.agones.AgonesManager;
@@ -45,10 +42,6 @@ public class TowerDefenceModule extends MinestomModule {
 
     protected TowerDefenceModule(@NotNull ModuleEnvironment environment) {
         super(environment);
-
-        MinecraftServer.getGlobalEventHandler().addListener(ProjectileCollideWithBlockEvent.class, event -> {
-            Audiences.all().sendMessage(Component.text("Projectile %s collided with block at %s".formatted(event.getEntity().getEntityId(), event.getCollisionPosition().asVec())));
-        });
 
         this.kubernetesModule = super.getModule(KubernetesModule.class);
         this.agonesManager = new AgonesManager(this.kubernetesModule);

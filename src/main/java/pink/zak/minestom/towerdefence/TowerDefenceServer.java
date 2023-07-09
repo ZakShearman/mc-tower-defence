@@ -11,6 +11,6 @@ public class TowerDefenceServer {
                 .commonModules()
                 .module(MonitoringModule.class, MonitoringModule::new)
                 .module(TowerDefenceModule.class, TowerDefenceModule::new)
-                .build();
+                .buildAndStart();
     }
 }

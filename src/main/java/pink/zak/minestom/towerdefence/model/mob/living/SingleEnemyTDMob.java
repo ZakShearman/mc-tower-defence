@@ -31,6 +31,7 @@ import pink.zak.minestom.towerdefence.model.mob.config.EnemyMobLevel;
 import pink.zak.minestom.towerdefence.model.mob.modifier.SpeedModifier;
 import pink.zak.minestom.towerdefence.model.mob.statuseffect.StatusEffect;
 import pink.zak.minestom.towerdefence.model.mob.statuseffect.StatusEffectType;
+import pink.zak.minestom.towerdefence.model.prediction.DamagePredictionHandler;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedTower;
 import pink.zak.minestom.towerdefence.model.tower.placed.types.CharityTower;
@@ -56,6 +57,8 @@ public class SingleEnemyTDMob extends SingleTDMob implements LivingTDEnemyMob {
     protected final EnemyMobLevel level;
     protected final Team team;
     protected final GameUser sender;
+
+    private final DamagePredictionHandler damagePredictionHandler = new DamagePredictionHandler(() -> this.health);
 
     protected final int positionModifier;
     protected final List<PathCorner> corners;
@@ -344,5 +347,10 @@ public class SingleEnemyTDMob extends SingleTDMob implements LivingTDEnemyMob {
     @Override
     public @NotNull MobHandler getMobHandler() {
         return mobHandler;
+    }
+
+    @Override
+    public @NotNull DamagePredictionHandler damagePredictionHandler() {
+        return this.damagePredictionHandler;
     }
 }

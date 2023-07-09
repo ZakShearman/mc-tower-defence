@@ -9,6 +9,7 @@ import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.LivingEntity;
 import net.minestom.server.event.EventFilter;
 import net.minestom.server.event.EventNode;
+import net.minestom.server.event.entity.projectile.ProjectileCollideWithBlockEvent;
 import net.minestom.server.event.entity.projectile.ProjectileCollideWithEntityEvent;
 import net.minestom.server.event.trait.InstanceEvent;
 import net.minestom.server.instance.Instance;
@@ -16,6 +17,7 @@ import net.minestom.server.item.Material;
 import net.minestom.server.utils.Direction;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingTDEnemyMob;
+import pink.zak.minestom.towerdefence.model.prediction.Prediction;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTower;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.config.towers.ArcherTowerConfig;
@@ -53,6 +55,9 @@ public class ArcherTower extends PlacedAttackingTower<AttackingTowerLevel> {
     // todo predict that we will kill the entity and don't target that entity any more.
     private void betterFire() {
         LivingTDEnemyMob target = this.targets.get(0);
+        float damage = this.level.getDamage();
+        Prediction prediction = target.addDamagePrediction(damage);
+
         Pos targetPos = target.getPosition().add(0, target.getEyeHeight() / 2, 0);
 
         Point fPoint = this.getFiringPoint(targetPos);
@@ -62,7 +67,7 @@ public class ArcherTower extends PlacedAttackingTower<AttackingTowerLevel> {
 
         // NOTE: We can't expand the bounding box of the arrow MORE, or it will collide with the tower.
         this.fakeShooter.lookAt(targetPos);
-        ArcGuidedProjectile projectile = new ArcGuidedProjectile(EntityType.ARROW, this.fakeShooter, speed, 1.10);
+        ArcGuidedProjectile projectile = new ArcGuidedProjectile(EntityType.ARROW, this.fakeShooter, speed, 1.15);
         projectile.setBoundingBox(projectile.getBoundingBox().expand(0.2, 0.2, 0.2));
         projectile.shoot(this.instance, fPoint, targetPos);
 
@@ -82,8 +87,16 @@ public class ArcherTower extends PlacedAttackingTower<AttackingTowerLevel> {
             }
 
 //            livingEntity.setArrowCount(livingEntity.getArrowCount() + 1); // todo
+            prediction.destroy();
             eventEntity.remove();
             tdEnemyMob.damage(this, this.getLevel().getDamage());
+        }).addListener(ProjectileCollideWithBlockEvent.class, event -> {
+            Entity eventEntity = event.getEntity();
+            if (eventEntity != projectile) return;
+
+            prediction.destroy();
+            eventEntity.remove();
+            Audiences.all().sendMessage(Component.text("Arrow %s missed".formatted(eventEntity.getEntityId())));
         });
     }
 

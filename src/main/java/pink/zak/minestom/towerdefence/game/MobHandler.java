@@ -10,6 +10,7 @@ import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
 import pink.zak.minestom.towerdefence.model.mob.QueuedEnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingTDEnemyMob;
+import pink.zak.minestom.towerdefence.model.prediction.DamagePredictable;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.utils.TDEnvUtils;
@@ -75,6 +76,7 @@ public class MobHandler {
     // todo is there a way other than recalculating every time? Sure this is easy, but not great on performance
     private void updateAttackingTowers(@NotNull Team team) {
         List<LivingTDEnemyMob> distanceSortedMobs = new ArrayList<>(this.getMobs(team));
+        distanceSortedMobs.removeIf(DamagePredictable::isPredictedDead);
         distanceSortedMobs.sort(Comparator.comparingDouble(LivingTDEnemyMob::getTotalDistanceMoved).reversed());
 
         for (PlacedAttackingTower<?> tower : this.towerHandler.getTowers(team)
