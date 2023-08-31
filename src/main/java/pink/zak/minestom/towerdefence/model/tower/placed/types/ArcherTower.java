@@ -1,6 +1,7 @@
 package pink.zak.minestom.towerdefence.model.tower.placed.types;
 
 import net.kyori.adventure.text.Component;
+import net.minestom.server.MinecraftServer;
 import net.minestom.server.adventure.audience.Audiences;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Pos;
@@ -14,7 +15,9 @@ import net.minestom.server.event.entity.projectile.ProjectileCollideWithEntityEv
 import net.minestom.server.event.trait.InstanceEvent;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.item.Material;
+import net.minestom.server.timer.Task;
 import net.minestom.server.utils.Direction;
+import net.minestom.server.utils.time.TimeUnit;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingTDEnemyMob;
 import pink.zak.minestom.towerdefence.model.prediction.Prediction;
@@ -49,10 +52,10 @@ public class ArcherTower extends PlacedAttackingTower<AttackingTowerLevel> {
         this.fakeShooter.setInstance(this.instance, this.basePoint.add(0, 4, 0));
     }
 
+    // TODO it regularly misses on short distances when firing completely straight from the tower as the mob moves a lot in relation.
     // todo adjust arrow mid-flight
     // todo entity location prediction?
     // todo stick arrow in entity
-    // todo predict that we will kill the entity and don't target that entity any more.
     private void betterFire() {
         LivingTDEnemyMob target = this.targets.get(0);
         float damage = this.level.getDamage();
@@ -63,13 +66,26 @@ public class ArcherTower extends PlacedAttackingTower<AttackingTowerLevel> {
         Point fPoint = this.getFiringPoint(targetPos);
         double distanceToTarget = fPoint.distance(targetPos);
 
-        double speed = (distanceToTarget / 4.5);
+        double speed = 0.75 + (distanceToTarget / 3.55);
+        double expansionSpeed = 10 + (distanceToTarget / 4.5);
 
         // NOTE: We can't expand the bounding box of the arrow MORE, or it will collide with the tower.
         this.fakeShooter.lookAt(targetPos);
-        ArcGuidedProjectile projectile = new ArcGuidedProjectile(EntityType.ARROW, this.fakeShooter, speed, 1.15);
-        projectile.setBoundingBox(projectile.getBoundingBox().expand(0.2, 0.2, 0.2));
+        ArcGuidedProjectile projectile = new ArcGuidedProjectile(EntityType.ARROW, this.fakeShooter, speed, 1.25);
+        projectile.setBoundingBox(projectile.getBoundingBox().expand(0.25, 0.25, 0.25));
         projectile.shoot(this.instance, fPoint, targetPos);
+
+        double increment = 0.0125 * expansionSpeed;
+        Audiences.all().sendMessage(Component.text("Increment: %s Distance: %s Speed: %s".formatted(increment, distanceToTarget, speed)));
+
+        Task task = projectile.scheduler().buildTask(() -> {
+            Audiences.all().sendMessage(Component.text("Running arrow task for %s".formatted(projectile.getEntityId())));
+            projectile.setBoundingBox(projectile.getBoundingBox().expand(increment, increment, increment));
+        }).schedule();
+
+        projectile.scheduler().buildTask(task::cancel)
+                .delay(20L * MinecraftServer.TICK_PER_SECOND, TimeUnit.SERVER_TICK)
+                .schedule();
 
         this.eventNode.addListener(ProjectileCollideWithEntityEvent.class, event -> {
             Entity eventEntity = event.getEntity();

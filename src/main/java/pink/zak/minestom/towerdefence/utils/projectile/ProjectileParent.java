@@ -114,7 +114,8 @@ public abstract class ProjectileParent extends Entity {
 
             PhysicsResult collided = CollisionUtils.checkEntityCollisions(
                     this.instance, this.getBoundingBox(), posBefore, diff, 3,
-                    entity -> entity != this && entity != this.shooter && entity instanceof LivingTDEnemyMob,
+                    entity -> entity != this && entity != this.shooter && entity instanceof LivingTDEnemyMob
+                            && !entity.isRemoved(),
                     result
             );
 

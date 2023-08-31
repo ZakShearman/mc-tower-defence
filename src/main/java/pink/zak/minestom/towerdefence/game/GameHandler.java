@@ -3,9 +3,9 @@ package pink.zak.minestom.towerdefence.game;
 
 import dev.agones.sdk.AgonesSDKProto;
 import dev.emortal.api.agonessdk.IgnoredStreamObserver;
-import dev.emortal.api.kurushimi.KurushimiMinestomUtils;
 import dev.emortal.minestom.core.Environment;
 import dev.emortal.minestom.core.module.kubernetes.KubernetesModule;
+import dev.emortal.minestom.core.utils.KurushimiMinestomUtils;
 import dev.emortal.minestom.core.utils.ProgressBar;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;

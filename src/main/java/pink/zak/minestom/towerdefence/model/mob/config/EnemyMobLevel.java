@@ -1,7 +1,6 @@
 package pink.zak.minestom.towerdefence.model.mob.config;
 
 import com.google.gson.JsonObject;
-import lombok.ToString;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -22,7 +21,6 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-@ToString
 public class EnemyMobLevel implements Diffable<EnemyMobLevel> {
     private static final String SEND_ITEM_NAME = "<i:false><mob_name> <level_numeral>";
     private static final String UPGRADE_ITEM_NAME = "<i:false><%s><level_numeral> - <yellow>$<cost></yellow>";

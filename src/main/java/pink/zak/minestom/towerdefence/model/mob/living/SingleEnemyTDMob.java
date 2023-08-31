@@ -159,6 +159,7 @@ public class SingleEnemyTDMob extends SingleTDMob implements LivingTDEnemyMob {
         }
 
         // TODO go fix in Minestom, teleport should call setView internally as it never updates
+        // TODO NOTE: This should be fixed in ce now, test.
         this.sendPacketsToViewers(new EntityHeadLookPacket(this.getEntityId(), newPos.yaw()));
     }
 

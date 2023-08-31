@@ -1,8 +1,8 @@
 package pink.zak.minestom.towerdefence.agones;
 
-import dev.emortal.api.kurushimi.AllocationData;
-import dev.emortal.api.kurushimi.Match;
-import dev.emortal.api.kurushimi.Ticket;
+import dev.emortal.api.model.matchmaker.AllocationData;
+import dev.emortal.api.model.matchmaker.Match;
+import dev.emortal.api.model.matchmaker.Ticket;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

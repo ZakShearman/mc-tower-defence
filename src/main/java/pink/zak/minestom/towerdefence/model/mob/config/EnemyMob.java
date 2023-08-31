@@ -2,7 +2,6 @@ package pink.zak.minestom.towerdefence.model.mob.config;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import lombok.ToString;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -19,7 +18,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-@ToString
 public class EnemyMob {
     private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
 

@@ -4,7 +4,6 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dev.emortal.minestom.core.Environment;
-import lombok.SneakyThrows;
 import net.hollowcube.polar.PolarLoader;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.instance.Chunk;
@@ -24,6 +23,7 @@ import pink.zak.minestom.towerdefence.utils.FileUtils;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.util.HashSet;
@@ -48,12 +48,17 @@ public class TowerDefenceInstance extends InstanceContainer {
     private final Path towerMapPath;
     private final TowerMap towerMap;
 
-    @SneakyThrows
     public TowerDefenceInstance(DimensionType dimensionType, String worldName) {
         super(UUID.randomUUID(), dimensionType, (IChunkLoader) null);
         Path mapPath = MAP_PATH.resolve(worldName);
 
-        PolarLoader loader = new PolarLoader(mapPath.resolve("world.polar"));
+        PolarLoader loader;
+        try {
+            loader = new PolarLoader(mapPath.resolve("world.polar"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         this.setChunkLoader(loader);
 
         this.preLoadDataPath = mapPath.resolve("preload_data.json");

@@ -2,7 +2,7 @@ package pink.zak.minestom.towerdefence.agones;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import dev.agones.sdk.AgonesSDKProto;
-import dev.emortal.api.kurushimi.AllocationData;
+import dev.emortal.api.model.matchmaker.AllocationData;
 import dev.emortal.minestom.core.module.kubernetes.KubernetesModule;
 import io.grpc.stub.StreamObserver;
 import org.jetbrains.annotations.NotNull;

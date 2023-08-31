@@ -1,7 +1,8 @@
 package pink.zak.minestom.towerdefence;
 
-import dev.emortal.api.modules.ModuleData;
-import dev.emortal.api.modules.ModuleEnvironment;
+import dev.emortal.api.modules.annotation.Dependency;
+import dev.emortal.api.modules.annotation.ModuleData;
+import dev.emortal.api.modules.env.ModuleEnvironment;
 import dev.emortal.minestom.core.module.MinestomModule;
 import dev.emortal.minestom.core.module.kubernetes.KubernetesModule;
 import net.minestom.server.MinecraftServer;
@@ -23,7 +24,7 @@ import pink.zak.minestom.towerdefence.storage.TowerStorage;
 import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;
 import pink.zak.minestom.towerdefence.world.WorldLoader;
 
-@ModuleData(name = "towerdefence", required = false, softDependencies = {KubernetesModule.class})
+@ModuleData(name = "towerdefence", dependencies = @Dependency(name = "kubernetes"))
 public class TowerDefenceModule extends MinestomModule {
     private final KubernetesModule kubernetesModule;
     private final AgonesManager agonesManager;
