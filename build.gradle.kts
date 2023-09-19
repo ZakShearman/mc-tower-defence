@@ -26,7 +26,7 @@ dependencies {
     // Polar world format
     implementation("dev.hollowcube:polar:1.3.1")
 
-    implementation("com.github.ben-manes.caffeine:caffeine:3.1.6")
+    implementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
 }
 
 java {
