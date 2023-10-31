@@ -1,4 +1,4 @@
-FROM eclipse-temurin:20-jre
+FROM eclipse-temurin:21.0.1_12-jre
 
 RUN mkdir /app
 WORKDIR /app
