@@ -19,7 +19,7 @@ repositories {
 }
 
 dependencies {
-    implementation("dev.emortal.minestom:core:055a5d8")
+    implementation("dev.emortal.minestom:core:76536d4")
     implementation("dev.emortal.api:common-proto-sdk:fee482e")
 
     implementation("com.github.hollow-cube.common:schem:db5eab9512")

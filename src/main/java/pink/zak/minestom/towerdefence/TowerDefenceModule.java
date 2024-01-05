@@ -13,6 +13,7 @@ import net.minestom.server.event.Event;
 import net.minestom.server.event.EventNode;
 import net.minestom.server.event.player.PlayerLoginEvent;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import pink.zak.minestom.towerdefence.agones.GameStateManager;
 import pink.zak.minestom.towerdefence.cache.TDUserLoader;
 import pink.zak.minestom.towerdefence.command.towerdefence.TowerDefenceCommand;
@@ -28,7 +29,7 @@ import pink.zak.minestom.towerdefence.world.WorldLoader;
 @ModuleData(name = "towerdefence", dependencies = {@Dependency(name = "kubernetes"), @Dependency(name = "messaging", required = false)})
 public class TowerDefenceModule extends MinestomModule {
     private final KubernetesModule kubernetesModule;
-    private final MessagingModule messagingModule;
+    private final @Nullable MessagingModule messagingModule;
 
     private TowerDefenceInstance instance;
 
@@ -46,7 +47,7 @@ public class TowerDefenceModule extends MinestomModule {
         super(environment);
 
         this.kubernetesModule = super.getModule(KubernetesModule.class);
-        this.messagingModule = super.getModule(MessagingModule.class);
+        this.messagingModule = super.getOptionalModule(MessagingModule.class);
     }
 
     @Override
@@ -69,8 +70,7 @@ public class TowerDefenceModule extends MinestomModule {
         LobbyManager lobbyManager = new LobbyManager(this, gameStateManager);
         this.scoreboardManager = new ScoreboardManager(this, lobbyManager);
 
-        MessagingModule messagingModule = super.getOptionalModule(MessagingModule.class);
-        this.gameHandler = new GameHandler(this, lobbyManager, gameStateManager, messagingModule);
+        this.gameHandler = new GameHandler(this, lobbyManager, gameStateManager, this.messagingModule);
 
         new ProtectionHandler(this);
 

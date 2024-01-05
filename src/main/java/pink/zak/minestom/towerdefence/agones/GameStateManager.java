@@ -8,6 +8,7 @@ import dev.emortal.api.utils.kafka.FriendlyKafkaProducer;
 import dev.emortal.minestom.core.Environment;
 import dev.emortal.minestom.core.module.messaging.MessagingModule;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,10 +26,14 @@ public class GameStateManager {
 
     private GameCreationInfo gameCreationInfo;
 
-    public GameStateManager(@NotNull MessagingModule messaging) {
-        messaging.addListener(MatchCreatedMessage.class, message -> this.onMatchCreated(message.getMatch()));
+    public GameStateManager(@Nullable MessagingModule messaging) {
+        if (messaging != null) {
+            messaging.addListener(MatchCreatedMessage.class, message -> this.onMatchCreated(message.getMatch()));
+            this.kafkaProducer = messaging.getKafkaProducer();
+            return;
+        }
 
-        this.kafkaProducer = messaging.getKafkaProducer();
+        this.kafkaProducer = null;
     }
 
     private void onMatchCreated(@NotNull Match match) {

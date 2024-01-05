@@ -9,7 +9,6 @@ public class TowerDefenceServer {
     public static void main(String[] args) {
         MinestomServer.builder()
                 .commonModules()
-                .module(MonitoringModule.class, MonitoringModule::new)
                 .module(TowerDefenceModule.class, TowerDefenceModule::new)
                 .buildAndStart();
     }
