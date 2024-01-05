@@ -11,11 +11,15 @@ jobs:
       - uses: "emortalmc/actions/java/build@main"
         with:
           token: "${{ secrets.GITHUB_TOKEN }}"
+          java-version: "21"
+          java-distribution: "zulu"
 
   deploy:
     needs: "build"
     runs-on: "ubuntu-latest"
     steps:
-      - uses: "emortalmc/actions/k8s-sync@main"
+      - uses: "emortalmc/actions/argo-sync@main"
         with:
-          manifest-path: "fleet.yaml"
+          deployment-name: "tower-defence"
+          values-path: "server/values/tower-defence.yaml"
+          deployments-repo-token: "${{ secrets.DEPLOYMENTS_REPO_TOKEN }}"
