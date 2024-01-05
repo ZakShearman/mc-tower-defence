@@ -3,6 +3,7 @@ package pink.zak.minestom.towerdefence;
 import dev.emortal.api.modules.annotation.Dependency;
 import dev.emortal.api.modules.annotation.ModuleData;
 import dev.emortal.api.modules.env.ModuleEnvironment;
+import dev.emortal.minestom.core.Environment;
 import dev.emortal.minestom.core.module.MinestomModule;
 import dev.emortal.minestom.core.module.kubernetes.KubernetesModule;
 import dev.emortal.minestom.core.module.messaging.MessagingModule;
@@ -12,6 +13,7 @@ import net.minestom.server.coordinate.Pos;
 import net.minestom.server.event.Event;
 import net.minestom.server.event.EventNode;
 import net.minestom.server.event.player.PlayerLoginEvent;
+import net.minestom.server.extras.lan.OpenToLAN;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pink.zak.minestom.towerdefence.agones.GameStateManager;
@@ -78,6 +80,8 @@ public class TowerDefenceModule extends MinestomModule {
         commandManager.register(new TowerDefenceCommand(this));
 
         MinecraftServer.getConnectionManager().setPlayerProvider(this.userCache);
+
+        if (!Environment.isProduction()) OpenToLAN.open();
 
         return true;
     }
