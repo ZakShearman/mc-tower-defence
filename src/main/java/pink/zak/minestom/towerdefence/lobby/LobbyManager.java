@@ -1,5 +1,6 @@
 package pink.zak.minestom.towerdefence.lobby;
 
+import dev.emortal.minestom.core.Environment;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.event.Event;
@@ -25,8 +26,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class LobbyManager {
     private static final GlobalEventHandler GLOBAL_EVENT_HANDLER = MinecraftServer.getGlobalEventHandler();
-
-    private static final Boolean DEV_MODE = Boolean.valueOf(System.getenv("DEV_MODE"));
 
     private final @NotNull EventNode<Event> eventNode = EventNode.all("lobby-manager");
 
@@ -59,7 +58,7 @@ public class LobbyManager {
         });
 
         new SpawnItemHandler(this);
-        if (DEV_MODE) {
+        if (!Environment.isProduction()) {
             new DevLobbyStartingManager(this, module);
         } else {
             new ProdLobbyStartingManager(this, module, gameStateManager);
