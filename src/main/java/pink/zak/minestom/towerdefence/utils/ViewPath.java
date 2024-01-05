@@ -18,8 +18,8 @@ public class ViewPath {
     }
 
     public static boolean isClear(Player player, GameMode gameMode) {
-        if (gameMode == GameMode.SPECTATOR)
-            throw new IllegalArgumentException("gameMode cannot be SPECTATOR");
+        if (gameMode == GameMode.SPECTATOR) throw new IllegalArgumentException("gameMode cannot be SPECTATOR");
+
         return isClear(player, gameMode == GameMode.CREATIVE ? 6 : 5);
     }
 

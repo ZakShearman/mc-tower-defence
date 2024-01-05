@@ -1,36 +1,28 @@
 package pink.zak.minestom.towerdefence.agones;
 
-import dev.emortal.api.model.matchmaker.AllocationData;
 import dev.emortal.api.model.matchmaker.Match;
-import dev.emortal.api.model.matchmaker.Ticket;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.time.Instant;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-public record GameCreationInfo(@NotNull Instant allocationTime, // Provided by implementation, below is provided by allocation data
-                               @Nullable String mapId, @NotNull String gameModeId,
-                               @NotNull Set<UUID> playerIds, @NotNull AllocationData rawData) {
+/*
+ * The map ID, game mode ID, and player IDs would usually come from the matchmaker, when running in the standard environment.
+ * The allocation time comes from the implementation (the game SDK).
+ */
+public record GameCreationInfo(@NotNull Match match, @NotNull Set<UUID> playerIds) {
 
-    public static @NotNull GameCreationInfo fromAllocationData(@NotNull Instant allocationTime, @NotNull AllocationData data) {
-        Match match = data.getMatch();
+    public @NotNull String id() {
+        return this.match.getId();
+    }
 
-        Set<UUID> playerIds = new HashSet<>();
-        for (Ticket ticket : match.getTicketsList()) {
-            for (String playerId : ticket.getPlayerIdsList()) {
-                playerIds.add(UUID.fromString(playerId));
-            }
-        }
+    public @Nullable String mapId() {
+        if (!this.match.hasMapId()) return null;
+        return this.match.getMapId();
+    }
 
-        return new GameCreationInfo(
-                allocationTime,
-                match.hasMapId() ? match.getMapId() : null,
-                match.getGameModeId(),
-                playerIds,
-                data
-        );
+    public @NotNull String gameModeId() {
+        return this.match.getGameModeId();
     }
 }

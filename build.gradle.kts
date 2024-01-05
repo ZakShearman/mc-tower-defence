@@ -19,32 +19,26 @@ repositories {
 }
 
 dependencies {
-    implementation("dev.emortal.minestom:core:9c52249")
+    implementation("dev.emortal.minestom:core:055a5d8")
+    implementation("dev.emortal.api:common-proto-sdk:fee482e")
 
     implementation("com.github.hollow-cube.common:schem:db5eab9512")
 
     // Polar world format
-    implementation("dev.hollowcube:polar:1.3.1")
+    implementation("dev.hollowcube:polar:1.3.2")
 
-    implementation("com.github.ben-manes.caffeine:caffeine:3.1.6")
+    implementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
 }
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(20))
+        languageVersion.set(JavaLanguageVersion.of(21))
     }
 }
 
 tasks {
     withType<JavaCompile> {
         options.encoding = "UTF-8"
-    }
-
-    compileJava {
-        options.compilerArgs.addAll(listOf(
-            "--release", "20",
-            "--enable-preview"
-        ))
     }
 
     shadowJar {

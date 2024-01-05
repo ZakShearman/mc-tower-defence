@@ -9,7 +9,7 @@ import net.minestom.server.event.player.PlayerDisconnectEvent;
 import net.minestom.server.event.player.PlayerSpawnEvent;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.TowerDefenceModule;
-import pink.zak.minestom.towerdefence.agones.AgonesManager;
+import pink.zak.minestom.towerdefence.agones.GameStateManager;
 import pink.zak.minestom.towerdefence.api.event.player.PlayerTeamSwitchEvent;
 import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.lobby.starting.DevLobbyStartingManager;
@@ -35,7 +35,7 @@ public class LobbyManager {
 
     private final TowerDefenceModule module;
 
-    public LobbyManager(TowerDefenceModule module, AgonesManager agonesManager) {
+    public LobbyManager(TowerDefenceModule module, GameStateManager gameStateManager) {
         this.teamPlayerCount.put(Team.RED, new AtomicInteger(0));
         this.teamPlayerCount.put(Team.BLUE, new AtomicInteger(0));
         this.module = module;
@@ -62,7 +62,7 @@ public class LobbyManager {
         if (DEV_MODE) {
             new DevLobbyStartingManager(this, module);
         } else {
-            new ProdLobbyStartingManager(this, module, agonesManager);
+            new ProdLobbyStartingManager(this, module, gameStateManager);
         }
     }
 

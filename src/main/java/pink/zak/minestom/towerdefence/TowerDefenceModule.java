@@ -5,6 +5,7 @@ import dev.emortal.api.modules.annotation.ModuleData;
 import dev.emortal.api.modules.env.ModuleEnvironment;
 import dev.emortal.minestom.core.module.MinestomModule;
 import dev.emortal.minestom.core.module.kubernetes.KubernetesModule;
+import dev.emortal.minestom.core.module.messaging.MessagingModule;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.command.CommandManager;
 import net.minestom.server.coordinate.Pos;
@@ -12,7 +13,7 @@ import net.minestom.server.event.Event;
 import net.minestom.server.event.EventNode;
 import net.minestom.server.event.player.PlayerLoginEvent;
 import org.jetbrains.annotations.NotNull;
-import pink.zak.minestom.towerdefence.agones.AgonesManager;
+import pink.zak.minestom.towerdefence.agones.GameStateManager;
 import pink.zak.minestom.towerdefence.cache.TDUserLoader;
 import pink.zak.minestom.towerdefence.command.towerdefence.TowerDefenceCommand;
 import pink.zak.minestom.towerdefence.enums.GameState;
@@ -24,10 +25,10 @@ import pink.zak.minestom.towerdefence.storage.TowerStorage;
 import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;
 import pink.zak.minestom.towerdefence.world.WorldLoader;
 
-@ModuleData(name = "towerdefence", dependencies = @Dependency(name = "kubernetes"))
+@ModuleData(name = "towerdefence", dependencies = {@Dependency(name = "kubernetes"), @Dependency(name = "messaging", required = false)})
 public class TowerDefenceModule extends MinestomModule {
     private final KubernetesModule kubernetesModule;
-    private final AgonesManager agonesManager;
+    private final MessagingModule messagingModule;
 
     private TowerDefenceInstance instance;
 
@@ -45,7 +46,7 @@ public class TowerDefenceModule extends MinestomModule {
         super(environment);
 
         this.kubernetesModule = super.getModule(KubernetesModule.class);
-        this.agonesManager = new AgonesManager(this.kubernetesModule);
+        this.messagingModule = super.getModule(MessagingModule.class);
     }
 
     @Override
@@ -63,10 +64,13 @@ public class TowerDefenceModule extends MinestomModule {
         this.mobStorage = new MobStorage();
         this.towerStorage = new TowerStorage();
 
-        LobbyManager lobbyManager = new LobbyManager(this, this.agonesManager);
+        GameStateManager gameStateManager = new GameStateManager(this.messagingModule);
+
+        LobbyManager lobbyManager = new LobbyManager(this, gameStateManager);
         this.scoreboardManager = new ScoreboardManager(this, lobbyManager);
 
-        this.gameHandler = new GameHandler(this, lobbyManager);
+        MessagingModule messagingModule = super.getOptionalModule(MessagingModule.class);
+        this.gameHandler = new GameHandler(this, lobbyManager, gameStateManager, messagingModule);
 
         new ProtectionHandler(this);
 

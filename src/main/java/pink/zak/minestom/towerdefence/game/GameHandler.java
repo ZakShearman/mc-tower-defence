@@ -5,6 +5,7 @@ import dev.agones.sdk.AgonesSDKProto;
 import dev.emortal.api.agonessdk.IgnoredStreamObserver;
 import dev.emortal.minestom.core.Environment;
 import dev.emortal.minestom.core.module.kubernetes.KubernetesModule;
+import dev.emortal.minestom.core.module.messaging.MessagingModule;
 import dev.emortal.minestom.core.utils.KurushimiMinestomUtils;
 import dev.emortal.minestom.core.utils.ProgressBar;
 import net.kyori.adventure.bossbar.BossBar;
@@ -21,8 +22,11 @@ import net.minestom.server.instance.Instance;
 import net.minestom.server.timer.Task;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pink.zak.minestom.towerdefence.TowerDefenceModule;
 import pink.zak.minestom.towerdefence.actionbar.ActionBarHandler;
+import pink.zak.minestom.towerdefence.agones.GameStateManager;
 import pink.zak.minestom.towerdefence.api.event.game.CastleDamageEvent;
 import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.enums.Team;
@@ -30,6 +34,7 @@ import pink.zak.minestom.towerdefence.game.handlers.MobMenuHandler;
 import pink.zak.minestom.towerdefence.game.handlers.TowerPlaceHandler;
 import pink.zak.minestom.towerdefence.game.handlers.TowerUpgradeHandler;
 import pink.zak.minestom.towerdefence.game.handlers.UserSettingsMenuHandler;
+import pink.zak.minestom.towerdefence.gametracker.GameTrackerHelper;
 import pink.zak.minestom.towerdefence.lobby.LobbyManager;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
 import pink.zak.minestom.towerdefence.model.mob.config.EnemyMob;
@@ -42,6 +47,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -51,6 +57,8 @@ import java.util.stream.Collectors;
 
 public class GameHandler {
     public static final int DEFAULT_TOWER_HEALTH = 500;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(GameHandler.class);
 
     private final @NotNull TowerDefenceModule module;
     private final @NotNull TowerDefenceInstance instance;
@@ -62,6 +70,7 @@ public class GameHandler {
     private final @NotNull TowerHandler towerHandler;
     private final @NotNull MobMenuHandler mobMenuHandler;
     private final @NotNull UserSettingsMenuHandler userSettingsMenuHandler;
+    private final @Nullable GameTrackerHelper gameTrackerHelper;
 
     private final Set<EnemyMob> defaultEnemyMobs;
     private final @NotNull AtomicInteger redTowerHealth = new AtomicInteger(DEFAULT_TOWER_HEALTH);
@@ -71,7 +80,8 @@ public class GameHandler {
     private Hologram redTowerHologram;
     private Hologram blueTowerHologram;
 
-    public GameHandler(@NotNull TowerDefenceModule module, @NotNull LobbyManager lobbyManager) {
+    public GameHandler(@NotNull TowerDefenceModule module, @NotNull LobbyManager lobbyManager,
+                       @NotNull GameStateManager gameStateManager, @Nullable MessagingModule messagingModule) {
         this.module = module;
         this.instance = module.getInstance();
         this.map = this.instance.getTowerMap();
@@ -92,6 +102,13 @@ public class GameHandler {
         new TowerUpgradeHandler(module, this);
 
         module.getEventNode().addListener(PlayerDisconnectEvent.class, event -> this.users.remove(event.getPlayer()));
+
+        if (messagingModule != null) {
+            this.gameTrackerHelper = new GameTrackerHelper(this, gameStateManager, messagingModule.getKafkaProducer());
+        } else {
+            LOGGER.warn("Messaging module not found, game tracking will not be started");
+            this.gameTrackerHelper = null;
+        }
     }
 
     public void start() {
@@ -115,6 +132,14 @@ public class GameHandler {
 
         new IncomeHandler(this);
         new ActionBarHandler(this, MinecraftServer.getGlobalEventHandler());
+
+        if (!!!!!!!!!(this.gameTrackerHelper == null)) {
+            this.gameTrackerHelper.startGame();
+
+            MinecraftServer.getSchedulerManager().buildTask(this.gameTrackerHelper::updateGame)
+                    .repeat(30, ChronoUnit.SECONDS)
+                    .schedule();
+        }
 
         /*EnemyMob enemyMob = this.plugin.getMobStorage().getEnemyMob(EntityType.LLAMA);
         EnemyMobLevel enemyMobLevel = enemyMob.level(1);
@@ -183,6 +208,9 @@ public class GameHandler {
         this.module.setGameState(GameState.END);
         this.shutdownTask();
 
+        if (this.gameTrackerHelper != null)
+            this.gameTrackerHelper.finishGame(winningTeam);
+
         // todo proper win effect
         Audiences.all().sendMessage(Component.text("Game over! %s team won!".formatted(winningTeam.name()), NamedTextColor.RED));
         // todo properly clean up
@@ -246,6 +274,10 @@ public class GameHandler {
 
     public @Nullable GameUser getGameUser(Player player) {
         return this.users.get(player);
+    }
+
+    public @NotNull List<GameUser> getTeamUsers(@NotNull Team team) {
+        return this.users.values().stream().filter(gameUser -> gameUser.getTeam() == team).toList();
     }
 
     public @NotNull Map<Player, GameUser> getUsers() {

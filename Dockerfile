@@ -1,13 +1,10 @@
-FROM eclipse-temurin:20-jre
+FROM --platform=$TARGETPLATFORM azul/zulu-openjdk:21-jre
 
 RUN mkdir /app
 WORKDIR /app
 
-# Download packages
-RUN apt-get install wget \
-    libstdc++6 libstdc++ # Add libraries required for pyroscope
-
-COPY build/libs/*-all.jar /app/tower_defence.jar
+COPY build/libs/*-all.jar /app/tower-defence.jar
 COPY run /app
 
-CMD ["java", "-jar", "/app/tower_defence.jar"]
+ENTRYPOINT ["java"]
+CMD ["-jar", "/app/tower-defence.jar"]

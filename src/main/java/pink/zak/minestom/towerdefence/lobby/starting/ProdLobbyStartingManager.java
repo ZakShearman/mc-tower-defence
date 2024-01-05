@@ -13,8 +13,8 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pink.zak.minestom.towerdefence.TowerDefenceModule;
-import pink.zak.minestom.towerdefence.agones.AgonesManager;
 import pink.zak.minestom.towerdefence.agones.GameCreationInfo;
+import pink.zak.minestom.towerdefence.agones.GameStateManager;
 import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.lobby.LobbyManager;
 
@@ -46,7 +46,7 @@ public class ProdLobbyStartingManager {
 
     // TODO start timer when allocated instead of when first player joins
     public ProdLobbyStartingManager(@NotNull LobbyManager lobbyManager, @NotNull TowerDefenceModule module,
-                                    @NotNull AgonesManager agonesManager) {
+                                    @NotNull GameStateManager gameStateManager) {
 
         this.lobbyManager = lobbyManager;
         this.module = module;
@@ -64,13 +64,13 @@ public class ProdLobbyStartingManager {
 
             Player player = event.getPlayer();
 
-            if (agonesManager.getGameCreationInfo().isEmpty()) {
+            GameCreationInfo gameCreationInfo = gameStateManager.getGameCreationInfo();
+            if (gameCreationInfo == null) {
                 player.kick(Component.text("Unexpected join (game not found)", NamedTextColor.RED));
                 LOGGER.warn("Unexpected join, game not found, playerId: {}, username: {}", player.getUuid(), player.getUsername());
                 return;
             }
 
-            GameCreationInfo gameCreationInfo = agonesManager.getGameCreationInfo().get();
             if (!gameCreationInfo.playerIds().contains(player.getUuid())) {
                 player.kick(Component.text("Unexpected join (not in game)", NamedTextColor.RED));
                 LOGGER.warn("Unexpected join, player not in game, playerId: {}, username: {}", player.getUuid(), player.getUsername());
