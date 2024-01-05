@@ -5,15 +5,16 @@ A tower defence plugin inspired by Cubecraft's tower defence and Bloons TD
 
 ## Project Status
 
-A live **ALPHA** version is availabe on k8s.emortal.dev. It is still under heavy development and not ready for release.
+A live **ALPHA** version is availabe on emortal.dev. It is still under heavy development and not ready for release.
 Feel free to use the project for fun and experimentation.
 
 ## Requirements
 
-  - Java 17+
+  - Java 21+
   - 256MB RAM (recommended 512MB)
 
 ## Running Locally
+⚠️ **UPDATE: Running locally may no longer be possible and therefore is a lot harder. I'm sorry.** ⚠️
 
 You can run TowerDefence locally! This is only intended for development usage so it functions a bit differently but you can totally play locally.
 
