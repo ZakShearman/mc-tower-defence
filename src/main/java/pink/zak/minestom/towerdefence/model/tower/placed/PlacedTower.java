@@ -76,15 +76,14 @@ public abstract class PlacedTower<T extends TowerLevel> {
                     new BomberTower(gameHandler, instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
             case BLIZZARD ->
                     new BlizzardTower(instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
-            case CHARITY -> new CharityTower(instance, tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
+            case CHARITY ->
+                    new CharityTower(instance, tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
             case EARTHQUAKE ->
                     new EarthquakeTower(instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
             case LIGHTNING ->
                     new LightningTower(instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
             case NECROMANCER ->
                     new NecromancerTower(instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
-            default ->
-                    throw new RuntimeException("Missing tower - %s is not coded in but was created".formatted(towerType));
         };
     }
 
