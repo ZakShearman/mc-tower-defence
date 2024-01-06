@@ -71,7 +71,7 @@ public final class ArcherTower extends PlacedAttackingTower<AttackingTowerLevel>
                 .expireWhen(event -> event.getEntity().isRemoved())
                 .handler(event -> {
                     // if the target is dead, remove the arrow
-                    // todo: should we switch to a different target?
+                    // in theory it shouldn't reach here anyway but just in case, removing the arrow is fine.
                     if (target.isDead()) {
                         projectile.remove();
                         return;
