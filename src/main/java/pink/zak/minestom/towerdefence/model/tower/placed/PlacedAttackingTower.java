@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import net.minestom.server.collision.BoundingBox;
 import net.minestom.server.coordinate.Point;
+import net.minestom.server.event.EventListener;
 import net.minestom.server.event.instance.InstanceTickEvent;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.item.Material;
@@ -23,16 +24,18 @@ public abstract class PlacedAttackingTower<T extends AttackingTowerLevel> extend
 
     private int ticksSinceLastAttack = this.level.getFireDelay();
 
+    // todo: give this tower a protected event node of some sort
+    private final @NotNull EventListener<InstanceTickEvent> tickListener = EventListener.of(InstanceTickEvent.class, event -> {
+        this.ticksSinceLastAttack++;
+        if (this.ticksSinceLastAttack < this.level.getFireDelay()) return;
+        if (this.attemptToFire()) this.ticksSinceLastAttack = 0;
+    });
+
     protected PlacedAttackingTower(@NotNull MobHandler mobHandler, Instance instance, AttackingTower tower, Material towerBaseMaterial, int id, GameUser owner, Point basePoint, Direction facing, int level) {
         super(instance, tower, towerBaseMaterial, id, owner, basePoint, facing, level);
         this.mobHandler = mobHandler;
 
-        // todo: give this tower a protected event node of some sort
-        instance.eventNode().addListener(InstanceTickEvent.class, event -> {
-            this.ticksSinceLastAttack++;
-            if (this.ticksSinceLastAttack < this.level.getFireDelay()) return;
-            if (this.attemptToFire()) this.ticksSinceLastAttack = 0;
-        });
+        this.instance.eventNode().addListener(this.tickListener);
     }
 
     /**
@@ -41,6 +44,12 @@ public abstract class PlacedAttackingTower<T extends AttackingTowerLevel> extend
      * @return true if the tower fired, false otherwise
      */
     protected abstract boolean attemptToFire();
+
+    @Override
+    public void destroy() {
+        this.instance.eventNode().removeListener(this.tickListener);
+        super.destroy();
+    }
 
     public @NotNull Set<LivingTDEnemyMob> findPossibleTargets() {
         // get mobs spawned by the enemy team
