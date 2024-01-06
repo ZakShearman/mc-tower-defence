@@ -1,7 +1,7 @@
 package pink.zak.minestom.towerdefence.utils;
 
-import net.hollowcube.util.schem.Rotation;
-import net.hollowcube.util.schem.Schematic;
+import net.hollowcube.schem.Rotation;
+import net.hollowcube.schem.Schematic;
 import net.minestom.server.coordinate.Point;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;

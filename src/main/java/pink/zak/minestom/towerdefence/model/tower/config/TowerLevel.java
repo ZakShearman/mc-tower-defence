@@ -1,8 +1,8 @@
 package pink.zak.minestom.towerdefence.model.tower.config;
 
 import com.google.gson.JsonObject;
-import net.hollowcube.util.schem.Schematic;
-import net.hollowcube.util.schem.SchematicReader;
+import net.hollowcube.schem.Schematic;
+import net.hollowcube.schem.SchematicReader;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -10,18 +10,15 @@ import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import org.jetbrains.annotations.NotNull;
-import pink.zak.minestom.towerdefence.model.tower.config.relative.RelativeBlock;
 import pink.zak.minestom.towerdefence.statdiff.Diffable;
 import pink.zak.minestom.towerdefence.statdiff.StatDiffCollection;
 import pink.zak.minestom.towerdefence.statdiff.types.IntStatDiff;
 import pink.zak.minestom.towerdefence.utils.ItemUtils;
 import pink.zak.minestom.towerdefence.utils.NumberUtils;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.function.BiFunction;
 
 public class TowerLevel implements Diffable<TowerLevel> {

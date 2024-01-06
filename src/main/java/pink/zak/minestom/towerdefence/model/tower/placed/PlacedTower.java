@@ -1,6 +1,6 @@
 package pink.zak.minestom.towerdefence.model.tower.placed;
 
-import net.hollowcube.util.schem.Rotation;
+import net.hollowcube.schem.Rotation;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.instance.block.Block;
