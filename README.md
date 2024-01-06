@@ -14,13 +14,12 @@ Feel free to use the project for fun and experimentation.
   - 256MB RAM (recommended 512MB)
 
 ## Running Locally
-⚠️ **UPDATE: Running locally may no longer be possible and therefore is a lot harder. I'm sorry.** ⚠️
 
 You can run TowerDefence locally! This is only intended for development usage so it functions a bit differently but you can totally play locally.
 
 1. Clone the project
 2. Open the project in your IDE
-3. Create a run configuration to run the class `pink.zak.minestom.towerdefence.TowerDefenceServer`. Set these environment variables: `DEV_MODE=true;ENABLE_TEST_MODE=false`
+3. Create a run configuration to run the class `pink.zak.minestom.towerdefence.TowerDefenceServer`. Set these environment variables: `ENABLE_TEST_MODE=false`. If you are in IntelliJ a run configuration is automatically created for you.
 4. Run the server and execute `/forcestart` to start the game.
 
 ⚠️ Some features may be missing as they depend on our production servers (e.g. player data saving and game history)
