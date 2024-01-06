@@ -60,12 +60,10 @@ public class TowerLevel implements Diffable<TowerLevel> {
         this.relativeBlocks = RelativeBlock.setFromJson(jsonObject.get("relativeBlocks").getAsJsonArray());
 
         Path schematicPath = SCHEMATIC_PATH_FUNCTION.apply(towerName, String.valueOf(this.level));
-        System.out.println("Checking for schematic at " + schematicPath);
-        if (Files.notExists(schematicPath)) {
+        if (Files.notExists(schematicPath)) { // todo remove me once all towers have schematics
+            System.out.println("NO schematic at " + schematicPath);
             this.schematic = null;
             return;
-        } else {
-            System.out.println("Schematic found for " + towerName + " level " + this.level);
         }
         this.schematic = SchematicReader.read(schematicPath);
     }
