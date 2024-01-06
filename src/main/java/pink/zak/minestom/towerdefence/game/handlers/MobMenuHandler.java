@@ -47,6 +47,10 @@ public class MobMenuHandler {
                     SEND_SHORTCUTS_LORE.stream().map(line -> MiniMessage.miniMessage().deserialize(line)).toList()
             ).build();
 
+    public static final @NotNull ItemStack CHEST_ITEM = ItemStack.builder(Material.CHEST)
+            .displayName(Component.text("Send Troops", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
+            .build();
+
     private static final @NotNull Component SEND_TITLE = Component.text("Send Troops", NamedTextColor.DARK_GRAY);
     private static final @NotNull Component UPGRADE_TITLE = Component.text("Upgrade Troops", NamedTextColor.DARK_GRAY);
     private static final @NotNull Map<EnemyMob, Component> MOB_UPGRADE_TITLES = new HashMap<>();
@@ -54,7 +58,6 @@ public class MobMenuHandler {
     private final @NotNull TowerDefenceModule plugin;
     private final @NotNull GameHandler gameHandler;
     private final @NotNull MobStorage mobStorage;
-    private final @NotNull ItemStack chestItem;
     private final @NotNull ItemStack upgradeItem;
 
     public MobMenuHandler(@NotNull TowerDefenceModule plugin, @NotNull GameHandler gameHandler) {
@@ -65,9 +68,6 @@ public class MobMenuHandler {
         this.gameHandler = gameHandler;
         @NotNull MobHandler mobHandler = gameHandler.getMobHandler();
         this.mobStorage = plugin.getMobStorage();
-        this.chestItem = ItemStack.builder(Material.CHEST)
-                .displayName(Component.text("Send Troops", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
-                .build();
 
         this.upgradeItem = ItemStack.builder(Material.ENDER_PEARL)
                 .displayName(Component.text("Upgrade Troops", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
@@ -293,9 +293,5 @@ public class MobMenuHandler {
 
     public void updateSendMobGui(@NotNull GameUser user, @NotNull Inventory inventory) {
         inventory.setItemStack(35, this.createQueueItem(user));
-    }
-
-    public @NotNull ItemStack getChestItem() {
-        return this.chestItem;
     }
 }

@@ -86,9 +86,10 @@ public final class BlizzardTower extends PlacedAttackingTower<BlizzardTowerLevel
 
         // The below uses all targets because they may be immune to being frozen but not cold damage.
         if (!targets.isEmpty()) {
-            if (this.levelInt >= 4) {
-                Point point = this.basePoint.add(0, this.levelInt == 4 ? 3.5 : 4.5, 0);
-                ParticlePacket particlePacket = (this.levelInt == 4 ? LEVEL_4_PACKET : LEVEL_5_PACKET).apply(point);
+            int level = this.getLevelInt();
+            if (level >= 4) {
+                Point point = this.basePoint.add(0, level == 4 ? 3.5 : 4.5, 0);
+                ParticlePacket particlePacket = (level == 4 ? LEVEL_4_PACKET : LEVEL_5_PACKET).apply(point);
 
                 MinecraftServer.getConnectionManager().getOnlinePlayers().forEach(player -> player.sendPacket(particlePacket));
             }

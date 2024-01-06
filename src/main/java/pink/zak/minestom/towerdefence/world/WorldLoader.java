@@ -12,7 +12,6 @@ public class WorldLoader {
             .skylightEnabled(true)
             .build();
 
-    // todo add timing stats
     public TowerDefenceInstance load() {
         DimensionTypeManager dimensionTypeManager = MinecraftServer.getDimensionTypeManager();
         dimensionTypeManager.addDimension(DIMENSION_TYPE);

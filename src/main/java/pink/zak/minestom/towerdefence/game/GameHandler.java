@@ -124,8 +124,8 @@ public class GameHandler {
 
         for (Player player : this.users.keySet()) {
             player.getInventory().clear();
-            player.getInventory().setItemStack(4, this.mobMenuHandler.getChestItem());
-            player.getInventory().setItemStack(8, UserSettingsMenuHandler.getMenuItem()); // todo standardise static/non-static usage
+            player.getInventory().setItemStack(4, MobMenuHandler.CHEST_ITEM);
+            player.getInventory().setItemStack(8, UserSettingsMenuHandler.SETTINGS_ITEM);
             this.mobMenuHandler.onGameStart();
             this.userSettingsMenuHandler.onGameStart();
         }

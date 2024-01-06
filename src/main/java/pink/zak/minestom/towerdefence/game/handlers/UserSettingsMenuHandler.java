@@ -26,7 +26,7 @@ import java.util.List;
 public class UserSettingsMenuHandler {
     private static final @NotNull Component MENU_TITLE = Component.text("User Settings", NamedTextColor.DARK_GRAY);
 
-    private static final @NotNull ItemStack SETTINGS_ITEM = ItemStack.builder(Material.COMMAND_BLOCK_MINECART)
+    public static final @NotNull ItemStack SETTINGS_ITEM = ItemStack.builder(Material.COMMAND_BLOCK_MINECART)
             .displayName(Component.text("User Settings", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
             .build();
 
@@ -34,10 +34,6 @@ public class UserSettingsMenuHandler {
 
     public UserSettingsMenuHandler(@NotNull TowerDefenceModule plugin) {
         this.plugin = plugin;
-    }
-
-    public static @NotNull ItemStack getMenuItem() {
-        return SETTINGS_ITEM;
     }
 
     public void onGameStart() {

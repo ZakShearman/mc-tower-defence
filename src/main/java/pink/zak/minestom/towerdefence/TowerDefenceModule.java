@@ -8,7 +8,6 @@ import dev.emortal.minestom.core.module.MinestomModule;
 import dev.emortal.minestom.core.module.kubernetes.KubernetesModule;
 import dev.emortal.minestom.core.module.messaging.MessagingModule;
 import net.minestom.server.MinecraftServer;
-import net.minestom.server.command.CommandManager;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.event.Event;
 import net.minestom.server.event.EventNode;
@@ -18,7 +17,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pink.zak.minestom.towerdefence.agones.GameStateManager;
 import pink.zak.minestom.towerdefence.cache.TDUserLoader;
-import pink.zak.minestom.towerdefence.command.towerdefence.TowerDefenceCommand;
 import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.lobby.LobbyManager;
@@ -75,9 +73,6 @@ public class TowerDefenceModule extends MinestomModule {
         this.gameHandler = new GameHandler(this, lobbyManager, gameStateManager, this.messagingModule);
 
         new ProtectionHandler(this);
-
-        CommandManager commandManager = MinecraftServer.getCommandManager();
-        commandManager.register(new TowerDefenceCommand(this));
 
         MinecraftServer.getConnectionManager().setPlayerProvider(this.userCache);
 

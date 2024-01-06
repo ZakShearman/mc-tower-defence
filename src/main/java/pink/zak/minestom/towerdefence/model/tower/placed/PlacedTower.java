@@ -44,7 +44,6 @@ public abstract class PlacedTower<T extends TowerLevel> {
     protected final @NotNull GameUser owner;
 
     protected T level;
-    protected int levelInt;
 
     protected PlacedTower(Instance instance, Tower tower, Material towerBaseMaterial, int id,
                           @NotNull GameUser owner, Point basePoint, Direction facing, int level) {
@@ -60,7 +59,6 @@ public abstract class PlacedTower<T extends TowerLevel> {
         this.owner = owner;
 
         this.level = (T) tower.getLevel(level);
-        this.levelInt = level;
 
         this.placeLevel();
         this.placeBase();
@@ -88,8 +86,15 @@ public abstract class PlacedTower<T extends TowerLevel> {
     }
 
     public void upgrade() {
+        this.upgrade(this.getLevelInt() + 1);
+    }
+
+    public void upgrade(int level) {
+        if (level == this.getLevelInt()) throw new IllegalStateException("Cannot upgrade to the same level");
+        if (!this.tower.getLevels().containsKey(level)) throw new IllegalStateException("Cannot upgrade to a level that doesn't exist");
+
         T oldLevel = this.level;
-        this.level = (T) this.tower.getLevel(++this.levelInt);
+        this.level = (T) this.tower.getLevel(level);
 
         this.removeNonUpdatedBlocks(oldLevel, this.level);
         this.placeLevel();
@@ -134,7 +139,7 @@ public abstract class PlacedTower<T extends TowerLevel> {
 
     public void destroy() {
         Set<Point> relativePositions = this.getTower().getLevels().values().stream()
-                .filter(towerLevel -> towerLevel.getLevel() <= this.levelInt)
+                .filter(towerLevel -> towerLevel.getLevel() <= this.getLevelInt())
                 .map(TowerLevel::getSchematic)
                 .map(schem -> SchemUtils.getRelativeBlockPoints(Rotation.NONE, schem))
                 .flatMap(Set::stream)
@@ -181,7 +186,7 @@ public abstract class PlacedTower<T extends TowerLevel> {
     }
 
     public int getLevelInt() {
-        return this.levelInt;
+        return this.level.getLevel();
     }
 
     public @NotNull GameUser getOwner() {
