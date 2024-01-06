@@ -38,8 +38,6 @@ public class TowerLevel implements Diffable<TowerLevel> {
 
     private final ItemStack menuItem;
 
-    private final Set<RelativeBlock> relativeBlocks;
-
     private final @NotNull Schematic schematic;
 
     public TowerLevel(@NotNull String towerName, @NotNull JsonObject jsonObject) {
@@ -57,14 +55,7 @@ public class TowerLevel implements Diffable<TowerLevel> {
 
         this.menuItem = ItemUtils.fromJsonObject(jsonObject.get("menuItem").getAsJsonObject(), tagResolver);
 
-        this.relativeBlocks = RelativeBlock.setFromJson(jsonObject.get("relativeBlocks").getAsJsonArray());
-
         Path schematicPath = SCHEMATIC_PATH_FUNCTION.apply(towerName, String.valueOf(this.level));
-        if (Files.notExists(schematicPath)) { // todo remove me once all towers have schematics
-            System.out.println("NO schematic at " + schematicPath);
-            this.schematic = null;
-            return;
-        }
         this.schematic = SchematicReader.read(schematicPath);
     }
 
@@ -131,10 +122,6 @@ public class TowerLevel implements Diffable<TowerLevel> {
         components.add(Component.empty());
         components.addAll(this.generateDiff(this).generateStatLines());
         return components;
-    }
-
-    public Set<RelativeBlock> getRelativeBlocks() {
-        return this.relativeBlocks;
     }
 
     public @NotNull Schematic getSchematic() {

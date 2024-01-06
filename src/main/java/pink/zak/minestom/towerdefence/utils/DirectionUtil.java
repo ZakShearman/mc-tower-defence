@@ -1,5 +1,6 @@
 package pink.zak.minestom.towerdefence.utils;
 
+import net.hollowcube.util.schem.Rotation;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.coordinate.Vec;
@@ -7,10 +8,10 @@ import net.minestom.server.utils.Direction;
 import org.jetbrains.annotations.NotNull;
 
 public enum DirectionUtil {
-    NORTH(Direction.NORTH, 0),
-    EAST(Direction.EAST, 1),
-    SOUTH(Direction.SOUTH, 2),
-    WEST(Direction.WEST, 3);
+    NORTH(Direction.NORTH, 0), // 180/-180
+    EAST(Direction.EAST, 1), // -90
+    SOUTH(Direction.SOUTH, 2), // 0
+    WEST(Direction.WEST, 3); // 90
 
     private final Direction direction;
     private final int turns;
@@ -26,6 +27,15 @@ public enum DirectionUtil {
 
     public int getTurns() {
         return this.turns;
+    }
+
+    public Rotation toSchemRotation() {
+        return switch (this) {
+            case NORTH -> Rotation.NONE;
+            case EAST -> Rotation.CLOCKWISE_90;
+            case SOUTH -> Rotation.CLOCKWISE_180;
+            case WEST -> Rotation.CLOCKWISE_270;
+        };
     }
 
     public DirectionUtil rotate(int turns) {
