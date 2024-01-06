@@ -8,6 +8,7 @@ import net.minestom.server.event.inventory.InventoryPreClickEvent;
 import net.minestom.server.event.player.PlayerUseItemEvent;
 import net.minestom.server.inventory.Inventory;
 import net.minestom.server.inventory.InventoryType;
+import net.minestom.server.item.ItemHideFlag;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import net.minestom.server.item.metadata.PotionMeta;
@@ -107,8 +108,10 @@ public class UserSettingsMenuHandler {
                     loopHealthMode == healthMode ? NamedTextColor.GREEN : NamedTextColor.RED).decoration(TextDecoration.ITALIC, false));
 
         return ItemStack.builder(Material.POTION)
-                .meta(PotionMeta.class, builder -> builder.color(new Color(NamedTextColor.RED)))
-                .displayName(Component.text("Health Display Mode", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false))
+                .meta(PotionMeta.class, builder -> builder
+                        .color(new Color(NamedTextColor.RED))
+                        .hideFlag(ItemHideFlag.HIDE_POTION_EFFECTS)
+                ).displayName(Component.text("Health Display Mode", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false))
                 .lore(lore)
                 .build();
     }
