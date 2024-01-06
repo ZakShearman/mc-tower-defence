@@ -4,8 +4,6 @@ import net.minestom.server.coordinate.Point;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.item.Material;
 import net.minestom.server.utils.Direction;
-import org.jetbrains.annotations.NotNull;
-import pink.zak.minestom.towerdefence.game.MobHandler;
 import pink.zak.minestom.towerdefence.model.tower.config.Tower;
 import pink.zak.minestom.towerdefence.model.tower.config.towers.level.CharityTowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedTower;

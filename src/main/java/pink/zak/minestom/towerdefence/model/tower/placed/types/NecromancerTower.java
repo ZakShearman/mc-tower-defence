@@ -2,6 +2,7 @@ package pink.zak.minestom.towerdefence.model.tower.placed.types;
 
 import com.extollit.gaming.ai.path.HydrazinePathFinder;
 import com.extollit.gaming.ai.path.SchedulingPriority;
+import java.util.concurrent.atomic.AtomicInteger;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -18,7 +19,6 @@ import net.minestom.server.item.Material;
 import net.minestom.server.utils.Direction;
 import net.minestom.server.utils.time.TimeUnit;
 import org.jetbrains.annotations.NotNull;
-import pink.zak.minestom.towerdefence.game.MobHandler;
 import pink.zak.minestom.towerdefence.model.DamageSource;
 import pink.zak.minestom.towerdefence.model.mob.config.EnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.config.EnemyMobLevel;
@@ -30,8 +30,6 @@ import pink.zak.minestom.towerdefence.model.tower.placed.PlacedTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.model.user.TDPlayer;
 import pink.zak.minestom.towerdefence.utils.StringUtils;
-
-import java.util.concurrent.atomic.AtomicInteger;
 
 public final class NecromancerTower extends PlacedTower<NecromancerTowerLevel> {
     private final AtomicInteger necromancedMobCount = new AtomicInteger(0);
