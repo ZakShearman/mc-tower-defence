@@ -8,7 +8,7 @@ import net.minestom.server.timer.ExecutionType;
 import net.minestom.server.timer.TaskSchedule;
 import org.jetbrains.annotations.NotNull;
 
-public final class Projectile extends Entity {
+public class Projectile extends Entity {
 
     public Projectile(@NotNull EntityType entityType) {
         super(entityType);

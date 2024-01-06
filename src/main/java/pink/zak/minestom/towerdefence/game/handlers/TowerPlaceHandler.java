@@ -7,13 +7,16 @@ import net.minestom.server.coordinate.Point;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.inventory.InventoryPreClickEvent;
 import net.minestom.server.event.player.PlayerBlockInteractEvent;
+import net.minestom.server.event.player.PlayerStartDiggingEvent;
 import net.minestom.server.inventory.Inventory;
 import net.minestom.server.inventory.InventoryType;
 import net.minestom.server.inventory.click.ClickType;
 import net.minestom.server.item.Material;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.TowerDefenceModule;
+import pink.zak.minestom.towerdefence.api.event.player.PlayerTowerPlaceEvent;
 import pink.zak.minestom.towerdefence.enums.GameState;
+import pink.zak.minestom.towerdefence.enums.TowerType;
 import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.game.TowerHandler;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
@@ -41,6 +44,19 @@ public class TowerPlaceHandler {
         this.towerMap = module.getInstance().getTowerMap();
 
         module.getEventNode()
+                .addListener(PlayerStartDiggingEvent.class, event -> {
+                    Player player = event.getPlayer();
+                    GameUser gameUser = this.gameHandler.getGameUser(player);
+                    if (gameUser == null || event.getBlock().registry().material() != this.towerMap.getTowerBaseMaterial())
+                        return;
+                    gameUser.setLastClickedTowerBlock(event.getBlockPosition().add(0.5, 0.5, 0.5));
+                    if (!this.towerMap.getArea(gameUser.getTeam()).isWithin(gameUser.getLastClickedTowerBlock())) {
+                        player.sendMessage(Component.text("You can only place towers on your side of the map (" + gameUser.getTeam().name().toLowerCase() + ").", NamedTextColor.RED));
+                        return;
+                    }
+//                    player.openInventory(this.towerPlaceGui);
+                    this.requestTowerBuy(player, this.towerStorage.getTower(TowerType.BLIZZARD));
+                })
                 .addListener(PlayerBlockInteractEvent.class, event -> {
                     Player player = event.getPlayer();
                     if (event.getHand() != Player.Hand.MAIN || module.getGameState() != GameState.GAME)
@@ -53,8 +69,10 @@ public class TowerPlaceHandler {
                         player.sendMessage(Component.text("You can only place towers on your side of the map (" + gameUser.getTeam().name().toLowerCase() + ").", NamedTextColor.RED));
                         return;
                     }
-                    player.openInventory(this.towerPlaceGui);
-                });
+//                    player.openInventory(this.towerPlaceGui);
+                    this.requestTowerBuy(player, this.towerStorage.getTower(TowerType.ARCHER));
+                })
+                .addListener(PlayerTowerPlaceEvent.class, event -> event.placedTower().upgrade(5));
     }
 
     private @NotNull Inventory createTowerPlaceGui() {

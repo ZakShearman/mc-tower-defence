@@ -49,7 +49,7 @@ public class TowerHandler {
         else
             this.blueTowers.add(placedTower);
 
-        MinecraftServer.getGlobalEventHandler().call(new PlayerTowerPlaceEvent(tower, gameUser));
+        MinecraftServer.getGlobalEventHandler().call(new PlayerTowerPlaceEvent(tower, placedTower, gameUser));
     }
 
     private int generateTowerId() {

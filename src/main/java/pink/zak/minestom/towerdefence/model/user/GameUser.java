@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.IntUnaryOperator;
 
 public class GameUser {
-    public static final int DEFAULT_COINS = 1000000;
+    public static final int DEFAULT_COINS = 1_000_000_000;
     public static final int DEFAULT_INCOME_RATE = 50;
     public static final int DEFAULT_MAX_QUEUE_TIME = 45_000; // 45 seconds
 

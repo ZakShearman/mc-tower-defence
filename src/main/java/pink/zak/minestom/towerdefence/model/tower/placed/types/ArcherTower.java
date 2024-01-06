@@ -28,19 +28,15 @@ import pink.zak.minestom.towerdefence.model.tower.config.towers.ArcherTowerConfi
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.targetting.Target;
+import pink.zak.minestom.towerdefence.utils.projectile.ArrowProjectile;
 import pink.zak.minestom.towerdefence.utils.projectile.Projectile;
 
 public final class ArcherTower extends PlacedAttackingTower<AttackingTowerLevel> {
-    private static final double ARROW_SPEED = 40;
 
     private final @NotNull Set<Point> firingPoints;
-    private final @NotNull EventNode<InstanceEvent> eventNode;
 
     public ArcherTower(@NotNull MobHandler mobHandler, Instance instance, AttackingTower tower, Material towerBaseMaterial, int id, GameUser owner, Point basePoint, Direction facing, int level) {
         super(mobHandler, instance, tower, towerBaseMaterial, id, owner, basePoint, facing, level);
-
-        this.eventNode = EventNode.type("archer-tower-%s".formatted(this.id), EventFilter.INSTANCE);
-        instance.eventNode().addChild(this.eventNode);
 
         ArcherTowerConfig config = (ArcherTowerConfig) this.tower;
         this.firingPoints = config.getRelativeFiringPoints().stream()
@@ -48,55 +44,15 @@ public final class ArcherTower extends PlacedAttackingTower<AttackingTowerLevel>
                 .collect(Collectors.toUnmodifiableSet());
     }
 
-    // todo: stick the arrow into the target once it hits
     private void fireAt(@NotNull LivingTDEnemyMob target) {
-        Point start = this.getFiringPoint(target.getPosition());
-
         // register damage prediction
         float damage = this.level.getDamage();
         DamagePrediction prediction = target.applyDamagePrediction(damage);
 
-        Entity projectile = new Projectile(EntityType.ARROW);
+        ArrowProjectile projectile = new ArrowProjectile(this, target, prediction);
+
+        Point start = this.getFiringPoint(target.getPosition());
         projectile.setInstance(this.instance, start);
-
-        Supplier<Vec> velocity = () -> {
-            Point targetPosition = target.getPosition().add(0, target.getEyeHeight() / 2, 0);
-            return Vec.fromPoint(targetPosition.sub(projectile.getPosition()))
-                    .normalize()
-                    .mul(ARROW_SPEED);
-        };
-        projectile.setVelocity(velocity.get());
-
-        EventNode<EntityEvent> projectileNode = projectile.eventNode();
-        EventListener<EntityTickEvent> collisionListener = EventListener.builder(EntityTickEvent.class)
-                .filter(event -> event.getEntity().equals(projectile))
-                .expireWhen(event -> event.getEntity().isRemoved())
-                .handler(event -> {
-                    // if the target is dead, remove the arrow
-                    // in theory it shouldn't reach here anyway but just in case, removing the arrow is fine.
-                    if (target.isDead()) {
-                        projectile.remove();
-                        return;
-                    }
-
-                    // set velocity to match target's new position
-                    projectile.setVelocity(velocity.get());
-
-                    // check if the arrow is within the target's bounding box
-                    if (target.getBoundingBox().expand(0.5, 0.5, 0.5).intersectEntity(target.getPosition(), projectile)) {
-                        projectile.remove();
-                        target.damage(this, damage);
-                    }
-                }).build();
-        projectileNode.addListener(collisionListener);
-
-        EventListener<EntityDespawnEvent> removalListener = EventListener.builder(EntityDespawnEvent.class)
-                .filter(event -> event.getEntity().equals(projectile))
-                .expireCount(1)
-                // destroy the prediction when the arrow is removed
-                .handler(event -> prediction.complete())
-                .build();
-        projectileNode.addListener(removalListener);
     }
 
     @Override
@@ -113,12 +69,5 @@ public final class ArcherTower extends PlacedAttackingTower<AttackingTowerLevel>
             double distance2 = point2.distanceSquared(target);
             return Double.compare(distance1, distance2);
         }).orElseThrow(() -> new IllegalStateException("No firing points found"));
-    }
-
-    @Override
-    public void destroy() {
-        super.destroy();
-
-        this.eventNode.getParent().removeChild(this.eventNode);
     }
 }
