@@ -1,7 +1,6 @@
 package pink.zak.minestom.towerdefence.model.tower.placed.types;
 
 import java.util.Set;
-import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import net.minestom.server.coordinate.Point;
