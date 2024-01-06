@@ -1,6 +1,8 @@
 package pink.zak.minestom.towerdefence.model.tower.placed.types;
 
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Vec;
@@ -45,13 +47,8 @@ public final class ArcherTower extends PlacedAttackingTower<AttackingTowerLevel>
     }
 
     // todo: stick the arrow into the target once it hits
-    // todo: this completely misses fast entities. either:
-    //       * predict where the entity will be
-    //       * change the direction of the arrow mid-flight
-    //       * check when the arrow has passed the entity
     private void fire(@NotNull LivingTDEnemyMob target) {
         Point start = this.getFiringPoint(target.getPosition());
-        Point end = target.getPosition().add(0, target.getEyeHeight() / 2, 0);
 
         // register damage prediction
         float damage = this.level.getDamage();
@@ -60,16 +57,19 @@ public final class ArcherTower extends PlacedAttackingTower<AttackingTowerLevel>
         Entity projectile = new Projectile(EntityType.ARROW);
         projectile.setInstance(this.instance, start);
 
-        Vec velocity = Vec.fromPoint(end.sub(start))
+        Supplier<Vec> velocity = () -> Vec.fromPoint(target.getPosition().sub(projectile.getPosition()))
                 .normalize()
                 .mul(ARROW_SPEED);
-        projectile.setVelocity(velocity);
+        projectile.setVelocity(velocity.get());
 
         EventNode<EntityEvent> projectileNode = projectile.eventNode();
         EventListener<EntityTickEvent> collisionListener = EventListener.builder(EntityTickEvent.class)
                 .filter(event -> event.getEntity().equals(projectile))
                 .expireWhen(event -> event.getEntity().isRemoved())
                 .handler(event -> {
+                    // set velocity to match target's new position
+                    projectile.setVelocity(velocity.get());
+
                     // check if the arrow is within the target's bounding box
                     if (target.getBoundingBox().expand(0.5, 0.5, 0.5).intersectEntity(target.getPosition(), projectile)) {
                         projectile.remove();
