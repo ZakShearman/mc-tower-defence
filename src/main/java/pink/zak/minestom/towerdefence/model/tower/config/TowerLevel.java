@@ -1,25 +1,22 @@
 package pink.zak.minestom.towerdefence.model.tower.config;
 
 import com.google.gson.JsonObject;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.BiFunction;
 import net.hollowcube.schem.Schematic;
 import net.hollowcube.schem.SchematicReader;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.statdiff.Diffable;
 import pink.zak.minestom.towerdefence.statdiff.StatDiffCollection;
 import pink.zak.minestom.towerdefence.statdiff.types.IntStatDiff;
-import pink.zak.minestom.towerdefence.utils.ItemUtils;
 import pink.zak.minestom.towerdefence.utils.NumberUtils;
-
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.BiFunction;
 
 public class TowerLevel implements Diffable<TowerLevel> {
     private static final BiFunction<String, String, Path> SCHEMATIC_PATH_FUNCTION = (towerName, level) ->
@@ -33,8 +30,6 @@ public class TowerLevel implements Diffable<TowerLevel> {
     private final int cost;
     private final int range;
 
-    private final ItemStack menuItem;
-
     private final @NotNull Schematic schematic;
 
     public TowerLevel(@NotNull String towerName, @NotNull JsonObject jsonObject) {
@@ -43,14 +38,6 @@ public class TowerLevel implements Diffable<TowerLevel> {
         this.level = jsonObject.get("level").getAsInt();
         this.cost = jsonObject.get("cost").getAsInt();
         this.range = jsonObject.get("range").getAsInt();
-
-        // todo placeholders, allow for custom towers to add their own
-
-        TagResolver tagResolver = TagResolver.resolver(
-                Placeholder.unparsed("cost", String.valueOf(this.cost))
-        );
-
-        this.menuItem = ItemUtils.fromJsonObject(jsonObject.get("menuItem").getAsJsonObject(), tagResolver);
 
         Path schematicPath = SCHEMATIC_PATH_FUNCTION.apply(towerName, String.valueOf(this.level));
         this.schematic = SchematicReader.read(schematicPath);
@@ -66,10 +53,6 @@ public class TowerLevel implements Diffable<TowerLevel> {
                 .build();
     }
 
-    public @NotNull String getTowerName() {
-        return towerName;
-    }
-
     public int getLevel() {
         return this.level;
     }
@@ -80,10 +63,6 @@ public class TowerLevel implements Diffable<TowerLevel> {
 
     public int getRange() {
         return this.range;
-    }
-
-    public ItemStack getMenuItem() {
-        return this.menuItem;
     }
 
     public ItemStack getOwnedUpgradeItem() {

@@ -11,15 +11,5 @@
     "zOffset": 0
   },
 
-  "explosionRadius": 7,
-
-  "menuItem": {
-    "material": "minecraft:tnt",
-    "displayName": "<yellow>Bomber Lvl. III",
-    "lore": [
-      "",
-      "<yellow>Blows up enemies",
-      ""
-    ]
-  }
+  "explosionRadius": 7
 }

@@ -5,15 +5,6 @@
   "damage":85,
   "range": 12,
 
-  "menuItem": {
-    "material": "minecraft:end_rod",
-    "displayName": "<yellow>Lightning Lvl. III",
-    "lore": [
-      "",
-      "<yellow>Fires lightning bolts at enemies",
-      ""
-    ]
-  },
   "relativeSpawnPoints": [],
   "relativeCastPoint": {
     "xOffset": 0,

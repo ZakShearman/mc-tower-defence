@@ -5,15 +5,6 @@
   "damage": 20,
   "range": 12,
 
-  "menuItem": {
-    "material": "minecraft:end_rod",
-    "displayName": "<yellow>Lightning Lvl. II",
-    "lore": [
-      "",
-      "<yellow>Fires lightning bolts at enemies",
-      ""
-    ]
-  },
   "relativeSpawnPoints": [],
   "relativeCastPoint": {
     "xOffset": 0,

@@ -11,15 +11,5 @@
     "zOffset": 0
   },
 
-  "explosionRadius": 4,
-
-  "menuItem": {
-    "material": "minecraft:tnt",
-    "displayName": "<yellow>Bomber ($undefined)",
-    "lore": [
-      "",
-      "<yellow>Blows up enemies",
-      ""
-    ]
-  }
+  "explosionRadius": 4
 }

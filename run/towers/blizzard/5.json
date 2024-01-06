@@ -6,15 +6,5 @@
   "range": 22,
 
   "speedModifier": 0.45,
-  "tickDuration": 20,
-
-  "menuItem": {
-    "material": "minecraft:ice",
-    "displayName": "<yellow>Blizzard Lvl. V",
-    "lore": [
-      "",
-      "<yellow>Slows down enemies near it",
-      ""
-    ]
-  }
+  "tickDuration": 20
 }

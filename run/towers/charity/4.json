@@ -2,15 +2,5 @@
   "level": 4,
   "cost": 55000,
   "range": 20,
-  "multiplier": 2.5,
-
-  "menuItem": {
-    "material": "minecraft:gold_ingot",
-    "displayName": "<yellow>Charity Lvl. IV",
-    "lore": [
-      "",
-      "<yellow>More monay",
-      ""
-    ]
-  }
+  "multiplier": 2.5
 }

@@ -5,15 +5,6 @@
   "damage": 7,
   "range": 12,
 
-  "menuItem": {
-    "material": "minecraft:end_rod",
-    "displayName": "<yellow>Lightning ($undefined)",
-    "lore": [
-      "",
-      "<yellow>Fires lightning bolts at enemies",
-      ""
-    ]
-  },
   "relativeSpawnPoints": [],
   "relativeCastPoint": {
     "xOffset": 0,

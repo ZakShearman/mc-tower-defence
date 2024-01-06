@@ -3,15 +3,5 @@
   "cost": 3500,
   "fireDelay": 12,
   "damage": 10,
-  "range": 20,
-
-  "menuItem": {
-    "material": "minecraft:bow",
-    "displayName": "<yellow>Archer Lvl. III",
-    "lore": [
-      "",
-      "<yellow>Shoots enemies with arrows",
-      ""
-    ]
-  }
+  "range": 20
 }

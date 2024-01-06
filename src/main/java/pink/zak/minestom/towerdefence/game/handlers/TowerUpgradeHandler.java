@@ -164,8 +164,7 @@ public class TowerUpgradeHandler {
             if (gameUser.getCoins() >= cost) {
                 int finalCost = cost;
                 gameUser.updateCoins(current -> current - finalCost);
-                for (int i = currentLevel; i < clickedLevelInt; i++)
-                    placedTower.upgrade(); // todo better way (reduce blocks being placed many times unnecessarily when skipping levels)
+                placedTower.upgrade(clickedLevelInt);
                 TowerLevel towerLevel = placedTower.getLevel();
                 // update inventory items
                 inventory.setItemStack(0, tower.getBaseItem());

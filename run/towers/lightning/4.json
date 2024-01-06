@@ -5,15 +5,6 @@
   "damage": 800,
   "range": 15,
 
-  "menuItem": {
-    "material": "minecraft:end_rod",
-    "displayName": "<yellow>Lightning Lvl. IV",
-    "lore": [
-      "",
-      "<yellow>Fires lightning bolts at enemies",
-      ""
-    ]
-  },
   "relativeCastPoint": {
     "xOffset": 0,
     "yOffset": 5.5,

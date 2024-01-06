@@ -7,15 +7,5 @@
 
   "maxNecromancedTroops": 9,
   "necromancedHealth": 250,
-  "necromancedDamage": 1,
-
-  "menuItem": {
-    "material": "minecraft:wither_skeleton_skull",
-    "displayName": "<yellow>Necromancer Lvl. IV",
-    "lore": [
-      "",
-      "<yellow>Does necromancy",
-      ""
-    ]
-  }
+  "necromancedDamage": 1
 }

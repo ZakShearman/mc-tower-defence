@@ -3,15 +3,5 @@
   "cost": 1000,
   "fireDelay": 16,
   "damage": 3,
-  "range": 15,
-
-  "menuItem": {
-    "material": "minecraft:bow",
-    "displayName": "<yellow>Archer Lvl. II",
-    "lore": [
-      "",
-      "<yellow>Shoots enemies with arrows",
-      ""
-    ]
-  }
+  "range": 15
 }

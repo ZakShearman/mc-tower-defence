@@ -2,15 +2,5 @@
   "level": 1,
   "cost": 1200,
   "range": 20,
-  "multiplier": 1.4,
-
-  "menuItem": {
-    "material": "minecraft:gold_ingot",
-    "displayName": "<yellow>Charity ($undefined)",
-    "lore": [
-      "",
-      "<yellow>More monay",
-      ""
-    ]
-  }
+  "multiplier": 1.4
 }

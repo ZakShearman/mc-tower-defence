@@ -6,14 +6,5 @@
   "range": 16,
   "maxNecromancedTroops": 2,
   "necromancedHealth": 30,
-  "necromancedDamage": 1,
-  "menuItem": {
-    "material": "minecraft:wither_skeleton_skull",
-    "displayName": "<yellow>Necromancer ($undefined)",
-    "lore": [
-      "",
-      "<yellow>Does necromancy",
-      ""
-    ]
-  }
+  "necromancedDamage": 1
 }
