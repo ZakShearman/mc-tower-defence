@@ -7,10 +7,10 @@ import net.minestom.server.utils.Direction;
 import org.jetbrains.annotations.NotNull;
 
 public enum DirectionUtil {
-    NORTH(Direction.NORTH, 0),
-    EAST(Direction.EAST, 1),
-    SOUTH(Direction.SOUTH, 2),
-    WEST(Direction.WEST, 3);
+    NORTH(Direction.NORTH, 0), // 180/-180
+    EAST(Direction.EAST, 1), // -90
+    SOUTH(Direction.SOUTH, 2), // 0
+    WEST(Direction.WEST, 3); // 90
 
     private final Direction direction;
     private final int turns;

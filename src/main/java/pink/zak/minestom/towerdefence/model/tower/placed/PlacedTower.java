@@ -1,6 +1,8 @@
 package pink.zak.minestom.towerdefence.model.tower.placed;
 
-import net.hollowcube.util.schem.Rotation;
+import java.util.Set;
+import java.util.stream.Collectors;
+import net.hollowcube.schem.Rotation;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.instance.block.Block;
@@ -15,7 +17,6 @@ import pink.zak.minestom.towerdefence.game.MobHandler;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTower;
 import pink.zak.minestom.towerdefence.model.tower.config.Tower;
 import pink.zak.minestom.towerdefence.model.tower.config.TowerLevel;
-import pink.zak.minestom.towerdefence.model.tower.config.relative.RelativeBlock;
 import pink.zak.minestom.towerdefence.model.tower.placed.types.ArcherTower;
 import pink.zak.minestom.towerdefence.model.tower.placed.types.BlizzardTower;
 import pink.zak.minestom.towerdefence.model.tower.placed.types.BomberTower;
@@ -25,11 +26,8 @@ import pink.zak.minestom.towerdefence.model.tower.placed.types.LightningTower;
 import pink.zak.minestom.towerdefence.model.tower.placed.types.NecromancerTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.utils.DirectionUtil;
-import pink.zak.minestom.towerdefence.utils.properties.PropertyRotatorRegistry;
+import pink.zak.minestom.towerdefence.utils.SchemUtils;
 import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;
-
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public abstract class PlacedTower<T extends TowerLevel> {
     public static final Tag<Integer> ID_TAG = Tag.Integer("towerId");
@@ -97,39 +95,18 @@ public abstract class PlacedTower<T extends TowerLevel> {
         this.placeLevel();
     }
 
+    // todo re-investigate using a batch to apply in the future
+    // it was buggy last time it was tried
     private void placeLevel() {
         int turns = DirectionUtil.fromDirection(this.facing).getTurns();
-        if (this.level.getSchematic() != null) { // todo remove old code
-            // TODO move back to block batches when they are fixed
-//            RelativeBlockBatch batch = this.level.getSchematic().build(Rotation.NONE, block ->
-//                    PropertyRotatorRegistry.rotateProperties(block, turns)
-//                            .withTag(ID_TAG, this.id)
-//            );
+        Rotation rotation = Rotation.values()[turns];
 
-            this.level.getSchematic().apply(Rotation.NONE, (point, block) -> {
-                Point rotatedPoint = DirectionUtil.correctForDirection(point, this.facing);
-                int x = this.basePoint.blockX() + rotatedPoint.blockX();
-                int z = this.basePoint.blockZ() + rotatedPoint.blockZ();
-                int y = this.basePoint.blockY() + rotatedPoint.blockY();
+        this.level.getSchematic().apply(rotation, (relativePoint, block) -> {
+            // Add the ID_TAG with the tower's ID to each block
+            block = block.withTag(ID_TAG, this.id);
 
-                Block moddedBlock = PropertyRotatorRegistry.rotateProperties(block, turns)
-                        .withTag(ID_TAG, this.id);
-
-                this.instance.setBlock(x, y, z, moddedBlock);
-            });
-
-//            batch.apply(this.instance, this.basePoint, null);
-            return;
-        } // todo could placeLevel return the block batch so it can also be used to remove old blocks?
-        for (RelativeBlock relativeBlock : this.level.getRelativeBlocks()) {
-            int x = this.basePoint.blockX() + relativeBlock.getXOffset(this.facing);
-            int z = this.basePoint.blockZ() + relativeBlock.getZOffset(this.facing);
-            int y = this.basePoint.blockY() + relativeBlock.getYOffset();
-
-            Block block = PropertyRotatorRegistry.rotateProperties(relativeBlock.getBlock(), turns).withTag(ID_TAG, this.id);
-
-            this.instance.setBlock(x, y, z, block);
-        }
+            this.instance.setBlock(this.basePoint.add(relativePoint), block);
+        });
     }
 
     private void placeBase() {
@@ -142,36 +119,38 @@ public abstract class PlacedTower<T extends TowerLevel> {
     }
 
     private void removeNonUpdatedBlocks(TowerLevel oldLevel, TowerLevel newLevel) {
-        Set<RelativeBlock> oldPoints = oldLevel.getRelativeBlocks();
-        Set<RelativeBlock> newPoints = newLevel.getRelativeBlocks();
+        int turns = DirectionUtil.fromDirection(this.facing).getTurns();
+        Rotation rotation = Rotation.values()[turns];
 
-        for (RelativeBlock relativeBlock : oldPoints) {
-            if (!newPoints.contains(relativeBlock)) {
-                int x = this.basePoint.blockX() + relativeBlock.getXOffset(this.facing);
-                int z = this.basePoint.blockZ() + relativeBlock.getZOffset(this.facing);
-                int y = this.basePoint.blockY() + relativeBlock.getYOffset();
-                this.instance.setBlock(x, y, z, Block.AIR);
+        Set<Point> oldRelativePoints = SchemUtils.getRelativeBlockPoints(rotation, oldLevel.getSchematic());
+        Set<Point> newRelativePoints = SchemUtils.getRelativeBlockPoints(rotation, newLevel.getSchematic());
+
+        for (Point relativePoint : oldRelativePoints) {
+            if (!newRelativePoints.contains(relativePoint)) {
+                this.instance.setBlock(this.basePoint.add(relativePoint), Block.AIR);
             }
         }
     }
 
     public void destroy() {
-        Set<RelativeBlock> allRelativeBlocks = this.getTower().getLevels().values().stream()
+        Set<Point> relativePositions = this.getTower().getLevels().values().stream()
                 .filter(towerLevel -> towerLevel.getLevel() <= this.levelInt)
-                .flatMap(towerLevel -> towerLevel.getRelativeBlocks().stream())
-                .collect(Collectors.toUnmodifiableSet());
+                .map(TowerLevel::getSchematic)
+                .map(schem -> SchemUtils.getRelativeBlockPoints(Rotation.NONE, schem))
+                .flatMap(Set::stream)
+                .collect(Collectors.toSet());
 
-        for (RelativeBlock relativeBlock : allRelativeBlocks) {
-            int x = this.basePoint.blockX() + relativeBlock.getXOffset(this.facing);
-            int z = this.basePoint.blockZ() + relativeBlock.getZOffset(this.facing);
-            int y = this.basePoint.blockY() + relativeBlock.getYOffset();
-
-            this.instance.setBlock(x, y, z, Block.AIR);
+        for (Point relativePos : relativePositions) {
+            this.instance.setBlock(this.basePoint.add(relativePos), Block.AIR);
         }
+
+        // set the base back to normal
         this.normaliseBase();
     }
 
-    // returns the blocks below the tower to normal, removing their ID_TAG property.
+    /**
+     * returns the blocks below the tower to normal, removing their ID_TAG property.
+     */
     private void normaliseBase() {
         int checkDistance = this.tower.getType().getSize().getCheckDistance();
         for (int x = this.basePoint.blockX() - checkDistance; x <= this.basePoint.blockX() + checkDistance; x++) {

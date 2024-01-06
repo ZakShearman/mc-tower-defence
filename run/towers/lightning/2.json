@@ -19,6 +19,5 @@
     "xOffset": 0,
     "yOffset": 2.5,
     "zOffset": 0
-  },
-  "relativeBlocks": [{"xOffset":-1,"yOffset":1,"zOffset":-1,"block":{"material":"minecraft:smooth_stone_slab","properties":["type=bottom"]}},{"xOffset":0,"yOffset":1,"zOffset":-1,"block":{"material":"minecraft:waxed_exposed_copper"}},{"xOffset":1,"yOffset":1,"zOffset":-1,"block":{"material":"minecraft:smooth_stone_slab","properties":["type=bottom"]}},{"xOffset":-1,"yOffset":1,"zOffset":0,"block":{"material":"minecraft:waxed_exposed_copper"}},{"xOffset":0,"yOffset":1,"zOffset":0,"block":{"material":"minecraft:smooth_stone"}},{"xOffset":1,"yOffset":1,"zOffset":0,"block":{"material":"minecraft:waxed_exposed_copper"}},{"xOffset":-1,"yOffset":1,"zOffset":1,"block":{"material":"minecraft:smooth_stone_slab","properties":["type=bottom"]}},{"xOffset":0,"yOffset":1,"zOffset":1,"block":{"material":"minecraft:waxed_exposed_copper"}},{"xOffset":1,"yOffset":1,"zOffset":1,"block":{"material":"minecraft:smooth_stone_slab","properties":["type=bottom"]}},{"xOffset":0,"yOffset":2,"zOffset":0,"block":{"material":"minecraft:lightning_rod","properties":["facing=up"]}}]
+  }
 }

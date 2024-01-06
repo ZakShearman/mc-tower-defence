@@ -22,8 +22,7 @@ dependencies {
     implementation("dev.emortal.minestom:core:76536d4")
     implementation("dev.emortal.api:common-proto-sdk:fee482e")
 
-    implementation("com.github.hollow-cube.common:schem:db5eab9512")
-
+    implementation("dev.hollowcube:schem:1.0.1")
     // Polar world format
     implementation("dev.hollowcube:polar:1.3.2")
 

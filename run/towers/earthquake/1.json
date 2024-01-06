@@ -39,7 +39,5 @@
   ],
   "shulkerAnimationTicks": 25,
   "stunTicks": 20,
-  "stunCooldownTicks": 60,
-
-  "relativeBlocks": [{"xOffset":-1,"yOffset":1,"zOffset":-1,"block":{"material":"minecraft:gravel"}},{"xOffset":0,"yOffset":1,"zOffset":-1,"block":{"material":"minecraft:gravel"}},{"xOffset":1,"yOffset":1,"zOffset":-1,"block":{"material":"minecraft:gravel"}},{"xOffset":-1,"yOffset":1,"zOffset":0,"block":{"material":"minecraft:gravel"}},{"xOffset":0,"yOffset":1,"zOffset":0,"block":{"material":"minecraft:gravel"}},{"xOffset":1,"yOffset":1,"zOffset":0,"block":{"material":"minecraft:gravel"}},{"xOffset":-1,"yOffset":1,"zOffset":1,"block":{"material":"minecraft:gravel"}},{"xOffset":0,"yOffset":1,"zOffset":1,"block":{"material":"minecraft:gravel"}},{"xOffset":1,"yOffset":1,"zOffset":1,"block":{"material":"minecraft:gravel"}},{"xOffset":0,"yOffset":2,"zOffset":-1,"block":{"material":"minecraft:light_gray_shulker_box","properties":["facing=north"]}},{"xOffset":-1,"yOffset":2,"zOffset":0,"block":{"material":"minecraft:light_gray_shulker_box","properties":["facing=west"]}},{"xOffset":0,"yOffset":2,"zOffset":0,"block":{"material":"minecraft:tuff"}},{"xOffset":1,"yOffset":2,"zOffset":0,"block":{"material":"minecraft:light_gray_shulker_box","properties":["facing=east"]}},{"xOffset":0,"yOffset":2,"zOffset":1,"block":{"material":"minecraft:light_gray_shulker_box","properties":["facing=south"]}}]
+  "stunCooldownTicks": 60
 }
