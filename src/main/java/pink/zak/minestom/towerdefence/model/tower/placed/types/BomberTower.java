@@ -1,5 +1,6 @@
 package pink.zak.minestom.towerdefence.model.tower.placed.types;
 
+import java.util.List;
 import net.kyori.adventure.sound.Sound;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Point;
@@ -27,8 +28,9 @@ import pink.zak.minestom.towerdefence.model.user.GameUser;
 
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
+import pink.zak.minestom.towerdefence.targetting.Target;
 
-public class BomberTower extends PlacedAttackingTower<BomberTowerLevel> {
+public final class BomberTower extends PlacedAttackingTower<BomberTowerLevel> {
     private static final double GRAVITY_PER_TICK = 0.04;
     private static final double DRAG_PER_TICK = 0;
 
@@ -47,17 +49,12 @@ public class BomberTower extends PlacedAttackingTower<BomberTowerLevel> {
 
     private Point spawnPoint;
 
-    public BomberTower(GameHandler gameHandler, Instance instance, AttackingTower tower, Material towerBaseMaterial, int id, GameUser owner, Point basePoint, Direction facing, int level) {
-        super(instance, tower, towerBaseMaterial, id, owner, basePoint, facing, level);
+    public BomberTower(@NotNull MobHandler mobHandler, GameHandler gameHandler, Instance instance, AttackingTower tower, Material towerBaseMaterial, int id, GameUser owner, Point basePoint, Direction facing, int level) {
+        super(mobHandler, instance, tower, towerBaseMaterial, id, owner, basePoint, facing, level);
         this.mobHandler = gameHandler.getMobHandler();
         this.owner = owner;
 
         this.updateSpawnPoint();
-    }
-
-    @Override
-    public int getMaxTargets() {
-        return 1;
     }
 
     private void updateSpawnPoint() {
@@ -71,8 +68,18 @@ public class BomberTower extends PlacedAttackingTower<BomberTowerLevel> {
     }
 
     @Override
-    protected void fire() {
-        new BombTnt(this);
+    protected void attemptToFire() {
+        List<LivingTDEnemyMob> targets = this.findApplicableTargets();
+        if (targets.isEmpty()) return;
+
+        new BombTnt(this, targets.getFirst());
+    }
+
+    private List<LivingTDEnemyMob> findApplicableTargets() {
+        return this.findPossibleTargets(Target.first()).stream()
+                // filter out flying mobs
+                .filter(mob -> !mob.getEnemyMob().isFlying())
+                .toList();
     }
 
     private void damageTroops(@NotNull BombTnt tnt) {
@@ -95,7 +102,7 @@ public class BomberTower extends PlacedAttackingTower<BomberTowerLevel> {
         private final BomberTower tower;
         private final Pos fallbackPos;
 
-        BombTnt(BomberTower tower) {
+        BombTnt(@NotNull BomberTower tower, @NotNull LivingTDEnemyMob fallbackTarget) {
             super(EntityType.TNT);
             this.tower = tower;
 
@@ -106,8 +113,7 @@ public class BomberTower extends PlacedAttackingTower<BomberTowerLevel> {
             this.setGravity(DRAG_PER_TICK, GRAVITY_PER_TICK);
             this.setVelocity(RAISE_VELOCITY);
 
-            LivingTDEnemyMob target = tower.getTargets().get(0);
-            this.fallbackPos = target.getPosition();
+            this.fallbackPos = fallbackTarget.getPosition();
         }
 
         @Override
@@ -116,8 +122,9 @@ public class BomberTower extends PlacedAttackingTower<BomberTowerLevel> {
             long aliveTicks = super.getAliveTicks();
 
             if (aliveTicks == RAISE_TICKS) {
-                Pos targetPos = this.tower.getTargets().isEmpty() ? this.fallbackPos : this.tower.getTargets().get(0).getPosition();
-                targetPos = targetPos.add(0, 1.5, 0);
+                // find a more recent target. if not found, use the fallback position
+                List<LivingTDEnemyMob> targets = tower.findApplicableTargets();
+                Pos targetPos = (targets.isEmpty() ? this.fallbackPos : targets.getFirst().getPosition()).add(0, 1.5, 0);
                 this.setVelocity(this.tower.calculateLaunchVec(this.position, targetPos));
             } else if (aliveTicks == RAISE_TICKS + FLYING_TICKS) {
                 Pos pos = this.getPosition();

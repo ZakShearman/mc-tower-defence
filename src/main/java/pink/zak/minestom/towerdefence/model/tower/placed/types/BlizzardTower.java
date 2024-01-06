@@ -1,5 +1,7 @@
 package pink.zak.minestom.towerdefence.model.tower.placed.types;
 
+import java.util.List;
+import java.util.function.Function;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Pos;
@@ -13,6 +15,9 @@ import net.minestom.server.particle.ParticleCreator;
 import net.minestom.server.timer.Task;
 import net.minestom.server.utils.Direction;
 import net.minestom.server.utils.time.TimeUnit;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import pink.zak.minestom.towerdefence.game.MobHandler;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingTDEnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.statuseffect.FrozenStatusEffect;
 import pink.zak.minestom.towerdefence.model.mob.statuseffect.StatusEffectType;
@@ -22,9 +27,7 @@ import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;
 
-import java.util.function.Function;
-
-public class BlizzardTower extends PlacedAttackingTower<BlizzardTowerLevel> {
+public final class BlizzardTower extends PlacedAttackingTower<BlizzardTowerLevel> {
     private static final Function<Point, ParticlePacket> LEVEL_4_PACKET = point -> ParticleCreator.createParticlePacket(
             Particle.SNOWFLAKE, point.x(), point.y(), point.z(), 0.8f, 0.9f, 0.8f, 100
     );
@@ -33,12 +36,13 @@ public class BlizzardTower extends PlacedAttackingTower<BlizzardTowerLevel> {
             Particle.SNOWFLAKE, point.x(), point.y(), point.z(), 0.9f, 1.3f, 0.9f, 150
     );
 
-    private final Pos restSnowmanPos;
-    private Entity snowman;
-    private Task snowmanTask;
+    private final @NotNull Pos restSnowmanPos;
+    private @Nullable Task snowmanTask;
+    private @Nullable Entity snowman;
+    private @Nullable LivingTDEnemyMob target;
 
-    public BlizzardTower(TowerDefenceInstance instance, AttackingTower tower, Material towerBaseMaterial, int id, GameUser owner, Point basePoint, Direction facing, int level) {
-        super(instance, tower, towerBaseMaterial, id, owner, basePoint, facing, level);
+    public BlizzardTower(@NotNull MobHandler mobHandler, TowerDefenceInstance instance, AttackingTower tower, Material towerBaseMaterial, int id, GameUser owner, Point basePoint, Direction facing, int level) {
+        super(mobHandler, instance, tower, towerBaseMaterial, id, owner, basePoint, facing, level);
 
         // todo faces the wrong direction
         Pos mobSpawnPos = instance.getTowerMap().getMobSpawn(this.team);
@@ -48,15 +52,26 @@ public class BlizzardTower extends PlacedAttackingTower<BlizzardTowerLevel> {
         ((SnowGolemMeta) this.snowman.getEntityMeta()).setHasPumpkinHat(false);
 
         this.snowman.setInstance(instance, this.restSnowmanPos);
-        this.startUpdatingSnowmanYaw();
+        this.snowmanTask = MinecraftServer.getSchedulerManager().buildTask(() -> {
+            if (this.snowman == null) return;
+            if (this.target != null) this.snowman.lookAt(this.target.getPosition().add(0, this.target.getEyeHeight(), 0));
+            else this.snowman.setView(this.restSnowmanPos.yaw(), 0);
+        }).repeat(5, TimeUnit.SERVER_TICK).schedule();
     }
 
     @Override
-    protected void fire() {
+    protected void attemptToFire() {
         double speedModifier = this.level.getSpeedModifier();
         int tickDuration = this.level.getTickDuration();
 
-        for (LivingTDEnemyMob target : this.getTargetsNotImmune(StatusEffectType.FROZEN)) {
+        List<LivingTDEnemyMob> targets = this.findPossibleTargets().stream()
+                // filter out targets that are immune to being frozen
+                .filter(target -> !target.getEnemyMob().isEffectIgnored(StatusEffectType.FROZEN))
+                .toList();
+
+        this.target = targets.isEmpty() ? null : targets.getFirst();
+
+        for (LivingTDEnemyMob target : targets) {
             FrozenStatusEffect currentEffect = (FrozenStatusEffect) target.getStatusEffects().get(StatusEffectType.FROZEN);
 
             // if it: A) has no effect, B) current effect is worse than this one, or C) current effect is the same but has less time left
@@ -70,7 +85,7 @@ public class BlizzardTower extends PlacedAttackingTower<BlizzardTowerLevel> {
         }
 
         // The below uses all targets because they may be immune to being frozen but not cold damage.
-        if (this.targets.size() > 0) {
+        if (!targets.isEmpty()) {
             if (this.levelInt >= 4) {
                 Point point = this.basePoint.add(0, this.levelInt == 4 ? 3.5 : 4.5, 0);
                 ParticlePacket particlePacket = (this.levelInt == 4 ? LEVEL_4_PACKET : LEVEL_5_PACKET).apply(point);
@@ -80,7 +95,7 @@ public class BlizzardTower extends PlacedAttackingTower<BlizzardTowerLevel> {
         }
 
         if (this.level.getDamage() > 0) {
-            for (LivingTDEnemyMob target : this.targets) { //
+            for (LivingTDEnemyMob target : targets) {
                 target.damage(this, this.level.getDamage());
             }
         }
@@ -88,40 +103,23 @@ public class BlizzardTower extends PlacedAttackingTower<BlizzardTowerLevel> {
 
     @Override
     public void upgrade() {
-        if (this.snowman != null) {
+        if (this.snowman != null && this.snowmanTask != null) {
             this.snowman.remove();
             this.snowmanTask.cancel();
             this.snowman = null;
+            this.snowmanTask = null;
         }
         super.upgrade();
     }
 
     @Override
     public void destroy() {
-        if (this.snowman != null) {
+        if (this.snowman != null && this.snowmanTask != null) {
             this.snowman.remove();
             this.snowmanTask.cancel();
             this.snowman = null;
         }
 
         super.destroy();
-    }
-
-    private void startUpdatingSnowmanYaw() {
-        this.snowmanTask = MinecraftServer.getSchedulerManager().buildTask(() -> {
-                    if (this.snowman != null) {
-                        if (this.targets.size() > 0) {
-                            this.snowman.lookAt(this.targets.get(0).getPosition());
-                        } else if (this.snowman.getPosition() != this.restSnowmanPos) {
-                            this.snowman.setView(this.restSnowmanPos.yaw(), 0);
-                        }
-                    }
-                }).repeat(5, TimeUnit.SERVER_TICK)
-                .schedule();
-    }
-
-    @Override
-    public int getMaxTargets() {
-        return Integer.MAX_VALUE;
     }
 }

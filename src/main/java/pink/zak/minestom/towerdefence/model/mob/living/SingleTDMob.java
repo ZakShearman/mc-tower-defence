@@ -1,5 +1,6 @@
 package pink.zak.minestom.towerdefence.model.mob.living;
 
+import java.util.HashSet;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.entity.*;
 import net.minestom.server.network.packet.server.LazyPacket;
@@ -10,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import pink.zak.minestom.towerdefence.model.prediction.DamagePrediction;
 
 public class SingleTDMob extends EntityCreature implements LivingTDMob {
     private final int level;

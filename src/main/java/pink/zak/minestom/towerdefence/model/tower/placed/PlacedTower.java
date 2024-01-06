@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.enums.TowerType;
 import pink.zak.minestom.towerdefence.game.GameHandler;
+import pink.zak.minestom.towerdefence.game.MobHandler;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTower;
 import pink.zak.minestom.towerdefence.model.tower.config.Tower;
 import pink.zak.minestom.towerdefence.model.tower.config.TowerLevel;
@@ -69,19 +70,20 @@ public abstract class PlacedTower<T extends TowerLevel> {
 
     public static PlacedTower<?> create(GameHandler gameHandler, TowerDefenceInstance instance, Tower tower, Material towerBaseMaterial, int id, GameUser owner, Point basePoint, Direction facing) {
         TowerType towerType = tower.getType();
+        MobHandler mobHandler = gameHandler.getMobHandler();
         return switch (towerType) {
             case ARCHER ->
-                    new ArcherTower(instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
+                    new ArcherTower(mobHandler, instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
             case BOMBER ->
-                    new BomberTower(gameHandler, instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
+                    new BomberTower(mobHandler, gameHandler, instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
             case BLIZZARD ->
-                    new BlizzardTower(instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
+                    new BlizzardTower(mobHandler, instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
             case CHARITY ->
                     new CharityTower(instance, tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
             case EARTHQUAKE ->
-                    new EarthquakeTower(instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
+                    new EarthquakeTower(mobHandler, instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
             case LIGHTNING ->
-                    new LightningTower(instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
+                    new LightningTower(mobHandler, instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
             case NECROMANCER ->
                     new NecromancerTower(instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
         };

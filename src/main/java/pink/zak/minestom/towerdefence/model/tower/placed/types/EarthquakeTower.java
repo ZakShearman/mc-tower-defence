@@ -13,6 +13,7 @@ import net.minestom.server.utils.PacketUtils;
 import net.minestom.server.utils.time.TimeUnit;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.Tags;
+import pink.zak.minestom.towerdefence.game.MobHandler;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingTDEnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.living.SingleEnemyTDMob;
 import pink.zak.minestom.towerdefence.model.mob.statuseffect.StatusEffectType;
@@ -26,16 +27,16 @@ import pink.zak.minestom.towerdefence.model.user.GameUser;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EarthquakeTower extends PlacedAttackingTower<EarthquakeTowerLevel> {
+public final class EarthquakeTower extends PlacedAttackingTower<EarthquakeTowerLevel> {
     private static final Tag<Double> ORIGINAL_GRAVITY_TAG = Tag.Double("originalGravity");
     private static final double GRAVITY = 0.5;
 
-    public EarthquakeTower(Instance instance, AttackingTower tower, Material towerBaseMaterial, int id, GameUser owner, Point basePoint, Direction facing, int level) {
-        super(instance, tower, towerBaseMaterial, id, owner, basePoint, facing, level);
+    public EarthquakeTower(@NotNull MobHandler mobHandler, Instance instance, AttackingTower tower, Material towerBaseMaterial, int id, GameUser owner, Point basePoint, Direction facing, int level) {
+        super(mobHandler, instance, tower, towerBaseMaterial, id, owner, basePoint, facing, level);
     }
 
     @Override
-    protected void fire() {
+    protected void attemptToFire() {
         List<LivingTDEnemyMob> targets = this.getActionableTargets();
         if (targets.isEmpty()) {
             return;
@@ -86,17 +87,14 @@ public class EarthquakeTower extends PlacedAttackingTower<EarthquakeTowerLevel> 
     }
 
     private @NotNull List<LivingTDEnemyMob> getActionableTargets() {
-        List<LivingTDEnemyMob> targets = new ArrayList<>(this.targets);
-        targets.removeIf(target -> target.isDead()
-                || target.getEnemyMob().isEffectIgnored(StatusEffectType.STUNNED)
-                || Tags.getOrDefault(target, Tags.NEXT_STUNNABLE_TIME, 0L) > System.currentTimeMillis());
-
-        return targets;
-    }
-
-    @Override
-    public int getMaxTargets() {
-        return 500;
+        return this.findPossibleTargets().stream()
+                // filter out flying mobs
+                .filter(mob -> !mob.getEnemyMob().isFlying())
+                // filter out targets that are immune to being stunned
+                .filter(target -> !target.getEnemyMob().isEffectIgnored(StatusEffectType.STUNNED))
+                // filter out targets that are already stunned
+                .filter(target -> System.currentTimeMillis() > Tags.getOrDefault(target, Tags.NEXT_STUNNABLE_TIME, 0L))
+                .toList();
     }
 
     private void setShulkerBoxState(boolean open) {

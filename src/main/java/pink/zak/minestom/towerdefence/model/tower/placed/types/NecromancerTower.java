@@ -18,6 +18,7 @@ import net.minestom.server.item.Material;
 import net.minestom.server.utils.Direction;
 import net.minestom.server.utils.time.TimeUnit;
 import org.jetbrains.annotations.NotNull;
+import pink.zak.minestom.towerdefence.game.MobHandler;
 import pink.zak.minestom.towerdefence.model.DamageSource;
 import pink.zak.minestom.towerdefence.model.mob.config.EnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.config.EnemyMobLevel;
@@ -32,7 +33,7 @@ import pink.zak.minestom.towerdefence.utils.StringUtils;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class NecromancerTower extends PlacedTower<NecromancerTowerLevel> {
+public final class NecromancerTower extends PlacedTower<NecromancerTowerLevel> {
     private final AtomicInteger necromancedMobCount = new AtomicInteger(0);
 
     public NecromancerTower(Instance instance, AttackingTower tower, Material towerBaseMaterial, int id, GameUser owner, Point basePoint, Direction facing, int level) {

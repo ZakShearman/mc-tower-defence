@@ -1,5 +1,8 @@
 package pink.zak.minestom.towerdefence.model.tower.placed;
 
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.instance.Instance;
@@ -8,38 +11,33 @@ import net.minestom.server.timer.Task;
 import net.minestom.server.utils.Direction;
 import net.minestom.server.utils.time.TimeUnit;
 import org.jetbrains.annotations.NotNull;
+import pink.zak.minestom.towerdefence.game.MobHandler;
 import pink.zak.minestom.towerdefence.model.DamageSource;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingTDEnemyMob;
-import pink.zak.minestom.towerdefence.model.mob.statuseffect.StatusEffectType;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTower;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTowerLevel;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
-
-import java.util.ArrayList;
-import java.util.List;
+import pink.zak.minestom.towerdefence.targetting.Target;
 
 public abstract class PlacedAttackingTower<T extends AttackingTowerLevel> extends PlacedTower<T> implements DamageSource {
-    protected List<LivingTDEnemyMob> targets = new ArrayList<>();
+    private final @NotNull MobHandler mobHandler;
+
     protected Task attackTask;
 
-    protected PlacedAttackingTower(Instance instance, AttackingTower tower, Material towerBaseMaterial, int id, GameUser owner, Point basePoint, Direction facing, int level) {
+    protected PlacedAttackingTower(@NotNull MobHandler mobHandler, Instance instance, AttackingTower tower, Material towerBaseMaterial, int id, GameUser owner, Point basePoint, Direction facing, int level) {
         super(instance, tower, towerBaseMaterial, id, owner, basePoint, facing, level);
+        this.mobHandler = mobHandler;
         this.startFiring();
     }
 
     private void startFiring() {
         this.attackTask = MinecraftServer.getSchedulerManager()
-                .buildTask(() -> {
-                    if (!this.targets.isEmpty())
-                        this.fire();
-                })
+                .buildTask(this::attemptToFire)
                 .repeat(this.level.getFireDelay(), TimeUnit.SERVER_TICK)
                 .schedule();
     }
 
-    protected abstract void fire();
-
-    public abstract int getMaxTargets();
+    protected abstract void attemptToFire();
 
     @Override
     public void upgrade() {
@@ -57,18 +55,25 @@ public abstract class PlacedAttackingTower<T extends AttackingTowerLevel> extend
         super.destroy();
     }
 
-    public List<LivingTDEnemyMob> getTargets() {
-        return this.targets;
+    public @NotNull Set<LivingTDEnemyMob> findPossibleTargets() {
+        // get mobs spawned by the enemy team
+        Set<LivingTDEnemyMob> mobs = this.mobHandler.getMobs(this.owner.getTeam().getOpposite());
+
+        return mobs.stream()
+                // filter out mobs that are already dead
+                .filter(mob -> !mob.isDead())
+                // filter out mobs that are predicted to be dead before the tower can fire
+                .filter(mob -> !mob.isPredictedDead())
+                // filter out mobs that are out of the tower's range
+                .filter(mob -> mob.getPosition().distance(this.getBasePoint()) <= this.level.getRange())
+                .collect(Collectors.toUnmodifiableSet());
     }
 
-    public List<LivingTDEnemyMob> getTargetsNotImmune(@NotNull StatusEffectType statusEffect) {
-        return this.targets.stream()
-                .filter(target -> !target.getEnemyMob().isEffectIgnored(statusEffect))
+    public @NotNull List<LivingTDEnemyMob> findPossibleTargets(@NotNull Target target) {
+        return this.findPossibleTargets().stream()
+                // sort mobs by target priority
+                .sorted(target)
                 .toList();
-    }
-
-    public void setTargets(List<LivingTDEnemyMob> targets) {
-        this.targets = targets;
     }
 
     @Override

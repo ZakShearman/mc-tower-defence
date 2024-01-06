@@ -1,5 +1,15 @@
 package pink.zak.minestom.towerdefence.model.mob.living;
 
+import java.time.temporal.ChronoUnit;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.ThreadLocalRandom;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.MinecraftServer;
@@ -17,6 +27,7 @@ import net.minestom.server.network.packet.server.play.EntityMetaDataPacket;
 import net.minestom.server.network.packet.server.play.SoundEffectPacket;
 import net.minestom.server.sound.SoundEvent;
 import net.minestom.server.timer.Task;
+import net.minestom.server.timer.TaskSchedule;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pink.zak.minestom.towerdefence.enums.Team;
@@ -31,7 +42,7 @@ import pink.zak.minestom.towerdefence.model.mob.config.EnemyMobLevel;
 import pink.zak.minestom.towerdefence.model.mob.modifier.SpeedModifier;
 import pink.zak.minestom.towerdefence.model.mob.statuseffect.StatusEffect;
 import pink.zak.minestom.towerdefence.model.mob.statuseffect.StatusEffectType;
-import pink.zak.minestom.towerdefence.model.prediction.DamagePredictionHandler;
+import pink.zak.minestom.towerdefence.model.prediction.DamagePrediction;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedTower;
 import pink.zak.minestom.towerdefence.model.tower.placed.types.CharityTower;
@@ -39,16 +50,6 @@ import pink.zak.minestom.towerdefence.model.tower.placed.types.NecromancerTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.utils.DirectionUtil;
 import pink.zak.minestom.towerdefence.utils.TDEnvUtils;
-
-import java.time.temporal.ChronoUnit;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class SingleEnemyTDMob extends SingleTDMob implements LivingTDEnemyMob {
     protected final TowerHandler towerHandler;
@@ -58,7 +59,7 @@ public class SingleEnemyTDMob extends SingleTDMob implements LivingTDEnemyMob {
     protected final Team team;
     protected final GameUser sender;
 
-    private final DamagePredictionHandler damagePredictionHandler = new DamagePredictionHandler(() -> this.health);
+    private final @NotNull Set<DamagePrediction> damagePredictions = new HashSet<>();
 
     protected final int positionModifier;
     protected final List<PathCorner> corners;
@@ -219,9 +220,6 @@ public class SingleEnemyTDMob extends SingleTDMob implements LivingTDEnemyMob {
         if (this.attackTask != null)
             this.attackTask.cancel();
 
-        for (PlacedAttackingTower<?> tower : this.attackingTowers)
-            tower.getTargets().remove(this);
-
         this.getMobHandler().getMobs(this.getTDTeam()).remove(this);
 
         super.kill();
@@ -351,7 +349,28 @@ public class SingleEnemyTDMob extends SingleTDMob implements LivingTDEnemyMob {
     }
 
     @Override
-    public @NotNull DamagePredictionHandler damagePredictionHandler() {
-        return this.damagePredictionHandler;
+    public @NotNull DamagePrediction applyDamagePrediction(float damage) {
+        DamagePrediction prediction = DamagePrediction.create(this, damage);
+        this.damagePredictions.add(prediction);
+        MinecraftServer.getSchedulerManager().buildTask(prediction::complete)
+                .delay(10, ChronoUnit.SECONDS)
+                .repeat(TaskSchedule.stop())
+                .schedule();
+        return prediction;
+    }
+
+    @Override
+    public void completeDamagePrediction(@NotNull DamagePrediction prediction) {
+        this.damagePredictions.remove(prediction);
+    }
+
+    @Override
+    public float getDamagePrediction() {
+        return (float) this.damagePredictions.stream().mapToDouble(DamagePrediction::damage).sum();
+    }
+
+    @Override
+    public float getPredictedHealth() {
+        return this.health - this.getDamagePrediction();
     }
 }

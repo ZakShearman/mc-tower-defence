@@ -14,33 +14,26 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public enum TowerType {
-    ARCHER(Size.THREE, true, ArcherTowerConfig::new, json -> new AttackingTowerLevel("Archer", json)),
-    BLIZZARD(Size.THREE, true, AttackingTower::new, BlizzardTowerLevel::new),
-    BOMBER(Size.THREE, false, AttackingTower::new, BomberTowerLevel::new),
-    CHARITY(Size.FIVE, false, Tower::new, CharityTowerLevel::new),
-    EARTHQUAKE(Size.THREE, false, AttackingTower::new, json -> new EarthquakeTowerLevel(json)),
-    LIGHTNING(Size.THREE, true, AttackingTower::new, LightningTowerLevel::new),
-    NECROMANCER(Size.FIVE, true, AttackingTower::new, NecromancerTowerLevel::new);
+    ARCHER(Size.THREE, ArcherTowerConfig::new, json -> new AttackingTowerLevel("Archer", json)),
+    BLIZZARD(Size.THREE, AttackingTower::new, BlizzardTowerLevel::new),
+    BOMBER(Size.THREE, AttackingTower::new, BomberTowerLevel::new),
+    CHARITY(Size.FIVE, Tower::new, CharityTowerLevel::new),
+    EARTHQUAKE(Size.THREE, AttackingTower::new, EarthquakeTowerLevel::new),
+    LIGHTNING(Size.THREE, AttackingTower::new, LightningTowerLevel::new),
+    NECROMANCER(Size.FIVE, AttackingTower::new, NecromancerTowerLevel::new);
 
     private final @NotNull Size size;
-    private final boolean targetAir;
     private final @NotNull BiFunction<JsonObject, Map<Integer, JsonObject>, ? extends Tower> towerFunction;
     private final @NotNull Function<JsonObject, ? extends TowerLevel> towerLevelFunction;
 
-    TowerType(@NotNull Size size, boolean targetAir,
-              @NotNull BiFunction<JsonObject, Map<Integer, JsonObject>, ? extends Tower> towerFunction, @NotNull Function<JsonObject, ? extends TowerLevel> towerLevelFunction) {
+    TowerType(@NotNull Size size, @NotNull BiFunction<JsonObject, Map<Integer, JsonObject>, ? extends Tower> towerFunction, @NotNull Function<JsonObject, ? extends TowerLevel> towerLevelFunction) {
         this.size = size;
-        this.targetAir = targetAir;
         this.towerFunction = towerFunction;
         this.towerLevelFunction = towerLevelFunction;
     }
 
     public @NotNull Size getSize() {
         return this.size;
-    }
-
-    public boolean isTargetAir() {
-        return this.targetAir;
     }
 
     public @NotNull BiFunction<JsonObject, Map<Integer, JsonObject>, ? extends Tower> getTowerFunction() {
