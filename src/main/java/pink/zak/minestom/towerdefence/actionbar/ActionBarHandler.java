@@ -18,7 +18,7 @@ import pink.zak.minestom.towerdefence.utils.StringUtils;
 public class ActionBarHandler {
     private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
 
-    private static final String ACTION_BAR_CONTENT = "<gold>⛃ <coins> (+<income>/6s) <gray>| <team_color>❤ <castle_health>";
+    private static final String ACTION_BAR_CONTENT = "<gold>⛃ <coins> (<income>/6s) <gray>| <team_color>❤ <castle_health>";
 
     private final @NotNull GameHandler gameHandler;
 
@@ -47,7 +47,7 @@ public class ActionBarHandler {
 
         return MINI_MESSAGE.deserialize(ACTION_BAR_CONTENT,
                 Placeholder.unparsed("coins", StringUtils.commaSeparateNumber(user.getCoins())),
-                Placeholder.unparsed("income", StringUtils.commaSeparateNumber(user.getIncomeRate())),
+                Placeholder.unparsed("income", (user.getIncomeRate() > 0 ? "+" : "") + StringUtils.commaSeparateNumber(user.getIncomeRate())),
                 Placeholder.parsed("team_color", "<%s>".formatted(user.getTeam().getMiniMessageColor())),
                 Placeholder.unparsed("castle_health", StringUtils.commaSeparateNumber(castleHealth))
         );
