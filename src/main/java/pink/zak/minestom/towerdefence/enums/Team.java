@@ -1,5 +1,6 @@
 package pink.zak.minestom.towerdefence.enums;
 
+import dev.emortal.minestom.core.Environment;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import org.jetbrains.annotations.NotNull;
@@ -28,5 +29,10 @@ public enum Team {
 
     public byte getId() {
         return this.id;
+    }
+
+    public @NotNull Team getOpposite() {
+        if (!Environment.isProduction()) return this;
+        return this == BLUE ? RED : BLUE;
     }
 }

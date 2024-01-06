@@ -2,6 +2,7 @@ package pink.zak.minestom.towerdefence.model.tower.placed.types;
 
 import com.extollit.gaming.ai.path.HydrazinePathFinder;
 import com.extollit.gaming.ai.path.SchedulingPriority;
+import java.util.concurrent.atomic.AtomicInteger;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -30,9 +31,7 @@ import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.model.user.TDPlayer;
 import pink.zak.minestom.towerdefence.utils.StringUtils;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
-public class NecromancerTower extends PlacedTower<NecromancerTowerLevel> {
+public final class NecromancerTower extends PlacedTower<NecromancerTowerLevel> {
     private final AtomicInteger necromancedMobCount = new AtomicInteger(0);
 
     public NecromancerTower(Instance instance, AttackingTower tower, Material towerBaseMaterial, int id, GameUser owner, Point basePoint, Direction facing, int level) {

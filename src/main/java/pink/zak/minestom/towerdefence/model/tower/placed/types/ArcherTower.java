@@ -1,5 +1,6 @@
 package pink.zak.minestom.towerdefence.model.tower.placed.types;
 
+import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -18,13 +19,15 @@ import net.minestom.server.instance.Instance;
 import net.minestom.server.item.Material;
 import net.minestom.server.utils.Direction;
 import org.jetbrains.annotations.NotNull;
+import pink.zak.minestom.towerdefence.game.MobHandler;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingTDEnemyMob;
-import pink.zak.minestom.towerdefence.model.prediction.Prediction;
+import pink.zak.minestom.towerdefence.model.prediction.DamagePrediction;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTower;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.config.towers.ArcherTowerConfig;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
+import pink.zak.minestom.towerdefence.targetting.Target;
 import pink.zak.minestom.towerdefence.utils.projectile.Projectile;
 
 public final class ArcherTower extends PlacedAttackingTower<AttackingTowerLevel> {
@@ -33,8 +36,8 @@ public final class ArcherTower extends PlacedAttackingTower<AttackingTowerLevel>
     private final @NotNull Set<Point> firingPoints;
     private final @NotNull EventNode<InstanceEvent> eventNode;
 
-    public ArcherTower(Instance instance, AttackingTower tower, Material towerBaseMaterial, int id, GameUser owner, Point basePoint, Direction facing, int level) {
-        super(instance, tower, towerBaseMaterial, id, owner, basePoint, facing, level);
+    public ArcherTower(@NotNull MobHandler mobHandler, Instance instance, AttackingTower tower, Material towerBaseMaterial, int id, GameUser owner, Point basePoint, Direction facing, int level) {
+        super(mobHandler, instance, tower, towerBaseMaterial, id, owner, basePoint, facing, level);
 
         this.eventNode = EventNode.type("archer-tower-%s".formatted(this.id), EventFilter.INSTANCE);
         instance.eventNode().addChild(this.eventNode);
@@ -46,12 +49,12 @@ public final class ArcherTower extends PlacedAttackingTower<AttackingTowerLevel>
     }
 
     // todo: stick the arrow into the target once it hits
-    private void fire(@NotNull LivingTDEnemyMob target) {
+    private void fireAt(@NotNull LivingTDEnemyMob target) {
         Point start = this.getFiringPoint(target.getPosition());
 
         // register damage prediction
         float damage = this.level.getDamage();
-        Prediction prediction = target.addDamagePrediction(damage);
+        DamagePrediction prediction = target.applyDamagePrediction(damage);
 
         Entity projectile = new Projectile(EntityType.ARROW);
         projectile.setInstance(this.instance, start);
@@ -91,19 +94,17 @@ public final class ArcherTower extends PlacedAttackingTower<AttackingTowerLevel>
                 .filter(event -> event.getEntity().equals(projectile))
                 .expireCount(1)
                 // destroy the prediction when the arrow is removed
-                .handler(event -> prediction.destroy())
+                .handler(event -> prediction.complete())
                 .build();
         projectileNode.addListener(removalListener);
     }
 
     @Override
-    protected void fire() {
-        this.fire(this.targets.getFirst());
-    }
-
-    @Override
-    public int getMaxTargets() {
-        return 1;
+    protected boolean attemptToFire() {
+        List<LivingTDEnemyMob> targets = this.findPossibleTargets(Target.first());
+        if (targets.isEmpty()) return false;
+        this.fireAt(targets.getFirst());
+        return true;
     }
 
     private @NotNull Point getFiringPoint(@NotNull Point target) {

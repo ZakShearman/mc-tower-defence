@@ -101,9 +101,6 @@ public interface LivingTDEnemyMob extends LivingTDMob, Taggable, DamagePredictab
         if (this.getAttackTask() != null)
             this.getAttackTask().cancel();
 
-        for (PlacedAttackingTower<?> tower : this.getAttackingTowers())
-            tower.getTargets().remove(this);
-
         this.getMobHandler().getMobs(this.getTDTeam()).remove(this);
     }
 
@@ -141,6 +138,5 @@ public interface LivingTDEnemyMob extends LivingTDMob, Taggable, DamagePredictab
     default @NotNull NecromancerTower.NecromancedMob necromancedVersion(NecromancerTower tower, NecromancerTowerLevel towerLevel, GameUser towerOwner) {
         return new NecromancerTower.NecromancedMob(tower, towerLevel, this, towerOwner);
     }
-
 
 }

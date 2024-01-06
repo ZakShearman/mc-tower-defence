@@ -1,5 +1,7 @@
 package pink.zak.minestom.towerdefence.model.tower.placed;
 
+import java.util.Set;
+import java.util.stream.Collectors;
 import net.hollowcube.schem.Rotation;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.instance.Instance;
@@ -11,17 +13,21 @@ import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.enums.TowerType;
 import pink.zak.minestom.towerdefence.game.GameHandler;
+import pink.zak.minestom.towerdefence.game.MobHandler;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTower;
 import pink.zak.minestom.towerdefence.model.tower.config.Tower;
 import pink.zak.minestom.towerdefence.model.tower.config.TowerLevel;
-import pink.zak.minestom.towerdefence.model.tower.placed.types.*;
+import pink.zak.minestom.towerdefence.model.tower.placed.types.ArcherTower;
+import pink.zak.minestom.towerdefence.model.tower.placed.types.BlizzardTower;
+import pink.zak.minestom.towerdefence.model.tower.placed.types.BomberTower;
+import pink.zak.minestom.towerdefence.model.tower.placed.types.CharityTower;
+import pink.zak.minestom.towerdefence.model.tower.placed.types.EarthquakeTower;
+import pink.zak.minestom.towerdefence.model.tower.placed.types.LightningTower;
+import pink.zak.minestom.towerdefence.model.tower.placed.types.NecromancerTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.utils.DirectionUtil;
 import pink.zak.minestom.towerdefence.utils.SchemUtils;
 import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;
-
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public abstract class PlacedTower<T extends TowerLevel> {
     public static final Tag<Integer> ID_TAG = Tag.Integer("towerId");
@@ -62,18 +68,20 @@ public abstract class PlacedTower<T extends TowerLevel> {
 
     public static PlacedTower<?> create(GameHandler gameHandler, TowerDefenceInstance instance, Tower tower, Material towerBaseMaterial, int id, GameUser owner, Point basePoint, Direction facing) {
         TowerType towerType = tower.getType();
+        MobHandler mobHandler = gameHandler.getMobHandler();
         return switch (towerType) {
             case ARCHER ->
-                    new ArcherTower(instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
+                    new ArcherTower(mobHandler, instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
             case BOMBER ->
-                    new BomberTower(gameHandler, instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
+                    new BomberTower(mobHandler, gameHandler, instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
             case BLIZZARD ->
-                    new BlizzardTower(instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
-            case CHARITY -> new CharityTower(instance, tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
+                    new BlizzardTower(mobHandler, instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
+            case CHARITY ->
+                    new CharityTower(instance, tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
             case EARTHQUAKE ->
-                    new EarthquakeTower(instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
+                    new EarthquakeTower(mobHandler, instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
             case LIGHTNING ->
-                    new LightningTower(instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
+                    new LightningTower(mobHandler, instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
             case NECROMANCER ->
                     new NecromancerTower(instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
         };
