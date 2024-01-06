@@ -57,9 +57,12 @@ public final class ArcherTower extends PlacedAttackingTower<AttackingTowerLevel>
         Entity projectile = new Projectile(EntityType.ARROW);
         projectile.setInstance(this.instance, start);
 
-        Supplier<Vec> velocity = () -> Vec.fromPoint(target.getPosition().sub(projectile.getPosition()))
-                .normalize()
-                .mul(ARROW_SPEED);
+        Supplier<Vec> velocity = () -> {
+            Point targetPosition = target.getPosition().add(0, target.getEyeHeight() / 2, 0);
+            return Vec.fromPoint(targetPosition.sub(projectile.getPosition()))
+                    .normalize()
+                    .mul(ARROW_SPEED);
+        };
         projectile.setVelocity(velocity.get());
 
         EventNode<EntityEvent> projectileNode = projectile.eventNode();
@@ -67,6 +70,13 @@ public final class ArcherTower extends PlacedAttackingTower<AttackingTowerLevel>
                 .filter(event -> event.getEntity().equals(projectile))
                 .expireWhen(event -> event.getEntity().isRemoved())
                 .handler(event -> {
+                    // if the target is dead, remove the arrow
+                    // todo: should we switch to a different target?
+                    if (target.isDead()) {
+                        projectile.remove();
+                        return;
+                    }
+
                     // set velocity to match target's new position
                     projectile.setVelocity(velocity.get());
 
