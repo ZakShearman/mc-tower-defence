@@ -5,6 +5,7 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.minestom.server.collision.BoundingBox;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.Player;
@@ -46,4 +47,6 @@ public interface LivingTDMob {
     @NotNull Instance getInstance();
 
     @NotNull Pos getPosition();
+
+    @NotNull BoundingBox getBoundingBox();
 }
