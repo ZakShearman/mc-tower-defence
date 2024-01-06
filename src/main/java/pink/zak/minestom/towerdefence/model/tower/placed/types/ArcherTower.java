@@ -29,7 +29,7 @@ import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.utils.projectile.Projectile;
 
 public final class ArcherTower extends PlacedAttackingTower<AttackingTowerLevel> {
-    private static final double ARROW_SPEED = 25;
+    private static final double ARROW_SPEED = 40;
 
     private final @NotNull Set<Point> firingPoints;
     private final @NotNull EventNode<InstanceEvent> eventNode;
