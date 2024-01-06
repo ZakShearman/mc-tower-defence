@@ -85,7 +85,6 @@ public class StringUtils {
         return stringJoiner.toString();
     }
 
-    // TODO use this for user coins
     public static @NotNull String commaSeparateNumber(int number) {
         return COMMA_FORMAT.format(number);
     }
