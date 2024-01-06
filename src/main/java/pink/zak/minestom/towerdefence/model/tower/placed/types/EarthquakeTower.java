@@ -24,7 +24,6 @@ import pink.zak.minestom.towerdefence.model.tower.config.towers.level.Earthquake
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public final class EarthquakeTower extends PlacedAttackingTower<EarthquakeTowerLevel> {
@@ -36,11 +35,9 @@ public final class EarthquakeTower extends PlacedAttackingTower<EarthquakeTowerL
     }
 
     @Override
-    protected void attemptToFire() {
+    protected boolean attemptToFire() {
         List<LivingTDEnemyMob> targets = this.getActionableTargets();
-        if (targets.isEmpty()) {
-            return;
-        }
+        if (targets.isEmpty()) return false;
 
         targets.forEach(target -> target.setTag(Tags.NEXT_STUNNABLE_TIME, System.currentTimeMillis() + this.level.getStunCooldownMillis()));
 
@@ -54,6 +51,8 @@ public final class EarthquakeTower extends PlacedAttackingTower<EarthquakeTowerL
         }
 
         this.launchTargets(targets);
+
+        return true;
     }
 
     private void launchTargets(@NotNull List<LivingTDEnemyMob> targets) {

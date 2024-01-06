@@ -3,13 +3,11 @@ package pink.zak.minestom.towerdefence.model.tower.placed;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Point;
+import net.minestom.server.event.instance.InstanceTickEvent;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.item.Material;
-import net.minestom.server.timer.Task;
 import net.minestom.server.utils.Direction;
-import net.minestom.server.utils.time.TimeUnit;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.game.MobHandler;
 import pink.zak.minestom.towerdefence.model.DamageSource;
@@ -22,38 +20,26 @@ import pink.zak.minestom.towerdefence.targetting.Target;
 public abstract class PlacedAttackingTower<T extends AttackingTowerLevel> extends PlacedTower<T> implements DamageSource {
     private final @NotNull MobHandler mobHandler;
 
-    protected Task attackTask;
+    private int ticksSinceLastAttack = this.level.getFireDelay();
 
     protected PlacedAttackingTower(@NotNull MobHandler mobHandler, Instance instance, AttackingTower tower, Material towerBaseMaterial, int id, GameUser owner, Point basePoint, Direction facing, int level) {
         super(instance, tower, towerBaseMaterial, id, owner, basePoint, facing, level);
         this.mobHandler = mobHandler;
-        this.startFiring();
+
+        // todo: give this tower a protected event node of some sort
+        instance.eventNode().addListener(InstanceTickEvent.class, event -> {
+            this.ticksSinceLastAttack++;
+            if (this.ticksSinceLastAttack < this.level.getFireDelay()) return;
+            if (this.attemptToFire()) this.ticksSinceLastAttack = 0;
+        });
     }
 
-    private void startFiring() {
-        this.attackTask = MinecraftServer.getSchedulerManager()
-                .buildTask(this::attemptToFire)
-                .repeat(this.level.getFireDelay(), TimeUnit.SERVER_TICK)
-                .schedule();
-    }
-
-    protected abstract void attemptToFire();
-
-    @Override
-    public void upgrade() {
-        AttackingTowerLevel oldLevel = this.level;
-        super.upgrade();
-        if (oldLevel.getFireDelay() != this.level.getFireDelay()) {
-            this.attackTask.cancel();
-            this.startFiring();
-        }
-    }
-
-    @Override
-    public void destroy() {
-        this.attackTask.cancel();
-        super.destroy();
-    }
+    /**
+     * Attempts to fire the tower.
+     *
+     * @return true if the tower fired, false otherwise
+     */
+    protected abstract boolean attemptToFire();
 
     public @NotNull Set<LivingTDEnemyMob> findPossibleTargets() {
         // get mobs spawned by the enemy team

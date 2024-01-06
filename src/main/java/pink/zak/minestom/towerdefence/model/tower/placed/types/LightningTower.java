@@ -40,13 +40,15 @@ public final class LightningTower extends PlacedAttackingTower<LightningTowerLev
     }
 
     @Override
-    protected void attemptToFire() {
+    protected boolean attemptToFire() {
         List<LivingTDEnemyMob> targets = this.findPossibleTargets(Target.first());
-        if (targets.isEmpty()) return;
+        if (targets.isEmpty()) return false;
 
         LivingTDEnemyMob target = targets.getFirst();
         this.drawParticles(target);
         target.damage(this, this.level.getDamage());
+
+        return true;
     }
 
     private void drawParticles(@NotNull LivingTDEnemyMob target) {

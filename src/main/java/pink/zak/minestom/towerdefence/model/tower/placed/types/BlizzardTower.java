@@ -60,7 +60,7 @@ public final class BlizzardTower extends PlacedAttackingTower<BlizzardTowerLevel
     }
 
     @Override
-    protected void attemptToFire() {
+    protected boolean attemptToFire() {
         double speedModifier = this.level.getSpeedModifier();
         int tickDuration = this.level.getTickDuration();
 
@@ -99,6 +99,8 @@ public final class BlizzardTower extends PlacedAttackingTower<BlizzardTowerLevel
                 target.damage(this, this.level.getDamage());
             }
         }
+
+        return !targets.isEmpty();
     }
 
     @Override

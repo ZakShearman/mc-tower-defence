@@ -68,11 +68,12 @@ public final class BomberTower extends PlacedAttackingTower<BomberTowerLevel> {
     }
 
     @Override
-    protected void attemptToFire() {
+    protected boolean attemptToFire() {
         List<LivingTDEnemyMob> targets = this.findApplicableTargets();
-        if (targets.isEmpty()) return;
+        if (targets.isEmpty()) return false;
 
         new BombTnt(this, targets.getFirst());
+        return true;
     }
 
     private List<LivingTDEnemyMob> findApplicableTargets() {
