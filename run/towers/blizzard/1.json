@@ -16,6 +16,5 @@
       "<yellow>Slows down enemies near it",
       ""
     ]
-  },
-  "relativeBlocks": [{"xOffset":-1,"yOffset":1,"zOffset":-1,"block":{"material":"minecraft:snow","properties":["layers=6"]}},{"xOffset":0,"yOffset":1,"zOffset":-1,"block":{"material":"minecraft:snow","properties":["layers=8"]}},{"xOffset":1,"yOffset":1,"zOffset":-1,"block":{"material":"minecraft:snow","properties":["layers=7"]}},{"xOffset":-1,"yOffset":1,"zOffset":0,"block":{"material":"minecraft:snow","properties":["layers=7"]}},{"xOffset":0,"yOffset":1,"zOffset":0,"block":{"material":"minecraft:packed_ice"}},{"xOffset":1,"yOffset":1,"zOffset":0,"block":{"material":"minecraft:snow","properties":["layers=8"]}},{"xOffset":-1,"yOffset":1,"zOffset":1,"block":{"material":"minecraft:snow","properties":["layers=6"]}},{"xOffset":0,"yOffset":1,"zOffset":1,"block":{"material":"minecraft:snow","properties":["layers=8"]}},{"xOffset":1,"yOffset":1,"zOffset":1,"block":{"material":"minecraft:snow","properties":["layers=7"]}},{"xOffset":0,"yOffset":2,"zOffset":-1,"block":{"material":"minecraft:snow","properties":["layers=1"]}},{"xOffset":0,"yOffset":2,"zOffset":1,"block":{"material":"minecraft:snow","properties":["layers=1"]}}]
+  }
 }
