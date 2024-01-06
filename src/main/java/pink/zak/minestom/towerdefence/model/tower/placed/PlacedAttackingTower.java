@@ -87,7 +87,7 @@ public abstract class PlacedAttackingTower<T extends AttackingTowerLevel> extend
                     );
 
                     // check if any of the points are within the tower's range
-                    return points.stream().anyMatch(point -> point.distance(this.getBasePoint()) <= this.level.getRange());
+                    return points.stream().anyMatch(point -> point.distanceSquared(this.getBasePoint()) <= Math.pow(this.level.getRange(), 2));
                 }).collect(Collectors.toUnmodifiableSet());
     }
 
