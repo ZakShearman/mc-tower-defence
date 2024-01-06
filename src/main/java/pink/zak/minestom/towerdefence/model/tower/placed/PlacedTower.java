@@ -87,32 +87,18 @@ public abstract class PlacedTower<T extends TowerLevel> {
         this.placeLevel();
     }
 
+    // todo re-investigate using a batch to apply in the future
+    // it was buggy last time it was tried
     private void placeLevel() {
         int turns = DirectionUtil.fromDirection(this.facing).getTurns();
-        // TODO move back to block batches when they are fixed
-//            RelativeBlockBatch batch = this.level.getSchematic().build(Rotation.NONE, block ->
-//                    PropertyRotatorRegistry.rotateProperties(block, turns)
-//                            .withTag(ID_TAG, this.id)
-//            );
-
         Rotation rotation = Rotation.values()[turns];
 
         this.level.getSchematic().apply(rotation, (relativePoint, block) -> {
-//            Point rotatedPoint = DirectionUtil.correctForDirection(point, this.facing);
-//            int x = this.basePoint.blockX() + rotatedPoint.blockX();
-//            int z = this.basePoint.blockZ() + rotatedPoint.blockZ();
-//            int y = this.basePoint.blockY() + rotatedPoint.blockY();
+            // Add the ID_TAG with the tower's ID to each block
             block = block.withTag(ID_TAG, this.id);
-
-//            Block moddedBlock = PropertyRotatorRegistry.rotateProperties(block, turns)
-//                    .withTag(ID_TAG, this.id);
 
             this.instance.setBlock(this.basePoint.add(relativePoint), block);
         });
-
-//            batch.apply(this.instance, this.basePoint, null);
-        // todo could placeLevel return the block batch so it can also be used to remove old blocks?
-        // todo or maybe a separate method to create a block batch used by both?
     }
 
     private void placeBase() {
@@ -154,7 +140,9 @@ public abstract class PlacedTower<T extends TowerLevel> {
         this.normaliseBase();
     }
 
-    // returns the blocks below the tower to normal, removing their ID_TAG property.
+    /**
+     * returns the blocks below the tower to normal, removing their ID_TAG property.
+     */
     private void normaliseBase() {
         int checkDistance = this.tower.getType().getSize().getCheckDistance();
         for (int x = this.basePoint.blockX() - checkDistance; x <= this.basePoint.blockX() + checkDistance; x++) {
