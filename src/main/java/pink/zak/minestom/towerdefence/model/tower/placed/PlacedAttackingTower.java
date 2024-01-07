@@ -53,7 +53,7 @@ public abstract class PlacedAttackingTower<T extends AttackingTowerLevel> extend
 
     public @NotNull Set<LivingTDEnemyMob> findPossibleTargets() {
         // get mobs spawned by the enemy team
-        Set<LivingTDEnemyMob> mobs = this.mobHandler.getMobs(this.owner.getTeam().getOpposite());
+        Set<LivingTDEnemyMob> mobs = this.mobHandler.getMobs(this.owner.getTeam());
 
         return mobs.stream()
                 // filter out mobs that are already dead

@@ -31,8 +31,4 @@ public enum Team {
         return this.id;
     }
 
-    public @NotNull Team getOpposite() {
-        if (!Environment.isProduction()) return this;
-        return this == BLUE ? RED : BLUE;
-    }
 }
