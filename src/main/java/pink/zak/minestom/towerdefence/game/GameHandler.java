@@ -8,6 +8,17 @@ import dev.emortal.minestom.core.module.kubernetes.KubernetesModule;
 import dev.emortal.minestom.core.module.messaging.MessagingModule;
 import dev.emortal.minestom.core.utils.KurushimiMinestomUtils;
 import dev.emortal.minestom.core.utils.ProgressBar;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -30,7 +41,7 @@ import pink.zak.minestom.towerdefence.agones.GameStateManager;
 import pink.zak.minestom.towerdefence.api.event.game.CastleDamageEvent;
 import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.enums.Team;
-import pink.zak.minestom.towerdefence.game.handlers.MobMenuHandler;
+import pink.zak.minestom.towerdefence.game.handlers.QueueHandler;
 import pink.zak.minestom.towerdefence.game.handlers.TowerPlaceHandler;
 import pink.zak.minestom.towerdefence.game.handlers.TowerUpgradeHandler;
 import pink.zak.minestom.towerdefence.game.handlers.UserSettingsMenuHandler;
@@ -41,19 +52,9 @@ import pink.zak.minestom.towerdefence.model.mob.config.EnemyMob;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.model.user.LobbyPlayer;
 import pink.zak.minestom.towerdefence.model.user.TDPlayer;
+import pink.zak.minestom.towerdefence.ui.hotbar.HotbarHandler;
+import pink.zak.minestom.towerdefence.ui.spawner.TroopSpawnerUI;
 import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;
-
-import java.time.Duration;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 
 public class GameHandler {
     public static final int DEFAULT_TOWER_HEALTH = 500;
@@ -68,9 +69,9 @@ public class GameHandler {
 
     private final @NotNull MobHandler mobHandler;
     private final @NotNull TowerHandler towerHandler;
-    private final @NotNull MobMenuHandler mobMenuHandler;
     private final @NotNull UserSettingsMenuHandler userSettingsMenuHandler;
     private final @Nullable GameTrackerHelper gameTrackerHelper;
+    private final @NotNull HotbarHandler hotbarHandler;
 
     private final Set<EnemyMob> defaultEnemyMobs;
     private final @NotNull AtomicInteger redTowerHealth = new AtomicInteger(DEFAULT_TOWER_HEALTH);
@@ -90,8 +91,8 @@ public class GameHandler {
 
         this.towerHandler = new TowerHandler(module, this);
         this.mobHandler = new MobHandler(module, this);
-        this.mobMenuHandler = new MobMenuHandler(module, this);
         this.userSettingsMenuHandler = new UserSettingsMenuHandler(module);
+        this.hotbarHandler = new HotbarHandler(module, this);
 
         this.defaultEnemyMobs = module.getMobStorage().getEnemyMobs()
                 .stream()
@@ -124,14 +125,15 @@ public class GameHandler {
 
         for (Player player : this.users.keySet()) {
             player.getInventory().clear();
-            player.getInventory().setItemStack(4, MobMenuHandler.CHEST_ITEM);
+            player.getInventory().setItemStack(4, TroopSpawnerUI.HOTBAR_ITEM);
             player.getInventory().setItemStack(8, UserSettingsMenuHandler.SETTINGS_ITEM);
-            this.mobMenuHandler.onGameStart();
             this.userSettingsMenuHandler.onGameStart();
         }
 
         new IncomeHandler(this);
         new ActionBarHandler(this, MinecraftServer.getGlobalEventHandler());
+        this.hotbarHandler.register(MinecraftServer.getGlobalEventHandler()); // todo: replace with game event node
+        new QueueHandler(this, mobHandler);
 
         if (!!!!!!!!!(this.gameTrackerHelper == null)) {
             this.gameTrackerHelper.startGame();

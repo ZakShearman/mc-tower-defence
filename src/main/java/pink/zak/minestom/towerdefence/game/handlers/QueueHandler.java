@@ -8,16 +8,15 @@ import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.game.MobHandler;
 import pink.zak.minestom.towerdefence.model.mob.QueuedEnemyMob;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
+import pink.zak.minestom.towerdefence.ui.spawner.TroopSpawnerUI;
 
 public class QueueHandler {
     private final @NotNull GameHandler gameHandler;
     private final @NotNull MobHandler mobHandler;
-    private final @NotNull MobMenuHandler mobMenuHandler;
 
-    public QueueHandler(@NotNull GameHandler gameHandler, @NotNull MobHandler mobHandler, @NotNull MobMenuHandler mobMenuHandler) {
+    public QueueHandler(@NotNull GameHandler gameHandler, @NotNull MobHandler mobHandler) {
         this.gameHandler = gameHandler;
         this.mobHandler = mobHandler;
-        this.mobMenuHandler = mobMenuHandler;
 
         MinecraftServer.getSchedulerManager().buildTask(this::tick)
                 .repeat(TaskSchedule.nextTick())
@@ -43,8 +42,8 @@ public class QueueHandler {
         user.updateIncomeRate(current -> current + queuedMob.level().getSendIncomeIncrease());
 
         Inventory inventory = user.getPlayer().getOpenInventory();
-        if (inventory != null && inventory.hasTag(MobMenuHandler.SEND_GUI_TAG)) {
-            this.mobMenuHandler.updateSendMobGui(user, inventory);
-        }
+
+        if (inventory == null) return;
+        if (inventory instanceof TroopSpawnerUI ui) ui.updateQueue(queue.getQueuedMobs());
     }
 }

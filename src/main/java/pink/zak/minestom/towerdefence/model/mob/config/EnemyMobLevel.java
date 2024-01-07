@@ -80,6 +80,12 @@ public class EnemyMobLevel implements Diffable<EnemyMobLevel> {
                 .build();
     }
 
+    public @NotNull ItemStack createPreviewItem() {
+        return ItemStack.builder(this.sendItem.material())
+                .meta(this.sendItem.meta())
+                .build();
+    }
+
     public ItemStack createStatUpgradeItem(int cost, boolean owned, boolean canAfford) {
         return ItemStack.builder(owned ? Material.GREEN_STAINED_GLASS_PANE : canAfford ? Material.ORANGE_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE)
                 .displayName(MiniMessage.miniMessage().deserialize(

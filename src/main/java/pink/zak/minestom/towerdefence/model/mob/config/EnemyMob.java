@@ -8,6 +8,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import pink.zak.minestom.towerdefence.model.mob.statuseffect.StatusEffectType;
 import pink.zak.minestom.towerdefence.utils.ItemUtils;
 
@@ -97,7 +98,7 @@ public class EnemyMob {
         return this.levels;
     }
 
-    public EnemyMobLevel getLevel(int level) {
+    public @Nullable EnemyMobLevel getLevel(int level) {
         return this.levels.get(level);
     }
 
