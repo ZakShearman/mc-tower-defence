@@ -3,7 +3,6 @@ package pink.zak.minestom.towerdefence.model.mob.living;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.EnumMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -59,8 +58,6 @@ public class SingleEnemyTDMob extends SingleTDMob implements LivingTDEnemyMob {
     protected final Team team;
     protected final GameUser sender;
 
-    private final @NotNull Set<DamagePrediction> damagePredictions = new HashSet<>();
-
     protected final int positionModifier;
     protected final List<PathCorner> corners;
 
@@ -80,6 +77,7 @@ public class SingleEnemyTDMob extends SingleTDMob implements LivingTDEnemyMob {
     protected float health;
 
     private Task attackTask;
+    private float damagePrediction = 0;
 
     public SingleEnemyTDMob(@NotNull GameHandler gameHandler, @NotNull EnemyMob enemyMob, int level,
                             @NotNull Instance instance, @NotNull TowerMap map,
@@ -351,7 +349,7 @@ public class SingleEnemyTDMob extends SingleTDMob implements LivingTDEnemyMob {
     @Override
     public @NotNull DamagePrediction applyDamagePrediction(float damage) {
         DamagePrediction prediction = DamagePrediction.create(this, damage);
-        this.damagePredictions.add(prediction);
+        this.damagePrediction += damage;
         MinecraftServer.getSchedulerManager().buildTask(prediction::complete)
                 .delay(10, ChronoUnit.SECONDS)
                 .repeat(TaskSchedule.stop())
@@ -361,12 +359,12 @@ public class SingleEnemyTDMob extends SingleTDMob implements LivingTDEnemyMob {
 
     @Override
     public void completeDamagePrediction(@NotNull DamagePrediction prediction) {
-        this.damagePredictions.remove(prediction);
+        this.damagePrediction -= prediction.damage();
     }
 
     @Override
     public float getDamagePrediction() {
-        return (float) this.damagePredictions.stream().mapToDouble(DamagePrediction::damage).sum();
+        return this.damagePrediction;
     }
 
     @Override

@@ -1,10 +1,11 @@
 package pink.zak.minestom.towerdefence.model.tower.placed;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 import net.minestom.server.collision.BoundingBox;
 import net.minestom.server.coordinate.Point;
+import net.minestom.server.coordinate.Vec;
 import net.minestom.server.event.EventListener;
 import net.minestom.server.event.instance.InstanceTickEvent;
 import net.minestom.server.instance.Instance;
@@ -51,51 +52,61 @@ public abstract class PlacedAttackingTower<T extends AttackingTowerLevel> extend
         super.destroy();
     }
 
-    public @NotNull Set<LivingTDEnemyMob> findPossibleTargets() {
+    public @NotNull List<LivingTDEnemyMob> findPossibleTargets() {
         // get mobs spawned by the enemy team
         Set<LivingTDEnemyMob> mobs = this.mobHandler.getMobs(this.owner.getTeam());
 
-        return mobs.stream()
-                // filter out mobs that are already dead
-                .filter(mob -> !mob.isDead())
-                // filter out mobs that are predicted to be dead before the tower can fire
-                .filter(mob -> !mob.isPredictedDead())
-                // filter out mobs that are out of the tower's range
-                .filter(mob -> {
-                    // get the 4 points of the mob's bounding box
-                    BoundingBox boundingBox = mob.getBoundingBox();
-                    double minX = boundingBox.minX();
-                    double maxX = boundingBox.maxX();
-                    double minY = boundingBox.minY();
-                    double maxY = boundingBox.maxY();
-                    double minZ = boundingBox.minZ();
-                    double maxZ = boundingBox.maxZ();
+        List<LivingTDEnemyMob> targets = new ArrayList<>(mobs.size());
+        for (LivingTDEnemyMob mob : mobs) {
+            // filter out mobs that are already dead
+            if (mob.isDead()) continue;
 
-                    // get current mob position
-                    Point position = mob.getPosition();
+            // filter out mobs that are predicted to be dead before the tower can fire
+            if (mob.isPredictedDead()) continue;
 
-                    // convert the points to a set
-                    Set<Point> points = Set.of(
-                            position.add(minX, minY, minZ),
-                            position.add(minX, minY, maxZ),
-                            position.add(minX, maxY, minZ),
-                            position.add(minX, maxY, maxZ),
-                            position.add(maxX, minY, minZ),
-                            position.add(maxX, minY, maxZ),
-                            position.add(maxX, maxY, minZ),
-                            position.add(maxX, maxY, maxZ)
-                    );
+            // filter out mobs that are CLEARLY out of the tower's range
+            // the value `2` here is to account for the biggest bounding box theoretically possible
+            if (mob.getPosition().distanceSquared(this.getBasePoint()) > Math.pow(this.level.getRange() + 2, 2)) continue;
 
-                    // check if any of the points are within the tower's range
-                    return points.stream().anyMatch(point -> point.distanceSquared(this.getBasePoint()) <= Math.pow(this.level.getRange(), 2));
-                }).collect(Collectors.toUnmodifiableSet());
+            // filter out mobs that are out of the tower's range
+            // get the 2 points of the mob's bounding box
+            BoundingBox boundingBox = mob.getTDEntityType().registry().boundingBox();
+            double minX = boundingBox.minX();
+            double maxX = boundingBox.maxX();
+            double minZ = boundingBox.minZ();
+            double maxZ = boundingBox.maxZ();
+
+            // get current mob position
+            Point basePoint = this.getBasePoint();
+            double y = basePoint.y();
+            Point position = mob.getPosition().withY(y);
+
+            // find side lengths
+            double xLength = maxX - minX;
+            double adjustedRadius = this.level.getRange() + xLength * 2;
+            if (position.distanceSquared(basePoint) <= Math.pow(adjustedRadius, 2)) {
+                targets.add(mob);
+                continue;
+            }
+
+            // draw a line between the centres of tower and the mob
+            Vec vector = Vec.fromPoint(basePoint.sub(position)).normalize();
+            Point intersection = basePoint.add(vector.mul(this.level.getRange()));
+
+            // check if intersection is within the mob's bounding box
+            if (intersection.x() < minX || intersection.x() > maxX) continue;
+            if (intersection.z() < minZ || intersection.z() > maxZ) continue;
+
+            targets.add(mob);
+        }
+
+        return targets;
     }
 
     public @NotNull List<LivingTDEnemyMob> findPossibleTargets(@NotNull Target target) {
-        return this.findPossibleTargets().stream()
-                // sort mobs by target priority
-                .sorted(target)
-                .toList();
+        List<LivingTDEnemyMob> targets = findPossibleTargets();
+        targets.sort(target);
+        return targets;
     }
 
     @Override
