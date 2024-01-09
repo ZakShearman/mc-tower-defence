@@ -32,7 +32,6 @@ import org.jetbrains.annotations.Nullable;
 import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.game.MobHandler;
-import pink.zak.minestom.towerdefence.game.TowerHandler;
 import pink.zak.minestom.towerdefence.model.DamageSource;
 import pink.zak.minestom.towerdefence.model.map.PathCorner;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
@@ -51,7 +50,6 @@ import pink.zak.minestom.towerdefence.utils.DirectionUtil;
 import pink.zak.minestom.towerdefence.utils.TDEnvUtils;
 
 public class SingleEnemyTDMob extends SingleTDMob implements LivingTDEnemyMob {
-    protected final TowerHandler towerHandler;
     protected final MobHandler mobHandler;
     protected final EnemyMob enemyMob;
     protected final EnemyMobLevel level;
@@ -93,7 +91,6 @@ public class SingleEnemyTDMob extends SingleTDMob implements LivingTDEnemyMob {
 
         this.gameHandler = gameHandler;
 
-        this.towerHandler = gameHandler.getTowerHandler();
         this.mobHandler = gameHandler.getMobHandler();
         this.enemyMob = enemyMob;
         this.level = enemyMob.getLevel(level);
@@ -236,7 +233,7 @@ public class SingleEnemyTDMob extends SingleTDMob implements LivingTDEnemyMob {
             double multiplier = 1;
             boolean necromanced = false;
 
-            for (PlacedTower<?> tower : this.towerHandler.getTowers(this.team)) {
+            for (PlacedTower<?> tower : this.gameHandler.getTowerManager().getTowers(this.team)) {
                 if (tower.getBasePoint().distance(this.position) > tower.getLevel().getRange()) continue;
                 if (tower instanceof CharityTower charityTower) {
                     double tempMultiplier = charityTower.getLevel().getMultiplier();

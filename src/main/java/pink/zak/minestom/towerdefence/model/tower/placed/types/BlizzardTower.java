@@ -8,7 +8,6 @@ import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Entity;
 import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.metadata.golem.SnowGolemMeta;
-import net.minestom.server.item.Material;
 import net.minestom.server.network.packet.server.play.ParticlePacket;
 import net.minestom.server.particle.Particle;
 import net.minestom.server.particle.ParticleCreator;
@@ -41,8 +40,8 @@ public final class BlizzardTower extends PlacedAttackingTower<BlizzardTowerLevel
     private @Nullable Entity snowman;
     private @Nullable LivingTDEnemyMob target;
 
-    public BlizzardTower(@NotNull MobHandler mobHandler, TowerDefenceInstance instance, AttackingTower tower, Material towerBaseMaterial, int id, GameUser owner, Point basePoint, Direction facing, int level) {
-        super(mobHandler, instance, tower, towerBaseMaterial, id, owner, basePoint, facing, level);
+    public BlizzardTower(@NotNull MobHandler mobHandler, TowerDefenceInstance instance, AttackingTower tower, int id, GameUser owner, Point basePoint, Direction facing, int level) {
+        super(mobHandler, instance, tower, id, owner, basePoint, facing, level);
 
         // todo faces the wrong direction
         Pos mobSpawnPos = instance.getTowerMap().getMobSpawn(this.team);

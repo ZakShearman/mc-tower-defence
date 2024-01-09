@@ -1,11 +1,10 @@
 package pink.zak.minestom.towerdefence.model.tower.placed.types;
 
+import java.util.List;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Vec;
-import net.minestom.server.instance.Instance;
 import net.minestom.server.instance.block.Block;
-import net.minestom.server.item.Material;
 import net.minestom.server.network.packet.server.play.BlockActionPacket;
 import net.minestom.server.tag.Tag;
 import net.minestom.server.utils.Direction;
@@ -23,15 +22,14 @@ import pink.zak.minestom.towerdefence.model.tower.config.relative.RelativePoint;
 import pink.zak.minestom.towerdefence.model.tower.config.towers.level.EarthquakeTowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
-
-import java.util.List;
+import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;
 
 public final class EarthquakeTower extends PlacedAttackingTower<EarthquakeTowerLevel> {
     private static final Tag<Double> ORIGINAL_GRAVITY_TAG = Tag.Double("originalGravity");
     private static final double GRAVITY = 0.5;
 
-    public EarthquakeTower(@NotNull MobHandler mobHandler, Instance instance, AttackingTower tower, Material towerBaseMaterial, int id, GameUser owner, Point basePoint, Direction facing, int level) {
-        super(mobHandler, instance, tower, towerBaseMaterial, id, owner, basePoint, facing, level);
+    public EarthquakeTower(@NotNull MobHandler mobHandler, TowerDefenceInstance instance, AttackingTower tower, int id, GameUser owner, Point basePoint, Direction facing, int level) {
+        super(mobHandler, instance, tower, id, owner, basePoint, facing, level);
     }
 
     @Override

@@ -1,5 +1,11 @@
 package pink.zak.minestom.towerdefence.game.handlers;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.MinecraftServer;
@@ -22,19 +28,11 @@ import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.TowerDefenceModule;
 import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.game.GameHandler;
-import pink.zak.minestom.towerdefence.game.TowerHandler;
 import pink.zak.minestom.towerdefence.model.tower.config.Tower;
 import pink.zak.minestom.towerdefence.model.tower.config.TowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.utils.StringUtils;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class TowerUpgradeHandler {
     private static final @NotNull Function<PlacedTower<?>, ItemStack> RADIUS_MENU_ITEM_FUNCTION = tower -> ItemStack.builder(Material.REDSTONE)
@@ -58,7 +56,6 @@ public class TowerUpgradeHandler {
     private final @NotNull Map<Tower, Component> towerUpgradeTitles = new HashMap<>();
     private final @NotNull TowerDefenceModule plugin;
     private final @NotNull GameHandler gameHandler;
-    private final @NotNull TowerHandler towerHandler;
 
     public TowerUpgradeHandler(@NotNull TowerDefenceModule plugin, @NotNull GameHandler gameHandler) {
         for (Tower tower : plugin.getTowerStorage().getTowers().values())
@@ -66,7 +63,6 @@ public class TowerUpgradeHandler {
 
         this.plugin = plugin;
         this.gameHandler = gameHandler;
-        this.towerHandler = gameHandler.getTowerHandler();
 
         plugin.getEventNode()
                 .addListener(PlayerBlockInteractEvent.class, event -> {
@@ -77,7 +73,7 @@ public class TowerUpgradeHandler {
                     Integer towerId = event.getBlock().getTag(PlacedTower.ID_TAG);
                     if (gameUser == null || towerId == null)
                         return;
-                    PlacedTower<?> tower = this.towerHandler.getTower(gameUser, towerId);
+                    PlacedTower<?> tower = this.gameHandler.getTowerManager().getTower(gameUser.getTeam(), towerId);
                     if (tower == null) return; // Tower is null if it is from the other team
 
                     this.openUpgradeGui(gameUser, tower);
@@ -134,7 +130,7 @@ public class TowerUpgradeHandler {
                 return;
             Player player = event.getPlayer();
             GameUser gameUser = this.gameHandler.getGameUser(player);
-            PlacedTower<?> placedTower = this.towerHandler.getTower(gameUser, inventory.getTag(PlacedTower.ID_TAG));
+            PlacedTower<?> placedTower = this.gameHandler.getTowerManager().getTower(gameUser.getTeam(), inventory.getTag(PlacedTower.ID_TAG));
 
             event.setCancelled(true);
             int slot = event.getSlot();
@@ -178,7 +174,7 @@ public class TowerUpgradeHandler {
         Set<SendablePacket> packets = clickType == ClickType.LEFT_CLICK ? this.createRadiusPackets(tower, Set.of()) : new HashSet<>();
 
         if (clickType == ClickType.RIGHT_CLICK) {
-            Set<PlacedTower<?>> towers = this.towerHandler.getTowers(gameUser.getTeam()).stream()
+            Set<PlacedTower<?>> towers = this.gameHandler.getTowerManager().getTowers(gameUser.getTeam()).stream()
                     .filter(testTower -> testTower.getTower().getType() == tower.getTower().getType())
                     .collect(Collectors.toUnmodifiableSet());
 
@@ -241,7 +237,7 @@ public class TowerUpgradeHandler {
         Player player = gameUser.getPlayer();
 
         placedTower.destroy();
-        this.towerHandler.removeTower(gameUser, placedTower);
+        this.gameHandler.getTowerManager().removeTower(placedTower, gameUser.getTeam());
 
         player.closeInventory();
         player.sendMessage(Component.text("Tower removed!", NamedTextColor.RED));

@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import net.minestom.server.coordinate.Point;
-import net.minestom.server.instance.Instance;
-import net.minestom.server.item.Material;
 import net.minestom.server.utils.Direction;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.game.MobHandler;
@@ -17,13 +15,14 @@ import pink.zak.minestom.towerdefence.model.tower.config.towers.ArcherTowerConfi
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.targetting.Target;
+import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;
 
 public final class ArcherTower extends PlacedAttackingTower<AttackingTowerLevel> {
 
     private final @NotNull Set<Point> firingPoints;
 
-    public ArcherTower(@NotNull MobHandler mobHandler, Instance instance, AttackingTower tower, Material towerBaseMaterial, int id, GameUser owner, Point basePoint, Direction facing, int level) {
-        super(mobHandler, instance, tower, towerBaseMaterial, id, owner, basePoint, facing, level);
+    public ArcherTower(@NotNull MobHandler mobHandler, TowerDefenceInstance instance, AttackingTower tower, int id, GameUser owner, Point basePoint, Direction facing, int level) {
+        super(mobHandler, instance, tower, id, owner, basePoint, facing, level);
 
         ArcherTowerConfig config = (ArcherTowerConfig) this.tower;
         this.firingPoints = config.getRelativeFiringPoints().stream()

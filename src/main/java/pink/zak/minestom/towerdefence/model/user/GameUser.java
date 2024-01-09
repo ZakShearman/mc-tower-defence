@@ -15,7 +15,7 @@ import pink.zak.minestom.towerdefence.model.mob.config.EnemyMob;
 import pink.zak.minestom.towerdefence.queue.MobQueue;
 import pink.zak.minestom.towerdefence.upgrade.UpgradeHandler;
 
-public class GameUser {
+public final class GameUser {
     public static final int DEFAULT_COINS = 1_000_000_000;
     public static final int DEFAULT_INCOME_RATE = 50;
 
@@ -34,6 +34,7 @@ public class GameUser {
     public GameUser(@NotNull TDPlayer player, @NotNull Set<EnemyMob> defaultUnlocks, @NotNull Team team, @NotNull MobHandler mobHandler) {
         this.player = player;
         this.team = team;
+
         this.queue = new MobQueue(mobHandler, this); // todo: unregister when the game ends/when the player leaves
         this.upgradeHandler = new UpgradeHandler(this, defaultUnlocks);
     }

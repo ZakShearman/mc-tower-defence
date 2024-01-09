@@ -16,7 +16,8 @@ import pink.zak.minestom.towerdefence.model.mob.config.EnemyMob;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.model.user.TDPlayer;
 import pink.zak.minestom.towerdefence.queue.MobQueue;
-import pink.zak.minestom.towerdefence.queue.QueueResult;
+import pink.zak.minestom.towerdefence.queue.QueueFailureReason;
+import pink.zak.minestom.towerdefence.queue.Result;
 import pink.zak.minestom.towerdefence.storage.MobStorage;
 
 public final class TroopSpawnerUI extends Inventory {
@@ -97,14 +98,14 @@ public final class TroopSpawnerUI extends Inventory {
     }
 
     private void attemptToSendMob(@NotNull EnemyMob mob) {
-        QueueResult result = this.gameUser.getQueue().queue(mob);
-        if (!(result instanceof QueueResult.Failure failure)) return;
+        Result<QueueFailureReason> result = this.gameUser.getQueue().queue(mob);
+        if (!(result instanceof Result.Failure<QueueFailureReason> failure)) return;
         TDPlayer player = this.gameUser.getPlayer();
-        switch (failure.reason()) { // todo: better feedback
-            case NOT_UNLOCKED -> player.sendMessage("You have not unlocked this mob.");
-            case CAN_NOT_AFFORD -> player.sendMessage("You can not afford to send this mob.");
-            case QUEUE_FULL -> player.sendMessage("Your queue is full.");
-        }
+        player.sendMessage(switch (failure.reason()) { // todo: better feedback
+            case NOT_UNLOCKED -> "You have not unlocked this mob.";
+            case CAN_NOT_AFFORD -> "You can not afford to send this mob.";
+            case QUEUE_FULL -> "Your queue is full.";
+        });
     }
 
     private void enterUpgradeMode() {

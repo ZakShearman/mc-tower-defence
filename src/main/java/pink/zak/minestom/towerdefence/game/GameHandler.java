@@ -41,16 +41,17 @@ import pink.zak.minestom.towerdefence.agones.GameStateManager;
 import pink.zak.minestom.towerdefence.api.event.game.CastleDamageEvent;
 import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.enums.Team;
-import pink.zak.minestom.towerdefence.game.handlers.TowerPlaceHandler;
 import pink.zak.minestom.towerdefence.game.handlers.TowerUpgradeHandler;
 import pink.zak.minestom.towerdefence.gametracker.GameTrackerHelper;
 import pink.zak.minestom.towerdefence.lobby.LobbyManager;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
 import pink.zak.minestom.towerdefence.model.mob.config.EnemyMob;
+import pink.zak.minestom.towerdefence.model.tower.TowerManager;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.model.user.LobbyPlayer;
 import pink.zak.minestom.towerdefence.model.user.TDPlayer;
 import pink.zak.minestom.towerdefence.ui.HotbarHandler;
+import pink.zak.minestom.towerdefence.ui.InteractionHandler;
 import pink.zak.minestom.towerdefence.ui.UserSettingsUI;
 import pink.zak.minestom.towerdefence.ui.spawner.TroopSpawnerUI;
 import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;
@@ -67,9 +68,9 @@ public class GameHandler {
     private final KubernetesModule kubernetesModule;
 
     private final @NotNull MobHandler mobHandler;
-    private final @NotNull TowerHandler towerHandler;
     private final @Nullable GameTrackerHelper gameTrackerHelper;
     private final @NotNull HotbarHandler hotbarHandler;
+    private final @NotNull InteractionHandler interactionHandler;
 
     private final Set<EnemyMob> defaultEnemyMobs;
     private final @NotNull AtomicInteger redTowerHealth = new AtomicInteger(DEFAULT_TOWER_HEALTH);
@@ -78,6 +79,7 @@ public class GameHandler {
     private final AtomicBoolean ended = new AtomicBoolean(false);
     private Hologram redTowerHologram;
     private Hologram blueTowerHologram;
+    private final @NotNull TowerManager towerManager;
 
     public GameHandler(@NotNull TowerDefenceModule module, @NotNull LobbyManager lobbyManager,
                        @NotNull GameStateManager gameStateManager, @Nullable MessagingModule messagingModule) {
@@ -87,16 +89,18 @@ public class GameHandler {
         this.lobbyManager = lobbyManager;
         this.kubernetesModule = module.getKubernetesModule();
 
-        this.towerHandler = new TowerHandler(module, this);
+        this.towerManager = new TowerManager(this.instance, this);
+
         this.mobHandler = new MobHandler(module, this);
-        this.hotbarHandler = new HotbarHandler(module, this);
+        this.hotbarHandler = new HotbarHandler(module);
+        this.interactionHandler = new InteractionHandler(module);
 
         this.defaultEnemyMobs = module.getMobStorage().getEnemyMobs()
                 .stream()
                 .filter(mob -> mob.getLevel(1).getUnlockCost() <= 0)
                 .collect(Collectors.toUnmodifiableSet());
 
-        new TowerPlaceHandler(module, this);
+        //new TowerPlaceHandler(module, this);
         new TowerUpgradeHandler(module, this);
 
         module.getEventNode().addListener(PlayerDisconnectEvent.class, event -> this.users.remove(event.getPlayer()));
@@ -129,6 +133,7 @@ public class GameHandler {
         new IncomeHandler(this);
         new ActionBarHandler(this, MinecraftServer.getGlobalEventHandler());
         this.hotbarHandler.register(MinecraftServer.getGlobalEventHandler()); // todo: replace with game event node
+        this.interactionHandler.register(MinecraftServer.getGlobalEventHandler()); // todo: replace with game event node
 
         if (!!!!!!!!!(this.gameTrackerHelper == null)) {
             this.gameTrackerHelper.startGame();
@@ -257,8 +262,8 @@ public class GameHandler {
         return this.mobHandler;
     }
 
-    public @NotNull TowerHandler getTowerHandler() {
-        return this.towerHandler;
+    public @NotNull TowerManager getTowerManager() {
+        return towerManager;
     }
 
     public int getCastleHealth(@NotNull Team team) {

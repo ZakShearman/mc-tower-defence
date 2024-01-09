@@ -2,13 +2,16 @@ package pink.zak.minestom.towerdefence.model.tower.config;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.minestom.server.coordinate.Point;
-import net.minestom.server.instance.Instance;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
@@ -16,11 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.enums.TowerType;
 import pink.zak.minestom.towerdefence.utils.ItemUtils;
 import pink.zak.minestom.towerdefence.utils.StringUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;
 
 public class Tower {
     private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
@@ -77,12 +76,12 @@ public class Tower {
         });
     }
 
-    public boolean isSpaceClear(@NotNull Instance instance, @NotNull Point basePoint, @NotNull Material towerBaseMaterial) {
+    public boolean isSpaceClear(@NotNull TowerDefenceInstance instance, @NotNull Point basePoint) {
         int checkDistance = this.type.getSize().getCheckDistance();
         for (int x = basePoint.blockX() - checkDistance; x <= basePoint.blockX() + checkDistance; x++) {
             for (int z = basePoint.blockZ() - checkDistance; z <= basePoint.blockZ() + checkDistance; z++) {
                 Block first = instance.getBlock(x, basePoint.blockY(), z);
-                if (first.registry().material() != towerBaseMaterial || first.properties().containsKey("towerId"))
+                if (first.registry().material() != instance.getTowerMap().getTowerBaseMaterial() || first.properties().containsKey("towerId"))
                     return false;
                 Material second = instance.getBlock(x, basePoint.blockY() + 1, z).registry().material();
                 if (second != null && second != Material.AIR)

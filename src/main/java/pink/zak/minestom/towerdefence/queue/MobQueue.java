@@ -82,29 +82,28 @@ public final class MobQueue {
         return this.currentQueueTime() + mob.getSendTime() <= MAX_QUEUE_TIME;
     }
 
-    public @NotNull QueueResult queue(@NotNull EnemyMob mob) {
-        return this.user.getUpgradeHandler().getLevel(mob).map(level -> {
-            this.queue(new QueuedEnemyMob(mob, level));
-            return QueueResult.success();
-        }).orElse(QueueResult.failure(QueueResult.Reason.NOT_UNLOCKED));
+    public @NotNull Result<QueueFailureReason> queue(@NotNull EnemyMob mob) {
+        return this.user.getUpgradeHandler().getLevel(mob)
+                .map(level -> this.queue(new QueuedEnemyMob(mob, level)))
+                .orElse(Result.failure(QueueFailureReason.NOT_UNLOCKED));
     }
 
-    public @NotNull QueueResult queue(@NotNull QueuedEnemyMob mob) {
+    public @NotNull Result<QueueFailureReason> queue(@NotNull QueuedEnemyMob mob) {
         // check if user has access to mob at specified level
-        if (!this.user.getUpgradeHandler().has(mob.mob(), mob.level())) return QueueResult.failure(QueueResult.Reason.NOT_UNLOCKED);
+        if (!this.user.getUpgradeHandler().has(mob.mob(), mob.level())) return Result.failure(QueueFailureReason.NOT_UNLOCKED);
 
         // check if user can afford
         int cost = mob.level().getSendCost();
-        if (this.user.getCoins() < cost) return QueueResult.failure(QueueResult.Reason.CAN_NOT_AFFORD);
+        if (this.user.getCoins() < cost) return Result.failure(QueueFailureReason.CAN_NOT_AFFORD);
 
         // check if possible to queue
-        if (!this.canQueue(mob.mob())) return QueueResult.failure(QueueResult.Reason.QUEUE_FULL);
+        if (!this.canQueue(mob.mob())) return Result.failure(QueueFailureReason.QUEUE_FULL);
 
         // charge the user and queue
         this.user.updateCoins(current -> current - cost);
         this.queue.add(mob);
 
-        return QueueResult.success();
+        return Result.success();
     }
 
     public @NotNull ItemStack createItem() {

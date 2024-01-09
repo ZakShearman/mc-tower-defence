@@ -1,6 +1,8 @@
 package pink.zak.minestom.towerdefence.model.tower.placed.types;
 
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 import net.kyori.adventure.sound.Sound;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Point;
@@ -9,8 +11,6 @@ import net.minestom.server.coordinate.Vec;
 import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.LivingEntity;
 import net.minestom.server.entity.metadata.other.PrimedTntMeta;
-import net.minestom.server.instance.Instance;
-import net.minestom.server.item.Material;
 import net.minestom.server.network.packet.server.ServerPacket;
 import net.minestom.server.network.packet.server.play.SoundEffectPacket;
 import net.minestom.server.particle.Particle;
@@ -25,10 +25,8 @@ import pink.zak.minestom.towerdefence.model.tower.config.AttackingTower;
 import pink.zak.minestom.towerdefence.model.tower.config.towers.level.BomberTowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
-
-import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
 import pink.zak.minestom.towerdefence.targetting.Target;
+import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;
 
 public final class BomberTower extends PlacedAttackingTower<BomberTowerLevel> {
     private static final double GRAVITY_PER_TICK = 0.04;
@@ -49,8 +47,8 @@ public final class BomberTower extends PlacedAttackingTower<BomberTowerLevel> {
 
     private Point spawnPoint;
 
-    public BomberTower(@NotNull MobHandler mobHandler, GameHandler gameHandler, Instance instance, AttackingTower tower, Material towerBaseMaterial, int id, GameUser owner, Point basePoint, Direction facing, int level) {
-        super(mobHandler, instance, tower, towerBaseMaterial, id, owner, basePoint, facing, level);
+    public BomberTower(@NotNull MobHandler mobHandler, GameHandler gameHandler, TowerDefenceInstance instance, AttackingTower tower, int id, GameUser owner, Point basePoint, Direction facing, int level) {
+        super(mobHandler, instance, tower, id, owner, basePoint, facing, level);
         this.mobHandler = gameHandler.getMobHandler();
         this.owner = owner;
 

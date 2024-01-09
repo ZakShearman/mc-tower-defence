@@ -4,9 +4,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import net.hollowcube.schem.Rotation;
 import net.minestom.server.coordinate.Point;
-import net.minestom.server.instance.Instance;
 import net.minestom.server.instance.block.Block;
-import net.minestom.server.item.Material;
 import net.minestom.server.tag.Tag;
 import net.minestom.server.utils.Direction;
 import org.jetbrains.annotations.NotNull;
@@ -17,13 +15,13 @@ import pink.zak.minestom.towerdefence.game.MobHandler;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTower;
 import pink.zak.minestom.towerdefence.model.tower.config.Tower;
 import pink.zak.minestom.towerdefence.model.tower.config.TowerLevel;
-import pink.zak.minestom.towerdefence.model.tower.placed.types.archer.ArcherTower;
 import pink.zak.minestom.towerdefence.model.tower.placed.types.BlizzardTower;
 import pink.zak.minestom.towerdefence.model.tower.placed.types.BomberTower;
 import pink.zak.minestom.towerdefence.model.tower.placed.types.CharityTower;
 import pink.zak.minestom.towerdefence.model.tower.placed.types.EarthquakeTower;
 import pink.zak.minestom.towerdefence.model.tower.placed.types.LightningTower;
 import pink.zak.minestom.towerdefence.model.tower.placed.types.NecromancerTower;
+import pink.zak.minestom.towerdefence.model.tower.placed.types.archer.ArcherTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.utils.DirectionUtil;
 import pink.zak.minestom.towerdefence.utils.SchemUtils;
@@ -32,10 +30,9 @@ import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;
 public abstract class PlacedTower<T extends TowerLevel> {
     public static final Tag<Integer> ID_TAG = Tag.Integer("towerId");
 
-    protected final Instance instance;
+    protected final TowerDefenceInstance instance;
 
     protected final Tower tower;
-    protected final Material towerBaseMaterial;
 
     protected final int id;
     protected final Team team;
@@ -45,12 +42,11 @@ public abstract class PlacedTower<T extends TowerLevel> {
 
     protected T level;
 
-    protected PlacedTower(Instance instance, Tower tower, Material towerBaseMaterial, int id,
+    protected PlacedTower(TowerDefenceInstance instance, Tower tower, int id,
                           @NotNull GameUser owner, Point basePoint, Direction facing, int level) {
         this.instance = instance;
 
         this.tower = tower;
-        this.towerBaseMaterial = towerBaseMaterial;
 
         this.id = id;
         this.team = owner.getTeam();
@@ -64,24 +60,17 @@ public abstract class PlacedTower<T extends TowerLevel> {
         this.placeBase();
     }
 
-    public static PlacedTower<?> create(GameHandler gameHandler, TowerDefenceInstance instance, Tower tower, Material towerBaseMaterial, int id, GameUser owner, Point basePoint, Direction facing) {
+    public static PlacedTower<?> create(GameHandler gameHandler, TowerDefenceInstance instance, Tower tower, int id, GameUser owner, Point basePoint, Direction facing) {
         TowerType towerType = tower.getType();
         MobHandler mobHandler = gameHandler.getMobHandler();
         return switch (towerType) {
-            case ARCHER ->
-                    new ArcherTower(mobHandler, instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
-            case BOMBER ->
-                    new BomberTower(mobHandler, gameHandler, instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
-            case BLIZZARD ->
-                    new BlizzardTower(mobHandler, instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
-            case CHARITY ->
-                    new CharityTower(instance, tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
-            case EARTHQUAKE ->
-                    new EarthquakeTower(mobHandler, instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
-            case LIGHTNING ->
-                    new LightningTower(mobHandler, instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
-            case NECROMANCER ->
-                    new NecromancerTower(instance, (AttackingTower) tower, towerBaseMaterial, id, owner, basePoint, facing, 1);
+            case ARCHER -> new ArcherTower(mobHandler, instance, (AttackingTower) tower, id, owner, basePoint, facing, 1);
+            case BOMBER -> new BomberTower(mobHandler, gameHandler, instance, (AttackingTower) tower, id, owner, basePoint, facing, 1);
+            case BLIZZARD -> new BlizzardTower(mobHandler, instance, (AttackingTower) tower, id, owner, basePoint, facing, 1);
+            case CHARITY -> new CharityTower(instance, tower, id, owner, basePoint, facing, 1);
+            case EARTHQUAKE -> new EarthquakeTower(mobHandler, instance, (AttackingTower) tower, id, owner, basePoint, facing, 1);
+            case LIGHTNING -> new LightningTower(mobHandler, instance, (AttackingTower) tower, id, owner, basePoint, facing, 1);
+            case NECROMANCER -> new NecromancerTower(instance, (AttackingTower) tower, id, owner, basePoint, facing, 1);
         };
     }
 
@@ -118,7 +107,7 @@ public abstract class PlacedTower<T extends TowerLevel> {
         int checkDistance = this.tower.getType().getSize().getCheckDistance();
         for (int x = this.basePoint.blockX() - checkDistance; x <= this.basePoint.blockX() + checkDistance; x++) {
             for (int z = this.basePoint.blockZ() - checkDistance; z <= this.basePoint.blockZ() + checkDistance; z++) {
-                this.instance.setBlock(x, this.basePoint.blockY(), z, this.towerBaseMaterial.block().withTag(ID_TAG, this.id));
+                this.instance.setBlock(x, this.basePoint.blockY(), z, this.instance.getTowerMap().getTowerBaseMaterial().block().withTag(ID_TAG, this.id));
             }
         }
     }
@@ -160,7 +149,7 @@ public abstract class PlacedTower<T extends TowerLevel> {
         int checkDistance = this.tower.getType().getSize().getCheckDistance();
         for (int x = this.basePoint.blockX() - checkDistance; x <= this.basePoint.blockX() + checkDistance; x++) {
             for (int z = this.basePoint.blockZ() - checkDistance; z <= this.basePoint.blockZ() + checkDistance; z++) {
-                this.instance.setBlock(x, this.basePoint.blockY(), z, this.towerBaseMaterial.block());
+                this.instance.setBlock(x, this.basePoint.blockY(), z, this.instance.getTowerMap().getTowerBaseMaterial().block());
             }
         }
     }
