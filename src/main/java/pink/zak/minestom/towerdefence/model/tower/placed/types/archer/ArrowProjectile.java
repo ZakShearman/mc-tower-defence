@@ -1,4 +1,4 @@
-package pink.zak.minestom.towerdefence.utils.projectile;
+package pink.zak.minestom.towerdefence.model.tower.placed.types.archer;
 
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Vec;
@@ -7,8 +7,9 @@ import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.model.DamageSource;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingTDEnemyMob;
 import pink.zak.minestom.towerdefence.model.prediction.DamagePrediction;
+import pink.zak.minestom.towerdefence.model.tower.placed.Projectile;
 
-public class ArrowProjectile extends Projectile {
+public final class ArrowProjectile extends Projectile {
     private static final double ARROW_SPEED = 40;
 
     private final @NotNull DamageSource damageSource;

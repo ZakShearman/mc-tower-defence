@@ -1,20 +1,9 @@
-package pink.zak.minestom.towerdefence.model.tower.placed.types;
+package pink.zak.minestom.towerdefence.model.tower.placed.types.archer;
 
 import java.util.List;
 import java.util.Set;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import net.minestom.server.coordinate.Point;
-import net.minestom.server.coordinate.Vec;
-import net.minestom.server.entity.Entity;
-import net.minestom.server.entity.EntityType;
-import net.minestom.server.event.EventFilter;
-import net.minestom.server.event.EventListener;
-import net.minestom.server.event.EventNode;
-import net.minestom.server.event.entity.EntityDespawnEvent;
-import net.minestom.server.event.entity.EntityTickEvent;
-import net.minestom.server.event.trait.EntityEvent;
-import net.minestom.server.event.trait.InstanceEvent;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.item.Material;
 import net.minestom.server.utils.Direction;
@@ -28,8 +17,6 @@ import pink.zak.minestom.towerdefence.model.tower.config.towers.ArcherTowerConfi
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.targetting.Target;
-import pink.zak.minestom.towerdefence.utils.projectile.ArrowProjectile;
-import pink.zak.minestom.towerdefence.utils.projectile.Projectile;
 
 public final class ArcherTower extends PlacedAttackingTower<AttackingTowerLevel> {
 

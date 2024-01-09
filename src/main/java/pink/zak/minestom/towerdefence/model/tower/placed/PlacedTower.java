@@ -17,7 +17,7 @@ import pink.zak.minestom.towerdefence.game.MobHandler;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTower;
 import pink.zak.minestom.towerdefence.model.tower.config.Tower;
 import pink.zak.minestom.towerdefence.model.tower.config.TowerLevel;
-import pink.zak.minestom.towerdefence.model.tower.placed.types.ArcherTower;
+import pink.zak.minestom.towerdefence.model.tower.placed.types.archer.ArcherTower;
 import pink.zak.minestom.towerdefence.model.tower.placed.types.BlizzardTower;
 import pink.zak.minestom.towerdefence.model.tower.placed.types.BomberTower;
 import pink.zak.minestom.towerdefence.model.tower.placed.types.CharityTower;

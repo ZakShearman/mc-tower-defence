@@ -3,6 +3,7 @@ package pink.zak.minestom.towerdefence.upgrade;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.model.mob.config.EnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.config.EnemyMobLevel;
@@ -14,8 +15,9 @@ public final class UpgradeHandler {
 
     private final @NotNull GameUser user;
 
-    public UpgradeHandler(@NotNull GameUser user) {
+    public UpgradeHandler(@NotNull GameUser user, @NotNull Set<EnemyMob> defaultUnlocks) {
         this.user = user;
+        for (EnemyMob mob : defaultUnlocks) this.mobs.put(mob, mob.getLevel(1));
     }
 
     public boolean has(@NotNull EnemyMob mob) {

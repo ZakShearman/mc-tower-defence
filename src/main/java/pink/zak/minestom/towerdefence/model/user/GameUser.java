@@ -22,7 +22,7 @@ public class GameUser {
     private final @NotNull TDPlayer player; // todo in the future we should allow re-joining a game so this will not be final.
     private final @NotNull Team team;
     private final @NotNull MobQueue queue;
-    private final @NotNull UpgradeHandler upgradeHandler = new UpgradeHandler(this);
+    private final @NotNull UpgradeHandler upgradeHandler;
 
     private final @NotNull AtomicInteger coins = new AtomicInteger(DEFAULT_COINS);
 
@@ -35,8 +35,7 @@ public class GameUser {
         this.player = player;
         this.team = team;
         this.queue = new MobQueue(mobHandler, this); // todo: unregister when the game ends/when the player leaves
-
-        for (EnemyMob mob : defaultUnlocks) this.upgradeHandler.upgrade(mob, mob.getLevel(1), true);
+        this.upgradeHandler = new UpgradeHandler(this, defaultUnlocks);
     }
 
     public @NotNull TDPlayer getPlayer() {

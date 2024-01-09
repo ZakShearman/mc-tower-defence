@@ -1,15 +1,17 @@
-package pink.zak.minestom.towerdefence.ui.hotbar;
+package pink.zak.minestom.towerdefence.ui;
 
+import net.minestom.server.entity.Player;
 import net.minestom.server.event.EventFilter;
 import net.minestom.server.event.EventNode;
 import net.minestom.server.event.player.PlayerUseItemEvent;
 import net.minestom.server.event.trait.PlayerEvent;
-import net.minestom.server.item.Material;
+import net.minestom.server.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.TowerDefenceModule;
 import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
+import pink.zak.minestom.towerdefence.model.user.TDPlayer;
 import pink.zak.minestom.towerdefence.ui.spawner.TroopSpawnerUI;
 
 public final class HotbarHandler {
@@ -20,10 +22,16 @@ public final class HotbarHandler {
         this.eventNode.addListener(PlayerUseItemEvent.class, event -> {
             if (module.getGameState() != GameState.GAME) return;
 
-            if (event.getItemStack().material().equals(Material.CHEST)) {
-                GameUser gameUser = gameHandler.getGameUser(event.getPlayer());
-                if (gameUser == null) return; // todo: should we throw here?
-                event.getPlayer().openInventory(new TroopSpawnerUI(module.getMobStorage(), gameUser));
+            Player p = event.getPlayer();
+            if (!(p instanceof TDPlayer player)) throw new IllegalStateException("Player is not a TDPlayer");
+            GameUser user = gameHandler.getGameUser(player);
+            if (user == null) throw new IllegalStateException("Player is not associated with a game user");
+
+            ItemStack item = event.getItemStack();
+            if (item.isSimilar(TroopSpawnerUI.HOTBAR_ITEM)) {
+                player.openInventory(new TroopSpawnerUI(module.getMobStorage(), user));
+            } else if (item.isSimilar(UserSettingsUI.HOTBAR_ITEM)) {
+                player.openInventory(new UserSettingsUI(player));
             }
         });
     }

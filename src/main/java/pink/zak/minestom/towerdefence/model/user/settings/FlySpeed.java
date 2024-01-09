@@ -1,5 +1,7 @@
 package pink.zak.minestom.towerdefence.model.user.settings;
 
+import org.jetbrains.annotations.NotNull;
+
 public enum FlySpeed {
     SLOW(0.05f),
     NORMAL(0.075f),
@@ -21,5 +23,10 @@ public enum FlySpeed {
         if (nextIndex >= FlySpeed.values().length) // wrap-around support
             nextIndex = 0;
         return FlySpeed.values()[nextIndex];
+    }
+
+    @Override
+    public @NotNull String toString() {
+        return this.name().toLowerCase().replace('_', ' ') + " (" + this.getSpeed() + ")";
     }
 }

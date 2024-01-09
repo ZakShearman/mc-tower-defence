@@ -43,7 +43,6 @@ import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.game.handlers.TowerPlaceHandler;
 import pink.zak.minestom.towerdefence.game.handlers.TowerUpgradeHandler;
-import pink.zak.minestom.towerdefence.game.handlers.UserSettingsMenuHandler;
 import pink.zak.minestom.towerdefence.gametracker.GameTrackerHelper;
 import pink.zak.minestom.towerdefence.lobby.LobbyManager;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
@@ -51,7 +50,8 @@ import pink.zak.minestom.towerdefence.model.mob.config.EnemyMob;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.model.user.LobbyPlayer;
 import pink.zak.minestom.towerdefence.model.user.TDPlayer;
-import pink.zak.minestom.towerdefence.ui.hotbar.HotbarHandler;
+import pink.zak.minestom.towerdefence.ui.HotbarHandler;
+import pink.zak.minestom.towerdefence.ui.UserSettingsUI;
 import pink.zak.minestom.towerdefence.ui.spawner.TroopSpawnerUI;
 import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;
 
@@ -68,7 +68,6 @@ public class GameHandler {
 
     private final @NotNull MobHandler mobHandler;
     private final @NotNull TowerHandler towerHandler;
-    private final @NotNull UserSettingsMenuHandler userSettingsMenuHandler;
     private final @Nullable GameTrackerHelper gameTrackerHelper;
     private final @NotNull HotbarHandler hotbarHandler;
 
@@ -90,7 +89,6 @@ public class GameHandler {
 
         this.towerHandler = new TowerHandler(module, this);
         this.mobHandler = new MobHandler(module, this);
-        this.userSettingsMenuHandler = new UserSettingsMenuHandler(module);
         this.hotbarHandler = new HotbarHandler(module, this);
 
         this.defaultEnemyMobs = module.getMobStorage().getEnemyMobs()
@@ -125,8 +123,7 @@ public class GameHandler {
         for (Player player : this.users.keySet()) {
             player.getInventory().clear();
             player.getInventory().setItemStack(4, TroopSpawnerUI.HOTBAR_ITEM);
-            player.getInventory().setItemStack(8, UserSettingsMenuHandler.SETTINGS_ITEM);
-            this.userSettingsMenuHandler.onGameStart();
+            player.getInventory().setItemStack(8, UserSettingsUI.HOTBAR_ITEM);
         }
 
         new IncomeHandler(this);
