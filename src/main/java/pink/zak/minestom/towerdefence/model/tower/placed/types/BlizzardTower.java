@@ -44,7 +44,7 @@ public final class BlizzardTower extends PlacedAttackingTower<BlizzardTowerLevel
         super(mobHandler, instance, tower, id, owner, basePoint, facing, level);
 
         // todo faces the wrong direction
-        Pos mobSpawnPos = instance.getTowerMap().getMobSpawn(this.team);
+        Pos mobSpawnPos = instance.getTowerMap().getMobSpawn(this.owner.getTeam());
         this.restSnowmanPos = new Pos(basePoint.add(0, 1.5, 0)).withDirection(mobSpawnPos).withPitch(0);
 
         this.snowman = new Entity(EntityType.SNOW_GOLEM);

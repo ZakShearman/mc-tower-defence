@@ -52,7 +52,7 @@ public abstract class PlacedAttackingTower<T extends AttackingTowerLevel> extend
     }
 
     public @NotNull List<LivingTDEnemyMob> findPossibleTargets() {
-        // get mobs spawned by the enemy team
+        // get mobs attacking the tower's team
         Set<LivingTDEnemyMob> mobs = this.mobHandler.getMobs(this.owner.getTeam());
 
         List<LivingTDEnemyMob> targets = new ArrayList<>(mobs.size());
@@ -108,8 +108,4 @@ public abstract class PlacedAttackingTower<T extends AttackingTowerLevel> extend
         return targets;
     }
 
-    @Override
-    public @NotNull GameUser getOwningUser() {
-        return super.owner;
-    }
 }

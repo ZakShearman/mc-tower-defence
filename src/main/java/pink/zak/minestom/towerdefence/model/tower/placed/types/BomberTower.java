@@ -83,18 +83,13 @@ public final class BomberTower extends PlacedAttackingTower<BomberTowerLevel> {
 
     private void damageTroops(@NotNull BombTnt tnt) {
         Pos center = tnt.getPosition();
-        Set<LivingTDEnemyMob> enemyMobs = this.mobHandler.getMobs(super.team);
+        Set<LivingTDEnemyMob> enemyMobs = this.mobHandler.getMobs(super.getOwner().getTeam());
 
         for (LivingTDEnemyMob enemyMob : enemyMobs) {
             if (enemyMob.getPosition().distance(center) <= this.level.getExplosionRadius()) {
                 enemyMob.damage(this, this.level.getDamage());
             }
         }
-    }
-
-    @Override
-    public @NotNull GameUser getOwningUser() {
-        return this.owner;
     }
 
     private static class BombTnt extends LivingEntity {

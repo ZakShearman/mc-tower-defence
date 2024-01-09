@@ -140,7 +140,7 @@ public final class NecromancerTower extends PlacedTower<NecromancerTowerLevel> {
         }
 
         @Override
-        public @NotNull GameUser getOwningUser() {
+        public @NotNull GameUser getOwner() {
             return this.owner;
         }
     }

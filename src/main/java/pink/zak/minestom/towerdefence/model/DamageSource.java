@@ -5,6 +5,6 @@ import pink.zak.minestom.towerdefence.model.user.GameUser;
 
 public interface DamageSource {
 
-    @NotNull GameUser getOwningUser();
+    @NotNull GameUser getOwner();
 
 }
