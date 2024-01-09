@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.model.mob.config.EnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.config.EnemyMobLevel;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
+import pink.zak.minestom.towerdefence.upgrade.UpgradeHandler;
 
 public final class TroopUpgradeTab extends Inventory {
 
@@ -25,29 +26,27 @@ public final class TroopUpgradeTab extends Inventory {
     }
 
     private void refresh() {
-        Optional<EnemyMobLevel> optionalLevel = this.gameUser.getUpgradeHandler().getLevel(this.mob);
-        ItemStack preview = optionalLevel
+        UpgradeHandler upgradeHandler = this.gameUser.getUpgradeHandler();
+        Optional<EnemyMobLevel> currentLevel = upgradeHandler.getLevel(this.mob);
+
+        ItemStack preview = currentLevel
                 .map(EnemyMobLevel::createSendItem)
                 .orElse(this.mob.getBaseItem());
         this.setItemStack(0, preview);
 
-        int maxLevel = this.mob.getMaxLevel();
-        for (int i = 1; i <= maxLevel; i++) {
-            EnemyMobLevel level = this.mob.getLevel(i);
-            if (level == null) throw new IllegalStateException("Mob " + this.mob.getCommonName() + " does not have level " + i);
+        for (EnemyMobLevel level : this.mob.getLevels()) {
+            boolean owned = upgradeHandler.has(this.mob, level);
 
-            boolean owned = i <= optionalLevel.map(EnemyMobLevel::getLevel).orElse(0);
             ItemStack item;
-            if (owned) item = level.createStatUpgradeItem(level.getUnlockCost(), true, true);
-            else {
-                int cost = this.gameUser.getUpgradeHandler().getCost(this.mob, level);
+            if (!owned) {
+                int cost = upgradeHandler.getCost(this.mob, level);
                 boolean canAfford = this.gameUser.getCoins() >= cost;
-                item = optionalLevel
+                item = currentLevel
                         .map(l -> l.createStatUpgradeItem(cost, false, canAfford))
                         .orElse(level.createBuyUpgradeItem(canAfford, cost, level));
-            }
+            } else item = level.createStatUpgradeItem(level.getUnlockCost(), true, true);
 
-            this.setItemStack(1 + i, item);
+            this.setItemStack(1 + level.getLevel(), item);
         }
 
         this.parent.updateSubInventory();

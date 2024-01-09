@@ -119,16 +119,7 @@ public final class MobQueue {
                     long amount = entry.getValue();
                     return mob.getBaseItem().withAmount((int) amount);
                 }).toList();
-        // todo: am i keeping this
-        int time = this.queue.stream()
-                .mapToInt(mob -> mob.mob().getSendTime())
-                .sum();
-        return BASE_QUEUE_ITEM.withMeta(BundleMeta.class, meta -> meta
-                .items(items)
-                .lore(Component.text(time + "ms", NamedTextColor.GRAY)
-                        .decoration(TextDecoration.ITALIC, false)
-                )
-        );
+        return BASE_QUEUE_ITEM.withMeta(BundleMeta.class, meta -> meta.items(items));
     }
 
 }

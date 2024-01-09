@@ -94,6 +94,10 @@ public class EnemyMob {
         return this.ignoredEffects.contains(statusEffectType);
     }
 
+    public @NotNull List<EnemyMobLevel> getLevels() {
+        return levels;
+    }
+
     public @Nullable EnemyMobLevel getLevel(int level) {
         return this.levels.get(level - 1);
     }
