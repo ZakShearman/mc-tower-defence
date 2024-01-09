@@ -1,5 +1,6 @@
 package pink.zak.minestom.towerdefence.ui.spawner;
 
+import java.util.Optional;
 import net.minestom.server.inventory.Inventory;
 import net.minestom.server.inventory.InventoryType;
 import net.minestom.server.item.ItemStack;
@@ -24,23 +25,26 @@ public final class TroopUpgradeTab extends Inventory {
     }
 
     private void refresh() {
-        int levelInt = this.gameUser.getMobLevel(this.mob);
-        EnemyMobLevel level = this.mob.getLevel(levelInt);
-        this.setItemStack(0, level == null ? mob.getBaseItem() : level.createSendItem());
+        Optional<EnemyMobLevel> optionalLevel = this.gameUser.getUpgradeHandler().getLevel(this.mob);
+        ItemStack preview = optionalLevel
+                .map(EnemyMobLevel::createSendItem)
+                .orElse(this.mob.getBaseItem());
+        this.setItemStack(0, preview);
 
-        int maxLevel = mob.getMaxLevel();
+        int maxLevel = this.mob.getMaxLevel();
         for (int i = 1; i <= maxLevel; i++) {
-            EnemyMobLevel targetLevel = mob.getLevel(i);
-            if (targetLevel == null) throw new IllegalStateException("Mob " + mob.getCommonName() + " does not have level " + i);
-            boolean owned = i <= levelInt;
+            EnemyMobLevel level = this.mob.getLevel(i);
+            if (level == null) throw new IllegalStateException("Mob " + this.mob.getCommonName() + " does not have level " + i);
 
+            boolean owned = i <= optionalLevel.map(EnemyMobLevel::getLevel).orElse(0);
             ItemStack item;
-            if (owned) item = targetLevel.createStatUpgradeItem(targetLevel.getUnlockCost(), true, true);
+            if (owned) item = level.createStatUpgradeItem(level.getUnlockCost(), true, true);
             else {
-                int cost = this.getCost(targetLevel.getLevel());
-                boolean canAfford = gameUser.getCoins() >= cost;
-                if (level == null) item = targetLevel.createStatUpgradeItem(cost, false, canAfford);
-                else item = targetLevel.createBuyUpgradeItem(canAfford, cost, level);
+                int cost = this.gameUser.getUpgradeHandler().getCost(this.mob, level);
+                boolean canAfford = this.gameUser.getCoins() >= cost;
+                item = optionalLevel
+                        .map(l -> l.createStatUpgradeItem(cost, false, canAfford))
+                        .orElse(level.createBuyUpgradeItem(canAfford, cost, level));
             }
 
             this.setItemStack(1 + i, item);
@@ -54,33 +58,11 @@ public final class TroopUpgradeTab extends Inventory {
         if (clickedLevel < 0) return;
         if (clickedLevel > this.mob.getMaxLevel()) return;
 
-        int currentLevel = this.getCurrentLevel();
-        if (currentLevel >= clickedLevel) return;
+        EnemyMobLevel level = this.mob.getLevel(clickedLevel);
+        if (level == null) return;
 
-        int cost = getCost(clickedLevel);
-
-        EnemyMobLevel targetLevel = this.mob.getLevel(clickedLevel);
-        if (targetLevel == null) throw new IllegalStateException("Mob " + this.mob.getCommonName() + " does not have level " + clickedLevel);
-
-        if (this.gameUser.getCoins() < cost) return;
-        this.gameUser.updateCoins(current -> current - cost);
-        this.gameUser.getMobLevels().put(this.mob, clickedLevel);
-
+        this.gameUser.getUpgradeHandler().upgrade(this.mob, level);
         refresh();
-    }
-
-    private int getCurrentLevel() {
-        return this.gameUser.getMobLevel(this.mob);
-    }
-
-    private int getCost(int level) {
-        int cost = 0;
-        for (int i = this.getCurrentLevel() + 1; i <= level; i++) {
-            EnemyMobLevel mobLevel = this.mob.getLevel(i);
-            if (mobLevel == null) throw new IllegalStateException("Mob " + this.mob.getCommonName() + " does not have level " + i);
-            cost += mobLevel.getUnlockCost();
-        }
-        return cost;
     }
 
 }

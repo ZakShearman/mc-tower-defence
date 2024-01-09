@@ -1,6 +1,9 @@
 package pink.zak.minestom.towerdefence.model.mob.config;
 
 import com.google.gson.JsonObject;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -16,10 +19,6 @@ import pink.zak.minestom.towerdefence.statdiff.types.DoubleStatDiff;
 import pink.zak.minestom.towerdefence.statdiff.types.IntStatDiff;
 import pink.zak.minestom.towerdefence.utils.ItemUtils;
 import pink.zak.minestom.towerdefence.utils.NumberUtils;
-
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 public class EnemyMobLevel implements Diffable<EnemyMobLevel> {
     private static final String SEND_ITEM_NAME = "<i:false><mob_name> <level_numeral>";

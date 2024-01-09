@@ -2,6 +2,12 @@ package pink.zak.minestom.towerdefence.model.mob.config;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -11,13 +17,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pink.zak.minestom.towerdefence.model.mob.statuseffect.StatusEffectType;
 import pink.zak.minestom.towerdefence.utils.ItemUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 public class EnemyMob {
     private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
@@ -31,7 +30,7 @@ public class EnemyMob {
     private final int sendTime; // in milliseconds
     private final @NotNull ItemStack baseItem;
     private final @NotNull Set<StatusEffectType> ignoredEffects;
-    private final @NotNull Map<Integer, EnemyMobLevel> levels;
+    private final @NotNull List<EnemyMobLevel> levels;
 
     public EnemyMob(@NotNull JsonObject jsonObject) {
         this.commonName = jsonObject.get("commonName").getAsString();
@@ -47,7 +46,8 @@ public class EnemyMob {
         this.levels = StreamSupport.stream(jsonObject.get("levels").getAsJsonArray().spliterator(), false)
                 .map(JsonElement::getAsJsonObject)
                 .map(json -> new EnemyMobLevel(this.commonName, json))
-                .collect(Collectors.toUnmodifiableMap(EnemyMobLevel::getLevel, enemyMobLevel -> enemyMobLevel));
+                .sorted(Comparator.comparingInt(EnemyMobLevel::getLevel))
+                .toList();
 
         ItemStack item = jsonObject.has("item") ? ItemUtils.fromJsonObject(jsonObject.get("item").getAsJsonObject(), null) : null;
         if (item == null) {
@@ -94,15 +94,11 @@ public class EnemyMob {
         return this.ignoredEffects.contains(statusEffectType);
     }
 
-    public @NotNull Map<Integer, EnemyMobLevel> getLevels() {
-        return this.levels;
-    }
-
     public @Nullable EnemyMobLevel getLevel(int level) {
-        return this.levels.get(level);
+        return this.levels.get(level - 1);
     }
 
     public int getMaxLevel() {
-        return this.levels.keySet().stream().max(Integer::compareTo).orElseThrow();
+        return this.levels.size();
     }
 }

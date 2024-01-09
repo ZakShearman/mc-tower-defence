@@ -34,15 +34,20 @@ public class MobHandler {
     }
 
     public void spawnMob(@NotNull QueuedEnemyMob queuedEnemyMob, @NotNull GameUser spawningUser) {
+        // create mob
         LivingTDEnemyMob mob = LivingTDEnemyMob.create(
                 this.gameHandler, queuedEnemyMob.mob(), queuedEnemyMob.level().getLevel(),
                 this.instance, this.map, spawningUser
         );
+
+        // assign mob to a team
         Team team;
         if (!TDEnvUtils.ENABLE_TEST_MODE) team = spawningUser.getTeam() == Team.RED ? Team.BLUE : Team.RED;
         else team = spawningUser.getTeam();
-
         this.getMobs(team).add(mob);
+
+        // increase income rate for the spawning user
+        spawningUser.updateIncomeRate(current -> current + queuedEnemyMob.level().getSendIncomeIncrease());
     }
 
     public @NotNull Set<LivingTDEnemyMob> getMobs(@NotNull Team team) {

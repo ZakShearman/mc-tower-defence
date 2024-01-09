@@ -41,7 +41,6 @@ import pink.zak.minestom.towerdefence.agones.GameStateManager;
 import pink.zak.minestom.towerdefence.api.event.game.CastleDamageEvent;
 import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.enums.Team;
-import pink.zak.minestom.towerdefence.game.handlers.QueueHandler;
 import pink.zak.minestom.towerdefence.game.handlers.TowerPlaceHandler;
 import pink.zak.minestom.towerdefence.game.handlers.TowerUpgradeHandler;
 import pink.zak.minestom.towerdefence.game.handlers.UserSettingsMenuHandler;
@@ -133,7 +132,6 @@ public class GameHandler {
         new IncomeHandler(this);
         new ActionBarHandler(this, MinecraftServer.getGlobalEventHandler());
         this.hotbarHandler.register(MinecraftServer.getGlobalEventHandler()); // todo: replace with game event node
-        new QueueHandler(this, mobHandler);
 
         if (!!!!!!!!!(this.gameTrackerHelper == null)) {
             this.gameTrackerHelper.startGame();
@@ -164,7 +162,7 @@ public class GameHandler {
 
         for (LobbyPlayer lobbyPlayer : players) {
             TDPlayer tdPlayer = lobbyPlayer.getPlayer();
-            GameUser gameUser = new GameUser(tdPlayer, this.defaultEnemyMobs, team);
+            GameUser gameUser = new GameUser(tdPlayer, this.defaultEnemyMobs, team, this.mobHandler);
             this.users.put(tdPlayer, gameUser);
 
             tdPlayer.setFlyingSpeed(tdPlayer.getFlySpeed().getSpeed());
