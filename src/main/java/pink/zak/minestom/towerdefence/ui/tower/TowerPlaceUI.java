@@ -1,4 +1,4 @@
-package pink.zak.minestom.towerdefence.ui;
+package pink.zak.minestom.towerdefence.ui.tower;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -11,7 +11,7 @@ import pink.zak.minestom.towerdefence.model.tower.TowerPlaceFailureReason;
 import pink.zak.minestom.towerdefence.model.tower.config.Tower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.model.user.TDPlayer;
-import pink.zak.minestom.towerdefence.queue.Result;
+import pink.zak.minestom.towerdefence.utils.Result;
 import pink.zak.minestom.towerdefence.storage.TowerStorage;
 
 public final class TowerPlaceUI extends Inventory {
@@ -30,7 +30,7 @@ public final class TowerPlaceUI extends Inventory {
 
         for (Tower tower : this.towerStorage.getTowers().values()) this.setItemStack(tower.getGuiSlot(), tower.getBaseItem());
 
-        addInventoryCondition((p, slot, clickType, result) -> {
+        this.addInventoryCondition((p, slot, clickType, result) -> {
             // always cancel the event
             result.setCancel(true);
 

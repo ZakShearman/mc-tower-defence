@@ -3,9 +3,9 @@ package pink.zak.minestom.towerdefence.model.tower.config;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -16,6 +16,7 @@ import net.minestom.server.instance.block.Block;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import pink.zak.minestom.towerdefence.enums.TowerType;
 import pink.zak.minestom.towerdefence.utils.ItemUtils;
 import pink.zak.minestom.towerdefence.utils.StringUtils;
@@ -34,8 +35,7 @@ public class Tower {
 
     private final @NotNull List<Component> description;
 
-    private final Map<Integer, ? extends TowerLevel> levels;
-    private final int maxLevel;
+    private final List<? extends TowerLevel> levels;
 
     private final ItemStack baseItem;
 
@@ -52,11 +52,9 @@ public class Tower {
                 .toList();
 
         this.levels = levelJsonMap.values().stream()
-                .collect(Collectors.toUnmodifiableMap(
-                        json -> json.get("level").getAsInt(), json -> this.type.getTowerLevelFunction().apply(json)
-                ));
-
-        this.maxLevel = this.levels.keySet().stream().max(Integer::compareTo).orElseThrow();
+                .sorted(Comparator.comparingInt(json -> json.get("level").getAsInt()))
+                .map(json -> this.type.getTowerLevelFunction().apply(json))
+                .toList();
 
         this.baseItem = this.item.with(builder -> {
             builder.displayName(MINI_MESSAGE.deserialize(BASE_ITEM_DISPLAY_NAME,
@@ -111,15 +109,15 @@ public class Tower {
         return this.baseItem;
     }
 
-    public Map<Integer, ? extends TowerLevel> getLevels() {
+    public List<? extends TowerLevel> getLevels() {
         return this.levels;
     }
 
-    public TowerLevel getLevel(int level) {
-        return this.levels.get(level);
+    public @Nullable TowerLevel getLevel(int level) {
+        return this.levels.get(level - 1);
     }
 
     public int getMaxLevel() {
-        return this.maxLevel;
+        return this.levels.size();
     }
 }

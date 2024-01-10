@@ -16,7 +16,7 @@ import net.minestom.server.utils.Direction;
 import net.minestom.server.utils.time.TimeUnit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import pink.zak.minestom.towerdefence.game.MobHandler;
+import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingTDEnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.statuseffect.FrozenStatusEffect;
 import pink.zak.minestom.towerdefence.model.mob.statuseffect.StatusEffectType;
@@ -40,10 +40,11 @@ public final class BlizzardTower extends PlacedAttackingTower<BlizzardTowerLevel
     private @Nullable Entity snowman;
     private @Nullable LivingTDEnemyMob target;
 
-    public BlizzardTower(@NotNull MobHandler mobHandler, TowerDefenceInstance instance, AttackingTower tower, int id, GameUser owner, Point basePoint, Direction facing, int level) {
-        super(mobHandler, instance, tower, id, owner, basePoint, facing, level);
+    public BlizzardTower(@NotNull GameHandler gameHandler, AttackingTower tower, int id, GameUser owner, Point basePoint, Direction facing, int level) {
+        super(gameHandler, tower, id, owner, basePoint, facing, level);
 
         // todo faces the wrong direction
+        TowerDefenceInstance instance = this.gameHandler.getInstance();
         Pos mobSpawnPos = instance.getTowerMap().getMobSpawn(this.owner.getTeam());
         this.restSnowmanPos = new Pos(basePoint.add(0, 1.5, 0)).withDirection(mobSpawnPos).withPitch(0);
 
@@ -104,14 +105,14 @@ public final class BlizzardTower extends PlacedAttackingTower<BlizzardTowerLevel
     }
 
     @Override
-    public void upgrade() {
+    public void upgrade(int level, @Nullable GameUser user) {
         if (this.snowman != null && this.snowmanTask != null) {
             this.snowman.remove();
             this.snowmanTask.cancel();
             this.snowman = null;
             this.snowmanTask = null;
         }
-        super.upgrade();
+        super.upgrade(level, user);
     }
 
     @Override

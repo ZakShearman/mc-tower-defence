@@ -5,12 +5,12 @@ import java.util.stream.Collectors;
 import net.hollowcube.schem.Rotation;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.instance.block.Block;
+import net.minestom.server.inventory.Inventory;
 import net.minestom.server.tag.Tag;
 import net.minestom.server.utils.Direction;
 import org.jetbrains.annotations.NotNull;
-import pink.zak.minestom.towerdefence.enums.TowerType;
+import org.jetbrains.annotations.Nullable;
 import pink.zak.minestom.towerdefence.game.GameHandler;
-import pink.zak.minestom.towerdefence.game.MobHandler;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTower;
 import pink.zak.minestom.towerdefence.model.tower.config.Tower;
 import pink.zak.minestom.towerdefence.model.tower.config.TowerLevel;
@@ -22,6 +22,7 @@ import pink.zak.minestom.towerdefence.model.tower.placed.types.LightningTower;
 import pink.zak.minestom.towerdefence.model.tower.placed.types.NecromancerTower;
 import pink.zak.minestom.towerdefence.model.tower.placed.types.archer.ArcherTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
+import pink.zak.minestom.towerdefence.ui.tower.TowerManagementUI;
 import pink.zak.minestom.towerdefence.utils.DirectionUtil;
 import pink.zak.minestom.towerdefence.utils.SchemUtils;
 import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;
@@ -29,7 +30,7 @@ import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;
 public abstract class PlacedTower<T extends TowerLevel> {
     public static final Tag<Integer> ID_TAG = Tag.Integer("towerId");
 
-    protected final TowerDefenceInstance instance;
+    protected final @NotNull GameHandler gameHandler;
 
     protected final Tower tower;
 
@@ -40,9 +41,8 @@ public abstract class PlacedTower<T extends TowerLevel> {
 
     protected T level;
 
-    protected PlacedTower(TowerDefenceInstance instance, Tower tower, int id,
-                          @NotNull GameUser owner, Point basePoint, Direction facing, int level) {
-        this.instance = instance;
+    protected PlacedTower(@NotNull GameHandler gameHandler, Tower tower, int id, @NotNull GameUser owner, Point basePoint, Direction facing, int level) {
+        this.gameHandler = gameHandler;
 
         this.tower = tower;
 
@@ -57,30 +57,48 @@ public abstract class PlacedTower<T extends TowerLevel> {
         this.placeBase();
     }
 
-    public static PlacedTower<?> create(GameHandler gameHandler, TowerDefenceInstance instance, Tower tower, int id, GameUser owner, Point basePoint, Direction facing) {
-        TowerType towerType = tower.getType();
-        MobHandler mobHandler = gameHandler.getMobHandler();
-        return switch (towerType) {
-            case ARCHER -> new ArcherTower(mobHandler, instance, (AttackingTower) tower, id, owner, basePoint, facing, 1);
-            case BOMBER -> new BomberTower(mobHandler, gameHandler, instance, (AttackingTower) tower, id, owner, basePoint, facing, 1);
-            case BLIZZARD -> new BlizzardTower(mobHandler, instance, (AttackingTower) tower, id, owner, basePoint, facing, 1);
-            case CHARITY -> new CharityTower(instance, tower, id, owner, basePoint, facing, 1);
-            case EARTHQUAKE -> new EarthquakeTower(mobHandler, instance, (AttackingTower) tower, id, owner, basePoint, facing, 1);
-            case LIGHTNING -> new LightningTower(mobHandler, instance, (AttackingTower) tower, id, owner, basePoint, facing, 1);
-            case NECROMANCER -> new NecromancerTower(instance, (AttackingTower) tower, id, owner, basePoint, facing, 1);
+    public static PlacedTower<?> create(GameHandler gameHandler, Tower tower, int id, GameUser owner, Point basePoint, Direction facing) {
+        return switch (tower.getType()) {
+            case ARCHER -> new ArcherTower(gameHandler, (AttackingTower) tower, id, owner, basePoint, facing, 1);
+            case BOMBER -> new BomberTower(gameHandler, (AttackingTower) tower, id, owner, basePoint, facing, 1);
+            case BLIZZARD -> new BlizzardTower(gameHandler, (AttackingTower) tower, id, owner, basePoint, facing, 1);
+            case CHARITY -> new CharityTower(gameHandler, tower, id, owner, basePoint, facing, 1);
+            case EARTHQUAKE -> new EarthquakeTower(gameHandler, (AttackingTower) tower, id, owner, basePoint, facing, 1);
+            case LIGHTNING -> new LightningTower(gameHandler, (AttackingTower) tower, id, owner, basePoint, facing, 1);
+            case NECROMANCER -> new NecromancerTower(gameHandler, (AttackingTower) tower, id, owner, basePoint, facing, 1);
         };
     }
 
-    public void upgrade() {
-        this.upgrade(this.getLevelInt() + 1);
+    public final void upgrade(@Nullable GameUser user) {
+        this.upgrade(this.getLevelInt() + 1, user);
     }
 
-    public void upgrade(int level) {
+    public void upgrade(int level, @Nullable GameUser user) {
         if (level == this.getLevelInt()) throw new IllegalStateException("Cannot upgrade to the same level");
-        if (!this.tower.getLevels().containsKey(level)) throw new IllegalStateException("Cannot upgrade to a level that doesn't exist");
+        TowerLevel targetLevel = this.tower.getLevel(level);
+        if (targetLevel == null) throw new IllegalStateException("Cannot upgrade to a level that doesn't exist");
+
+        if (user != null) {
+            // calculate cost of upgrade
+            int cost = this.getCost(targetLevel);
+
+            // check if the user can afford the upgrade
+            if (user.getCoins() < cost) return;
+
+            // charge user for upgrade
+            user.updateCoins(balance -> balance - cost);
+        }
 
         T oldLevel = this.level;
-        this.level = (T) this.tower.getLevel(level);
+        this.level = (T) targetLevel;
+
+        // update management UI
+        for (GameUser player : this.gameHandler.getTeamUsers(this.owner.getTeam())) {
+            Inventory inventory = player.getPlayer().getOpenInventory();
+            if (inventory == null) continue;
+
+            if (inventory instanceof TowerManagementUI ui) ui.refresh();
+        }
 
         this.removeNonUpdatedBlocks(oldLevel, this.level);
         this.placeLevel();
@@ -96,15 +114,16 @@ public abstract class PlacedTower<T extends TowerLevel> {
             // Add the ID_TAG with the tower's ID to each block
             block = block.withTag(ID_TAG, this.id);
 
-            this.instance.setBlock(this.basePoint.add(relativePoint), block);
+            this.gameHandler.getInstance().setBlock(this.basePoint.add(relativePoint), block);
         });
     }
 
     private void placeBase() {
         int checkDistance = this.tower.getType().getSize().getCheckDistance();
+        TowerDefenceInstance instance = this.gameHandler.getInstance();
         for (int x = this.basePoint.blockX() - checkDistance; x <= this.basePoint.blockX() + checkDistance; x++) {
             for (int z = this.basePoint.blockZ() - checkDistance; z <= this.basePoint.blockZ() + checkDistance; z++) {
-                this.instance.setBlock(x, this.basePoint.blockY(), z, this.instance.getTowerMap().getTowerBaseMaterial().block().withTag(ID_TAG, this.id));
+                instance.setBlock(x, this.basePoint.blockY(), z, instance.getTowerMap().getTowerBaseMaterial().block().withTag(ID_TAG, this.id));
             }
         }
     }
@@ -116,23 +135,25 @@ public abstract class PlacedTower<T extends TowerLevel> {
         Set<Point> oldRelativePoints = SchemUtils.getRelativeBlockPoints(rotation, oldLevel.getSchematic());
         Set<Point> newRelativePoints = SchemUtils.getRelativeBlockPoints(rotation, newLevel.getSchematic());
 
+        TowerDefenceInstance instance = this.gameHandler.getInstance();
         for (Point relativePoint : oldRelativePoints) {
             if (!newRelativePoints.contains(relativePoint)) {
-                this.instance.setBlock(this.basePoint.add(relativePoint), Block.AIR);
+                instance.setBlock(this.basePoint.add(relativePoint), Block.AIR);
             }
         }
     }
 
     public void destroy() {
-        Set<Point> relativePositions = this.getTower().getLevels().values().stream()
+        Set<Point> relativePositions = this.getTower().getLevels().stream()
                 .filter(towerLevel -> towerLevel.getLevel() <= this.getLevelInt())
                 .map(TowerLevel::getSchematic)
                 .map(schem -> SchemUtils.getRelativeBlockPoints(Rotation.NONE, schem))
                 .flatMap(Set::stream)
                 .collect(Collectors.toSet());
 
+        TowerDefenceInstance instance = this.gameHandler.getInstance();
         for (Point relativePos : relativePositions) {
-            this.instance.setBlock(this.basePoint.add(relativePos), Block.AIR);
+            instance.setBlock(this.basePoint.add(relativePos), Block.AIR);
         }
 
         // set the base back to normal
@@ -143,12 +164,24 @@ public abstract class PlacedTower<T extends TowerLevel> {
      * returns the blocks below the tower to normal, removing their ID_TAG property.
      */
     private void normaliseBase() {
+        TowerDefenceInstance instance = this.gameHandler.getInstance();
         int checkDistance = this.tower.getType().getSize().getCheckDistance();
         for (int x = this.basePoint.blockX() - checkDistance; x <= this.basePoint.blockX() + checkDistance; x++) {
             for (int z = this.basePoint.blockZ() - checkDistance; z <= this.basePoint.blockZ() + checkDistance; z++) {
-                this.instance.setBlock(x, this.basePoint.blockY(), z, this.instance.getTowerMap().getTowerBaseMaterial().block());
+                instance.setBlock(x, this.basePoint.blockY(), z, instance.getTowerMap().getTowerBaseMaterial().block());
             }
         }
+    }
+
+    public int getCost(@NotNull TowerLevel level) {
+        int currentLevel = this.level.getLevel();
+        int cost = 0;
+        for (int i = currentLevel + 1; i <= level.getLevel(); i++) {
+            TowerLevel l = this.tower.getLevel(i);
+            if (l == null) throw new IllegalStateException("Tower " + this.tower.getName() + " is missing level " + i);
+            cost += l.getCost();
+        }
+        return cost;
     }
 
     public Tower getTower() {

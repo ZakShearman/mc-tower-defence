@@ -1,4 +1,4 @@
-package pink.zak.minestom.towerdefence.queue;
+package pink.zak.minestom.towerdefence.utils;
 
 import org.jetbrains.annotations.NotNull;
 

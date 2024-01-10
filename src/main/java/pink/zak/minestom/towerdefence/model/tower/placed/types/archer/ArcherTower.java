@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.utils.Direction;
 import org.jetbrains.annotations.NotNull;
-import pink.zak.minestom.towerdefence.game.MobHandler;
+import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingTDEnemyMob;
 import pink.zak.minestom.towerdefence.model.prediction.DamagePrediction;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTower;
@@ -15,14 +15,13 @@ import pink.zak.minestom.towerdefence.model.tower.config.towers.ArcherTowerConfi
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.targetting.Target;
-import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;
 
 public final class ArcherTower extends PlacedAttackingTower<AttackingTowerLevel> {
 
     private final @NotNull Set<Point> firingPoints;
 
-    public ArcherTower(@NotNull MobHandler mobHandler, TowerDefenceInstance instance, AttackingTower tower, int id, GameUser owner, Point basePoint, Direction facing, int level) {
-        super(mobHandler, instance, tower, id, owner, basePoint, facing, level);
+    public ArcherTower(@NotNull GameHandler gameHandler, AttackingTower tower, int id, GameUser owner, Point basePoint, Direction facing, int level) {
+        super(gameHandler, tower, id, owner, basePoint, facing, level);
 
         ArcherTowerConfig config = (ArcherTowerConfig) this.tower;
         this.firingPoints = config.getRelativeFiringPoints().stream()
@@ -38,7 +37,7 @@ public final class ArcherTower extends PlacedAttackingTower<AttackingTowerLevel>
         ArrowProjectile projectile = new ArrowProjectile(this, target, prediction);
 
         Point start = this.getFiringPoint(target.getPosition());
-        projectile.setInstance(this.instance, start);
+        projectile.setInstance(this.gameHandler.getInstance(), start);
     }
 
     @Override

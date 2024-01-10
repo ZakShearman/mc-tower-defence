@@ -22,7 +22,7 @@ import pink.zak.minestom.towerdefence.model.tower.config.Tower;
 import pink.zak.minestom.towerdefence.model.tower.config.TowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
-import pink.zak.minestom.towerdefence.queue.Result;
+import pink.zak.minestom.towerdefence.utils.Result;
 import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;
 
 public final class TowerManager {
@@ -51,7 +51,6 @@ public final class TowerManager {
         // place tower
         PlacedTower<?> placedTower = PlacedTower.create(
                 this.gameHandler,
-                this.instance,
                 tower,
                 TOWER_ID_COUNTER.getAndIncrement(),
                 user,
@@ -65,8 +64,9 @@ public final class TowerManager {
         return Result.success();
     }
 
-    public void removeTower(@NotNull PlacedTower<?> tower, @NotNull Team team) {
-        this.getTowers(team).remove(tower);
+    public void removeTower(@NotNull PlacedTower<?> tower) {
+        tower.destroy();
+        this.getTowers(tower.getOwner().getTeam()).remove(tower);
 
         // todo: tower remove event
     }

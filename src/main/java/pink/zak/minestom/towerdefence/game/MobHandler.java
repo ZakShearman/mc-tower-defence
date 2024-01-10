@@ -7,7 +7,7 @@ import pink.zak.minestom.towerdefence.TowerDefenceModule;
 import pink.zak.minestom.towerdefence.cache.DamageIndicatorCache;
 import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
-import pink.zak.minestom.towerdefence.model.mob.QueuedEnemyMob;
+import pink.zak.minestom.towerdefence.queue.QueuedEnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingTDEnemyMob;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.utils.TDEnvUtils;

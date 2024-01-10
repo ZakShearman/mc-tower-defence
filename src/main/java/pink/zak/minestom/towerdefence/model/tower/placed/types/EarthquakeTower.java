@@ -12,7 +12,7 @@ import net.minestom.server.utils.PacketUtils;
 import net.minestom.server.utils.time.TimeUnit;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.Tags;
-import pink.zak.minestom.towerdefence.game.MobHandler;
+import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingTDEnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.living.SingleEnemyTDMob;
 import pink.zak.minestom.towerdefence.model.mob.statuseffect.StatusEffectType;
@@ -22,14 +22,12 @@ import pink.zak.minestom.towerdefence.model.tower.config.relative.RelativePoint;
 import pink.zak.minestom.towerdefence.model.tower.config.towers.level.EarthquakeTowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
-import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;
 
 public final class EarthquakeTower extends PlacedAttackingTower<EarthquakeTowerLevel> {
     private static final Tag<Double> ORIGINAL_GRAVITY_TAG = Tag.Double("originalGravity");
-    private static final double GRAVITY = 0.5;
 
-    public EarthquakeTower(@NotNull MobHandler mobHandler, TowerDefenceInstance instance, AttackingTower tower, int id, GameUser owner, Point basePoint, Direction facing, int level) {
-        super(mobHandler, instance, tower, id, owner, basePoint, facing, level);
+    public EarthquakeTower(@NotNull GameHandler gameHandler, AttackingTower tower, int id, GameUser owner, Point basePoint, Direction facing, int level) {
+        super(gameHandler, tower, id, owner, basePoint, facing, level);
     }
 
     @Override

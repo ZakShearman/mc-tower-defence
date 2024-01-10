@@ -18,10 +18,10 @@ import net.minestom.server.timer.TaskSchedule;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pink.zak.minestom.towerdefence.game.MobHandler;
-import pink.zak.minestom.towerdefence.model.mob.QueuedEnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.config.EnemyMob;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.ui.spawner.TroopSpawnerUI;
+import pink.zak.minestom.towerdefence.utils.Result;
 
 public final class MobQueue {
 

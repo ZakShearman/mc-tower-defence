@@ -29,7 +29,6 @@ import net.minestom.server.entity.GameMode;
 import net.minestom.server.entity.Player;
 import net.minestom.server.entity.hologram.Hologram;
 import net.minestom.server.event.player.PlayerDisconnectEvent;
-import net.minestom.server.instance.Instance;
 import net.minestom.server.timer.Task;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -41,7 +40,7 @@ import pink.zak.minestom.towerdefence.agones.GameStateManager;
 import pink.zak.minestom.towerdefence.api.event.game.CastleDamageEvent;
 import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.enums.Team;
-import pink.zak.minestom.towerdefence.game.handlers.TowerUpgradeHandler;
+import pink.zak.minestom.towerdefence.game.handlers.NecromancerDamageListener;
 import pink.zak.minestom.towerdefence.gametracker.GameTrackerHelper;
 import pink.zak.minestom.towerdefence.lobby.LobbyManager;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
@@ -100,9 +99,6 @@ public class GameHandler {
                 .filter(mob -> mob.getLevel(1).getUnlockCost() <= 0)
                 .collect(Collectors.toUnmodifiableSet());
 
-        //new TowerPlaceHandler(module, this);
-        new TowerUpgradeHandler(module, this);
-
         module.getEventNode().addListener(PlayerDisconnectEvent.class, event -> this.users.remove(event.getPlayer()));
 
         if (messagingModule != null) {
@@ -131,7 +127,8 @@ public class GameHandler {
         }
 
         new IncomeHandler(this);
-        new ActionBarHandler(this, MinecraftServer.getGlobalEventHandler());
+        new ActionBarHandler(this, MinecraftServer.getGlobalEventHandler()); // todo: replace with game event node
+        new NecromancerDamageListener(MinecraftServer.getGlobalEventHandler()); // todo: replace with game event node
         this.hotbarHandler.register(MinecraftServer.getGlobalEventHandler()); // todo: replace with game event node
         this.interactionHandler.register(MinecraftServer.getGlobalEventHandler()); // todo: replace with game event node
 
@@ -286,7 +283,7 @@ public class GameHandler {
         return this.users;
     }
 
-    public Instance getInstance() {
+    public @NotNull TowerDefenceInstance getInstance() {
         return this.instance;
     }
 }

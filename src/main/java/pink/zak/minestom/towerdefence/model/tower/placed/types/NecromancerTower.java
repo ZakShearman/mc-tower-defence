@@ -17,6 +17,7 @@ import net.minestom.server.entity.pathfinding.PFPathingEntity;
 import net.minestom.server.utils.Direction;
 import net.minestom.server.utils.time.TimeUnit;
 import org.jetbrains.annotations.NotNull;
+import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.model.DamageSource;
 import pink.zak.minestom.towerdefence.model.mob.config.EnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.config.EnemyMobLevel;
@@ -28,13 +29,12 @@ import pink.zak.minestom.towerdefence.model.tower.placed.PlacedTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.model.user.TDPlayer;
 import pink.zak.minestom.towerdefence.utils.StringUtils;
-import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;
 
 public final class NecromancerTower extends PlacedTower<NecromancerTowerLevel> {
     private final AtomicInteger necromancedMobCount = new AtomicInteger(0);
 
-    public NecromancerTower(TowerDefenceInstance instance, AttackingTower tower, int id, GameUser owner, Point basePoint, Direction facing, int level) {
-        super(instance, tower, id, owner, basePoint, facing, level);
+    public NecromancerTower(@NotNull GameHandler gameHandler, AttackingTower tower, int id, GameUser owner, Point basePoint, Direction facing, int level) {
+        super(gameHandler, tower, id, owner, basePoint, facing, level);
     }
 
     public void createNecromancedMob(@NotNull LivingTDEnemyMob livingEnemyMob) {

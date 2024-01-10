@@ -17,7 +17,7 @@ import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.model.user.TDPlayer;
 import pink.zak.minestom.towerdefence.queue.MobQueue;
 import pink.zak.minestom.towerdefence.queue.QueueFailureReason;
-import pink.zak.minestom.towerdefence.queue.Result;
+import pink.zak.minestom.towerdefence.utils.Result;
 import pink.zak.minestom.towerdefence.storage.MobStorage;
 
 public final class TroopSpawnerUI extends Inventory {
@@ -63,7 +63,7 @@ public final class TroopSpawnerUI extends Inventory {
         this.setItemStack(31, UPGRADE_ITEM);
         this.updateQueue(this.gameUser.getQueue());
 
-        addInventoryCondition((p, slot, clickType, result) -> {
+        this.addInventoryCondition((p, slot, clickType, result) -> {
             // always cancel the event
             result.setCancel(true);
 
