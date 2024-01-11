@@ -72,7 +72,7 @@ public final class TroopSpawnerUI extends Inventory {
             if (!p.equals(gameUser.getPlayer())) return;
 
             // check if slots are within the tab range and click item is NOT air
-            if (this.tab != null && slot >= 9 && slot < 27 && !result.getClickedItem().isAir()) {
+            if (this.tab != null && slot > 10 && slot < 27) {
                 this.tab.onClick(slot - 9);
                 return;
             }
