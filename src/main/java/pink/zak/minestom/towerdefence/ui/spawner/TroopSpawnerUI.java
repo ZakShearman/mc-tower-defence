@@ -6,12 +6,14 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.minestom.server.event.EventListener;
 import net.minestom.server.inventory.Inventory;
 import net.minestom.server.inventory.InventoryType;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import pink.zak.minestom.towerdefence.api.event.player.PlayerQueueUpdateEvent;
 import pink.zak.minestom.towerdefence.model.mob.config.EnemyMob;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.model.user.TDPlayer;
@@ -79,6 +81,13 @@ public final class TroopSpawnerUI extends Inventory {
             // run the click handler
             this.onClick(slot);
         });
+
+        EventListener<PlayerQueueUpdateEvent> queueUpdateListener = EventListener.builder(PlayerQueueUpdateEvent.class)
+                .filter(event -> event.user().equals(this.gameUser))
+                .expireWhen(event -> this.getViewers().isEmpty())
+                .handler(event -> this.updateQueue(event.queue()))
+                .build();
+        this.gameUser.getPlayer().eventNode().addListener(queueUpdateListener);
     }
 
     private void onClick(int slot) {
@@ -125,7 +134,7 @@ public final class TroopSpawnerUI extends Inventory {
         for (int i = 9; i < 27; i++) this.setItemStack(i, this.tab.getItemStack(i - 9));
     }
 
-    public void updateQueue(@NotNull MobQueue queue) {
+    private void updateQueue(@NotNull MobQueue queue) {
         this.setItemStack(35, queue.createItem());
     }
 

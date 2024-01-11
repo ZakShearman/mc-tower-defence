@@ -7,5 +7,5 @@ import pink.zak.minestom.towerdefence.model.tower.placed.PlacedTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 
 public record PlayerTowerPlaceEvent(@NotNull Tower tower, PlacedTower<?> placedTower,
-                                    @NotNull GameUser gameUser) implements Event {
+                                    @NotNull GameUser user) implements Event {
 }

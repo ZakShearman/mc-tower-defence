@@ -9,7 +9,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.MinecraftServer;
-import net.minestom.server.inventory.Inventory;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import net.minestom.server.item.metadata.BundleMeta;
@@ -17,10 +16,10 @@ import net.minestom.server.timer.Task;
 import net.minestom.server.timer.TaskSchedule;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import pink.zak.minestom.towerdefence.api.event.player.PlayerQueueUpdateEvent;
 import pink.zak.minestom.towerdefence.game.MobHandler;
 import pink.zak.minestom.towerdefence.model.mob.config.EnemyMob;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
-import pink.zak.minestom.towerdefence.ui.spawner.TroopSpawnerUI;
 import pink.zak.minestom.towerdefence.utils.Result;
 
 public final class MobQueue {
@@ -67,9 +66,8 @@ public final class MobQueue {
         this.mobHandler.spawnMob(this.currentlySpawning, this.user);
         this.currentlySpawning = null;
 
-        // update the player's troop ui
-        Inventory inventory = this.user.getPlayer().getOpenInventory();
-        if (inventory instanceof TroopSpawnerUI ui) ui.updateQueue(this);
+        // broadcast the queue event
+        MinecraftServer.getGlobalEventHandler().call(new PlayerQueueUpdateEvent(this.user, this));
     }
 
     private int currentQueueTime() {
