@@ -63,7 +63,7 @@ public final class TroopSpawnerUI extends Inventory {
 
         this.setItemStack(27, SHORTCUTS_ITEM);
         this.setItemStack(31, UPGRADE_ITEM);
-        this.updateQueue(this.gameUser.getQueue());
+        this.updateQueue();
 
         this.addInventoryCondition((p, slot, clickType, result) -> {
             // always cancel the event
@@ -85,7 +85,7 @@ public final class TroopSpawnerUI extends Inventory {
         EventListener<PlayerQueueUpdateEvent> queueUpdateListener = EventListener.builder(PlayerQueueUpdateEvent.class)
                 .filter(event -> event.user().equals(this.gameUser))
                 .expireWhen(event -> this.getViewers().isEmpty())
-                .handler(event -> this.updateQueue(event.queue()))
+                .handler(event -> this.updateQueue())
                 .build();
         this.gameUser.getPlayer().eventNode().addListener(queueUpdateListener);
     }
@@ -107,8 +107,12 @@ public final class TroopSpawnerUI extends Inventory {
     }
 
     private void attemptToSendMob(@NotNull EnemyMob mob) {
-        Result<QueueFailureReason> result = this.gameUser.getQueue().queue(mob);
-        if (!(result instanceof Result.Failure<QueueFailureReason> failure)) return;
+        MobQueue queue = this.gameUser.getQueue();
+        Result<QueueFailureReason> result = queue.queue(mob);
+        if (!(result instanceof Result.Failure<QueueFailureReason> failure)) {
+            this.updateQueue();
+            return;
+        }
         TDPlayer player = this.gameUser.getPlayer();
         player.sendMessage(switch (failure.reason()) { // todo: better feedback
             case NOT_UNLOCKED -> "You have not unlocked this mob.";
@@ -134,8 +138,8 @@ public final class TroopSpawnerUI extends Inventory {
         for (int i = 9; i < 27; i++) this.setItemStack(i, this.tab.getItemStack(i - 9));
     }
 
-    private void updateQueue(@NotNull MobQueue queue) {
-        this.setItemStack(35, queue.createItem());
+    private void updateQueue() {
+        this.setItemStack(35, this.gameUser.getQueue().createItem());
     }
 
     enum Mode {
