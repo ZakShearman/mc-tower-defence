@@ -67,7 +67,7 @@ public final class MobQueue {
         this.currentlySpawning = null;
 
         // broadcast the queue event
-        MinecraftServer.getGlobalEventHandler().call(new PlayerQueueUpdateEvent(this.user, this));
+        this.callUpdateEvent();
     }
 
     private int currentQueueTime() {
@@ -101,7 +101,14 @@ public final class MobQueue {
         this.user.updateCoins(current -> current - cost);
         this.queue.add(mob);
 
+        // broadcast the queue event
+        this.callUpdateEvent();
+
         return Result.success();
+    }
+
+    private void callUpdateEvent() {
+        MinecraftServer.getGlobalEventHandler().call(new PlayerQueueUpdateEvent(this.user, this));
     }
 
     public @NotNull ItemStack createItem() {

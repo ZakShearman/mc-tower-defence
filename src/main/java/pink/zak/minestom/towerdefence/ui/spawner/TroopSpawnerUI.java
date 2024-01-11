@@ -17,10 +17,9 @@ import pink.zak.minestom.towerdefence.api.event.player.PlayerQueueUpdateEvent;
 import pink.zak.minestom.towerdefence.model.mob.config.EnemyMob;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.model.user.TDPlayer;
-import pink.zak.minestom.towerdefence.queue.MobQueue;
 import pink.zak.minestom.towerdefence.queue.QueueFailureReason;
-import pink.zak.minestom.towerdefence.utils.Result;
 import pink.zak.minestom.towerdefence.storage.MobStorage;
+import pink.zak.minestom.towerdefence.utils.Result;
 
 public final class TroopSpawnerUI extends Inventory {
 
@@ -107,12 +106,8 @@ public final class TroopSpawnerUI extends Inventory {
     }
 
     private void attemptToSendMob(@NotNull EnemyMob mob) {
-        MobQueue queue = this.gameUser.getQueue();
-        Result<QueueFailureReason> result = queue.queue(mob);
-        if (!(result instanceof Result.Failure<QueueFailureReason> failure)) {
-            this.updateQueue();
-            return;
-        }
+        Result<QueueFailureReason> result = this.gameUser.getQueue().queue(mob);
+        if (!(result instanceof Result.Failure<QueueFailureReason> failure)) return;
         TDPlayer player = this.gameUser.getPlayer();
         player.sendMessage(switch (failure.reason()) { // todo: better feedback
             case NOT_UNLOCKED -> "You have not unlocked this mob.";
