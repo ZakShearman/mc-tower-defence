@@ -53,8 +53,8 @@ public class Tower {
                 .toList();
 
         this.levels = levelJsonMap.values().stream()
-                .sorted(Comparator.comparingInt(json -> json.get("level").getAsInt()))
                 .map(json -> this.type.getTowerLevelFunction().apply(json))
+                .sorted(Comparator.comparingInt(TowerLevel::asInteger))
                 .toList();
 
         this.baseItem = this.item.with(builder -> {
