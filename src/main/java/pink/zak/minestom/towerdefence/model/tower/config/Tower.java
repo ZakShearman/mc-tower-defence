@@ -18,6 +18,7 @@ import net.minestom.server.item.Material;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pink.zak.minestom.towerdefence.enums.TowerType;
+import pink.zak.minestom.towerdefence.model.tower.placed.PlacedTower;
 import pink.zak.minestom.towerdefence.utils.ItemUtils;
 import pink.zak.minestom.towerdefence.utils.StringUtils;
 import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;
@@ -75,12 +76,18 @@ public class Tower {
     }
 
     public boolean isSpaceClear(@NotNull TowerDefenceInstance instance, @NotNull Point basePoint) {
+        Material baseMaterial = instance.getTowerMap().getTowerBaseMaterial();
         int checkDistance = this.type.getSize().getCheckDistance();
+
         for (int x = basePoint.blockX() - checkDistance; x <= basePoint.blockX() + checkDistance; x++) {
             for (int z = basePoint.blockZ() - checkDistance; z <= basePoint.blockZ() + checkDistance; z++) {
                 Block first = instance.getBlock(x, basePoint.blockY(), z);
-                if (first.registry().material() != instance.getTowerMap().getTowerBaseMaterial() || first.properties().containsKey("towerId"))
+                // Check the block at the basepoint doesn't have a tower ID tag already and that all blocks at the base
+                // are the correct material
+                if (first.registry().material() != baseMaterial || first.hasTag(PlacedTower.ID_TAG))
                     return false;
+
+                // Check if the block above the area is air
                 Material second = instance.getBlock(x, basePoint.blockY() + 1, z).registry().material();
                 if (second != null && second != Material.AIR)
                     return false;
