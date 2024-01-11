@@ -54,7 +54,7 @@ public final class TroopSpawnerUI extends Inventory {
 
         for (EnemyMob enemyMob : this.mobStorage.getEnemyMobs()) {
             ItemStack item = this.gameUser.getUpgradeHandler().getLevel(enemyMob)
-                    .map(level -> level.createSendItem().withAmount(level.getLevel()))
+                    .map(level -> level.createSendItem().withAmount(level.asInteger()))
                     .orElse(enemyMob.getBaseItem());
             this.setItemStack(enemyMob.getSlot(), item);
         }

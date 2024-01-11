@@ -55,12 +55,12 @@ public final class TowerManagementUI extends Inventory {
      */
     @ApiStatus.Internal
     public TowerManagementUI(@NotNull PlacedTower<?> tower, @NotNull GameUser user, @NotNull TowerManager towerManager) {
-        super(InventoryType.CHEST_3_ROW, Component.text(tower.getTower().getName()));
+        super(InventoryType.CHEST_3_ROW, Component.text(tower.getType().getName()));
         this.tower = tower;
         this.user = user;
         this.towerManager = towerManager;
 
-        Tower type = tower.getTower();
+        Tower type = tower.getType();
         this.setItemStack(0, type.getBaseItem());
         this.setItemStack(11, type.getLevel(1).getOwnedUpgradeItem());
         this.setItemStack(17, REMOVE_TOWER_ITEM);
@@ -81,9 +81,9 @@ public final class TowerManagementUI extends Inventory {
     }
 
     public void refresh() {
-        for (TowerLevel level : this.tower.getTower().getLevels()) {
+        for (TowerLevel level : this.tower.getType().getLevels()) {
             TowerLevel currentLevel = this.tower.getLevel();
-            boolean purchased = currentLevel.getLevel() >= level.getLevel(); // todo: should probably make a way to compare levels better
+            boolean purchased = currentLevel.compareTo(level) >= 0;
 
             ItemStack item;
             if (!purchased) {
@@ -92,7 +92,7 @@ public final class TowerManagementUI extends Inventory {
                 item = level.createBuyUpgradeItem(canAfford, cost, currentLevel);
             } else item = level.getOwnedUpgradeItem();
 
-            this.setItemStack(level.getLevel() + 10, item);
+            this.setItemStack(level.asInteger() + 10, item);
         }
     }
 
@@ -114,8 +114,8 @@ public final class TowerManagementUI extends Inventory {
         TowerLevel currentLevel = this.tower.getLevel();
 
         if (clicked < 0) return;
-        if (clicked > this.tower.getTower().getMaxLevel()) return;
-        if (clicked <= currentLevel.getLevel()) return;
+        if (clicked > this.tower.getType().getMaxLevel().asInteger()) return;
+        if (clicked <= currentLevel.asInteger()) return;
 
         this.tower.upgrade(clicked, this.user);
     }
@@ -124,7 +124,7 @@ public final class TowerManagementUI extends Inventory {
         return BASE_PREVIEW_TOWER_RADIUS_ITEM.withLore(Stream.of(
                 "",
                 "<i:false><dark_red>Left-click</dark_red><red> shows the tower's range",
-                "<i:false><dark_red>Right-click</dark_red><red> shows all %s tower ranges".formatted(tower.getTower().getName())
+                "<i:false><dark_red>Right-click</dark_red><red> shows all %s tower ranges".formatted(tower.getType().getName())
         ).map(MINI_MESSAGE::deserialize).toList());
     }
 
@@ -133,7 +133,7 @@ public final class TowerManagementUI extends Inventory {
 
         if (clickType == ClickType.RIGHT_CLICK) {
             Set<PlacedTower<?>> towers = this.towerManager.getTowers(this.user.getTeam()).stream()
-                    .filter(tower -> tower.getTower().getType().equals(this.tower.getTower().getType()))
+                    .filter(tower -> tower.getType().getType().equals(this.tower.getType().getType()))
                     .collect(Collectors.toUnmodifiableSet());
 
             for (PlacedTower<?> tower : towers) {

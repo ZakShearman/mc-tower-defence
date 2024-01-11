@@ -15,7 +15,7 @@ public class ZombieLivingEnemyMob extends SingleEnemyTDMob {
     public ZombieLivingEnemyMob(GameHandler gameHandler, EnemyMob enemyMob, Instance instance, TowerMap map, GameUser gameUser, int level) {
         super(gameHandler, enemyMob, level, instance, map, gameUser);
 
-        ItemStack chestplateItem = ItemStack.of(switch (super.getEnemyMobLevel().getLevel()) {
+        ItemStack chestplateItem = ItemStack.of(switch (super.getEnemyMobLevel().asInteger()) {
             case 1 -> Material.LEATHER_CHESTPLATE;
             case 2 -> Material.CHAINMAIL_CHESTPLATE;
             case 3 -> Material.GOLDEN_CHESTPLATE;
@@ -24,7 +24,7 @@ public class ZombieLivingEnemyMob extends SingleEnemyTDMob {
             default -> Material.AIR;
         });
 
-        ItemStack heldItem = ItemStack.of(switch (super.getEnemyMobLevel().getLevel()) {
+        ItemStack heldItem = ItemStack.of(switch (super.getEnemyMobLevel().asInteger()) {
             case 1 -> Material.WOODEN_SWORD;
             case 2 -> Material.STONE_SWORD;
             case 3 -> Material.GOLDEN_SWORD;

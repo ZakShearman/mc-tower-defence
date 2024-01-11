@@ -20,7 +20,7 @@ import pink.zak.minestom.towerdefence.statdiff.types.IntStatDiff;
 import pink.zak.minestom.towerdefence.utils.ItemUtils;
 import pink.zak.minestom.towerdefence.utils.NumberUtils;
 
-public class EnemyMobLevel implements Diffable<EnemyMobLevel> {
+public class EnemyMobLevel implements Diffable<EnemyMobLevel>, Comparable<EnemyMobLevel> {
     private static final String SEND_ITEM_NAME = "<i:false><mob_name> <level_numeral>";
     private static final String UPGRADE_ITEM_NAME = "<i:false><%s><level_numeral> - <yellow>$<cost></yellow>";
 
@@ -125,7 +125,7 @@ public class EnemyMobLevel implements Diffable<EnemyMobLevel> {
         return components;
     }
 
-    public int getLevel() {
+    public int asInteger() {
         return this.level;
     }
 
@@ -180,4 +180,10 @@ public class EnemyMobLevel implements Diffable<EnemyMobLevel> {
                         null, "b/s"
                 ));
     }
+
+    @Override
+    public int compareTo(@NotNull EnemyMobLevel level) {
+        return Integer.compare(this.level, level.level);
+    }
+
 }

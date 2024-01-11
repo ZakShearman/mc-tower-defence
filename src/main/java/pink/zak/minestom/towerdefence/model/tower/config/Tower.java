@@ -117,7 +117,7 @@ public class Tower {
         return this.levels.get(level - 1);
     }
 
-    public int getMaxLevel() {
-        return this.levels.size();
+    public @NotNull TowerLevel getMaxLevel() {
+        return this.levels.getLast();
     }
 }

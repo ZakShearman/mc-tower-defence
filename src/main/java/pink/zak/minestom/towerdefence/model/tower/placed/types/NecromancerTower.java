@@ -127,7 +127,7 @@ public final class NecromancerTower extends PlacedTower<NecromancerTowerLevel> {
 
             return MINI_MESSAGE.deserialize(CUSTOM_NAME,
                     Placeholder.unparsed("mob_type", StringUtils.namespaceToName(this.entityType.name())),
-                    Placeholder.unparsed("level", StringUtils.integerToCardinal(this.enemyMobLevel.getLevel())),
+                    Placeholder.unparsed("level", StringUtils.integerToCardinal(this.enemyMobLevel.asInteger())),
                     Placeholder.unparsed("health", health));
         }
 

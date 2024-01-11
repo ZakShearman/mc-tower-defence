@@ -46,7 +46,7 @@ public final class TroopUpgradeTab extends Inventory {
                         .orElse(level.createBuyUpgradeItem(canAfford, cost, level));
             } else item = level.createStatUpgradeItem(level.getUnlockCost(), true, true);
 
-            this.setItemStack(1 + level.getLevel(), item);
+            this.setItemStack(1 + level.asInteger(), item);
         }
 
         this.parent.updateSubInventory();

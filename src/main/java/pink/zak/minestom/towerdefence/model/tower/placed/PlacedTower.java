@@ -32,26 +32,26 @@ public abstract class PlacedTower<T extends TowerLevel> {
 
     protected final @NotNull GameHandler gameHandler;
 
-    protected final Tower tower;
+    protected final @NotNull Tower type;
 
     protected final int id;
-    protected final Point basePoint;
-    protected final Direction facing;
+    protected final @NotNull Point basePoint;
+    protected final @NotNull Direction facing;
     protected final @NotNull GameUser owner;
 
-    protected T level;
+    protected @NotNull T level;
 
-    protected PlacedTower(@NotNull GameHandler gameHandler, Tower tower, int id, @NotNull GameUser owner, Point basePoint, Direction facing, int level) {
+    protected PlacedTower(@NotNull GameHandler gameHandler, Tower type, int id, @NotNull GameUser owner, @NotNull Point basePoint, @NotNull Direction facing, int level) {
         this.gameHandler = gameHandler;
 
-        this.tower = tower;
+        this.type = type;
 
         this.id = id;
         this.basePoint = basePoint;
         this.facing = facing;
         this.owner = owner;
 
-        this.level = (T) tower.getLevel(level);
+        this.level = (T) type.getLevel(level);
 
         this.placeLevel();
         this.placeBase();
@@ -69,13 +69,9 @@ public abstract class PlacedTower<T extends TowerLevel> {
         };
     }
 
-    public final void upgrade(@Nullable GameUser user) {
-        this.upgrade(this.getLevelInt() + 1, user);
-    }
-
     public void upgrade(int level, @Nullable GameUser user) {
-        if (level == this.getLevelInt()) throw new IllegalStateException("Cannot upgrade to the same level");
-        TowerLevel targetLevel = this.tower.getLevel(level);
+        if (level == this.level.asInteger()) throw new IllegalStateException("Cannot upgrade to the same level");
+        TowerLevel targetLevel = this.type.getLevel(level);
         if (targetLevel == null) throw new IllegalStateException("Cannot upgrade to a level that doesn't exist");
 
         if (user != null) {
@@ -119,7 +115,7 @@ public abstract class PlacedTower<T extends TowerLevel> {
     }
 
     private void placeBase() {
-        int checkDistance = this.tower.getType().getSize().getCheckDistance();
+        int checkDistance = this.type.getType().getSize().getCheckDistance();
         TowerDefenceInstance instance = this.gameHandler.getInstance();
         for (int x = this.basePoint.blockX() - checkDistance; x <= this.basePoint.blockX() + checkDistance; x++) {
             for (int z = this.basePoint.blockZ() - checkDistance; z <= this.basePoint.blockZ() + checkDistance; z++) {
@@ -144,8 +140,8 @@ public abstract class PlacedTower<T extends TowerLevel> {
     }
 
     public void destroy() {
-        Set<Point> relativePositions = this.getTower().getLevels().stream()
-                .filter(towerLevel -> towerLevel.getLevel() <= this.getLevelInt())
+        Set<Point> relativePositions = this.getType().getLevels().stream()
+                .filter(level -> level.compareTo(this.level) <= 0)
                 .map(TowerLevel::getSchematic)
                 .map(schem -> SchemUtils.getRelativeBlockPoints(Rotation.NONE, schem))
                 .flatMap(Set::stream)
@@ -165,7 +161,7 @@ public abstract class PlacedTower<T extends TowerLevel> {
      */
     private void normaliseBase() {
         TowerDefenceInstance instance = this.gameHandler.getInstance();
-        int checkDistance = this.tower.getType().getSize().getCheckDistance();
+        int checkDistance = this.type.getType().getSize().getCheckDistance();
         for (int x = this.basePoint.blockX() - checkDistance; x <= this.basePoint.blockX() + checkDistance; x++) {
             for (int z = this.basePoint.blockZ() - checkDistance; z <= this.basePoint.blockZ() + checkDistance; z++) {
                 instance.setBlock(x, this.basePoint.blockY(), z, instance.getTowerMap().getTowerBaseMaterial().block());
@@ -174,38 +170,34 @@ public abstract class PlacedTower<T extends TowerLevel> {
     }
 
     public int getCost(@NotNull TowerLevel level) {
-        int currentLevel = this.level.getLevel();
+        int currentLevel = this.level.asInteger();
         int cost = 0;
-        for (int i = currentLevel + 1; i <= level.getLevel(); i++) {
-            TowerLevel l = this.tower.getLevel(i);
-            if (l == null) throw new IllegalStateException("Tower " + this.tower.getName() + " is missing level " + i);
+        for (int i = currentLevel + 1; i <= level.asInteger(); i++) {
+            TowerLevel l = this.type.getLevel(i);
+            if (l == null) throw new IllegalStateException("Tower " + this.type.getName() + " is missing level " + i);
             cost += l.getCost();
         }
         return cost;
     }
 
-    public Tower getTower() {
-        return this.tower;
+    public @NotNull Tower getType() {
+        return this.type;
     }
 
     public int getId() {
         return this.id;
     }
 
-    public Point getBasePoint() {
+    public @NotNull Point getBasePoint() {
         return this.basePoint;
     }
 
-    public Direction getFacing() {
+    public @NotNull Direction getFacing() {
         return this.facing;
     }
 
-    public T getLevel() {
+    public @NotNull T getLevel() {
         return this.level;
-    }
-
-    public int getLevelInt() {
-        return this.level.getLevel();
     }
 
     public @NotNull GameUser getOwner() {

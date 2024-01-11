@@ -46,7 +46,7 @@ public class EnemyMob {
         this.levels = StreamSupport.stream(jsonObject.get("levels").getAsJsonArray().spliterator(), false)
                 .map(JsonElement::getAsJsonObject)
                 .map(json -> new EnemyMobLevel(this.commonName, json))
-                .sorted(Comparator.comparingInt(EnemyMobLevel::getLevel))
+                .sorted(Comparator.comparingInt(EnemyMobLevel::asInteger))
                 .toList();
 
         ItemStack item = jsonObject.has("item") ? ItemUtils.fromJsonObject(jsonObject.get("item").getAsJsonObject(), null) : null;

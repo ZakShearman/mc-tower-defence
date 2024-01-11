@@ -18,7 +18,7 @@ import pink.zak.minestom.towerdefence.statdiff.StatDiffCollection;
 import pink.zak.minestom.towerdefence.statdiff.types.IntStatDiff;
 import pink.zak.minestom.towerdefence.utils.NumberUtils;
 
-public class TowerLevel implements Diffable<TowerLevel> {
+public class TowerLevel implements Diffable<TowerLevel>, Comparable<TowerLevel> {
     private static final BiFunction<String, String, Path> SCHEMATIC_PATH_FUNCTION = (towerName, level) ->
             Path.of("towers", towerName.toLowerCase(), "builds", level + ".schem");
 
@@ -53,7 +53,7 @@ public class TowerLevel implements Diffable<TowerLevel> {
                 .build();
     }
 
-    public int getLevel() {
+    public int asInteger() {
         return this.level;
     }
 
@@ -108,4 +108,10 @@ public class TowerLevel implements Diffable<TowerLevel> {
     public @NotNull StatDiffCollection generateDiff(@NotNull TowerLevel other) {
         return new StatDiffCollection().addDiff("Range", new IntStatDiff(this.range, other.range));
     }
+
+    @Override
+    public int compareTo(@NotNull TowerLevel level) {
+        return Integer.compare(this.level, level.level);
+    }
+
 }

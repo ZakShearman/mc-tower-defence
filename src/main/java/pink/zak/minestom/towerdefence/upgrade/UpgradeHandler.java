@@ -25,8 +25,8 @@ public final class UpgradeHandler {
     }
 
     public boolean has(@NotNull EnemyMob mob, @NotNull EnemyMobLevel level) {
-        return this.getLevel(mob).map(EnemyMobLevel::getLevel)
-                .map(value -> value >= level.getLevel())
+        return this.getLevel(mob).map(EnemyMobLevel::asInteger)
+                .map(value -> value >= level.asInteger())
                 .orElse(false);
     }
 
@@ -55,10 +55,10 @@ public final class UpgradeHandler {
 
     public int getCost(@NotNull EnemyMob mob, @NotNull EnemyMobLevel level) {
         int currentLevel = this.getLevel(mob)
-                .map(EnemyMobLevel::getLevel)
+                .map(EnemyMobLevel::asInteger)
                 .orElse(0);
         int cost = 0;
-        for (int i = currentLevel + 1; i <= level.getLevel(); i++) {
+        for (int i = currentLevel + 1; i <= level.asInteger(); i++) {
             EnemyMobLevel l = mob.getLevel(i);
             if (l == null) throw new IllegalStateException("Mob " + mob.getCommonName() + " is missing level " + i);
             cost += l.getUnlockCost();
