@@ -1,10 +1,12 @@
 package pink.zak.minestom.towerdefence.ui;
 
+import java.util.Set;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.EventFilter;
 import net.minestom.server.event.EventNode;
 import net.minestom.server.event.player.PlayerUseItemEvent;
 import net.minestom.server.event.trait.PlayerEvent;
+import net.minestom.server.inventory.PlayerInventory;
 import net.minestom.server.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.TowerDefenceModule;
@@ -16,8 +18,10 @@ import pink.zak.minestom.towerdefence.ui.spawner.TroopSpawnerUI;
 public final class HotbarHandler {
 
     private final @NotNull EventNode<PlayerEvent> eventNode = EventNode.type("hotbar-handler", EventFilter.PLAYER);
+    private final @NotNull EventNode<? super PlayerEvent> parentNode;
 
-    public HotbarHandler(@NotNull TowerDefenceModule module) {
+    public HotbarHandler(@NotNull TowerDefenceModule module, @NotNull EventNode<? super PlayerEvent> node) {
+        this.parentNode = node;
         this.eventNode.addListener(PlayerUseItemEvent.class, event -> {
             if (module.getGameState() != GameState.GAME) return;
 
@@ -35,12 +39,18 @@ public final class HotbarHandler {
         });
     }
 
-    public void register(@NotNull EventNode<? super PlayerEvent> node) {
-        node.addChild(this.eventNode);
+    public void initialise(@NotNull Set<Player> players) {
+        this.parentNode.addChild(this.eventNode);
+        for (Player player : players) {
+            PlayerInventory inventory = player.getInventory();
+            inventory.clear();
+            inventory.setItemStack(4, TroopSpawnerUI.HOTBAR_ITEM);
+            inventory.setItemStack(8, UserSettingsUI.HOTBAR_ITEM);
+        }
     }
 
-    public void unregister(@NotNull EventNode<? super PlayerEvent> node) {
-        node.removeChild(this.eventNode);
+    public void shutdown() {
+        this.parentNode.removeChild(this.eventNode);
     }
 
 }

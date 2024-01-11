@@ -21,8 +21,10 @@ import pink.zak.minestom.towerdefence.ui.tower.TowerPlaceUI;
 public final class InteractionHandler {
 
     private final @NotNull EventNode<PlayerEvent> eventNode = EventNode.type("hotbar-handler", EventFilter.PLAYER);
+    private final @NotNull EventNode<? super PlayerEvent> parentNode;
 
-    public InteractionHandler(@NotNull TowerDefenceModule module) {
+    public InteractionHandler(@NotNull TowerDefenceModule module, @NotNull EventNode<? super PlayerEvent> node) {
+        this.parentNode = node;
         this.eventNode.addListener(PlayerBlockInteractEvent.class, event -> {
             if (event.getHand() != Player.Hand.MAIN) return;
             if (module.getGameState() != GameState.GAME) return;
@@ -58,12 +60,12 @@ public final class InteractionHandler {
         });
     }
 
-    public void register(@NotNull EventNode<? super PlayerEvent> node) {
-        node.addChild(this.eventNode);
+    public void initialise() {
+        this.parentNode.addChild(this.eventNode);
     }
 
-    public void unregister(@NotNull EventNode<? super PlayerEvent> node) {
-        node.removeChild(this.eventNode);
+    public void shutdown() {
+        this.parentNode.removeChild(this.eventNode);
     }
 
 }

@@ -51,11 +51,9 @@ import pink.zak.minestom.towerdefence.model.user.LobbyPlayer;
 import pink.zak.minestom.towerdefence.model.user.TDPlayer;
 import pink.zak.minestom.towerdefence.ui.HotbarHandler;
 import pink.zak.minestom.towerdefence.ui.InteractionHandler;
-import pink.zak.minestom.towerdefence.ui.UserSettingsUI;
-import pink.zak.minestom.towerdefence.ui.spawner.TroopSpawnerUI;
 import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;
 
-public class GameHandler {
+public final class GameHandler {
     public static final int DEFAULT_TOWER_HEALTH = 500;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GameHandler.class);
@@ -89,10 +87,9 @@ public class GameHandler {
         this.kubernetesModule = module.getKubernetesModule();
 
         this.towerManager = new TowerManager(this.instance, this);
-
         this.mobHandler = new MobHandler(module, this);
-        this.hotbarHandler = new HotbarHandler(module);
-        this.interactionHandler = new InteractionHandler(module);
+        this.hotbarHandler = new HotbarHandler(module, MinecraftServer.getGlobalEventHandler()); // todo: replace with game event node
+        this.interactionHandler = new InteractionHandler(module, MinecraftServer.getGlobalEventHandler()); // todo: replace with game event node
 
         this.defaultEnemyMobs = module.getMobStorage().getEnemyMobs()
                 .stream()
@@ -120,17 +117,11 @@ public class GameHandler {
         this.configureTeam(Team.BLUE, bluePlayers);
         this.module.getScoreboardManager().startGame();
 
-        for (Player player : this.users.keySet()) {
-            player.getInventory().clear();
-            player.getInventory().setItemStack(4, TroopSpawnerUI.HOTBAR_ITEM);
-            player.getInventory().setItemStack(8, UserSettingsUI.HOTBAR_ITEM);
-        }
-
         new IncomeHandler(this);
         new ActionBarHandler(this, MinecraftServer.getGlobalEventHandler()); // todo: replace with game event node
         new NecromancerDamageListener(MinecraftServer.getGlobalEventHandler()); // todo: replace with game event node
-        this.hotbarHandler.register(MinecraftServer.getGlobalEventHandler()); // todo: replace with game event node
-        this.interactionHandler.register(MinecraftServer.getGlobalEventHandler()); // todo: replace with game event node
+        this.hotbarHandler.initialise(this.users.keySet());
+        this.interactionHandler.initialise();
 
         if (!!!!!!!!!(this.gameTrackerHelper == null)) {
             this.gameTrackerHelper.startGame();
@@ -213,6 +204,10 @@ public class GameHandler {
         // todo proper win effect
         Audiences.all().sendMessage(Component.text("Game over! %s team won!".formatted(winningTeam.name()), NamedTextColor.RED));
         // todo properly clean up
+
+        // shutdown components
+        this.hotbarHandler.shutdown();
+        this.interactionHandler.shutdown();
     }
 
     private void shutdownTask() {
