@@ -27,7 +27,6 @@ public final class TroopSpawnerUI extends Inventory {
             .displayName(Component.text("Send Troops", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
             .build();
 
-    private static final @NotNull MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
     private static final @NotNull Component SEND_TITLE = Component.text("Send Troops", NamedTextColor.DARK_GRAY);
     private static final @NotNull Component UPGRADE_TITLE = Component.text("Upgrade Troops", NamedTextColor.DARK_GRAY);
     private static final @NotNull ItemStack SHORTCUTS_ITEM = ItemStack.builder(Material.PAPER)
@@ -36,7 +35,7 @@ public final class TroopSpawnerUI extends Inventory {
                     "",
                     "<i:false><yellow>Quick Send Mobs <gold>(</gold> HOLD 1 <gold>)</gold>",
                     "<i:false><yellow>Quick Unlock Mob <gold>(</gold> RIGHT CLICK <gold>)</gold>" // todo: change to keybind tags
-            ).map(MINI_MESSAGE::deserialize).toList())
+            ).map(MiniMessage.miniMessage()::deserialize).toList())
             .build();
     private static final @NotNull ItemStack UPGRADE_ITEM = ItemStack.builder(Material.ENDER_PEARL)
             .displayName(Component.text("Upgrade Troops", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
@@ -57,6 +56,7 @@ public final class TroopSpawnerUI extends Inventory {
             ItemStack item = this.gameUser.getUpgradeHandler().getLevel(enemyMob)
                     .map(level -> level.createSendItem().withAmount(level.asInteger()))
                     .orElse(enemyMob.getBaseItem());
+
             this.setItemStack(enemyMob.getSlot(), item);
         }
 
@@ -64,12 +64,12 @@ public final class TroopSpawnerUI extends Inventory {
         this.setItemStack(31, UPGRADE_ITEM);
         this.updateQueue();
 
-        this.addInventoryCondition((p, slot, clickType, result) -> {
+        this.addInventoryCondition((player, slot, clickType, result) -> {
             // always cancel the event
             result.setCancel(true);
 
             // this is not the player who opened the inventory, fast exit
-            if (!p.equals(gameUser.getPlayer())) return;
+            if (!player.equals(gameUser.getPlayer())) return;
 
             // check if slots are within the tab range and click item is NOT air
             if (this.tab != null && slot > 10 && slot < 27) {
@@ -86,6 +86,7 @@ public final class TroopSpawnerUI extends Inventory {
                 .expireWhen(event -> this.getViewers().isEmpty())
                 .handler(event -> this.updateQueue())
                 .build();
+
         this.gameUser.getPlayer().eventNode().addListener(queueUpdateListener);
     }
 
@@ -102,12 +103,13 @@ public final class TroopSpawnerUI extends Inventory {
         EnemyMob enemyMob = optionalEnemyMob.get();
 
         if (this.mode == Mode.SEND) this.attemptToSendMob(enemyMob);
-        if (this.mode == Mode.UPGRADE) this.setTab(new TroopUpgradeTab(this, this.gameUser, enemyMob));
+        else if (this.mode == Mode.UPGRADE) this.setTab(new TroopUpgradeTab(this, this.gameUser, enemyMob));
     }
 
     private void attemptToSendMob(@NotNull EnemyMob mob) {
         Result<QueueFailureReason> result = this.gameUser.getQueue().queue(mob);
         if (!(result instanceof Result.Failure<QueueFailureReason> failure)) return;
+
         TDPlayer player = this.gameUser.getPlayer();
         player.sendMessage(switch (failure.reason()) { // todo: better feedback
             case NOT_UNLOCKED -> "You have not unlocked this mob.";

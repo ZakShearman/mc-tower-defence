@@ -27,6 +27,7 @@ public final class HotbarHandler {
 
             Player p = event.getPlayer();
             if (!(p instanceof TDPlayer player)) throw new IllegalStateException("Player is not a TDPlayer");
+
             GameUser user = module.getGameHandler().getGameUser(player);
             if (user == null) throw new IllegalStateException("Player is not associated with a game user");
 
