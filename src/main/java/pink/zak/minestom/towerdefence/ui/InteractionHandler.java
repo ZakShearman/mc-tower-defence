@@ -41,6 +41,7 @@ public final class InteractionHandler {
                 PlacedTower<?> tower = module.getGameHandler().getTowerManager().getTower(user.getTeam(), id);
                 if (tower == null) throw new IllegalStateException("Player attempted to interact with a tower that does not exist");
                 player.openInventory(new TowerManagementUI(tower, user, module.getGameHandler().getTowerManager()));
+                return;
             }
 
             TowerMap map = module.getInstance().getTowerMap();
