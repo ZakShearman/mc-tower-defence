@@ -148,7 +148,7 @@ public final class TroopSpawnerUI extends Inventory {
             UpgradeHandler upgradeHandler = this.gameUser.getUpgradeHandler();
             if (upgradeHandler.has(enemyMob)) this.gameUser.getPlayer().openInventory(new TroopUpgradeUI(this, this.gameUser, enemyMob));
             else upgradeHandler.unlock(enemyMob);
-        } else if (clickType == ClickType.LEFT_CLICK) this.attemptToSendMob(enemyMob);
+        } else if (clickType == ClickType.LEFT_CLICK || clickType == ClickType.CHANGE_HELD) this.attemptToSendMob(enemyMob);
     }
 
     private void attemptToSendMob(@NotNull EnemyMob mob) {
