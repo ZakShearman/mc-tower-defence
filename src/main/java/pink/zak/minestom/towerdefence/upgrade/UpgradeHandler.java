@@ -36,11 +36,21 @@ public final class UpgradeHandler {
         return Optional.ofNullable(this.mobs.get(mob));
     }
 
+    public boolean unlock(@NotNull EnemyMob mob) {
+        return this.upgrade(mob, mob.getLevel(1));
+    }
+
     public boolean upgrade(@NotNull EnemyMob mob, @NotNull EnemyMobLevel level) {
         return this.upgrade(mob, level, false);
     }
 
     public boolean upgrade(@NotNull EnemyMob mob, @NotNull EnemyMobLevel level, boolean free) {
+        // get current level
+        EnemyMobLevel currentLevel = this.getLevel(mob).orElse(null);
+
+        // check if the mob is already at the level
+        if (currentLevel != null && currentLevel.compareTo(level) >= 0) return false;
+
         if (!free) {
             // calculate cost of upgrade
             int cost = this.getCost(mob, level);
@@ -51,9 +61,6 @@ public final class UpgradeHandler {
             // charge user for upgrade
             this.user.updateCoins(balance -> balance - cost);
         }
-        // get current level
-        EnemyMobLevel currentLevel = this.getLevel(mob).orElse(null);
-
         // update to new level
         this.mobs.put(mob, level);
 

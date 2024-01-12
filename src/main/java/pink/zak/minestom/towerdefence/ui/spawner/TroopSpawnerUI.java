@@ -22,12 +22,14 @@ import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.api.event.player.PlayerQueueUpdateEvent;
+import pink.zak.minestom.towerdefence.api.event.player.PlayerUpgradeMobEvent;
 import pink.zak.minestom.towerdefence.model.mob.config.EnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.config.EnemyMobLevel;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.model.user.TDPlayer;
 import pink.zak.minestom.towerdefence.queue.QueueFailureReason;
 import pink.zak.minestom.towerdefence.storage.MobStorage;
+import pink.zak.minestom.towerdefence.upgrade.UpgradeHandler;
 import pink.zak.minestom.towerdefence.utils.Result;
 
 public final class TroopSpawnerUI extends Inventory {
@@ -43,7 +45,7 @@ public final class TroopSpawnerUI extends Inventory {
                     "",
                     "<i:false><yellow>Quick Send Mobs <gold>(</gold> HOLD 1 <gold>)</gold>",
                     "<i:false><yellow>Send Mob <gold>(</gold> LEFT CLICK <gold>)</gold>",
-                    "<i:false><yellow>Upgrade Mob <gold>(</gold> RIGHT CLICK <gold>)</gold>" // todo: change to keybind tags
+                    "<i:false><yellow>Unlock/Upgrade Mob <gold>(</gold> RIGHT CLICK <gold>)</gold>" // todo: change to keybind tags
             ).map(MiniMessage.miniMessage()::deserialize).toList())
             .build();
 
@@ -73,10 +75,15 @@ public final class TroopSpawnerUI extends Inventory {
 
         EventListener<PlayerQueueUpdateEvent> queueListener = EventListener.builder(PlayerQueueUpdateEvent.class)
                 .filter(event -> event.user().equals(this.gameUser))
-                .expireWhen(event -> this.getViewers().isEmpty())
                 .handler(event -> this.updateQueue())
                 .build();
         this.eventNode.addListener(queueListener);
+
+        EventListener<PlayerUpgradeMobEvent> upgradeListener = EventListener.builder(PlayerUpgradeMobEvent.class)
+                .filter(event -> event.user().equals(this.gameUser))
+                .handler(event -> this.refresh())
+                .build();
+        this.eventNode.addListener(upgradeListener);
     }
 
     private void refresh() {
@@ -101,7 +108,7 @@ public final class TroopSpawnerUI extends Inventory {
             lore.add(Component.join(
                     separator,
                     Component.text("RIGHT CLICK", NamedTextColor.DARK_RED, TextDecoration.BOLD),
-                    Component.text("to upgrade", NamedTextColor.RED)
+                    Component.text(unlocked ? "to upgrade" : "to unlock", NamedTextColor.RED)
             ).decoration(TextDecoration.ITALIC, false));
 
             this.setItemStack(enemyMob.getSlot(), item.withLore(lore));
@@ -137,8 +144,11 @@ public final class TroopSpawnerUI extends Inventory {
         if (optionalEnemyMob.isEmpty()) return; // clicked on an empty slot
         EnemyMob enemyMob = optionalEnemyMob.get();
 
-        if (clickType == ClickType.LEFT_CLICK) this.attemptToSendMob(enemyMob);
-        else if (clickType == ClickType.RIGHT_CLICK) this.gameUser.getPlayer().openInventory(new TroopUpgradeUI(this, this.gameUser, enemyMob));
+        if (clickType == ClickType.RIGHT_CLICK) {
+            UpgradeHandler upgradeHandler = this.gameUser.getUpgradeHandler();
+            if (upgradeHandler.has(enemyMob)) this.gameUser.getPlayer().openInventory(new TroopUpgradeUI(this, this.gameUser, enemyMob));
+            else upgradeHandler.unlock(enemyMob);
+        } else if (clickType == ClickType.LEFT_CLICK) this.attemptToSendMob(enemyMob);
     }
 
     private void attemptToSendMob(@NotNull EnemyMob mob) {
