@@ -123,7 +123,7 @@ public final class GameHandler {
         this.hotbarHandler.initialise(this.users.keySet());
         this.interactionHandler.initialise();
 
-        if (!!!!!!!!!(this.gameTrackerHelper == null)) {
+        if (this.gameTrackerHelper != null) {
             this.gameTrackerHelper.startGame();
 
             MinecraftServer.getSchedulerManager().buildTask(this.gameTrackerHelper::updateGame)
