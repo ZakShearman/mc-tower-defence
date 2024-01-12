@@ -4,7 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import net.minestom.server.MinecraftServer;
 import org.jetbrains.annotations.NotNull;
+import pink.zak.minestom.towerdefence.api.event.player.PlayerUpgradeMobEvent;
 import pink.zak.minestom.towerdefence.model.mob.config.EnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.config.EnemyMobLevel;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
@@ -49,7 +51,20 @@ public final class UpgradeHandler {
             // charge user for upgrade
             this.user.updateCoins(balance -> balance - cost);
         }
+        // get current level
+        EnemyMobLevel currentLevel = this.getLevel(mob).orElse(null);
+
+        // update to new level
         this.mobs.put(mob, level);
+
+        // call update event
+        MinecraftServer.getGlobalEventHandler().call(new PlayerUpgradeMobEvent(
+                this.user,
+                mob,
+                currentLevel,
+                level
+        ));
+
         return true;
     }
 
