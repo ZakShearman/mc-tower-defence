@@ -62,8 +62,8 @@ public final class TroopUpgradeUI extends Inventory {
                 int cost = upgradeHandler.getCost(this.mob, level);
                 boolean canAfford = this.gameUser.getCoins() >= cost;
                 item = currentLevel
-                        .map(l -> l.createStatUpgradeItem(cost, false, canAfford))
-                        .orElse(level.createBuyUpgradeItem(canAfford, cost, level));
+                        .map(l -> level.createBuyUpgradeItem(cost, canAfford, l))
+                        .orElse(level.createStatUpgradeItem(cost, canAfford, false));
             } else item = level.createStatUpgradeItem(level.getUnlockCost(), true, true);
 
             this.setItemStack(10 + level.asInteger(), item);

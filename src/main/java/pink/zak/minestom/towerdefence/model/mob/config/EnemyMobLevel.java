@@ -85,7 +85,7 @@ public class EnemyMobLevel implements Diffable<EnemyMobLevel>, Comparable<EnemyM
                 .build();
     }
 
-    public ItemStack createStatUpgradeItem(int cost, boolean owned, boolean canAfford) {
+    public ItemStack createStatUpgradeItem(int cost, boolean canAfford, boolean owned) {
         return ItemStack.builder(owned ? Material.GREEN_STAINED_GLASS_PANE : canAfford ? Material.ORANGE_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE)
                 .displayName(MiniMessage.miniMessage().deserialize(
                         UPGRADE_ITEM_NAME.formatted(owned ? "green" : canAfford ? "gold" : "red"),
@@ -95,7 +95,7 @@ public class EnemyMobLevel implements Diffable<EnemyMobLevel>, Comparable<EnemyM
                 .build();
     }
 
-    public @NotNull ItemStack createBuyUpgradeItem(boolean canAfford, int cost, @NotNull EnemyMobLevel currentLevel) {
+    public @NotNull ItemStack createBuyUpgradeItem(int cost, boolean canAfford, @NotNull EnemyMobLevel currentLevel) {
         String itemName = UPGRADE_ITEM_NAME.formatted(canAfford ? "gold" : "red");
 
         return ItemStack.builder(canAfford ? Material.ORANGE_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE)
