@@ -6,6 +6,7 @@ import net.hollowcube.schem.Rotation;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.inventory.Inventory;
+import net.minestom.server.item.Material;
 import net.minestom.server.tag.Tag;
 import net.minestom.server.utils.Direction;
 import org.jetbrains.annotations.NotNull;
@@ -117,9 +118,11 @@ public abstract class PlacedTower<T extends TowerLevel> {
     private void placeBase() {
         int checkDistance = this.type.getType().getSize().getCheckDistance();
         TowerDefenceInstance instance = this.gameHandler.getInstance();
+        Block baseBlock = instance.getTowerMap().getTowerBaseMaterial().block().withTag(ID_TAG, this.id);
+
         for (int x = this.basePoint.blockX() - checkDistance; x <= this.basePoint.blockX() + checkDistance; x++) {
             for (int z = this.basePoint.blockZ() - checkDistance; z <= this.basePoint.blockZ() + checkDistance; z++) {
-                instance.setBlock(x, this.basePoint.blockY(), z, instance.getTowerMap().getTowerBaseMaterial().block().withTag(ID_TAG, this.id));
+                instance.setBlock(x, this.basePoint.blockY(), z, baseBlock);
             }
         }
     }
@@ -172,11 +175,13 @@ public abstract class PlacedTower<T extends TowerLevel> {
     public int getCost(@NotNull TowerLevel level) {
         int currentLevel = this.level.asInteger();
         int cost = 0;
+
         for (int i = currentLevel + 1; i <= level.asInteger(); i++) {
             TowerLevel l = this.type.getLevel(i);
             if (l == null) throw new IllegalStateException("Tower " + this.type.getName() + " is missing level " + i);
             cost += l.getCost();
         }
+
         return cost;
     }
 
