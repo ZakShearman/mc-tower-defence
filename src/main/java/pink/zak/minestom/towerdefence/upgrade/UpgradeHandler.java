@@ -79,12 +79,14 @@ public final class UpgradeHandler {
         int currentLevel = this.getLevel(mob)
                 .map(EnemyMobLevel::asInteger)
                 .orElse(0);
+
         int cost = 0;
         for (int i = currentLevel + 1; i <= level.asInteger(); i++) {
             EnemyMobLevel l = mob.getLevel(i);
             if (l == null) throw new IllegalStateException("Mob " + mob.getCommonName() + " is missing level " + i);
             cost += l.getUnlockCost();
         }
+
         return cost;
     }
 

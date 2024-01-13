@@ -255,7 +255,7 @@ public final class GameHandler {
     }
 
     public @NotNull TowerManager getTowerManager() {
-        return towerManager;
+        return this.towerManager;
     }
 
     public int getCastleHealth(@NotNull Team team) {

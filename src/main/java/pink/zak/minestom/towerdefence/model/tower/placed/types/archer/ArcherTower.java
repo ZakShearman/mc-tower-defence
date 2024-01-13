@@ -23,7 +23,7 @@ public final class ArcherTower extends PlacedAttackingTower<AttackingTowerLevel>
     public ArcherTower(@NotNull GameHandler gameHandler, AttackingTower tower, int id, GameUser owner, Point basePoint, Direction facing, int level) {
         super(gameHandler, tower, id, owner, basePoint, facing, level);
 
-        ArcherTowerConfig config = (ArcherTowerConfig) this.type;
+        ArcherTowerConfig config = (ArcherTowerConfig) this.configuration;
         this.firingPoints = config.getRelativeFiringPoints().stream()
                 .map(relativePoint -> relativePoint.apply(this.getBasePoint()))
                 .collect(Collectors.toUnmodifiableSet());

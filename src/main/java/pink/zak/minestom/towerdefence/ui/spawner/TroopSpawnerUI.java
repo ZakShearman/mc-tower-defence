@@ -99,11 +99,13 @@ public final class TroopSpawnerUI extends Inventory {
 
             lore.add(Component.empty());
 
-            if (unlocked) lore.add(Component.join(
-                    separator,
-                    Component.text("LEFT CLICK", NamedTextColor.DARK_RED, TextDecoration.BOLD),
-                    Component.text("to send", NamedTextColor.RED)
-            ).decoration(TextDecoration.ITALIC, false));
+            if (unlocked) {
+                lore.add(Component.join(
+                        separator,
+                        Component.text("LEFT CLICK", NamedTextColor.DARK_RED, TextDecoration.BOLD),
+                        Component.text("to send", NamedTextColor.RED)
+                ).decoration(TextDecoration.ITALIC, false));
+            }
 
             lore.add(Component.join(
                     separator,

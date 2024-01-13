@@ -31,7 +31,7 @@ public final class TroopUpgradeUI extends Inventory {
         this.mob = mob;
 
         this.setItemStack(18, BACK_ITEM);
-        refresh();
+        this.refresh();
 
         this.addInventoryCondition((player, slot, clickType, result) -> {
             // always cancel the event
@@ -64,7 +64,9 @@ public final class TroopUpgradeUI extends Inventory {
                 item = currentLevel
                         .map(l -> level.createBuyUpgradeItem(cost, canAfford, l))
                         .orElse(level.createStatUpgradeItem(cost, canAfford, false));
-            } else item = level.createStatUpgradeItem(level.getUnlockCost(), true, true);
+            } else {
+                item = level.createStatUpgradeItem(level.getUnlockCost(), true, true);
+            }
 
             this.setItemStack(10 + level.asInteger(), item);
         }
@@ -77,14 +79,14 @@ public final class TroopUpgradeUI extends Inventory {
         }
 
         int clickedLevel = slot - 10;
-        if (clickedLevel < 0) return;
+        if (clickedLevel < 1) return;
         if (clickedLevel > this.mob.getMaxLevel()) return;
 
         EnemyMobLevel level = this.mob.getLevel(clickedLevel);
         if (level == null) return;
 
         this.gameUser.getUpgradeHandler().upgrade(this.mob, level);
-        refresh();
+        this.refresh();
     }
 
 }

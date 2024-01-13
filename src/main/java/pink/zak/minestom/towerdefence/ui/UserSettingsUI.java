@@ -50,7 +50,7 @@ public final class UserSettingsUI extends Inventory {
         this.setItemStack(5, this.createFlySpeedItem(player.getFlySpeed()));
         this.setItemStack(7, this.createParticleThicknessItem(player.getParticleThickness()));
 
-        addInventoryCondition((p, slot, clickType, result) -> {
+        this.addInventoryCondition((p, slot, clickType, result) -> {
             // always cancel the event
             result.setCancel(true);
 
@@ -92,15 +92,15 @@ public final class UserSettingsUI extends Inventory {
     }
 
     private @NotNull ItemStack createHealthDisplayItem(@NotNull HealthDisplayMode healthMode) {
-        return BASE_HEATH_DISPLAY_ITEM.withLore(createLore(healthMode, HealthDisplayMode.values()));
+        return BASE_HEATH_DISPLAY_ITEM.withLore(this.createLore(healthMode, HealthDisplayMode.values()));
     }
 
     private @NotNull ItemStack createFlySpeedItem(@NotNull FlySpeed flySpeed) {
-        return BASE_FLIGHT_SPEED_ITEM.withLore(createLore(flySpeed, FlySpeed.values()));
+        return BASE_FLIGHT_SPEED_ITEM.withLore(this.createLore(flySpeed, FlySpeed.values()));
     }
 
     private @NotNull ItemStack createParticleThicknessItem(@NotNull ParticleThickness particleThickness) {
-        return BASE_PARTICLE_THICKNESS_ITEM.withLore(createLore(particleThickness, ParticleThickness.values()));
+        return BASE_PARTICLE_THICKNESS_ITEM.withLore(this.createLore(particleThickness, ParticleThickness.values()));
     }
 
     private <T> @NotNull List<Component> createLore(@NotNull T value, @NotNull T[] values) {

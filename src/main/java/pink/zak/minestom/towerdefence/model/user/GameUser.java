@@ -52,7 +52,7 @@ public final class GameUser {
     }
 
     public @NotNull UpgradeHandler getUpgradeHandler() {
-        return upgradeHandler;
+        return this.upgradeHandler;
     }
 
     public int updateCoins(@NotNull IntUnaryOperator intOperator) {

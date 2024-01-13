@@ -95,7 +95,7 @@ public class EnemyMob {
     }
 
     public @NotNull List<EnemyMobLevel> getLevels() {
-        return levels;
+        return this.levels;
     }
 
     public @Nullable EnemyMobLevel getLevel(int level) {

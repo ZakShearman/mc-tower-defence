@@ -30,12 +30,12 @@ public final class TowerPlaceUI extends Inventory {
 
         for (Tower tower : this.towerStorage.getTowers().values()) this.setItemStack(tower.getGuiSlot(), tower.getBaseItem());
 
-        this.addInventoryCondition((p, slot, clickType, result) -> {
+        this.addInventoryCondition((player, slot, clickType, result) -> {
             // always cancel the event
             result.setCancel(true);
 
             // this is not the player who opened the inventory, fast exit
-            if (!p.equals(this.user.getPlayer())) return;
+            if (!player.equals(this.user.getPlayer())) return;
 
             // run the click handler
             this.onClick(slot);
