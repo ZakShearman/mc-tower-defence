@@ -5,6 +5,7 @@ import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Player;
 import net.minestom.server.inventory.Inventory;
 import net.minestom.server.inventory.InventoryType;
@@ -58,6 +59,13 @@ public final class ConfirmationUI extends Inventory {
     private void onClick(boolean result) {
         if (closeOnCompletion) this.player.closeInventory();
         this.consumer.accept(result);
+    }
+
+    @Override
+    public boolean removeViewer(@NotNull Player player) {
+        boolean removed = super.removeViewer(player);
+        if (removed) MinecraftServer.getSchedulerManager().scheduleNextTick(() -> this.onClick(false));
+        return removed;
     }
 
 }

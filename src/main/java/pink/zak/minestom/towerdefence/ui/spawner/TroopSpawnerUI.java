@@ -175,8 +175,7 @@ public final class TroopSpawnerUI extends Inventory {
         }
 
         player.openInventory(new ConfirmationUI(player, Component.text("This action will cost you $" + cost + ".", NamedTextColor.RED), result -> {
-            if (!result) return;
-            upgradeHandler.unlock(mob);
+            if (result) upgradeHandler.unlock(mob);
             player.openInventory(this);
         }, false));
     }
