@@ -29,6 +29,7 @@ import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.model.user.TDPlayer;
 import pink.zak.minestom.towerdefence.queue.QueueFailureReason;
 import pink.zak.minestom.towerdefence.storage.MobStorage;
+import pink.zak.minestom.towerdefence.ui.ConfirmationUI;
 import pink.zak.minestom.towerdefence.upgrade.UpgradeHandler;
 import pink.zak.minestom.towerdefence.utils.Result;
 
@@ -107,10 +108,18 @@ public final class TroopSpawnerUI extends Inventory {
                 ).decoration(TextDecoration.ITALIC, false));
             }
 
+            String action;
+            if (!unlocked) {
+                int cost = this.gameUser.getUpgradeHandler().getCost(enemyMob, enemyMob.getLevel(1));
+                action = "to unlock ($" + cost + ")";
+            } else {
+                action = "to upgrade";
+            }
+
             lore.add(Component.join(
                     separator,
                     Component.text("RIGHT CLICK", NamedTextColor.DARK_RED, TextDecoration.BOLD),
-                    Component.text(unlocked ? "to upgrade" : "to unlock", NamedTextColor.RED)
+                    Component.text(action, NamedTextColor.RED)
             ).decoration(TextDecoration.ITALIC, false));
 
             this.setItemStack(enemyMob.getSlot(), item.withLore(lore));
@@ -148,9 +157,28 @@ public final class TroopSpawnerUI extends Inventory {
 
         if (clickType == ClickType.RIGHT_CLICK) {
             UpgradeHandler upgradeHandler = this.gameUser.getUpgradeHandler();
-            if (upgradeHandler.has(enemyMob)) this.gameUser.getPlayer().openInventory(new TroopUpgradeUI(this, this.gameUser, enemyMob));
-            else upgradeHandler.unlock(enemyMob);
+            TDPlayer player = this.gameUser.getPlayer();
+
+            // if the mob is unlocked, open the upgrade UI. otherwise, attempt to unlock the mob
+            if (upgradeHandler.has(enemyMob)) player.openInventory(new TroopUpgradeUI(this, this.gameUser, enemyMob));
+            else this.attemptToUnlockMob(player, upgradeHandler, enemyMob);
         } else if (clickType == ClickType.LEFT_CLICK || clickType == ClickType.CHANGE_HELD) this.attemptToSendMob(enemyMob);
+    }
+
+    private void attemptToUnlockMob(@NotNull Player player, @NotNull UpgradeHandler upgradeHandler, @NotNull EnemyMob mob) {
+        if (upgradeHandler.has(mob)) return;
+
+        int cost = upgradeHandler.getCost(mob, mob.getLevel(1));
+        if (this.gameUser.getCoins() < cost) {
+            player.sendMessage(Component.text("You can not afford to unlock this mob.")); // todo: better feedback
+            return;
+        }
+
+        player.openInventory(new ConfirmationUI(player, Component.text("This action will cost you $" + cost + ".", NamedTextColor.RED), result -> {
+            if (!result) return;
+            upgradeHandler.unlock(mob);
+            player.openInventory(this);
+        }, false));
     }
 
     private void attemptToSendMob(@NotNull EnemyMob mob) {
