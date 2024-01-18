@@ -28,7 +28,8 @@ public final class TowerPlaceUI extends Inventory {
         this.towerStorage = towerStorage;
         this.towerManager = towerManager;
 
-        for (Tower tower : this.towerStorage.getTowers().values()) this.setItemStack(tower.getGuiSlot(), tower.getBaseItem());
+        for (Tower tower : this.towerStorage.getTowers().values())
+            this.setItemStack(tower.getGuiSlot(), tower.getBaseItem());
 
         this.addInventoryCondition((player, slot, clickType, result) -> {
             // always cancel the event
@@ -54,6 +55,7 @@ public final class TowerPlaceUI extends Inventory {
 
         Result<TowerPlaceFailureReason> result = this.towerManager.placeTower(tower, lastClickedTowerBlock, this.user);
         if (!(result instanceof Result.Failure<TowerPlaceFailureReason> failure)) return;
+
         player.sendMessage(Component.text(switch (failure.reason()) {
             case CAN_NOT_AFFORD -> "You can not afford this tower.";
             case AREA_NOT_CLEAR -> "The area is not clear.";

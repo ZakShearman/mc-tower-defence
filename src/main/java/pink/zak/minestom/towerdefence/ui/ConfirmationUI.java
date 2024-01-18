@@ -57,7 +57,7 @@ public final class ConfirmationUI extends Inventory {
     }
 
     private void onClick(boolean result) {
-        if (closeOnCompletion) this.player.closeInventory();
+        if (this.closeOnCompletion) this.player.closeInventory();
         this.consumer.accept(result);
     }
 

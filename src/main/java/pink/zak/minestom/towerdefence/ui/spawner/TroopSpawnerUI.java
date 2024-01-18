@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
+
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -155,14 +156,20 @@ public final class TroopSpawnerUI extends Inventory {
         if (optionalEnemyMob.isEmpty()) return; // clicked on an empty slot
         EnemyMob enemyMob = optionalEnemyMob.get();
 
-        if (clickType == ClickType.RIGHT_CLICK) {
-            UpgradeHandler upgradeHandler = this.gameUser.getUpgradeHandler();
-            TDPlayer player = this.gameUser.getPlayer();
+        switch (clickType) {
+            case RIGHT_CLICK -> {
+                UpgradeHandler upgradeHandler = this.gameUser.getUpgradeHandler();
+                TDPlayer player = this.gameUser.getPlayer();
 
-            // if the mob is unlocked, open the upgrade UI. otherwise, attempt to unlock the mob
-            if (upgradeHandler.has(enemyMob)) player.openInventory(new TroopUpgradeUI(this, this.gameUser, enemyMob));
-            else this.attemptToUnlockMob(player, upgradeHandler, enemyMob);
-        } else if (clickType == ClickType.LEFT_CLICK || clickType == ClickType.CHANGE_HELD) this.attemptToSendMob(enemyMob);
+                // if the mob is unlocked, open the upgrade UI. otherwise, attempt to unlock the mob
+                if (upgradeHandler.has(enemyMob)) {
+                    player.openInventory(new TroopUpgradeUI(this, this.gameUser, enemyMob));
+                } else {
+                    this.attemptToUnlockMob(player, upgradeHandler, enemyMob);
+                }
+            }
+            case LEFT_CLICK, CHANGE_HELD -> this.attemptToSendMob(enemyMob);
+        }
     }
 
     private void attemptToUnlockMob(@NotNull Player player, @NotNull UpgradeHandler upgradeHandler, @NotNull EnemyMob mob) {

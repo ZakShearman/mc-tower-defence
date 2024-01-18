@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -90,7 +91,7 @@ public final class TowerManagementUI extends Inventory {
                 item = level.createBuyUpgradeItem(canAfford, cost, currentLevel);
             } else {
                 item = level.getOwnedUpgradeItem();
-                }
+            }
 
             this.setItemStack(level.asInteger() + 10, item);
         }
@@ -159,7 +160,8 @@ public final class TowerManagementUI extends Inventory {
         double radius = tower.getLevel().getRange();
 
         Set<SendablePacket> packets = new HashSet<>();
-        circumference: for (int i = 0; i <= 360; i++) {
+        circumference:
+        for (int i = 0; i <= 360; i++) {
             double c1 = radius * Math.cos(i);
             double c2 = radius * Math.sin(i);
 
