@@ -1,17 +1,21 @@
 package pink.zak.minestom.towerdefence.model.tower.placed.types;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.entity.Player;
-import net.minestom.server.instance.Instance;
-import net.minestom.server.item.Material;
 import net.minestom.server.network.packet.server.SendablePacket;
 import net.minestom.server.particle.Particle;
 import net.minestom.server.particle.ParticleCreator;
 import net.minestom.server.utils.Direction;
 import org.jetbrains.annotations.NotNull;
-import pink.zak.minestom.towerdefence.game.MobHandler;
+import org.jetbrains.annotations.Nullable;
+import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingTDEnemyMob;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTower;
 import pink.zak.minestom.towerdefence.model.tower.config.towers.level.LightningTowerLevel;
@@ -19,20 +23,14 @@ import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.model.user.TDPlayer;
 import pink.zak.minestom.towerdefence.model.user.settings.ParticleThickness;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 import pink.zak.minestom.towerdefence.targetting.Target;
 
 public final class LightningTower extends PlacedAttackingTower<LightningTowerLevel> {
     private Point castPoint;
     private Set<Point> spawnPoints;
 
-    public LightningTower(@NotNull MobHandler mobHandler, Instance instance, AttackingTower tower, Material towerBaseMaterial, int id, GameUser owner, Point basePoint, Direction facing, int level) {
-        super(mobHandler, instance, tower, towerBaseMaterial, id, owner, basePoint, facing, level);
+    public LightningTower(@NotNull GameHandler gameHandler, @NotNull AttackingTower tower, int id, GameUser owner, Point basePoint, Direction facing, int level) {
+        super(gameHandler, tower, id, owner, basePoint, facing, level);
         this.castPoint = this.getLevel().getRelativeCastPoint().apply(basePoint);
         this.spawnPoints = this.getLevel().getRelativeSpawnPoints().stream()
                 .map(castPoint -> castPoint.apply(basePoint))
@@ -103,8 +101,8 @@ public final class LightningTower extends PlacedAttackingTower<LightningTowerLev
     }
 
     @Override
-    public void upgrade() {
-        super.upgrade();
+    public void upgrade(int level, @Nullable GameUser user) {
+        super.upgrade(level, user);
 
         this.castPoint = this.getLevel().getRelativeCastPoint().apply(this.basePoint);
         this.spawnPoints = this.getLevel().getRelativeSpawnPoints().stream()

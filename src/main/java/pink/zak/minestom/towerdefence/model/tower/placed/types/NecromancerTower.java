@@ -14,11 +14,10 @@ import net.minestom.server.entity.ai.goal.MeleeAttackGoal;
 import net.minestom.server.entity.ai.target.ClosestEntityTarget;
 import net.minestom.server.entity.pathfinding.Navigator;
 import net.minestom.server.entity.pathfinding.PFPathingEntity;
-import net.minestom.server.instance.Instance;
-import net.minestom.server.item.Material;
 import net.minestom.server.utils.Direction;
 import net.minestom.server.utils.time.TimeUnit;
 import org.jetbrains.annotations.NotNull;
+import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.model.DamageSource;
 import pink.zak.minestom.towerdefence.model.mob.config.EnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.config.EnemyMobLevel;
@@ -34,8 +33,8 @@ import pink.zak.minestom.towerdefence.utils.StringUtils;
 public final class NecromancerTower extends PlacedTower<NecromancerTowerLevel> {
     private final AtomicInteger necromancedMobCount = new AtomicInteger(0);
 
-    public NecromancerTower(Instance instance, AttackingTower tower, Material towerBaseMaterial, int id, GameUser owner, Point basePoint, Direction facing, int level) {
-        super(instance, tower, towerBaseMaterial, id, owner, basePoint, facing, level);
+    public NecromancerTower(@NotNull GameHandler gameHandler, AttackingTower tower, int id, GameUser owner, Point basePoint, Direction facing, int level) {
+        super(gameHandler, tower, id, owner, basePoint, facing, level);
     }
 
     public void createNecromancedMob(@NotNull LivingTDEnemyMob livingEnemyMob) {
@@ -128,7 +127,7 @@ public final class NecromancerTower extends PlacedTower<NecromancerTowerLevel> {
 
             return MINI_MESSAGE.deserialize(CUSTOM_NAME,
                     Placeholder.unparsed("mob_type", StringUtils.namespaceToName(this.entityType.name())),
-                    Placeholder.unparsed("level", StringUtils.integerToCardinal(this.enemyMobLevel.getLevel())),
+                    Placeholder.unparsed("level", StringUtils.integerToCardinal(this.enemyMobLevel.asInteger())),
                     Placeholder.unparsed("health", health));
         }
 
@@ -141,7 +140,7 @@ public final class NecromancerTower extends PlacedTower<NecromancerTowerLevel> {
         }
 
         @Override
-        public @NotNull GameUser getOwningUser() {
+        public @NotNull GameUser getOwner() {
             return this.owner;
         }
     }

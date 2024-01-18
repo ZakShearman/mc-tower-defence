@@ -21,4 +21,9 @@ public enum ParticleThickness {
             nextIndex = 0;
         return ParticleThickness.values()[nextIndex];
     }
+
+    @Override
+    public String toString() {
+        return this.name().toLowerCase().replace('_', ' ') + " (" + this.getSpacing() + ")";
+    }
 }

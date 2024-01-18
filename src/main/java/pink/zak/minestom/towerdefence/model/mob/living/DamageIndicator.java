@@ -24,6 +24,7 @@ import net.minestom.server.timer.TaskSchedule;
 import net.minestom.server.utils.PacketUtils;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.game.MobHandler;
+import pink.zak.minestom.towerdefence.model.user.TDPlayer;
 
 import java.text.DecimalFormat;
 import java.util.HashSet;
@@ -97,7 +98,9 @@ public class DamageIndicator {
 
         Set<Player> players = new HashSet<>();
         for (Player player : MinecraftServer.getConnectionManager().getOnlinePlayers()) {
-            if (player.getPosition().distanceSquared(enemyMob.getPosition()) < VIEW_DISTANCE_SQUARED) {
+            if (!(player instanceof TDPlayer tdPlayer)) continue;
+
+            if (player.getPosition().distanceSquared(enemyMob.getPosition()) < VIEW_DISTANCE_SQUARED && tdPlayer.isDamageIndicators()) {
                 players.add(player);
             }
         }

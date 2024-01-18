@@ -8,7 +8,6 @@ import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Entity;
 import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.metadata.golem.SnowGolemMeta;
-import net.minestom.server.item.Material;
 import net.minestom.server.network.packet.server.play.ParticlePacket;
 import net.minestom.server.particle.Particle;
 import net.minestom.server.particle.ParticleCreator;
@@ -17,7 +16,7 @@ import net.minestom.server.utils.Direction;
 import net.minestom.server.utils.time.TimeUnit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import pink.zak.minestom.towerdefence.game.MobHandler;
+import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingTDEnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.statuseffect.FrozenStatusEffect;
 import pink.zak.minestom.towerdefence.model.mob.statuseffect.StatusEffectType;
@@ -41,11 +40,12 @@ public final class BlizzardTower extends PlacedAttackingTower<BlizzardTowerLevel
     private @Nullable Entity snowman;
     private @Nullable LivingTDEnemyMob target;
 
-    public BlizzardTower(@NotNull MobHandler mobHandler, TowerDefenceInstance instance, AttackingTower tower, Material towerBaseMaterial, int id, GameUser owner, Point basePoint, Direction facing, int level) {
-        super(mobHandler, instance, tower, towerBaseMaterial, id, owner, basePoint, facing, level);
+    public BlizzardTower(@NotNull GameHandler gameHandler, AttackingTower tower, int id, GameUser owner, Point basePoint, Direction facing, int level) {
+        super(gameHandler, tower, id, owner, basePoint, facing, level);
 
         // todo faces the wrong direction
-        Pos mobSpawnPos = instance.getTowerMap().getMobSpawn(this.team);
+        TowerDefenceInstance instance = this.gameHandler.getInstance();
+        Pos mobSpawnPos = instance.getTowerMap().getMobSpawn(this.owner.getTeam());
         this.restSnowmanPos = new Pos(basePoint.add(0, 1.5, 0)).withDirection(mobSpawnPos).withPitch(0);
 
         this.snowman = new Entity(EntityType.SNOW_GOLEM);
@@ -86,7 +86,7 @@ public final class BlizzardTower extends PlacedAttackingTower<BlizzardTowerLevel
 
         // The below uses all targets because they may be immune to being frozen but not cold damage.
         if (!targets.isEmpty()) {
-            int level = this.getLevelInt();
+            int level = this.level.asInteger();
             if (level >= 4) {
                 Point point = this.basePoint.add(0, level == 4 ? 3.5 : 4.5, 0);
                 ParticlePacket particlePacket = (level == 4 ? LEVEL_4_PACKET : LEVEL_5_PACKET).apply(point);
@@ -105,14 +105,14 @@ public final class BlizzardTower extends PlacedAttackingTower<BlizzardTowerLevel
     }
 
     @Override
-    public void upgrade() {
+    public void upgrade(int level, @Nullable GameUser user) {
         if (this.snowman != null && this.snowmanTask != null) {
             this.snowman.remove();
             this.snowmanTask.cancel();
             this.snowman = null;
             this.snowmanTask = null;
         }
-        super.upgrade();
+        super.upgrade(level, user);
     }
 
     @Override

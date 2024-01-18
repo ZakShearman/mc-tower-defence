@@ -1,11 +1,10 @@
 package pink.zak.minestom.towerdefence.model.tower.placed.types;
 
+import java.util.List;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Vec;
-import net.minestom.server.instance.Instance;
 import net.minestom.server.instance.block.Block;
-import net.minestom.server.item.Material;
 import net.minestom.server.network.packet.server.play.BlockActionPacket;
 import net.minestom.server.tag.Tag;
 import net.minestom.server.utils.Direction;
@@ -13,7 +12,7 @@ import net.minestom.server.utils.PacketUtils;
 import net.minestom.server.utils.time.TimeUnit;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.Tags;
-import pink.zak.minestom.towerdefence.game.MobHandler;
+import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingTDEnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.living.SingleEnemyTDMob;
 import pink.zak.minestom.towerdefence.model.mob.statuseffect.StatusEffectType;
@@ -24,14 +23,11 @@ import pink.zak.minestom.towerdefence.model.tower.config.towers.level.Earthquake
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 
-import java.util.List;
-
 public final class EarthquakeTower extends PlacedAttackingTower<EarthquakeTowerLevel> {
     private static final Tag<Double> ORIGINAL_GRAVITY_TAG = Tag.Double("originalGravity");
-    private static final double GRAVITY = 0.5;
 
-    public EarthquakeTower(@NotNull MobHandler mobHandler, Instance instance, AttackingTower tower, Material towerBaseMaterial, int id, GameUser owner, Point basePoint, Direction facing, int level) {
-        super(mobHandler, instance, tower, towerBaseMaterial, id, owner, basePoint, facing, level);
+    public EarthquakeTower(@NotNull GameHandler gameHandler, AttackingTower tower, int id, GameUser owner, Point basePoint, Direction facing, int level) {
+        super(gameHandler, tower, id, owner, basePoint, facing, level);
     }
 
     @Override

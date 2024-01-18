@@ -84,7 +84,7 @@ public interface LivingTDEnemyMob extends LivingTDMob, Taggable, DamagePredictab
 
     @Override
     default int getLevel() {
-        return this.getEnemyMobLevel().getLevel();
+        return this.getEnemyMobLevel().asInteger();
     }
 
     double getTotalDistanceMoved();

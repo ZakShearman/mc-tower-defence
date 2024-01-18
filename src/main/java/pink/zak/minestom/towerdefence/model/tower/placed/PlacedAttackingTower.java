@@ -8,11 +8,9 @@ import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Vec;
 import net.minestom.server.event.EventListener;
 import net.minestom.server.event.instance.InstanceTickEvent;
-import net.minestom.server.instance.Instance;
-import net.minestom.server.item.Material;
 import net.minestom.server.utils.Direction;
 import org.jetbrains.annotations.NotNull;
-import pink.zak.minestom.towerdefence.game.MobHandler;
+import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.model.DamageSource;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingTDEnemyMob;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTower;
@@ -21,7 +19,6 @@ import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.targetting.Target;
 
 public abstract class PlacedAttackingTower<T extends AttackingTowerLevel> extends PlacedTower<T> implements DamageSource {
-    private final @NotNull MobHandler mobHandler;
 
     private int ticksSinceLastAttack = this.level.getFireDelay();
 
@@ -32,11 +29,10 @@ public abstract class PlacedAttackingTower<T extends AttackingTowerLevel> extend
         if (this.attemptToFire()) this.ticksSinceLastAttack = 0;
     });
 
-    protected PlacedAttackingTower(@NotNull MobHandler mobHandler, Instance instance, AttackingTower tower, Material towerBaseMaterial, int id, GameUser owner, Point basePoint, Direction facing, int level) {
-        super(instance, tower, towerBaseMaterial, id, owner, basePoint, facing, level);
-        this.mobHandler = mobHandler;
+    protected PlacedAttackingTower(@NotNull GameHandler gameHandler, AttackingTower tower, int id, GameUser owner, Point basePoint, Direction facing, int level) {
+        super(gameHandler, tower, id, owner, basePoint, facing, level);
 
-        this.instance.eventNode().addListener(this.tickListener);
+        this.gameHandler.getInstance().eventNode().addListener(this.tickListener);
     }
 
     /**
@@ -48,13 +44,13 @@ public abstract class PlacedAttackingTower<T extends AttackingTowerLevel> extend
 
     @Override
     public void destroy() {
-        this.instance.eventNode().removeListener(this.tickListener);
+        this.gameHandler.getInstance().eventNode().removeListener(this.tickListener);
         super.destroy();
     }
 
     public @NotNull List<LivingTDEnemyMob> findPossibleTargets() {
-        // get mobs spawned by the enemy team
-        Set<LivingTDEnemyMob> mobs = this.mobHandler.getMobs(this.owner.getTeam());
+        // get mobs attacking the tower's team
+        Set<LivingTDEnemyMob> mobs = this.gameHandler.getMobHandler().getMobs(this.owner.getTeam());
 
         List<LivingTDEnemyMob> targets = new ArrayList<>(mobs.size());
         for (LivingTDEnemyMob mob : mobs) {
@@ -109,8 +105,4 @@ public abstract class PlacedAttackingTower<T extends AttackingTowerLevel> extend
         return targets;
     }
 
-    @Override
-    public @NotNull GameUser getOwningUser() {
-        return super.owner;
-    }
 }

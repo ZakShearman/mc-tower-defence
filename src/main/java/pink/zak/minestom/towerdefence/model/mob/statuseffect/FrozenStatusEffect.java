@@ -75,7 +75,7 @@ public class FrozenStatusEffect extends StatusEffect<FrozenStatusEffect> impleme
     }
 
     @Override
-    public @NotNull GameUser getOwningUser() {
+    public @NotNull GameUser getOwner() {
         return this.owningUser;
     }
 }

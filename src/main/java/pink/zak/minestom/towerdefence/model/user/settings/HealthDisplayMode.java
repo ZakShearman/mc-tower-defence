@@ -26,4 +26,9 @@ public enum HealthDisplayMode {
             nextIndex = 0;
         return HealthDisplayMode.values()[nextIndex];
     }
+
+    @Override
+    public String toString() {
+        return this.name().toLowerCase().replace('_', ' ');
+    }
 }

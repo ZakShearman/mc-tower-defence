@@ -1,35 +1,28 @@
 package pink.zak.minestom.towerdefence.model.user;
 
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.IntUnaryOperator;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Point;
-import net.minestom.server.timer.TaskSchedule;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pink.zak.minestom.towerdefence.api.event.player.PlayerCoinChangeEvent;
 import pink.zak.minestom.towerdefence.api.event.player.PlayerIncomeChangeEvent;
 import pink.zak.minestom.towerdefence.enums.Team;
-import pink.zak.minestom.towerdefence.model.mob.QueuedEnemyMob;
+import pink.zak.minestom.towerdefence.game.MobHandler;
 import pink.zak.minestom.towerdefence.model.mob.config.EnemyMob;
+import pink.zak.minestom.towerdefence.queue.MobQueue;
+import pink.zak.minestom.towerdefence.upgrade.UpgradeHandler;
 
-import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.IntUnaryOperator;
-
-public class GameUser {
+public final class GameUser {
     public static final int DEFAULT_COINS = 1_000_000_000;
     public static final int DEFAULT_INCOME_RATE = 50;
-    public static final int DEFAULT_MAX_QUEUE_TIME = 45_000; // 45 seconds
 
     private final @NotNull TDPlayer player; // todo in the future we should allow re-joining a game so this will not be final.
     private final @NotNull Team team;
-
-    private final @NotNull SendQueue queue = new SendQueue();
-
-    private final @NotNull Map<EnemyMob, Integer> mobLevels = new ConcurrentHashMap<>();
+    private final @NotNull MobQueue queue;
+    private final @NotNull UpgradeHandler upgradeHandler;
 
     private final @NotNull AtomicInteger coins = new AtomicInteger(DEFAULT_COINS);
 
@@ -38,12 +31,12 @@ public class GameUser {
 
     private @Nullable Point lastClickedTowerBlock;
 
-    public GameUser(@NotNull TDPlayer player, @NotNull Set<EnemyMob> defaultUnlocks, @NotNull Team team) {
+    public GameUser(@NotNull TDPlayer player, @NotNull Set<EnemyMob> defaultUnlocks, @NotNull Team team, @NotNull MobHandler mobHandler) {
         this.player = player;
         this.team = team;
 
-        for (EnemyMob mob : defaultUnlocks)
-            this.mobLevels.put(mob, 1);
+        this.queue = new MobQueue(mobHandler, this); // todo: unregister when the game ends/when the player leaves
+        this.upgradeHandler = new UpgradeHandler(this, defaultUnlocks);
     }
 
     public @NotNull TDPlayer getPlayer() {
@@ -54,16 +47,12 @@ public class GameUser {
         return this.team;
     }
 
-    public @NotNull Map<EnemyMob, Integer> getMobLevels() {
-        return this.mobLevels;
-    }
-
-    public int getMobLevel(EnemyMob enemyMob) {
-        return this.mobLevels.getOrDefault(enemyMob, 0);
-    }
-
     public int getCoins() {
         return this.coins.get();
+    }
+
+    public @NotNull UpgradeHandler getUpgradeHandler() {
+        return this.upgradeHandler;
     }
 
     public int updateCoins(@NotNull IntUnaryOperator intOperator) {
@@ -94,69 +83,8 @@ public class GameUser {
         this.lastClickedTowerBlock = lastClickedTowerBlock;
     }
 
-    public @NotNull SendQueue getQueue() {
+    public @NotNull MobQueue getQueue() {
         return this.queue;
     }
 
-    public static class SendQueue {
-        private static final int TIME_DECREMENT = MinecraftServer.TICK_MS;
-
-        private final @NotNull AtomicInteger maxQueueTime = new AtomicInteger(DEFAULT_MAX_QUEUE_TIME);
-        private final @NotNull Queue<QueuedEnemyMob> queuedMobs = new ConcurrentLinkedQueue<>();
-
-        private final @NotNull AtomicInteger currentQueueTime = new AtomicInteger(0);
-        private final @NotNull AtomicInteger timeToCurrentSend = new AtomicInteger(0);
-
-        public SendQueue() {
-            MinecraftServer.getSchedulerManager().buildTask(this::tick)
-                    .repeat(TaskSchedule.nextTick())
-                    .schedule();
-        }
-
-        private void tick() {
-        }
-
-        public QueuedEnemyMob poll() {
-            QueuedEnemyMob mob = this.queuedMobs.poll();
-
-            QueuedEnemyMob newMob = this.queuedMobs.peek();
-            if (newMob != null) {
-                this.timeToCurrentSend.set(newMob.mob().getSendTime());
-            }
-
-            return mob;
-        }
-
-        public boolean canQueue(@NotNull EnemyMob enemyMob) {
-            int sendTime = enemyMob.getSendTime();
-
-            return this.currentQueueTime.get() + sendTime <= this.maxQueueTime.get();
-        }
-
-        /**
-         * Reduces the time of all necessary variables by {@link #TIME_DECREMENT}.
-         *
-         * @return The updated timeToCurrentSend.
-         */
-        public int tickTime() {
-            int newTime = this.timeToCurrentSend.updateAndGet(time -> Math.max(time - TIME_DECREMENT, 0));
-            this.currentQueueTime.updateAndGet(time -> Math.max(time - TIME_DECREMENT, 0));
-
-            return newTime;
-        }
-
-        public void queue(@NotNull QueuedEnemyMob mob) {
-            this.queuedMobs.add(mob);
-
-            this.currentQueueTime.addAndGet(mob.mob().getSendTime());
-
-            if (this.queuedMobs.size() == 1) {
-                this.timeToCurrentSend.set(mob.mob().getSendTime());
-            }
-        }
-
-        public @NotNull Queue<QueuedEnemyMob> getQueuedMobs() {
-            return this.queuedMobs;
-        }
-    }
 }

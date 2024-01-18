@@ -8,41 +8,6 @@ import dev.emortal.minestom.core.module.kubernetes.KubernetesModule;
 import dev.emortal.minestom.core.module.messaging.MessagingModule;
 import dev.emortal.minestom.core.utils.KurushimiMinestomUtils;
 import dev.emortal.minestom.core.utils.ProgressBar;
-import net.kyori.adventure.bossbar.BossBar;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.minestom.server.MinecraftServer;
-import net.minestom.server.adventure.audience.Audiences;
-import net.minestom.server.coordinate.Pos;
-import net.minestom.server.entity.GameMode;
-import net.minestom.server.entity.Player;
-import net.minestom.server.entity.hologram.Hologram;
-import net.minestom.server.event.player.PlayerDisconnectEvent;
-import net.minestom.server.instance.Instance;
-import net.minestom.server.timer.Task;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import pink.zak.minestom.towerdefence.TowerDefenceModule;
-import pink.zak.minestom.towerdefence.actionbar.ActionBarHandler;
-import pink.zak.minestom.towerdefence.agones.GameStateManager;
-import pink.zak.minestom.towerdefence.api.event.game.CastleDamageEvent;
-import pink.zak.minestom.towerdefence.enums.GameState;
-import pink.zak.minestom.towerdefence.enums.Team;
-import pink.zak.minestom.towerdefence.game.handlers.MobMenuHandler;
-import pink.zak.minestom.towerdefence.game.handlers.TowerPlaceHandler;
-import pink.zak.minestom.towerdefence.game.handlers.TowerUpgradeHandler;
-import pink.zak.minestom.towerdefence.game.handlers.UserSettingsMenuHandler;
-import pink.zak.minestom.towerdefence.gametracker.GameTrackerHelper;
-import pink.zak.minestom.towerdefence.lobby.LobbyManager;
-import pink.zak.minestom.towerdefence.model.map.TowerMap;
-import pink.zak.minestom.towerdefence.model.mob.config.EnemyMob;
-import pink.zak.minestom.towerdefence.model.user.GameUser;
-import pink.zak.minestom.towerdefence.model.user.LobbyPlayer;
-import pink.zak.minestom.towerdefence.model.user.TDPlayer;
-import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;
-
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -54,8 +19,41 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
+import net.kyori.adventure.bossbar.BossBar;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.minestom.server.MinecraftServer;
+import net.minestom.server.adventure.audience.Audiences;
+import net.minestom.server.coordinate.Pos;
+import net.minestom.server.entity.GameMode;
+import net.minestom.server.entity.Player;
+import net.minestom.server.entity.hologram.Hologram;
+import net.minestom.server.event.player.PlayerDisconnectEvent;
+import net.minestom.server.timer.Task;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import pink.zak.minestom.towerdefence.TowerDefenceModule;
+import pink.zak.minestom.towerdefence.actionbar.ActionBarHandler;
+import pink.zak.minestom.towerdefence.agones.GameStateManager;
+import pink.zak.minestom.towerdefence.api.event.game.CastleDamageEvent;
+import pink.zak.minestom.towerdefence.enums.GameState;
+import pink.zak.minestom.towerdefence.enums.Team;
+import pink.zak.minestom.towerdefence.game.handlers.NecromancerDamageListener;
+import pink.zak.minestom.towerdefence.gametracker.GameTrackerHelper;
+import pink.zak.minestom.towerdefence.lobby.LobbyManager;
+import pink.zak.minestom.towerdefence.model.map.TowerMap;
+import pink.zak.minestom.towerdefence.model.mob.config.EnemyMob;
+import pink.zak.minestom.towerdefence.model.tower.TowerManager;
+import pink.zak.minestom.towerdefence.model.user.GameUser;
+import pink.zak.minestom.towerdefence.model.user.LobbyPlayer;
+import pink.zak.minestom.towerdefence.model.user.TDPlayer;
+import pink.zak.minestom.towerdefence.ui.HotbarHandler;
+import pink.zak.minestom.towerdefence.ui.InteractionHandler;
+import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;
 
-public class GameHandler {
+public final class GameHandler {
     public static final int DEFAULT_TOWER_HEALTH = 500;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GameHandler.class);
@@ -67,10 +65,9 @@ public class GameHandler {
     private final KubernetesModule kubernetesModule;
 
     private final @NotNull MobHandler mobHandler;
-    private final @NotNull TowerHandler towerHandler;
-    private final @NotNull MobMenuHandler mobMenuHandler;
-    private final @NotNull UserSettingsMenuHandler userSettingsMenuHandler;
     private final @Nullable GameTrackerHelper gameTrackerHelper;
+    private final @NotNull HotbarHandler hotbarHandler;
+    private final @NotNull InteractionHandler interactionHandler;
 
     private final Set<EnemyMob> defaultEnemyMobs;
     private final @NotNull AtomicInteger redTowerHealth = new AtomicInteger(DEFAULT_TOWER_HEALTH);
@@ -79,6 +76,7 @@ public class GameHandler {
     private final AtomicBoolean ended = new AtomicBoolean(false);
     private Hologram redTowerHologram;
     private Hologram blueTowerHologram;
+    private final @NotNull TowerManager towerManager;
 
     public GameHandler(@NotNull TowerDefenceModule module, @NotNull LobbyManager lobbyManager,
                        @NotNull GameStateManager gameStateManager, @Nullable MessagingModule messagingModule) {
@@ -88,18 +86,15 @@ public class GameHandler {
         this.lobbyManager = lobbyManager;
         this.kubernetesModule = module.getKubernetesModule();
 
-        this.towerHandler = new TowerHandler(module, this);
+        this.towerManager = new TowerManager(this.instance, this);
         this.mobHandler = new MobHandler(module, this);
-        this.mobMenuHandler = new MobMenuHandler(module, this);
-        this.userSettingsMenuHandler = new UserSettingsMenuHandler(module);
+        this.hotbarHandler = new HotbarHandler(module, MinecraftServer.getGlobalEventHandler()); // todo: replace with game event node
+        this.interactionHandler = new InteractionHandler(module, MinecraftServer.getGlobalEventHandler()); // todo: replace with game event node
 
         this.defaultEnemyMobs = module.getMobStorage().getEnemyMobs()
                 .stream()
                 .filter(mob -> mob.getLevel(1).getUnlockCost() <= 0)
                 .collect(Collectors.toUnmodifiableSet());
-
-        new TowerPlaceHandler(module, this);
-        new TowerUpgradeHandler(module, this);
 
         module.getEventNode().addListener(PlayerDisconnectEvent.class, event -> this.users.remove(event.getPlayer()));
 
@@ -122,18 +117,13 @@ public class GameHandler {
         this.configureTeam(Team.BLUE, bluePlayers);
         this.module.getScoreboardManager().startGame();
 
-        for (Player player : this.users.keySet()) {
-            player.getInventory().clear();
-            player.getInventory().setItemStack(4, MobMenuHandler.CHEST_ITEM);
-            player.getInventory().setItemStack(8, UserSettingsMenuHandler.SETTINGS_ITEM);
-            this.mobMenuHandler.onGameStart();
-            this.userSettingsMenuHandler.onGameStart();
-        }
-
         new IncomeHandler(this);
-        new ActionBarHandler(this, MinecraftServer.getGlobalEventHandler());
+        new ActionBarHandler(this, MinecraftServer.getGlobalEventHandler()); // todo: replace with game event node
+        new NecromancerDamageListener(MinecraftServer.getGlobalEventHandler()); // todo: replace with game event node
+        this.hotbarHandler.initialise(this.users.keySet());
+        this.interactionHandler.initialise();
 
-        if (!!!!!!!!!(this.gameTrackerHelper == null)) {
+        if (this.gameTrackerHelper != null) {
             this.gameTrackerHelper.startGame();
 
             MinecraftServer.getSchedulerManager().buildTask(this.gameTrackerHelper::updateGame)
@@ -162,7 +152,7 @@ public class GameHandler {
 
         for (LobbyPlayer lobbyPlayer : players) {
             TDPlayer tdPlayer = lobbyPlayer.getPlayer();
-            GameUser gameUser = new GameUser(tdPlayer, this.defaultEnemyMobs, team);
+            GameUser gameUser = new GameUser(tdPlayer, this.defaultEnemyMobs, team, this.mobHandler);
             this.users.put(tdPlayer, gameUser);
 
             tdPlayer.setFlyingSpeed(tdPlayer.getFlySpeed().getSpeed());
@@ -214,6 +204,10 @@ public class GameHandler {
         // todo proper win effect
         Audiences.all().sendMessage(Component.text("Game over! %s team won!".formatted(winningTeam.name()), NamedTextColor.RED));
         // todo properly clean up
+
+        // shutdown components
+        this.hotbarHandler.shutdown();
+        this.interactionHandler.shutdown();
     }
 
     private void shutdownTask() {
@@ -260,8 +254,8 @@ public class GameHandler {
         return this.mobHandler;
     }
 
-    public @NotNull TowerHandler getTowerHandler() {
-        return this.towerHandler;
+    public @NotNull TowerManager getTowerManager() {
+        return this.towerManager;
     }
 
     public int getCastleHealth(@NotNull Team team) {
@@ -284,7 +278,7 @@ public class GameHandler {
         return this.users;
     }
 
-    public Instance getInstance() {
+    public @NotNull TowerDefenceInstance getInstance() {
         return this.instance;
     }
 }

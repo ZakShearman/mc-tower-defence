@@ -2,25 +2,26 @@ package pink.zak.minestom.towerdefence.model.tower.config;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.minestom.server.coordinate.Point;
-import net.minestom.server.instance.Instance;
 import net.minestom.server.instance.block.Block;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import pink.zak.minestom.towerdefence.enums.TowerType;
+import pink.zak.minestom.towerdefence.model.tower.placed.PlacedTower;
 import pink.zak.minestom.towerdefence.utils.ItemUtils;
 import pink.zak.minestom.towerdefence.utils.StringUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;
 
 public class Tower {
     private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
@@ -35,8 +36,7 @@ public class Tower {
 
     private final @NotNull List<Component> description;
 
-    private final Map<Integer, ? extends TowerLevel> levels;
-    private final int maxLevel;
+    private final List<? extends TowerLevel> levels;
 
     private final ItemStack baseItem;
 
@@ -53,11 +53,9 @@ public class Tower {
                 .toList();
 
         this.levels = levelJsonMap.values().stream()
-                .collect(Collectors.toUnmodifiableMap(
-                        json -> json.get("level").getAsInt(), json -> this.type.getTowerLevelFunction().apply(json)
-                ));
-
-        this.maxLevel = this.levels.keySet().stream().max(Integer::compareTo).orElseThrow();
+                .map(json -> this.type.getTowerLevelFunction().apply(json))
+                .sorted(Comparator.comparingInt(TowerLevel::asInteger))
+                .toList();
 
         this.baseItem = this.item.with(builder -> {
             builder.displayName(MINI_MESSAGE.deserialize(BASE_ITEM_DISPLAY_NAME,
@@ -77,13 +75,19 @@ public class Tower {
         });
     }
 
-    public boolean isSpaceClear(@NotNull Instance instance, @NotNull Point basePoint, @NotNull Material towerBaseMaterial) {
+    public boolean isSpaceClear(@NotNull TowerDefenceInstance instance, @NotNull Point basePoint) {
+        Material baseMaterial = instance.getTowerMap().getTowerBaseMaterial();
         int checkDistance = this.type.getSize().getCheckDistance();
+
         for (int x = basePoint.blockX() - checkDistance; x <= basePoint.blockX() + checkDistance; x++) {
             for (int z = basePoint.blockZ() - checkDistance; z <= basePoint.blockZ() + checkDistance; z++) {
                 Block first = instance.getBlock(x, basePoint.blockY(), z);
-                if (first.registry().material() != towerBaseMaterial || first.properties().containsKey("towerId"))
+                // Check the block at the basepoint doesn't have a tower ID tag already and that all blocks at the base
+                // are the correct material
+                if (first.registry().material() != baseMaterial || first.hasTag(PlacedTower.ID_TAG))
                     return false;
+
+                // Check if the block above the area is air
                 Material second = instance.getBlock(x, basePoint.blockY() + 1, z).registry().material();
                 if (second != null && second != Material.AIR)
                     return false;
@@ -112,15 +116,15 @@ public class Tower {
         return this.baseItem;
     }
 
-    public Map<Integer, ? extends TowerLevel> getLevels() {
+    public List<? extends TowerLevel> getLevels() {
         return this.levels;
     }
 
-    public TowerLevel getLevel(int level) {
-        return this.levels.get(level);
+    public @Nullable TowerLevel getLevel(int level) {
+        return this.levels.get(level - 1);
     }
 
-    public int getMaxLevel() {
-        return this.maxLevel;
+    public @NotNull TowerLevel getMaxLevel() {
+        return this.levels.getLast();
     }
 }

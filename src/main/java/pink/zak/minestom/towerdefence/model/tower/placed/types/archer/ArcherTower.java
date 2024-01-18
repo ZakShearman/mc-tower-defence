@@ -1,25 +1,12 @@
-package pink.zak.minestom.towerdefence.model.tower.placed.types;
+package pink.zak.minestom.towerdefence.model.tower.placed.types.archer;
 
 import java.util.List;
 import java.util.Set;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import net.minestom.server.coordinate.Point;
-import net.minestom.server.coordinate.Vec;
-import net.minestom.server.entity.Entity;
-import net.minestom.server.entity.EntityType;
-import net.minestom.server.event.EventFilter;
-import net.minestom.server.event.EventListener;
-import net.minestom.server.event.EventNode;
-import net.minestom.server.event.entity.EntityDespawnEvent;
-import net.minestom.server.event.entity.EntityTickEvent;
-import net.minestom.server.event.trait.EntityEvent;
-import net.minestom.server.event.trait.InstanceEvent;
-import net.minestom.server.instance.Instance;
-import net.minestom.server.item.Material;
 import net.minestom.server.utils.Direction;
 import org.jetbrains.annotations.NotNull;
-import pink.zak.minestom.towerdefence.game.MobHandler;
+import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingTDEnemyMob;
 import pink.zak.minestom.towerdefence.model.prediction.DamagePrediction;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTower;
@@ -28,17 +15,15 @@ import pink.zak.minestom.towerdefence.model.tower.config.towers.ArcherTowerConfi
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.targetting.Target;
-import pink.zak.minestom.towerdefence.utils.projectile.ArrowProjectile;
-import pink.zak.minestom.towerdefence.utils.projectile.Projectile;
 
 public final class ArcherTower extends PlacedAttackingTower<AttackingTowerLevel> {
 
     private final @NotNull Set<Point> firingPoints;
 
-    public ArcherTower(@NotNull MobHandler mobHandler, Instance instance, AttackingTower tower, Material towerBaseMaterial, int id, GameUser owner, Point basePoint, Direction facing, int level) {
-        super(mobHandler, instance, tower, towerBaseMaterial, id, owner, basePoint, facing, level);
+    public ArcherTower(@NotNull GameHandler gameHandler, AttackingTower tower, int id, GameUser owner, Point basePoint, Direction facing, int level) {
+        super(gameHandler, tower, id, owner, basePoint, facing, level);
 
-        ArcherTowerConfig config = (ArcherTowerConfig) this.tower;
+        ArcherTowerConfig config = (ArcherTowerConfig) this.configuration;
         this.firingPoints = config.getRelativeFiringPoints().stream()
                 .map(relativePoint -> relativePoint.apply(this.getBasePoint()))
                 .collect(Collectors.toUnmodifiableSet());
@@ -52,7 +37,7 @@ public final class ArcherTower extends PlacedAttackingTower<AttackingTowerLevel>
         ArrowProjectile projectile = new ArrowProjectile(this, target, prediction);
 
         Point start = this.getFiringPoint(target.getPosition());
-        projectile.setInstance(this.instance, start);
+        projectile.setInstance(this.gameHandler.getInstance(), start);
     }
 
     @Override

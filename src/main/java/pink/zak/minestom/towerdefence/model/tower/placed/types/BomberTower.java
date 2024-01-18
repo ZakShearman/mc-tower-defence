@@ -1,6 +1,8 @@
 package pink.zak.minestom.towerdefence.model.tower.placed.types;
 
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 import net.kyori.adventure.sound.Sound;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Point;
@@ -9,8 +11,6 @@ import net.minestom.server.coordinate.Vec;
 import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.LivingEntity;
 import net.minestom.server.entity.metadata.other.PrimedTntMeta;
-import net.minestom.server.instance.Instance;
-import net.minestom.server.item.Material;
 import net.minestom.server.network.packet.server.ServerPacket;
 import net.minestom.server.network.packet.server.play.SoundEffectPacket;
 import net.minestom.server.particle.Particle;
@@ -18,16 +18,13 @@ import net.minestom.server.particle.ParticleCreator;
 import net.minestom.server.sound.SoundEvent;
 import net.minestom.server.utils.Direction;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import pink.zak.minestom.towerdefence.game.GameHandler;
-import pink.zak.minestom.towerdefence.game.MobHandler;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingTDEnemyMob;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTower;
 import pink.zak.minestom.towerdefence.model.tower.config.towers.level.BomberTowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
-
-import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
 import pink.zak.minestom.towerdefence.targetting.Target;
 
 public final class BomberTower extends PlacedAttackingTower<BomberTowerLevel> {
@@ -44,15 +41,10 @@ public final class BomberTower extends PlacedAttackingTower<BomberTowerLevel> {
         RAISE_VELOCITY = new Vec(0, findVelocity(RAISE_BLOCKS, -GRAVITY_PER_TICK, RAISE_TICKS), 0);
     }
 
-    private final MobHandler mobHandler;
-    private final GameUser owner;
-
     private Point spawnPoint;
 
-    public BomberTower(@NotNull MobHandler mobHandler, GameHandler gameHandler, Instance instance, AttackingTower tower, Material towerBaseMaterial, int id, GameUser owner, Point basePoint, Direction facing, int level) {
-        super(mobHandler, instance, tower, towerBaseMaterial, id, owner, basePoint, facing, level);
-        this.mobHandler = gameHandler.getMobHandler();
-        this.owner = owner;
+    public BomberTower(@NotNull GameHandler gameHandler, AttackingTower tower, int id, GameUser owner, Point basePoint, Direction facing, int level) {
+        super(gameHandler, tower, id, owner, basePoint, facing, level);
 
         this.updateSpawnPoint();
     }
@@ -62,8 +54,8 @@ public final class BomberTower extends PlacedAttackingTower<BomberTowerLevel> {
     }
 
     @Override
-    public void upgrade() {
-        super.upgrade();
+    public void upgrade(int level, @Nullable GameUser user) {
+        super.upgrade(level, user);
         this.updateSpawnPoint();
     }
 
@@ -85,18 +77,13 @@ public final class BomberTower extends PlacedAttackingTower<BomberTowerLevel> {
 
     private void damageTroops(@NotNull BombTnt tnt) {
         Pos center = tnt.getPosition();
-        Set<LivingTDEnemyMob> enemyMobs = this.mobHandler.getMobs(super.team);
+        Set<LivingTDEnemyMob> enemyMobs = this.gameHandler.getMobHandler().getMobs(super.getOwner().getTeam());
 
         for (LivingTDEnemyMob enemyMob : enemyMobs) {
             if (enemyMob.getPosition().distance(center) <= this.level.getExplosionRadius()) {
                 enemyMob.damage(this, this.level.getDamage());
             }
         }
-    }
-
-    @Override
-    public @NotNull GameUser getOwningUser() {
-        return this.owner;
     }
 
     private static class BombTnt extends LivingEntity {
@@ -110,7 +97,7 @@ public final class BomberTower extends PlacedAttackingTower<BomberTowerLevel> {
             super.hasPhysics = false;
             ((PrimedTntMeta) this.getEntityMeta()).setFuseTime(RAISE_TICKS + FLYING_TICKS);
 
-            this.setInstance(tower.instance, tower.spawnPoint);
+            this.setInstance(tower.gameHandler.getInstance(), tower.spawnPoint);
             this.setGravity(DRAG_PER_TICK, GRAVITY_PER_TICK);
             this.setVelocity(RAISE_VELOCITY);
 

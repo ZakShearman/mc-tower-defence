@@ -1,4 +1,4 @@
-package pink.zak.minestom.towerdefence.utils.projectile;
+package pink.zak.minestom.towerdefence.model.tower.placed;
 
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Vec;

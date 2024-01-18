@@ -1,6 +1,9 @@
 package pink.zak.minestom.towerdefence.model.mob.config;
 
 import com.google.gson.JsonObject;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -17,11 +20,7 @@ import pink.zak.minestom.towerdefence.statdiff.types.IntStatDiff;
 import pink.zak.minestom.towerdefence.utils.ItemUtils;
 import pink.zak.minestom.towerdefence.utils.NumberUtils;
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
-
-public class EnemyMobLevel implements Diffable<EnemyMobLevel> {
+public class EnemyMobLevel implements Diffable<EnemyMobLevel>, Comparable<EnemyMobLevel> {
     private static final String SEND_ITEM_NAME = "<i:false><mob_name> <level_numeral>";
     private static final String UPGRADE_ITEM_NAME = "<i:false><%s><level_numeral> - <yellow>$<cost></yellow>";
 
@@ -80,7 +79,13 @@ public class EnemyMobLevel implements Diffable<EnemyMobLevel> {
                 .build();
     }
 
-    public ItemStack createStatUpgradeItem(int cost, boolean owned, boolean canAfford) {
+    public @NotNull ItemStack createPreviewItem() {
+        return ItemStack.builder(this.sendItem.material())
+                .meta(this.sendItem.meta())
+                .build();
+    }
+
+    public ItemStack createStatUpgradeItem(int cost, boolean canAfford, boolean owned) {
         return ItemStack.builder(owned ? Material.GREEN_STAINED_GLASS_PANE : canAfford ? Material.ORANGE_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE)
                 .displayName(MiniMessage.miniMessage().deserialize(
                         UPGRADE_ITEM_NAME.formatted(owned ? "green" : canAfford ? "gold" : "red"),
@@ -90,7 +95,7 @@ public class EnemyMobLevel implements Diffable<EnemyMobLevel> {
                 .build();
     }
 
-    public @NotNull ItemStack createBuyUpgradeItem(boolean canAfford, int cost, @NotNull EnemyMobLevel currentLevel) {
+    public @NotNull ItemStack createBuyUpgradeItem(int cost, boolean canAfford, @NotNull EnemyMobLevel currentLevel) {
         String itemName = UPGRADE_ITEM_NAME.formatted(canAfford ? "gold" : "red");
 
         return ItemStack.builder(canAfford ? Material.ORANGE_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE)
@@ -120,7 +125,7 @@ public class EnemyMobLevel implements Diffable<EnemyMobLevel> {
         return components;
     }
 
-    public int getLevel() {
+    public int asInteger() {
         return this.level;
     }
 
@@ -175,4 +180,10 @@ public class EnemyMobLevel implements Diffable<EnemyMobLevel> {
                         null, "b/s"
                 ));
     }
+
+    @Override
+    public int compareTo(@NotNull EnemyMobLevel level) {
+        return Integer.compare(this.level, level.level);
+    }
+
 }

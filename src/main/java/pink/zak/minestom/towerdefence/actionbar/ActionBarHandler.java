@@ -25,11 +25,11 @@ public class ActionBarHandler {
     public ActionBarHandler(@NotNull GameHandler gameHandler, @NotNull EventNode<Event> eventNode) {
         this.gameHandler = gameHandler;
 
-        eventNode.addListener(PlayerCoinChangeEvent.class, event -> event.gameUser()
-                        .getPlayer().sendActionBar(this.createActionBar(event.gameUser())))
+        eventNode.addListener(PlayerCoinChangeEvent.class, event -> event.user()
+                        .getPlayer().sendActionBar(this.createActionBar(event.user())))
 
-                .addListener(PlayerIncomeChangeEvent.class, event -> event.gameUser()
-                        .getPlayer().sendActionBar(this.createActionBar(event.gameUser())))
+                .addListener(PlayerIncomeChangeEvent.class, event -> event.user()
+                        .getPlayer().sendActionBar(this.createActionBar(event.user())))
 
                 .addListener(CastleDamageEvent.class, event -> {
                     this.gameHandler.getUsers().values().stream()
