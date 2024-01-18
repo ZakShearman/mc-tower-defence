@@ -28,8 +28,9 @@ public final class TowerPlaceUI extends Inventory {
         this.towerStorage = towerStorage;
         this.towerManager = towerManager;
 
-        for (Tower tower : this.towerStorage.getTowers().values())
+        for (Tower tower : this.towerStorage.getTowers().values()) {
             this.setItemStack(tower.getGuiSlot(), tower.getBaseItem());
+        }
 
         this.addInventoryCondition((player, slot, clickType, result) -> {
             // always cancel the event
