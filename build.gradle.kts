@@ -24,7 +24,7 @@ dependencies {
 
     implementation("dev.hollowcube:schem:1.0.1")
     // Polar world format
-    implementation("dev.hollowcube:polar:1.3.2")
+    implementation("dev.hollowcube:polar:1.7.2")
 
     implementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
 }
