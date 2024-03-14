@@ -10,7 +10,6 @@ import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.metadata.golem.SnowGolemMeta;
 import net.minestom.server.network.packet.server.play.ParticlePacket;
 import net.minestom.server.particle.Particle;
-import net.minestom.server.particle.ParticleCreator;
 import net.minestom.server.timer.Task;
 import net.minestom.server.utils.Direction;
 import net.minestom.server.utils.time.TimeUnit;
@@ -27,12 +26,12 @@ import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;
 
 public final class BlizzardTower extends PlacedAttackingTower<BlizzardTowerLevel> {
-    private static final Function<Point, ParticlePacket> LEVEL_4_PACKET = point -> ParticleCreator.createParticlePacket(
-            Particle.SNOWFLAKE, point.x(), point.y(), point.z(), 0.8f, 0.9f, 0.8f, 100
+    private static final Function<Point, ParticlePacket> LEVEL_4_PACKET = point -> new ParticlePacket(
+            Particle.SNOWFLAKE, point.x(), point.y(), point.z(), 0.8f, 0.9f, 0.8f, 0.005f, 100
     );
 
-    private static final Function<Point, ParticlePacket> LEVEL_5_PACKET = point -> ParticleCreator.createParticlePacket(
-            Particle.SNOWFLAKE, point.x(), point.y(), point.z(), 0.9f, 1.3f, 0.9f, 150
+    private static final Function<Point, ParticlePacket> LEVEL_5_PACKET = point -> new ParticlePacket(
+            Particle.SNOWFLAKE, point.x(), point.y(), point.z(), 0.9f, 1.3f, 0.9f, 0.005f, 150
     );
 
     private final @NotNull Pos restSnowmanPos;

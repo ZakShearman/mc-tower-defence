@@ -19,12 +19,15 @@ repositories {
 }
 
 dependencies {
-    implementation("dev.emortal.minestom:core:76536d4")
-    implementation("dev.emortal.api:common-proto-sdk:fee482e")
+    implementation("dev.emortal.minestom:core:eafe4f7") {
+        exclude(group = "net.minestom", module = "minestom-snapshots")
+    }
+    implementation("net.minestom:minestom-snapshots:7e59603d5f")
+    implementation("dev.emortal.api:common-proto-sdk:15284aa")
 
     implementation("dev.hollowcube:schem:1.0.1")
     // Polar world format
-    implementation("dev.hollowcube:polar:1.3.2")
+    implementation("dev.hollowcube:polar:1.7.2")
 
     implementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
 }

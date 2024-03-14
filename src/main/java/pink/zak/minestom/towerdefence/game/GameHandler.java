@@ -27,7 +27,6 @@ import net.minestom.server.adventure.audience.Audiences;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.GameMode;
 import net.minestom.server.entity.Player;
-import net.minestom.server.entity.hologram.Hologram;
 import net.minestom.server.event.player.PlayerDisconnectEvent;
 import net.minestom.server.timer.Task;
 import org.jetbrains.annotations.NotNull;
@@ -51,6 +50,7 @@ import pink.zak.minestom.towerdefence.model.user.LobbyPlayer;
 import pink.zak.minestom.towerdefence.model.user.TDPlayer;
 import pink.zak.minestom.towerdefence.ui.HotbarHandler;
 import pink.zak.minestom.towerdefence.ui.InteractionHandler;
+import pink.zak.minestom.towerdefence.utils.Hologram;
 import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;
 
 public final class GameHandler {

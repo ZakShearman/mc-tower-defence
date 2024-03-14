@@ -3,6 +3,7 @@ package pink.zak.minestom.towerdefence.model.tower.placed.types;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
+
 import net.kyori.adventure.sound.Sound;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Point;
@@ -10,11 +11,12 @@ import net.minestom.server.coordinate.Pos;
 import net.minestom.server.coordinate.Vec;
 import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.LivingEntity;
+import net.minestom.server.entity.damage.DamageType;
 import net.minestom.server.entity.metadata.other.PrimedTntMeta;
 import net.minestom.server.network.packet.server.ServerPacket;
+import net.minestom.server.network.packet.server.play.ParticlePacket;
 import net.minestom.server.network.packet.server.play.SoundEffectPacket;
 import net.minestom.server.particle.Particle;
-import net.minestom.server.particle.ParticleCreator;
 import net.minestom.server.sound.SoundEvent;
 import net.minestom.server.utils.Direction;
 import org.jetbrains.annotations.NotNull;
@@ -117,12 +119,13 @@ public final class BomberTower extends PlacedAttackingTower<BomberTowerLevel> {
             } else if (aliveTicks == RAISE_TICKS + FLYING_TICKS) {
                 Pos pos = this.getPosition();
 
-                ServerPacket soundPacket =  new SoundEffectPacket(SoundEvent.ENTITY_GENERIC_EXPLODE, 20f, Sound.Source.PLAYER,
-                        pos, 1f, 1f, ThreadLocalRandom.current().nextLong());
+                ServerPacket soundPacket = new SoundEffectPacket(null, SoundEvent.ENTITY_GENERIC_EXPLODE.name(), 20f, Sound.Source.PLAYER,
+                        pos.blockX(), pos.blockY(), pos.blockZ(), 1f, 1f, ThreadLocalRandom.current().nextLong());
 
-                ServerPacket particlePacket = ParticleCreator.createParticlePacket(
-                        Particle.EXPLOSION, pos.x(), pos.y(), pos.z(), 0, 0, 0, 1
-                );
+                ParticlePacket particlePacket = new ParticlePacket(
+                        Particle.EXPLOSION, true, pos.x(), pos.y(), pos.z(),
+                        0, 0, 0, 0.1f, 1);
+
                 this.instance.sendGroupedPacket(particlePacket);
                 this.instance.sendGroupedPacket(soundPacket);
 

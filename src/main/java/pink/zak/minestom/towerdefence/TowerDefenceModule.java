@@ -11,7 +11,7 @@ import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.event.Event;
 import net.minestom.server.event.EventNode;
-import net.minestom.server.event.player.PlayerLoginEvent;
+import net.minestom.server.event.player.AsyncPlayerConfigurationEvent;
 import net.minestom.server.extras.lan.OpenToLAN;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -55,7 +55,7 @@ public class TowerDefenceModule extends MinestomModule {
         WorldLoader worldLoader = new WorldLoader();
         this.instance = worldLoader.load();
 
-        super.eventNode.addListener(PlayerLoginEvent.class, event -> {
+        super.eventNode.addListener(AsyncPlayerConfigurationEvent.class, event -> {
             event.getPlayer().setRespawnPoint(new Pos(-1, 67, 4));
             event.setSpawningInstance(this.instance);
         });

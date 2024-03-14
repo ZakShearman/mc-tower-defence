@@ -69,7 +69,7 @@ public class DamageIndicator {
 
         EntityMetaDataPacket metaDataPacket = new EntityMetaDataPacket(
                 this.entityId, Map.of(
-                displayOffset + 6, Metadata.Byte((byte) AbstractDisplayMeta.BillboardConstraints.CENTER.ordinal()),
+                displayOffset + 7, Metadata.Byte((byte) AbstractDisplayMeta.BillboardConstraints.CENTER.ordinal()),
                 textDisplayOffset, Metadata.Chat(text),
                 entityOffset + 4, Metadata.Boolean(true), // Silent
                 entityOffset + 5, Metadata.Boolean(true) // Has no gravity

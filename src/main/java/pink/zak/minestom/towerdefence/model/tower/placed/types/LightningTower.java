@@ -6,12 +6,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.entity.Player;
 import net.minestom.server.network.packet.server.SendablePacket;
+import net.minestom.server.network.packet.server.play.ParticlePacket;
 import net.minestom.server.particle.Particle;
-import net.minestom.server.particle.ParticleCreator;
 import net.minestom.server.utils.Direction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -87,10 +88,14 @@ public final class LightningTower extends PlacedAttackingTower<LightningTowerLev
 
         for (double i = 0; i <= length; i += thickness.getSpacing()) {
             packets.add(
-                    ParticleCreator.createParticlePacket(Particle.SOUL_FIRE_FLAME,
+                    new ParticlePacket(
+                            Particle.SOUL_FIRE_FLAME,
+                            true,
                             x, y, z,
                             0, 0, 0,
-                            1)
+                            0,
+                            1
+                    )
             );
 
             x += xIncrement;

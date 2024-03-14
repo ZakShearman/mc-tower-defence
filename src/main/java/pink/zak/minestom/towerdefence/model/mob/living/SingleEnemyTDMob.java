@@ -247,7 +247,7 @@ public class SingleEnemyTDMob extends SingleTDMob implements LivingTDEnemyMob {
             source.getOwner().updateCoins(current -> (int) Math.floor(current + (this.level.getKillReward() * finalMultiplier)));
         }
 
-        final SoundEvent sound = DamageType.VOID.getSound(this);
+        final SoundEvent sound = SoundEvent.ENTITY_GENERIC_HURT;
         if (sound != null) {
             Sound.Source soundSource = Sound.Source.PLAYER;
 

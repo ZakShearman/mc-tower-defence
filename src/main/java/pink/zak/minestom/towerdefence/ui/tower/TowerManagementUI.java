@@ -19,8 +19,9 @@ import net.minestom.server.inventory.click.ClickType;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import net.minestom.server.network.packet.server.SendablePacket;
+import net.minestom.server.network.packet.server.play.ParticlePacket;
 import net.minestom.server.particle.Particle;
-import net.minestom.server.particle.ParticleCreator;
+import net.minestom.server.particle.data.DustParticleData;
 import net.minestom.server.timer.Task;
 import net.minestom.server.utils.time.TimeUnit;
 import org.jetbrains.annotations.NotNull;
@@ -173,18 +174,13 @@ public final class TowerManagementUI extends Inventory {
                 }
             }
 
-            packets.add(ParticleCreator.createParticlePacket(
-                    Particle.DUST, true,
-                    circumference.x(), circumference.y(), circumference.z(),
-                    0, 0, 0,
-                    0f, 1,
-                    writer -> {
-                        writer.writeFloat(1);
-                        writer.writeFloat(0);
-                        writer.writeFloat(0);
-                        writer.writeFloat(1.5f);
-                    }
-            ));
+            packets.add(
+                    new ParticlePacket(
+                            Particle.DUST.withData(new DustParticleData(NamedTextColor.RED, 1)),
+                            circumference.x(), circumference.y(), circumference.z(),
+                            0, 0, 0, 0.1f, 1
+                    )
+            );
         }
 
         return packets;
