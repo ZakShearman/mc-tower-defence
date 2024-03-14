@@ -10,6 +10,7 @@ import net.minestom.server.item.Material;
 import net.minestom.server.tag.Tag;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import pink.zak.minestom.towerdefence.enums.TowerType;
 import pink.zak.minestom.towerdefence.model.tower.config.Tower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.model.user.TDPlayer;
@@ -19,7 +20,8 @@ import java.util.List;
 
 public class TowerPlaceUI extends Inventory {
 
-    public static final @NotNull Tag<Boolean> UI_TAG = Tag.Boolean("tower-place-ui");
+    public static final @NotNull Tag<Boolean> UI_TAG = Tag.Boolean("tower_place_ui");
+    public static final @NotNull Tag<TowerType> TOWER_TYPE = Tag.Byte("tower_type").map(b -> TowerType.values()[b], t -> (byte) t.ordinal());
 
     public static final @NotNull ItemStack HOTBAR_ITEM = ItemStack.builder(Material.ENDER_CHEST)
             .displayName(Component.text("Place Tower", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
@@ -66,6 +68,7 @@ public class TowerPlaceUI extends Inventory {
                 .displayName(Component.text("Place Tower: " + tower.getName(), NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
                 .lore(createItemLore(tower))
                 .set(UI_TAG, true)
+                .set(TOWER_TYPE, tower.getType())
                 .build();
     }
 

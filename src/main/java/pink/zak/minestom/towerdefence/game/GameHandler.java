@@ -8,17 +8,6 @@ import dev.emortal.minestom.core.module.kubernetes.KubernetesModule;
 import dev.emortal.minestom.core.module.messaging.MessagingModule;
 import dev.emortal.minestom.core.utils.KurushimiMinestomUtils;
 import dev.emortal.minestom.core.utils.ProgressBar;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -52,6 +41,18 @@ import pink.zak.minestom.towerdefence.ui.HotbarHandler;
 import pink.zak.minestom.towerdefence.ui.InteractionHandler;
 import pink.zak.minestom.towerdefence.utils.Hologram;
 import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;
+
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 public final class GameHandler {
     public static final int DEFAULT_TOWER_HEALTH = 500;
@@ -88,7 +89,7 @@ public final class GameHandler {
 
         this.towerManager = new TowerManager(this.instance, this);
         this.mobHandler = new MobHandler(module, this);
-        this.hotbarHandler = new HotbarHandler(module, MinecraftServer.getGlobalEventHandler()); // todo: replace with game event node
+        this.hotbarHandler = new HotbarHandler(module, this.towerManager, MinecraftServer.getGlobalEventHandler()); // todo: replace with game event node
         this.interactionHandler = new InteractionHandler(module, MinecraftServer.getGlobalEventHandler()); // todo: replace with game event node
 
         this.defaultEnemyMobs = module.getMobStorage().getEnemyMobs()

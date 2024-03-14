@@ -1,5 +1,8 @@
 package pink.zak.minestom.towerdefence.ui;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.minestom.server.coordinate.Point;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.EventFilter;
 import net.minestom.server.event.EventNode;
@@ -10,19 +13,31 @@ import net.minestom.server.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.TowerDefenceModule;
 import pink.zak.minestom.towerdefence.enums.GameState;
+import pink.zak.minestom.towerdefence.enums.TowerType;
+import pink.zak.minestom.towerdefence.model.tower.TowerManager;
+import pink.zak.minestom.towerdefence.model.tower.TowerPlaceFailureReason;
+import pink.zak.minestom.towerdefence.model.tower.config.Tower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.model.user.TDPlayer;
+import pink.zak.minestom.towerdefence.storage.TowerStorage;
 import pink.zak.minestom.towerdefence.ui.spawner.TroopSpawnerUI;
+import pink.zak.minestom.towerdefence.utils.Result;
 
 import java.util.Set;
 
 public final class HotbarHandler {
 
     private final @NotNull EventNode<PlayerEvent> eventNode = EventNode.type("hotbar-handler", EventFilter.PLAYER);
-    private final @NotNull EventNode<? super PlayerEvent> parentNode;
 
-    public HotbarHandler(@NotNull TowerDefenceModule module, @NotNull EventNode<? super PlayerEvent> node) {
+    private final @NotNull EventNode<? super PlayerEvent> parentNode;
+    private final @NotNull TowerManager towerManager;
+    private final @NotNull TowerStorage towerStorage;
+
+    public HotbarHandler(@NotNull TowerDefenceModule module, @NotNull TowerManager towerManager, @NotNull EventNode<? super PlayerEvent> node) {
         this.parentNode = node;
+        this.towerManager = towerManager;
+        this.towerStorage = module.getTowerStorage();
+
         this.eventNode.addListener(PlayerUseItemEvent.class, event -> {
             if (module.getGameState() != GameState.GAME) return;
 
@@ -38,9 +53,29 @@ public final class HotbarHandler {
             } else if (item.isSimilar(UserSettingsUI.HOTBAR_ITEM)) {
                 player.openInventory(new UserSettingsUI(player));
             } else if (item.hasTag(TowerPlaceUI.UI_TAG)) {
-                player.openInventory(new TowerPlaceUI(user, module.getTowerStorage()));
+                Point targetBlockPos = player.getTargetBlockPosition(24);
+                TowerType towerType = item.getTag(TowerPlaceUI.TOWER_TYPE);
+
+                if (targetBlockPos == null || towerType == null) { // classed as the player clicking air or tower not set
+                    player.openInventory(new TowerPlaceUI(user, module.getTowerStorage()));
+                    return;
+                }
+
+                this.handleTowerPlaceClick(towerType, player, user, targetBlockPos);
             }
         });
+    }
+
+    private void handleTowerPlaceClick(@NotNull TowerType towerType, @NotNull Player player, @NotNull GameUser gameUser, @NotNull Point clickedBlock) {
+        Tower tower = this.towerStorage.getTower(towerType);
+
+        Result<TowerPlaceFailureReason> result = (this.towerManager.placeTower(tower, clickedBlock.add(0, 0.5, 0), gameUser));
+        if (!(result instanceof Result.Failure<TowerPlaceFailureReason> failure)) return;
+
+        player.sendMessage(Component.text(switch (failure.reason()) {
+            case CAN_NOT_AFFORD -> "You can not afford this tower.";
+            case AREA_NOT_CLEAR -> "The area is not clear.";
+        }, NamedTextColor.RED));
     }
 
     public void initialise(@NotNull Set<Player> players) {
