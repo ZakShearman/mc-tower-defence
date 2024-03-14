@@ -9,6 +9,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.minestom.server.MinecraftServer;
+import net.minestom.server.ServerFlag;
 import net.minestom.server.entity.EntityType;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
@@ -54,7 +55,7 @@ public class EnemyMobLevel implements Diffable<EnemyMobLevel>, Comparable<EnemyM
 
         this.health = jsonObject.get("health").getAsInt();
         this.damage = jsonObject.get("damage").getAsInt();
-        this.movementSpeed = jsonObject.get("movementSpeed").getAsDouble() / MinecraftServer.TICK_PER_SECOND;
+        this.movementSpeed = jsonObject.get("movementSpeed").getAsDouble() / ServerFlag.SERVER_TICKS_PER_SECOND;
 
         // todo can this be removed? we just autogen the lore
         TagResolver tagResolver = TagResolver.resolver(
@@ -62,7 +63,7 @@ public class EnemyMobLevel implements Diffable<EnemyMobLevel>, Comparable<EnemyM
                 Placeholder.unparsed("income_increase", String.valueOf(this.sendIncomeIncrease)),
                 Placeholder.unparsed("health", String.valueOf(this.health)),
                 Placeholder.unparsed("damage", String.valueOf(this.damage)),
-                Placeholder.unparsed("movement_speed", MOVEMENT_SPEED_FORMAT.format(this.movementSpeed * MinecraftServer.TICK_PER_SECOND))
+                Placeholder.unparsed("movement_speed", MOVEMENT_SPEED_FORMAT.format(this.movementSpeed * ServerFlag.SERVER_TICKS_PER_SECOND))
         );
 
         this.sendItem = ItemUtils.fromJsonObject(jsonObject.get("sendItem").getAsJsonObject(), tagResolver);
@@ -175,8 +176,8 @@ public class EnemyMobLevel implements Diffable<EnemyMobLevel>, Comparable<EnemyM
                 .addDiff("Health", new IntStatDiff(this.health, other.health))
                 .addDiff("Damage", new IntStatDiff(this.damage, other.damage))
                 .addDiff("Movement Speed", new DoubleStatDiff(
-                        this.movementSpeed * MinecraftServer.TICK_PER_SECOND,
-                        other.movementSpeed * MinecraftServer.TICK_PER_SECOND,
+                        this.movementSpeed * ServerFlag.SERVER_TICKS_PER_SECOND,
+                        other.movementSpeed * ServerFlag.SERVER_TICKS_PER_SECOND,
                         null, "b/s"
                 ));
     }

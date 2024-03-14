@@ -1,6 +1,5 @@
 package pink.zak.minestom.towerdefence.ui;
 
-import java.util.Set;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.EventFilter;
 import net.minestom.server.event.EventNode;
@@ -14,6 +13,8 @@ import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.model.user.TDPlayer;
 import pink.zak.minestom.towerdefence.ui.spawner.TroopSpawnerUI;
+
+import java.util.Set;
 
 public final class HotbarHandler {
 
@@ -36,6 +37,8 @@ public final class HotbarHandler {
                 player.openInventory(new TroopSpawnerUI(module.getMobStorage(), user));
             } else if (item.isSimilar(UserSettingsUI.HOTBAR_ITEM)) {
                 player.openInventory(new UserSettingsUI(player));
+            } else if (item.hasTag(TowerPlaceUI.UI_TAG)) {
+                player.openInventory(new TowerPlaceUI(user, module.getTowerStorage()));
             }
         });
     }
@@ -45,7 +48,8 @@ public final class HotbarHandler {
         for (Player player : players) {
             PlayerInventory inventory = player.getInventory();
             inventory.clear();
-            inventory.setItemStack(4, TroopSpawnerUI.HOTBAR_ITEM);
+            inventory.setItemStack(0, TroopSpawnerUI.HOTBAR_ITEM);
+            inventory.setItemStack(1, TowerPlaceUI.HOTBAR_ITEM);
             inventory.setItemStack(8, UserSettingsUI.HOTBAR_ITEM);
         }
     }

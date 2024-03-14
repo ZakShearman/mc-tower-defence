@@ -6,6 +6,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import net.kyori.adventure.sound.Sound;
 import net.minestom.server.MinecraftServer;
+import net.minestom.server.ServerFlag;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.coordinate.Vec;
@@ -135,7 +136,7 @@ public final class BomberTower extends PlacedAttackingTower<BomberTowerLevel> {
         }
     }
 
-    public Vec calculateLaunchVec(Point current, Point target) {
+    public Vec calculateLaunchVec(@NotNull Point current, @NotNull Point target) {
         double x = target.x() - current.x();
         double z = target.z() - current.z();
         double y = target.y() - current.y();
@@ -147,6 +148,6 @@ public final class BomberTower extends PlacedAttackingTower<BomberTowerLevel> {
     }
 
     private static double findVelocity(double s, double a, int t) {
-        return (s / t - 0.5 * a * t) * MinecraftServer.TICK_PER_SECOND; // a Vec is blocks/s, not blocks/tick
+        return (s / t - 0.5 * a * t) * ServerFlag.SERVER_TICKS_PER_SECOND; // a Vec is blocks/s, not blocks/tick
     }
 }
