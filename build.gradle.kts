@@ -23,7 +23,7 @@ dependencies {
         exclude(group = "net.minestom", module = "minestom-snapshots")
     }
     implementation("net.minestom:minestom-snapshots:7e59603d5f")
-    implementation("dev.emortal.api:common-proto-sdk:15284aa")
+    implementation("dev.emortal.api:common-proto-sdk:9152087")
 
     implementation("dev.hollowcube:schem:1.0.1")
     // Polar world format
