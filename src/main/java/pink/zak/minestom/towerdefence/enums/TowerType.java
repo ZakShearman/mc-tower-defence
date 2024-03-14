@@ -14,25 +14,25 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public enum TowerType {
-    ARCHER(Size.THREE, ArcherTowerConfig::new, json -> new AttackingTowerLevel("Archer", json)),
-    BLIZZARD(Size.THREE, AttackingTower::new, BlizzardTowerLevel::new),
-    BOMBER(Size.THREE, AttackingTower::new, BomberTowerLevel::new),
-    CHARITY(Size.FIVE, Tower::new, CharityTowerLevel::new),
-    EARTHQUAKE(Size.THREE, AttackingTower::new, EarthquakeTowerLevel::new),
-    LIGHTNING(Size.THREE, AttackingTower::new, LightningTowerLevel::new),
-    NECROMANCER(Size.FIVE, AttackingTower::new, NecromancerTowerLevel::new);
+    ARCHER(TowerSize.THREE, ArcherTowerConfig::new, json -> new AttackingTowerLevel("Archer", json)),
+    BLIZZARD(TowerSize.THREE, AttackingTower::new, BlizzardTowerLevel::new),
+    BOMBER(TowerSize.THREE, AttackingTower::new, BomberTowerLevel::new),
+    CHARITY(TowerSize.FIVE, Tower::new, CharityTowerLevel::new),
+    EARTHQUAKE(TowerSize.THREE, AttackingTower::new, EarthquakeTowerLevel::new),
+    LIGHTNING(TowerSize.THREE, AttackingTower::new, LightningTowerLevel::new),
+    NECROMANCER(TowerSize.FIVE, AttackingTower::new, NecromancerTowerLevel::new);
 
-    private final @NotNull Size size;
+    private final @NotNull TowerSize size;
     private final @NotNull BiFunction<JsonObject, Map<Integer, JsonObject>, ? extends Tower> towerFunction;
     private final @NotNull Function<JsonObject, ? extends TowerLevel> towerLevelFunction;
 
-    TowerType(@NotNull Size size, @NotNull BiFunction<JsonObject, Map<Integer, JsonObject>, ? extends Tower> towerFunction, @NotNull Function<JsonObject, ? extends TowerLevel> towerLevelFunction) {
+    TowerType(@NotNull TowerSize size, @NotNull BiFunction<JsonObject, Map<Integer, JsonObject>, ? extends Tower> towerFunction, @NotNull Function<JsonObject, ? extends TowerLevel> towerLevelFunction) {
         this.size = size;
         this.towerFunction = towerFunction;
         this.towerLevelFunction = towerLevelFunction;
     }
 
-    public @NotNull Size getSize() {
+    public @NotNull TowerSize getSize() {
         return this.size;
     }
 
@@ -44,24 +44,4 @@ public enum TowerType {
         return this.towerLevelFunction;
     }
 
-    public enum Size {
-        THREE(3, 1),
-        FIVE(5, 2);
-
-        private final int numericalValue;
-        private final int checkDistance;
-
-        Size(int numericalValue, int checkDistance) {
-            this.numericalValue = numericalValue;
-            this.checkDistance = checkDistance;
-        }
-
-        public int getCheckDistance() {
-            return this.checkDistance;
-        }
-
-        public @NotNull String getFormattedName() {
-            return this.numericalValue + "x" + this.numericalValue;
-        }
-    }
 }

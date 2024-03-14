@@ -7,15 +7,21 @@ import net.minestom.server.entity.Player;
 import net.minestom.server.event.EventFilter;
 import net.minestom.server.event.EventNode;
 import net.minestom.server.event.player.PlayerBlockInteractEvent;
+import net.minestom.server.event.player.PlayerMoveEvent;
+import net.minestom.server.event.player.PlayerTickEvent;
 import net.minestom.server.event.trait.PlayerEvent;
 import net.minestom.server.instance.block.Block;
+import net.minestom.server.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.TowerDefenceModule;
 import pink.zak.minestom.towerdefence.enums.GameState;
+import pink.zak.minestom.towerdefence.enums.TowerSize;
+import pink.zak.minestom.towerdefence.enums.TowerType;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.ui.tower.TowerManagementUI;
+import pink.zak.minestom.towerdefence.ui.tower.TowerOutliner;
 import pink.zak.minestom.towerdefence.ui.tower.TowerPlaceUI;
 
 public final class InteractionHandler {
@@ -58,6 +64,22 @@ public final class InteractionHandler {
 
             // open tower place UI
             player.openInventory(new TowerPlaceUI(user, module.getTowerStorage(), module.getGameHandler().getTowerManager()));
+        });
+
+        TowerOutliner outliner = new TowerOutliner(module.getInstance());
+        this.eventNode.addListener(PlayerTickEvent.class, event -> {
+            Player player = event.getPlayer();
+
+            ItemStack item = player.getItemInMainHand();
+            if (!item.hasTag(pink.zak.minestom.towerdefence.ui.TowerPlaceUI.UI_TAG)) return;
+
+            TowerType towerType = item.getTag(pink.zak.minestom.towerdefence.ui.TowerPlaceUI.TOWER_TYPE);
+            if (towerType == null) return;
+
+            Point targetBlockPos = player.getTargetBlockPosition(24);
+            if (targetBlockPos == null) return;
+
+            player.sendPackets(outliner.calculateOutline(targetBlockPos, towerType));
         });
     }
 
