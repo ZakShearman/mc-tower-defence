@@ -69,6 +69,8 @@ public final class InteractionHandler {
         TowerOutliner outliner = new TowerOutliner(module.getInstance());
         this.eventNode.addListener(PlayerTickEvent.class, event -> {
             Player player = event.getPlayer();
+            GameUser user = module.getGameHandler().getGameUser(player);
+            if (user == null) throw new IllegalStateException("Player is not associated with a game user");
 
             ItemStack item = player.getItemInMainHand();
             if (!item.hasTag(pink.zak.minestom.towerdefence.ui.TowerPlaceUI.UI_TAG)) return;
@@ -79,7 +81,7 @@ public final class InteractionHandler {
             Point targetBlockPos = player.getTargetBlockPosition(24);
             if (targetBlockPos == null) return;
 
-            player.sendPackets(outliner.calculateOutline(targetBlockPos, towerType));
+            player.sendPackets(outliner.calculateOutline(user, targetBlockPos, towerType));
         });
     }
 
