@@ -2,12 +2,18 @@ package pink.zak.minestom.towerdefence.utils;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import java.util.ArrayList;
+import java.util.List;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.minestom.server.entity.PlayerSkin;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import net.minestom.server.item.metadata.PlayerHeadMeta;
 import net.minestom.server.utils.mojang.MojangUtils;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
@@ -65,5 +71,15 @@ public class ItemUtils {
                 .lore(itemStack.getLore())
                 .amount(itemStack.amount())
                 .meta(itemStack.meta());
+    }
+
+    public static  <T> @NotNull List<Component> createLore(@NotNull T value, @NotNull T[] values) {
+        List<Component> lore = new ArrayList<>();
+        for (T loopValue : values) {
+            String name = "> " + loopValue;
+            NamedTextColor colour = loopValue == value ? NamedTextColor.GREEN : NamedTextColor.RED;
+            lore.add(Component.text(name, colour).decoration(TextDecoration.ITALIC, false));
+        }
+        return lore;
     }
 }

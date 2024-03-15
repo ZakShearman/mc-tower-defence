@@ -72,7 +72,7 @@ public final class BomberTower extends PlacedAttackingTower<BomberTowerLevel> {
     }
 
     private List<LivingTDEnemyMob> findApplicableTargets() {
-        return this.findPossibleTargets(Target.first()).stream()
+        return this.findPossibleTargets().stream()
                 // filter out flying mobs
                 .filter(mob -> !mob.getEnemyMob().isFlying())
                 .toList();

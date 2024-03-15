@@ -1,5 +1,6 @@
 package pink.zak.minestom.towerdefence.ui.tower;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -28,9 +29,12 @@ import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.model.tower.TowerManager;
 import pink.zak.minestom.towerdefence.model.tower.config.Tower;
 import pink.zak.minestom.towerdefence.model.tower.config.TowerLevel;
+import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.model.user.TDPlayer;
+import pink.zak.minestom.towerdefence.targetting.Target;
+import pink.zak.minestom.towerdefence.utils.ItemUtils;
 
 public final class TowerManagementUI extends Inventory {
 
@@ -44,6 +48,8 @@ public final class TowerManagementUI extends Inventory {
                     Component.empty(),
                     Component.text("Removes the tower", NamedTextColor.RED).decoration(TextDecoration.ITALIC, false)
             )).build();
+    private static final @NotNull ItemStack.Builder TOWER_TARGET_ITEM = ItemStack.builder(Material.BOW)
+            .displayName(Component.text("Tower Target", NamedTextColor.RED).decoration(TextDecoration.ITALIC, false));
 
     private final @NotNull PlacedTower<?> tower;
     private final @NotNull GameUser user;
@@ -64,6 +70,9 @@ public final class TowerManagementUI extends Inventory {
         this.setItemStack(0, configuration.getBaseItem());
         this.setItemStack(11, configuration.getLevel(1).getOwnedUpgradeItem());
         this.setItemStack(17, REMOVE_TOWER_ITEM);
+        if (this.tower instanceof PlacedAttackingTower<?> attackingTower) {
+            this.setItemStack(18, this.createTowerTargetItem(attackingTower));
+        }
         this.setItemStack(26, this.createPreviewTowerRadiusItem());
 
         this.refresh();
@@ -107,6 +116,14 @@ public final class TowerManagementUI extends Inventory {
             return;
         }
 
+        if (slot == 18) {
+            if (this.tower instanceof PlacedAttackingTower<?> attackingTower) {
+                attackingTower.setTarget(attackingTower.getTarget().next());
+                this.setItemStack(18, this.createTowerTargetItem(attackingTower));
+            }
+            return;
+        }
+
         if (slot == 26) {
             this.showTowerRadius(clickType);
             return;
@@ -128,6 +145,10 @@ public final class TowerManagementUI extends Inventory {
                 "<i:false><dark_red>Left-click</dark_red><red> shows the tower's range",
                 "<i:false><dark_red>Right-click</dark_red><red> shows all %s tower ranges".formatted(tower.getConfiguration().getName())
         ).map(MINI_MESSAGE::deserialize).toList());
+    }
+
+    private @NotNull ItemStack createTowerTargetItem(@NotNull PlacedAttackingTower<?> tower) {
+        return TOWER_TARGET_ITEM.lore(ItemUtils.createLore(tower.getTarget(), Target.Type.values())).build();
     }
 
     private void showTowerRadius(@NotNull ClickType clickType) {

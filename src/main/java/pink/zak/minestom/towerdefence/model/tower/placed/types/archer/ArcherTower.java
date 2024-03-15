@@ -42,7 +42,7 @@ public final class ArcherTower extends PlacedAttackingTower<AttackingTowerLevel>
 
     @Override
     protected boolean attemptToFire() {
-        List<LivingTDEnemyMob> targets = this.findPossibleTargets(Target.first());
+        List<LivingTDEnemyMob> targets = this.findPossibleTargets();
         if (targets.isEmpty()) return false;
         this.fireAt(targets.getFirst());
         return true;
