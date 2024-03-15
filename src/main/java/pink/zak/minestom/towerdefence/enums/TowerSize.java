@@ -31,6 +31,10 @@ public enum TowerSize {
         this.checkDistance = checkDistance;
     }
 
+    public int getNumericalValue() {
+        return numericalValue;
+    }
+
     public int getCheckDistance() {
         return this.checkDistance;
     }
