@@ -29,8 +29,6 @@ public final class GameUser {
     // incomeRate is the amount of coins the player gets per 10 seconds.
     private final @NotNull AtomicInteger incomeRate = new AtomicInteger(DEFAULT_INCOME_RATE);
 
-    private @Nullable Point lastClickedTowerBlock;
-
     public GameUser(@NotNull TDPlayer player, @NotNull Set<EnemyMob> defaultUnlocks, @NotNull Team team, @NotNull MobHandler mobHandler) {
         this.player = player;
         this.team = team;
@@ -73,14 +71,6 @@ public final class GameUser {
 
     public int getIncomeRate() {
         return this.incomeRate.get();
-    }
-
-    public @Nullable Point getLastClickedTowerBlock() {
-        return this.lastClickedTowerBlock;
-    }
-
-    public void setLastClickedTowerBlock(@Nullable Point lastClickedTowerBlock) {
-        this.lastClickedTowerBlock = lastClickedTowerBlock;
     }
 
     public @NotNull MobQueue getQueue() {

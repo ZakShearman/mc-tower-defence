@@ -22,6 +22,7 @@ import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.model.user.TDPlayer;
 import pink.zak.minestom.towerdefence.storage.TowerStorage;
 import pink.zak.minestom.towerdefence.ui.spawner.TroopSpawnerUI;
+import pink.zak.minestom.towerdefence.ui.tower.TowerPlaceUI;
 import pink.zak.minestom.towerdefence.utils.Result;
 
 import java.util.Set;
@@ -56,7 +57,7 @@ public final class HotbarHandler {
             } else if (item.isSimilar(UserSettingsUI.HOTBAR_ITEM)) {
                 player.openInventory(new UserSettingsUI(player));
             } else if (item.hasTag(TowerPlaceUI.UI_TAG)) {
-                Point targetBlockPos = player.getTargetBlockPosition(24);
+                Point targetBlockPos = player.getTargetBlockPosition(TowerPlaceUI.TOWER_PLACE_DISTANCE);
                 TowerType towerType = item.getTag(TowerPlaceUI.TOWER_TYPE);
 
                 if (targetBlockPos == null || towerType == null) { // classed as the player clicking air or tower not set

@@ -1,7 +1,5 @@
 package pink.zak.minestom.towerdefence.ui;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.entity.Player;
 import net.minestom.server.event.EventFilter;
@@ -15,7 +13,6 @@ import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.TowerDefenceModule;
 import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.enums.TowerType;
-import pink.zak.minestom.towerdefence.model.map.TowerMap;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.ui.tower.TowerManagementUI;
@@ -45,23 +42,7 @@ public final class InteractionHandler {
                 PlacedTower<?> tower = module.getGameHandler().getTowerManager().getTower(user.getTeam(), id);
                 if (tower == null) throw new IllegalStateException("Player attempted to interact with a tower that does not exist");
                 player.openInventory(new TowerManagementUI(tower, user, module.getGameHandler().getTowerManager()));
-                return;
             }
-
-            TowerMap map = module.getInstance().getTowerMap();
-            if (block.registry().material() != map.getTowerBaseMaterial()) return;
-
-            Point lastClickedTowerBlock = event.getBlockPosition().add(0.5, 0.5, 0.5);
-            user.setLastClickedTowerBlock(lastClickedTowerBlock);
-
-            // check if clicked block is on the player's side of the map
-            if (!map.getArea(user.getTeam()).isWithin(lastClickedTowerBlock)) {
-                player.sendMessage(Component.text("You can only place towers on your side of the map (" + user.getTeam().name().toLowerCase() + ").", NamedTextColor.RED));
-                return;
-            }
-
-            // open tower place UI
-            player.openInventory(new TowerPlaceUI(user, module.getTowerStorage(), module.getGameHandler().getTowerManager()));
         });
 
         TowerOutliner outliner = new TowerOutliner(module.getInstance());
@@ -71,12 +52,12 @@ public final class InteractionHandler {
             if (user == null) throw new IllegalStateException("Player is not associated with a game user");
 
             ItemStack item = player.getItemInMainHand();
-            if (!item.hasTag(pink.zak.minestom.towerdefence.ui.TowerPlaceUI.UI_TAG)) return;
+            if (!item.hasTag(TowerPlaceUI.UI_TAG)) return;
 
-            TowerType towerType = item.getTag(pink.zak.minestom.towerdefence.ui.TowerPlaceUI.TOWER_TYPE);
+            TowerType towerType = item.getTag(TowerPlaceUI.TOWER_TYPE);
             if (towerType == null) return;
 
-            Point targetBlockPos = player.getTargetBlockPosition(24);
+            Point targetBlockPos = player.getTargetBlockPosition(TowerPlaceUI.TOWER_PLACE_DISTANCE);
             if (targetBlockPos == null) return;
 
             player.sendPackets(outliner.calculateOutline(user, targetBlockPos, towerType));
