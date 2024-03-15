@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.TowerDefenceModule;
 import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.enums.TowerType;
+import pink.zak.minestom.towerdefence.model.map.TowerMap;
 import pink.zak.minestom.towerdefence.model.tower.TowerManager;
 import pink.zak.minestom.towerdefence.model.tower.TowerPlaceFailureReason;
 import pink.zak.minestom.towerdefence.model.tower.config.Tower;
@@ -32,11 +33,13 @@ public final class HotbarHandler {
     private final @NotNull EventNode<? super PlayerEvent> parentNode;
     private final @NotNull TowerManager towerManager;
     private final @NotNull TowerStorage towerStorage;
+    private final @NotNull TowerMap map;
 
     public HotbarHandler(@NotNull TowerDefenceModule module, @NotNull TowerManager towerManager, @NotNull EventNode<? super PlayerEvent> node) {
         this.parentNode = node;
         this.towerManager = towerManager;
         this.towerStorage = module.getTowerStorage();
+        this.map = module.getInstance().getTowerMap();
 
         this.eventNode.addListener(PlayerUseItemEvent.class, event -> {
             if (module.getGameState() != GameState.GAME) return;
@@ -58,6 +61,11 @@ public final class HotbarHandler {
 
                 if (targetBlockPos == null || towerType == null) { // classed as the player clicking air or tower not set
                     player.openInventory(new TowerPlaceUI(user, module.getTowerStorage()));
+                    return;
+                }
+
+                if (!this.map.getArea(user.getTeam()).isWithin(targetBlockPos)) {
+                    player.sendMessage(Component.text("You can only place towers on your side of the map (" + user.getTeam().name().toLowerCase() + ").", NamedTextColor.RED));
                     return;
                 }
 
