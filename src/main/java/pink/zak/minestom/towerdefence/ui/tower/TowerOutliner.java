@@ -1,8 +1,5 @@
 package pink.zak.minestom.towerdefence.ui.tower;
 
-import java.util.HashSet;
-import java.util.OptionalDouble;
-import java.util.Set;
 import net.kyori.adventure.text.format.TextColor;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Pos;
@@ -19,6 +16,10 @@ import pink.zak.minestom.towerdefence.model.tower.config.Tower;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;
+
+import java.util.HashSet;
+import java.util.OptionalDouble;
+import java.util.Set;
 
 public final class TowerOutliner {
 
@@ -49,11 +50,11 @@ public final class TowerOutliner {
         }
 
         Set<SendablePacket> packets = new HashSet<>();
-        for (double x = position1.x(); x < position2.x(); x += 0.1) {
+        for (double x = position1.x(); x < position2.x(); x += 0.3) {
             packets.add(this.createParticle(instance, new Pos(x, point.y(), position1.z() + 0.05), invalidPoints, size));
             packets.add(this.createParticle(instance, new Pos(x, point.y(), position2.z() - 0.05), invalidPoints, size));
         }
-        for (double z = position1.z(); z < position2.z(); z += 0.1) {
+        for (double z = position1.z(); z < position2.z(); z += 0.3) {
             packets.add(this.createParticle(instance, new Pos(position1.x() + 0.05, point.y(), z), invalidPoints, size));
             packets.add(this.createParticle(instance, new Pos(position2.x() - 0.05, point.y(), z), invalidPoints, size));
         }
@@ -93,7 +94,7 @@ public final class TowerOutliner {
                 Particle.DUST.withData(new DustParticleData(color, 1)),
                 point.x(), point.y() + offset, point.z(),
                 0, 0, 0,
-                0, 1
+                1f, 1
         );
     }
 
