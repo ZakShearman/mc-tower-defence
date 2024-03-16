@@ -120,7 +120,7 @@ public final class HotbarHandler {
     private void handleTowerPlaceClick(@NotNull TowerType towerType, @NotNull Player player, @NotNull GameUser gameUser, @NotNull Point clickedBlock) {
         Tower tower = this.towerStorage.getTower(towerType);
 
-        Result<TowerPlaceFailureReason> result = (this.towerManager.placeTower(tower, clickedBlock.add(0, 0.5, 0), gameUser));
+        Result<TowerPlaceFailureReason> result = (this.towerManager.placeTower(tower, clickedBlock.add(0.5, 0.5, 0.5), gameUser));
         if (!(result instanceof Result.Failure<TowerPlaceFailureReason> failure)) return;
 
         player.sendMessage(Component.text(switch (failure.reason()) {
