@@ -29,27 +29,6 @@ public final class InteractionHandler {
         this.parentNode = node;
         this.gameHandler = gameHandler;
         this.instance = module.getInstance();
-
-//        this.eventNode.addListener(PlayerBlockInteractEvent.class, event -> {
-//            if (event.getHand() != Player.Hand.MAIN) return;
-//            if (module.getGameState() != GameState.GAME) return;
-//
-//            Player player = event.getPlayer();
-//            GameUser user = module.getGameHandler().getGameUser(player);
-//            if (user == null) throw new IllegalStateException("Player is not associated with a game user");
-//
-//            Block block = event.getBlock();
-//
-//            // check if clicked block is a tower. if so, open the tower management UI
-//            if (block.hasTag(PlacedTower.ID_TAG)) {
-//                int id = block.getTag(PlacedTower.ID_TAG);
-//                PlacedTower<?> tower = module.getGameHandler().getTowerManager().getTower(user.getTeam(), id);
-//                if (tower == null)
-//                    throw new IllegalStateException("Player attempted to interact with a tower that does not exist");
-//                player.openInventory(new TowerManagementUI(tower, user, module.getGameHandler().getTowerManager()));
-//            }
-//        });
-
     }
 
     public void initialise() {
