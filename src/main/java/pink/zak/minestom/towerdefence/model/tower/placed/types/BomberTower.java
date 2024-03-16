@@ -1,18 +1,12 @@
 package pink.zak.minestom.towerdefence.model.tower.placed.types;
 
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
-
 import net.kyori.adventure.sound.Sound;
-import net.minestom.server.MinecraftServer;
 import net.minestom.server.ServerFlag;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.coordinate.Vec;
+import net.minestom.server.entity.Entity;
 import net.minestom.server.entity.EntityType;
-import net.minestom.server.entity.LivingEntity;
-import net.minestom.server.entity.damage.DamageType;
 import net.minestom.server.entity.metadata.other.PrimedTntMeta;
 import net.minestom.server.network.packet.server.ServerPacket;
 import net.minestom.server.network.packet.server.play.ParticlePacket;
@@ -29,6 +23,10 @@ import pink.zak.minestom.towerdefence.model.tower.config.towers.level.BomberTowe
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.targetting.Target;
+
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
 public final class BomberTower extends PlacedAttackingTower<BomberTowerLevel> {
     private static final double GRAVITY_PER_TICK = 0.04;
@@ -89,7 +87,7 @@ public final class BomberTower extends PlacedAttackingTower<BomberTowerLevel> {
         }
     }
 
-    private static class BombTnt extends LivingEntity {
+    private static class BombTnt extends Entity {
         private final BomberTower tower;
         private final Pos fallbackPos;
 
