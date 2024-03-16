@@ -62,15 +62,15 @@ public final class InteractionHandler {
                 if (user == null) throw new IllegalStateException("Player is not associated with a game user");
 
                 ItemStack item = player.getItemInMainHand();
-                if (!item.hasTag(TowerPlaceUI.UI_TAG)) return;
+                if (!item.hasTag(TowerPlaceUI.UI_TAG)) continue;
 
                 TowerType towerType = item.getTag(TowerPlaceUI.TOWER_TYPE);
-                if (towerType == null) return;
+                if (towerType == null) continue;
 
                 Point targetBlockPos = player.getTargetBlockPosition(TowerPlaceUI.TOWER_PLACE_DISTANCE);
-                if (targetBlockPos == null) return;
+                if (targetBlockPos == null) continue;
 
-                if (player.getInstance().getBlock(targetBlockPos).hasTag(PlacedTower.ID_TAG)) return;
+                if (player.getInstance().getBlock(targetBlockPos).hasTag(PlacedTower.ID_TAG)) continue;
 
                 player.sendPackets(outliner.calculateOutline(user, targetBlockPos, towerType));
             }
