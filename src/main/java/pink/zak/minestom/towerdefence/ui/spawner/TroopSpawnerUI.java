@@ -31,6 +31,7 @@ import pink.zak.minestom.towerdefence.model.user.TDPlayer;
 import pink.zak.minestom.towerdefence.queue.QueueFailureReason;
 import pink.zak.minestom.towerdefence.storage.MobStorage;
 import pink.zak.minestom.towerdefence.ui.ConfirmationUI;
+import pink.zak.minestom.towerdefence.upgrade.MobUpgradeFailureReason;
 import pink.zak.minestom.towerdefence.upgrade.UpgradeHandler;
 import pink.zak.minestom.towerdefence.utils.Result;
 
@@ -182,7 +183,14 @@ public final class TroopSpawnerUI extends Inventory {
         }
 
         player.openInventory(new ConfirmationUI(player, Component.text("This action will cost you $" + cost + ".", NamedTextColor.RED), result -> {
-            if (result) upgradeHandler.unlock(mob);
+            if (result) {
+                if (upgradeHandler.unlock(mob) instanceof Result.Failure<MobUpgradeFailureReason> failure) {
+                    player.sendMessage(switch (failure.reason()) { // todo: better feedback
+                        case ALREADY_AT_LEVEL -> "You have already unlocked this mob.";
+                        case CANNOT_AFFORD -> "You can not afford to unlock this mob.";
+                    });
+                }
+            }
             player.openInventory(this);
         }, false));
     }

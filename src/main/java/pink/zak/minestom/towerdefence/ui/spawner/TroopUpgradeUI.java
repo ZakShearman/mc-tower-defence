@@ -12,7 +12,9 @@ import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.model.mob.config.EnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.config.EnemyMobLevel;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
+import pink.zak.minestom.towerdefence.upgrade.MobUpgradeFailureReason;
 import pink.zak.minestom.towerdefence.upgrade.UpgradeHandler;
+import pink.zak.minestom.towerdefence.utils.Result;
 
 public final class TroopUpgradeUI extends Inventory {
 
@@ -85,7 +87,12 @@ public final class TroopUpgradeUI extends Inventory {
         EnemyMobLevel level = this.mob.getLevel(clickedLevel);
         if (level == null) return;
 
-        this.gameUser.getUpgradeHandler().upgrade(this.mob, level);
+        if (this.gameUser.getUpgradeHandler().upgrade(this.mob, level) instanceof Result.Failure<MobUpgradeFailureReason> failure) {
+            this.gameUser.getPlayer().sendMessage(switch (failure.reason()) {
+                case ALREADY_AT_LEVEL -> "You already have this level!";
+                case CANNOT_AFFORD -> "You cannot afford this upgrade!";
+            });
+        }
         this.refresh();
     }
 
