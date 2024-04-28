@@ -1,11 +1,53 @@
 package pink.zak.minestom.towerdefence.targetting;
 
 import java.util.Comparator;
+import java.util.Locale;
+import java.util.function.Function;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minestom.server.coordinate.Point;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingTDEnemyMob;
+import pink.zak.minestom.towerdefence.model.tower.placed.PlacedTower;
+import pink.zak.minestom.towerdefence.utils.StringUtils;
 
-public sealed interface Target extends Comparator<LivingTDEnemyMob> permits Target.Closest, Target.First, Target.Furthest, Target.Strongest, Target.Weakest {
+public sealed interface Target extends Comparator<LivingTDEnemyMob> {
+
+    enum Type {
+        CLOSEST(tower -> closest(tower.getBasePoint())),
+        FURTHEST(tower -> furthest(tower.getBasePoint())),
+        FIRST(ignored -> first()),
+        WEAKEST(ignored -> weakest()),
+        STRONGEST(ignored -> strongest());
+
+        private final @NotNull Function<PlacedTower<?>, Target> constructor;
+
+        Type(@NotNull Function<PlacedTower<?>, Target> constructor) {
+            this.constructor = constructor;
+        }
+
+        public @NotNull Target create(@NotNull PlacedTower<?> tower) {
+            return this.constructor.apply(tower);
+        }
+
+        public @NotNull Type next() {
+            return this.relative(1);
+        }
+
+        public @NotNull Type previous() {
+            return this.relative(-1);
+        }
+
+        private @NotNull Type relative(int offset) {
+            return Type.values()[(this.ordinal()+offset)%Type.values().length];
+        }
+
+        @Override
+        public String toString() {
+            return this.name().toLowerCase();
+        }
+
+    }
 
     /**
      * Target the closest mob to the given point.

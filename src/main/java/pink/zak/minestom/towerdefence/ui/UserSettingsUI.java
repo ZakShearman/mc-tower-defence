@@ -17,6 +17,7 @@ import pink.zak.minestom.towerdefence.model.user.TDPlayer;
 import pink.zak.minestom.towerdefence.model.user.settings.FlySpeed;
 import pink.zak.minestom.towerdefence.model.user.settings.HealthDisplayMode;
 import pink.zak.minestom.towerdefence.model.user.settings.ParticleThickness;
+import pink.zak.minestom.towerdefence.utils.ItemUtils;
 
 public final class UserSettingsUI extends Inventory {
 
@@ -92,25 +93,15 @@ public final class UserSettingsUI extends Inventory {
     }
 
     private @NotNull ItemStack createHealthDisplayItem(@NotNull HealthDisplayMode healthMode) {
-        return BASE_HEATH_DISPLAY_ITEM.withLore(this.createLore(healthMode, HealthDisplayMode.values()));
+        return BASE_HEATH_DISPLAY_ITEM.withLore(ItemUtils.createLore(healthMode, HealthDisplayMode.values()));
     }
 
     private @NotNull ItemStack createFlySpeedItem(@NotNull FlySpeed flySpeed) {
-        return BASE_FLIGHT_SPEED_ITEM.withLore(this.createLore(flySpeed, FlySpeed.values()));
+        return BASE_FLIGHT_SPEED_ITEM.withLore(ItemUtils.createLore(flySpeed, FlySpeed.values()));
     }
 
     private @NotNull ItemStack createParticleThicknessItem(@NotNull ParticleThickness particleThickness) {
-        return BASE_PARTICLE_THICKNESS_ITEM.withLore(this.createLore(particleThickness, ParticleThickness.values()));
-    }
-
-    private <T> @NotNull List<Component> createLore(@NotNull T value, @NotNull T[] values) {
-        List<Component> lore = new ArrayList<>();
-        for (T loopValue : values) {
-            String name = "> " + loopValue;
-            NamedTextColor colour = loopValue == value ? NamedTextColor.GREEN : NamedTextColor.RED;
-            lore.add(Component.text(name, colour).decoration(TextDecoration.ITALIC, false));
-        }
-        return lore;
+        return BASE_PARTICLE_THICKNESS_ITEM.withLore(ItemUtils.createLore(particleThickness, ParticleThickness.values()));
     }
 
 }

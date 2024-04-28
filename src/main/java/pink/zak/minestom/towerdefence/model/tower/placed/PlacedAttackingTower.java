@@ -20,6 +20,8 @@ import pink.zak.minestom.towerdefence.targetting.Target;
 
 public abstract class PlacedAttackingTower<T extends AttackingTowerLevel> extends PlacedTower<T> implements DamageSource {
 
+    protected @NotNull Target.Type target = Target.Type.CLOSEST;
+
     private int ticksSinceLastAttack = this.level.getFireDelay();
 
     // todo: give this tower a protected event node of some sort
@@ -96,13 +98,18 @@ public abstract class PlacedAttackingTower<T extends AttackingTowerLevel> extend
             targets.add(mob);
         }
 
+        // sort targets by the target type
+        targets.sort(this.target.create(this));
+
         return targets;
     }
 
-    public @NotNull List<LivingTDEnemyMob> findPossibleTargets(@NotNull Target target) {
-        List<LivingTDEnemyMob> targets = findPossibleTargets();
-        targets.sort(target);
-        return targets;
+    public Target.@NotNull Type getTarget() {
+        return target;
+    }
+
+    public void setTarget(Target.@NotNull Type target) {
+        this.target = target;
     }
 
 }
