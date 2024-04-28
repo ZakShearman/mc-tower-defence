@@ -89,8 +89,8 @@ public final class GameHandler {
 
         this.towerManager = new TowerManager(this.instance, this);
         this.mobHandler = new MobHandler(module, this);
-        this.hotbarHandler = new HotbarHandler(module, this.towerManager, MinecraftServer.getGlobalEventHandler()); // todo: replace with game event node
-        this.interactionHandler = new InteractionHandler(module, MinecraftServer.getGlobalEventHandler()); // todo: replace with game event node
+        this.hotbarHandler = new HotbarHandler(module, this.towerManager, this, MinecraftServer.getGlobalEventHandler()); // todo: replace with game event node
+        this.interactionHandler = new InteractionHandler(module, this, MinecraftServer.getGlobalEventHandler()); // todo: replace with game event node
 
         this.defaultEnemyMobs = module.getMobStorage().getEnemyMobs()
                 .stream()

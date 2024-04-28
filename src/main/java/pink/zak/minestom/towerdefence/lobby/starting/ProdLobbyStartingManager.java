@@ -1,5 +1,6 @@
 package pink.zak.minestom.towerdefence.lobby.starting;
 
+import dev.emortal.minestom.core.utils.KurushimiMinestomUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.MinecraftServer;
@@ -160,10 +161,16 @@ public class ProdLobbyStartingManager {
      */
     private void cancelGame() {
         Audiences.all().sendMessage(Component.text("Not enough players to start the game.", NamedTextColor.RED)
-                .append(Component.newline())
+                .appendNewline()
                 .append(Component.text("You will be returned to the lobby.", NamedTextColor.RED)));
 
-        // todo send players back to lobby
+        KurushimiMinestomUtils.sendToLobby(MinecraftServer.getConnectionManager().getOnlinePlayers(), () -> {
+            LOGGER.info("Sent all players back to the lobby");
+            MinecraftServer.stopCleanly();
+        }, () -> {
+            LOGGER.warn("Failed to send all players back to the lobby. Forcing shutdown.");
+            MinecraftServer.stopCleanly();
+        }, 1);
     }
 
     private void destroy() {

@@ -10,6 +10,7 @@ import pink.zak.minestom.towerdefence.api.event.player.PlayerUpgradeMobEvent;
 import pink.zak.minestom.towerdefence.model.mob.config.EnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.config.EnemyMobLevel;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
+import pink.zak.minestom.towerdefence.utils.Result;
 
 public final class UpgradeHandler {
 
@@ -36,27 +37,28 @@ public final class UpgradeHandler {
         return Optional.ofNullable(this.mobs.get(mob));
     }
 
-    public boolean unlock(@NotNull EnemyMob mob) {
+    public @NotNull Result<MobUpgradeFailureReason> unlock(@NotNull EnemyMob mob) {
+        //noinspection DataFlowIssue there will always be a level 1
         return this.upgrade(mob, mob.getLevel(1));
     }
 
-    public boolean upgrade(@NotNull EnemyMob mob, @NotNull EnemyMobLevel level) {
+    public @NotNull Result<MobUpgradeFailureReason> upgrade(@NotNull EnemyMob mob, @NotNull EnemyMobLevel level) {
         return this.upgrade(mob, level, false);
     }
 
-    public boolean upgrade(@NotNull EnemyMob mob, @NotNull EnemyMobLevel level, boolean free) {
+    public @NotNull Result<MobUpgradeFailureReason> upgrade(@NotNull EnemyMob mob, @NotNull EnemyMobLevel level, boolean free) {
         // get current level
         EnemyMobLevel currentLevel = this.getLevel(mob).orElse(null);
 
         // check if the mob is already at the level
-        if (currentLevel != null && currentLevel.compareTo(level) >= 0) return false;
+        if (currentLevel != null && currentLevel.compareTo(level) >= 0) return Result.failure(MobUpgradeFailureReason.ALREADY_AT_LEVEL);
 
         if (!free) {
             // calculate cost of upgrade
             int cost = this.getCost(mob, level);
 
             // check if user can afford upgrade
-            if (this.user.getCoins() < cost) return false;
+            if (this.user.getCoins() < cost) return Result.failure(MobUpgradeFailureReason.CANNOT_AFFORD);
 
             // charge user for upgrade
             this.user.updateCoins(balance -> balance - cost);
@@ -72,7 +74,7 @@ public final class UpgradeHandler {
                 level
         ));
 
-        return true;
+        return Result.success();
     }
 
     public int getCost(@NotNull EnemyMob mob, @NotNull EnemyMobLevel level) {
