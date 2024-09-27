@@ -1,6 +1,5 @@
 package pink.zak.minestom.towerdefence.model.tower.placed.types;
 
-import java.util.List;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Vec;
@@ -22,6 +21,8 @@ import pink.zak.minestom.towerdefence.model.tower.config.relative.RelativePoint;
 import pink.zak.minestom.towerdefence.model.tower.config.towers.level.EarthquakeTowerLevel;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
+
+import java.util.List;
 
 public final class EarthquakeTower extends PlacedAttackingTower<EarthquakeTowerLevel> {
     private static final Tag<Double> ORIGINAL_GRAVITY_TAG = Tag.Double("originalGravity");
@@ -65,12 +66,12 @@ public final class EarthquakeTower extends PlacedAttackingTower<EarthquakeTowerL
             return;
         }
 
-        singleMob.setTag(ORIGINAL_GRAVITY_TAG, singleMob.getGravityAcceleration());
-        singleMob.setGravity(singleMob.getGravityDragPerTick(), 0.04);
+        singleMob.setTag(ORIGINAL_GRAVITY_TAG, singleMob.getAerodynamics().gravity());
+        singleMob.setAerodynamics(singleMob.getAerodynamics().withGravity(0.04));
         singleMob.setVelocity(new Vec(0, 4.5, 0));
 
         MinecraftServer.getSchedulerManager().buildTask(() -> {
-            singleMob.setGravity(singleMob.getGravityDragPerTick(), singleMob.getTag(ORIGINAL_GRAVITY_TAG));
+            singleMob.setAerodynamics(singleMob.getAerodynamics().withGravity(singleMob.getTag(ORIGINAL_GRAVITY_TAG)));
             singleMob.removeTag(ORIGINAL_GRAVITY_TAG);
         }).delay(this.level.getStunTicks(), TimeUnit.SERVER_TICK).schedule();
     }

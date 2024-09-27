@@ -1,16 +1,13 @@
 package pink.zak.minestom.towerdefence.model.mob.config;
 
 import com.google.gson.JsonObject;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import net.minestom.server.MinecraftServer;
 import net.minestom.server.ServerFlag;
 import net.minestom.server.entity.EntityType;
+import net.minestom.server.item.ItemComponent;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import org.jetbrains.annotations.NotNull;
@@ -20,6 +17,10 @@ import pink.zak.minestom.towerdefence.statdiff.types.DoubleStatDiff;
 import pink.zak.minestom.towerdefence.statdiff.types.IntStatDiff;
 import pink.zak.minestom.towerdefence.utils.ItemUtils;
 import pink.zak.minestom.towerdefence.utils.NumberUtils;
+
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EnemyMobLevel implements Diffable<EnemyMobLevel>, Comparable<EnemyMobLevel> {
     private static final String SEND_ITEM_NAME = "<i:false><mob_name> <level_numeral>";
@@ -70,25 +71,18 @@ public class EnemyMobLevel implements Diffable<EnemyMobLevel>, Comparable<EnemyM
     }
 
     public ItemStack createSendItem() {
-        return ItemStack.builder(this.sendItem.material())
-                .meta(this.sendItem.meta())
-                .displayName(MiniMessage.miniMessage().deserialize(SEND_ITEM_NAME,
-                        Placeholder.unparsed("mob_name", this.name),
-                        Placeholder.unparsed("level_numeral", NumberUtils.toRomanNumerals(this.level)),
-                        Placeholder.unparsed("cost", String.valueOf(this.sendCost))))
-                .lore(this.createStatLore())
-                .build();
-    }
-
-    public @NotNull ItemStack createPreviewItem() {
-        return ItemStack.builder(this.sendItem.material())
-                .meta(this.sendItem.meta())
-                .build();
+        return this.sendItem.with(builder -> {
+            builder.set(ItemComponent.CUSTOM_NAME, MiniMessage.miniMessage().deserialize(SEND_ITEM_NAME,
+                    Placeholder.unparsed("mob_name", this.name),
+                    Placeholder.unparsed("level_numeral", NumberUtils.toRomanNumerals(this.level)),
+                    Placeholder.unparsed("cost", String.valueOf(this.sendCost))));
+            builder.set(ItemComponent.LORE, this.createStatLore());
+        });
     }
 
     public ItemStack createStatUpgradeItem(int cost, boolean canAfford, boolean owned) {
         return ItemStack.builder(owned ? Material.GREEN_STAINED_GLASS_PANE : canAfford ? Material.ORANGE_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE)
-                .displayName(MiniMessage.miniMessage().deserialize(
+                .set(ItemComponent.CUSTOM_NAME, MiniMessage.miniMessage().deserialize(
                         UPGRADE_ITEM_NAME.formatted(owned ? "green" : canAfford ? "gold" : "red"),
                         Placeholder.unparsed("level_numeral", NumberUtils.toRomanNumerals(this.level)),
                         Placeholder.unparsed("cost", String.valueOf(cost))))
@@ -100,7 +94,7 @@ public class EnemyMobLevel implements Diffable<EnemyMobLevel>, Comparable<EnemyM
         String itemName = UPGRADE_ITEM_NAME.formatted(canAfford ? "gold" : "red");
 
         return ItemStack.builder(canAfford ? Material.ORANGE_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE)
-                .displayName(MiniMessage.miniMessage().deserialize(itemName,
+                .set(ItemComponent.CUSTOM_NAME, MiniMessage.miniMessage().deserialize(itemName,
                         Placeholder.unparsed("level_numeral", NumberUtils.toRomanNumerals(this.level)),
                         Placeholder.unparsed("cost", String.valueOf(cost))))
                 .lore(this.createUpgradeLore(currentLevel))

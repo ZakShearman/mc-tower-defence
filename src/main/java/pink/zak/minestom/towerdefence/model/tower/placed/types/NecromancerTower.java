@@ -1,19 +1,14 @@
 package pink.zak.minestom.towerdefence.model.tower.placed.types;
 
-import com.extollit.gaming.ai.path.HydrazinePathFinder;
-import com.extollit.gaming.ai.path.SchedulingPriority;
-import java.util.concurrent.atomic.AtomicInteger;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import net.minestom.server.attribute.Attribute;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.entity.Player;
 import net.minestom.server.entity.ai.EntityAIGroupBuilder;
 import net.minestom.server.entity.ai.goal.MeleeAttackGoal;
 import net.minestom.server.entity.ai.target.ClosestEntityTarget;
-import net.minestom.server.entity.pathfinding.Navigator;
-import net.minestom.server.entity.pathfinding.PFPathingEntity;
+import net.minestom.server.entity.attribute.Attribute;
 import net.minestom.server.utils.Direction;
 import net.minestom.server.utils.time.TimeUnit;
 import org.jetbrains.annotations.NotNull;
@@ -29,6 +24,8 @@ import pink.zak.minestom.towerdefence.model.tower.placed.PlacedTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.model.user.TDPlayer;
 import pink.zak.minestom.towerdefence.utils.StringUtils;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 public final class NecromancerTower extends PlacedTower<NecromancerTowerLevel> {
     private final AtomicInteger necromancedMobCount = new AtomicInteger(0);
@@ -66,22 +63,12 @@ public final class NecromancerTower extends PlacedTower<NecromancerTowerLevel> {
             this.enemyMobLevel = originalMob.getEnemyMobLevel();
             this.owner = owner;
 
-            this.getAttribute(Attribute.MOVEMENT_SPEED).setBaseValue((float) this.enemyMobLevel.getMovementSpeed() + 0.050f);
-            this.getAttribute(Attribute.MAX_HEALTH).setBaseValue(towerLevel.getNecromancedHealth());
-
-            Navigator navigator = this.getNavigator();
-            PFPathingEntity pathingEntity = navigator.getPathingEntity();
-
-            this.setNoGravity(originalMob.getEnemyMob().isFlying());
-            pathingEntity.setAvian(this.hasNoGravity());
+            this.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue((float) this.enemyMobLevel.getMovementSpeed() + 0.050f);
+            this.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(towerLevel.getNecromancedHealth());
 
             this.setHealth(towerLevel.getNecromancedHealth());
             this.setCustomNameVisible(true);
 
-            HydrazinePathFinder pathFinder = new HydrazinePathFinder(this.getNavigator().getPathingEntity(), originalMob.getInstance().getInstanceSpace());
-            pathFinder.schedulingPriority(SchedulingPriority.high);
-
-            navigator.setPathFinder(pathFinder);
 
             this.addAIGroup(
                     new EntityAIGroupBuilder()

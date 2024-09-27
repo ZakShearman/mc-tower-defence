@@ -27,7 +27,6 @@ public class TDPlayer extends Player {
 
     public TDPlayer(@NotNull UUID uuid, @NotNull String username, @NotNull PlayerConnection connection) {
         super(uuid, username, connection);
-        this.uuid = uuid;
     }
 
     public @NotNull HealthDisplayMode getHealthMode() {

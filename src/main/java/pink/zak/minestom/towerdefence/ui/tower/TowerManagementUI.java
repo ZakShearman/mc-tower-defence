@@ -1,12 +1,5 @@
 package pink.zak.minestom.towerdefence.ui.tower;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -16,12 +9,12 @@ import net.minestom.server.coordinate.Point;
 import net.minestom.server.inventory.Inventory;
 import net.minestom.server.inventory.InventoryType;
 import net.minestom.server.inventory.click.ClickType;
+import net.minestom.server.item.ItemComponent;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import net.minestom.server.network.packet.server.SendablePacket;
 import net.minestom.server.network.packet.server.play.ParticlePacket;
 import net.minestom.server.particle.Particle;
-import net.minestom.server.particle.data.DustParticleData;
 import net.minestom.server.timer.Task;
 import net.minestom.server.utils.time.TimeUnit;
 import org.jetbrains.annotations.NotNull;
@@ -32,18 +25,26 @@ import pink.zak.minestom.towerdefence.model.tower.placed.PlacedTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.model.user.TDPlayer;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 public final class TowerManagementUI extends Inventory {
 
     private static final @NotNull MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
     private static final @NotNull ItemStack BASE_PREVIEW_TOWER_RADIUS_ITEM = ItemStack.builder(Material.REDSTONE)
-            .displayName(Component.text("Preview Tower Radius", NamedTextColor.RED).decoration(TextDecoration.ITALIC, false))
+            .set(ItemComponent.CUSTOM_NAME, Component.text("Preview Tower Radius", NamedTextColor.RED).decoration(TextDecoration.ITALIC, false))
             .build();
     private static final @NotNull ItemStack REMOVE_TOWER_ITEM = ItemStack.builder(Material.BARRIER)
-            .displayName(Component.text("Remove Tower", NamedTextColor.RED).decoration(TextDecoration.ITALIC, false))
-            .lore(List.of(
+            .set(ItemComponent.CUSTOM_NAME, Component.text("Remove Tower", NamedTextColor.RED).decoration(TextDecoration.ITALIC, false))
+            .set(ItemComponent.LORE, List.of(
                     Component.empty(),
                     Component.text("Removes the tower", NamedTextColor.RED).decoration(TextDecoration.ITALIC, false)
-            )).build();
+            ))
+            .build();
 
     private final @NotNull PlacedTower<?> tower;
     private final @NotNull GameUser user;
@@ -176,7 +177,7 @@ public final class TowerManagementUI extends Inventory {
 
             packets.add(
                     new ParticlePacket(
-                            Particle.DUST.withData(new DustParticleData(NamedTextColor.RED, 1)),
+                            Particle.DUST.withColor(NamedTextColor.RED).withScale(1),
                             circumference.x(), circumference.y(), circumference.z(),
                             0, 0, 0, 0.1f, 1
                     )

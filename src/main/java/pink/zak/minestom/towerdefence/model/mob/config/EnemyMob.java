@@ -2,21 +2,23 @@ package pink.zak.minestom.towerdefence.model.mob.config;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.minestom.server.item.ItemComponent;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pink.zak.minestom.towerdefence.model.mob.statuseffect.StatusEffectType;
 import pink.zak.minestom.towerdefence.utils.ItemUtils;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public class EnemyMob {
     private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
@@ -51,7 +53,7 @@ public class EnemyMob {
 
         ItemStack item = jsonObject.has("item") ? ItemUtils.fromJsonObject(jsonObject.get("item").getAsJsonObject(), null) : null;
         if (item == null) {
-            this.baseItem = ItemStack.builder(Material.BARRIER).displayName(Component.text("No item set")).build();
+            this.baseItem = ItemStack.builder(Material.BARRIER).set(ItemComponent.CUSTOM_NAME, Component.text("No item set")).build();
         } else {
             EnemyMobLevel levelOne = this.levels.get(1);
             List<Component> lore = new ArrayList<>();
@@ -61,8 +63,10 @@ public class EnemyMob {
             lore.addAll(levelOne.generateDiff(levelOne).generateStatLines());
 
             this.baseItem = item
-                    .withDisplayName(MINI_MESSAGE.deserialize(BASE_ITEM_DISPLAY_NAME, Placeholder.unparsed("mob_name", this.commonName)))
-                    .withLore(lore);
+                    .with(builder -> {
+                        builder.set(ItemComponent.CUSTOM_NAME, MINI_MESSAGE.deserialize(BASE_ITEM_DISPLAY_NAME, Placeholder.unparsed("mob_name", this.commonName)));
+                        builder.set(ItemComponent.LORE, lore);
+                    });
         }
     }
 

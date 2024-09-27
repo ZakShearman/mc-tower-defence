@@ -1,17 +1,12 @@
 package pink.zak.minestom.towerdefence.queue;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.stream.Collectors;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.MinecraftServer;
+import net.minestom.server.item.ItemComponent;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
-import net.minestom.server.item.metadata.BundleMeta;
 import net.minestom.server.timer.Task;
 import net.minestom.server.timer.TaskSchedule;
 import org.jetbrains.annotations.NotNull;
@@ -22,11 +17,17 @@ import pink.zak.minestom.towerdefence.model.mob.config.EnemyMob;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.utils.Result;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.stream.Collectors;
+
 public final class MobQueue {
 
     private static final int MAX_QUEUE_TIME = 45_000; // 45 seconds
     private static final @NotNull ItemStack BASE_QUEUE_ITEM = ItemStack.builder(Material.BUNDLE)
-            .displayName(Component.text("Current Queue", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
+            .set(ItemComponent.CUSTOM_NAME, Component.text("Current Queue", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
             .build();
 
     private final @NotNull Queue<QueuedEnemyMob> queue = new ConcurrentLinkedQueue<>();
@@ -123,7 +124,7 @@ public final class MobQueue {
                     long amount = entry.getValue();
                     return mob.getBaseItem().withAmount((int) amount);
                 }).toList();
-        return BASE_QUEUE_ITEM.withMeta(BundleMeta.class, meta -> meta.items(items));
-    }
 
+        return BASE_QUEUE_ITEM.with(ItemComponent.BUNDLE_CONTENTS, items);
+    }
 }

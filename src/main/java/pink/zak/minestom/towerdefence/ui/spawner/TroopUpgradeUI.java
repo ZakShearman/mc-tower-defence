@@ -1,11 +1,11 @@
 package pink.zak.minestom.towerdefence.ui.spawner;
 
-import java.util.Optional;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.inventory.Inventory;
 import net.minestom.server.inventory.InventoryType;
+import net.minestom.server.item.ItemComponent;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import org.jetbrains.annotations.NotNull;
@@ -16,10 +16,12 @@ import pink.zak.minestom.towerdefence.upgrade.MobUpgradeFailureReason;
 import pink.zak.minestom.towerdefence.upgrade.UpgradeHandler;
 import pink.zak.minestom.towerdefence.utils.Result;
 
+import java.util.Optional;
+
 public final class TroopUpgradeUI extends Inventory {
 
     private static final @NotNull ItemStack BACK_ITEM = ItemStack.builder(Material.BARRIER)
-            .displayName(Component.text("Back", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
+            .set(ItemComponent.CUSTOM_NAME, Component.text("Back", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
             .build();
 
     private final @NotNull Inventory parent;

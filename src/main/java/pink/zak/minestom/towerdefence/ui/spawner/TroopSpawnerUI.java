@@ -1,10 +1,5 @@
 package pink.zak.minestom.towerdefence.ui.spawner;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
-
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -19,6 +14,7 @@ import net.minestom.server.event.trait.PlayerEvent;
 import net.minestom.server.inventory.Inventory;
 import net.minestom.server.inventory.InventoryType;
 import net.minestom.server.inventory.click.ClickType;
+import net.minestom.server.item.ItemComponent;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import org.jetbrains.annotations.NotNull;
@@ -35,15 +31,20 @@ import pink.zak.minestom.towerdefence.upgrade.MobUpgradeFailureReason;
 import pink.zak.minestom.towerdefence.upgrade.UpgradeHandler;
 import pink.zak.minestom.towerdefence.utils.Result;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
+
 public final class TroopSpawnerUI extends Inventory {
 
     public static final @NotNull ItemStack HOTBAR_ITEM = ItemStack.builder(Material.CHEST)
-            .displayName(Component.text("Send Troops", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
+            .set(ItemComponent.CUSTOM_NAME, Component.text("Send Troops", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
             .build();
 
     private static final @NotNull Component SEND_TITLE = Component.text("Send Troops", NamedTextColor.DARK_GRAY);
     private static final @NotNull ItemStack SHORTCUTS_ITEM = ItemStack.builder(Material.PAPER)
-            .displayName(Component.text("Shortcuts", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
+            .set(ItemComponent.CUSTOM_NAME, Component.text("Shortcuts", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
             .lore(Stream.of(
                     "",
                     "<i:false><yellow>Quick Send Mobs <gold>(</gold> HOLD 1 <gold>)</gold>",
@@ -97,7 +98,7 @@ public final class TroopSpawnerUI extends Inventory {
                     .map(level -> level.createSendItem().withAmount(level.asInteger()))
                     .orElse(enemyMob.getBaseItem());
 
-            List<@NotNull Component> lore = new ArrayList<>(item.getLore());
+            List<@NotNull Component> lore = new ArrayList<>(item.get(ItemComponent.LORE, List.of()));
             JoinConfiguration separator = JoinConfiguration.separator(Component.space());
 
             lore.add(Component.empty());

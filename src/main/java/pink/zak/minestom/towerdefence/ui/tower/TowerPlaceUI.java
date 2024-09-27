@@ -5,6 +5,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.inventory.Inventory;
 import net.minestom.server.inventory.InventoryType;
+import net.minestom.server.item.ItemComponent;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import net.minestom.server.tag.Tag;
@@ -26,8 +27,8 @@ public final class TowerPlaceUI extends Inventory {
     public static final @NotNull Tag<TowerType> TOWER_TYPE = Tag.Byte("tower_type").map(b -> TowerType.values()[b], t -> (byte) t.ordinal());
 
     public static final @NotNull ItemStack HOTBAR_ITEM = ItemStack.builder(Material.ENDER_CHEST)
-            .displayName(Component.text("Place Tower", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
-            .lore(createItemLore(null))
+            .set(ItemComponent.CUSTOM_NAME, Component.text("Place Tower", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
+            .set(ItemComponent.LORE, createItemLore(null))
             .set(UI_TAG, true)
             .build();
 
@@ -67,8 +68,8 @@ public final class TowerPlaceUI extends Inventory {
 
     private static ItemStack createItemStack(@NotNull Tower tower) {
         return ItemStack.builder(tower.getBaseItem().material())
-                .displayName(Component.text("Place Tower: " + tower.getName(), NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
-                .lore(createItemLore(tower))
+                .set(ItemComponent.CUSTOM_NAME, Component.text("Place Tower: " + tower.getName(), NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
+                .set(ItemComponent.LORE, createItemLore(tower))
                 .set(UI_TAG, true)
                 .set(TOWER_TYPE, tower.getType())
                 .build();

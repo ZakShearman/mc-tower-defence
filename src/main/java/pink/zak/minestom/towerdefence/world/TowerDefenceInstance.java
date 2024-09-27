@@ -49,7 +49,7 @@ public class TowerDefenceInstance extends InstanceContainer {
     private final TowerMap towerMap;
 
     public TowerDefenceInstance(DimensionType dimensionType, String worldName) {
-        super(UUID.randomUUID(), dimensionType, (IChunkLoader) null);
+        super(UUID.randomUUID(), WorldLoader.DIMENSION_TYPE_KEY, (IChunkLoader) null);
         Path mapPath = MAP_PATH.resolve(worldName);
 
         PolarLoader loader;

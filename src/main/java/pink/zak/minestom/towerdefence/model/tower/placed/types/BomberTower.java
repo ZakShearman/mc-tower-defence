@@ -2,6 +2,7 @@ package pink.zak.minestom.towerdefence.model.tower.placed.types;
 
 import net.kyori.adventure.sound.Sound;
 import net.minestom.server.ServerFlag;
+import net.minestom.server.collision.Aerodynamics;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.coordinate.Vec;
@@ -29,8 +30,8 @@ import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 public final class BomberTower extends PlacedAttackingTower<BomberTowerLevel> {
-    private static final double GRAVITY_PER_TICK = 0.04;
-    private static final double DRAG_PER_TICK = 0;
+    private static final double GRAVITY = 0.04;
+    private static final double AIR_RESISTANCE = 1;
 
     private static final int RAISE_TICKS = 6;
     private static final double RAISE_BLOCKS = 1.5;
@@ -39,7 +40,7 @@ public final class BomberTower extends PlacedAttackingTower<BomberTowerLevel> {
     private static final @NotNull Vec RAISE_VELOCITY;
 
     static {
-        RAISE_VELOCITY = new Vec(0, findVelocity(RAISE_BLOCKS, -GRAVITY_PER_TICK, RAISE_TICKS), 0);
+        RAISE_VELOCITY = new Vec(0, findVelocity(RAISE_BLOCKS, -GRAVITY, RAISE_TICKS), 0);
     }
 
     private Point spawnPoint;
@@ -95,11 +96,10 @@ public final class BomberTower extends PlacedAttackingTower<BomberTowerLevel> {
             super(EntityType.TNT);
             this.tower = tower;
 
-            super.hasPhysics = false;
             ((PrimedTntMeta) this.getEntityMeta()).setFuseTime(RAISE_TICKS + FLYING_TICKS);
 
             this.setInstance(tower.gameHandler.getInstance(), tower.spawnPoint);
-            this.setGravity(DRAG_PER_TICK, GRAVITY_PER_TICK);
+            this.setAerodynamics(new Aerodynamics(GRAVITY, AIR_RESISTANCE, AIR_RESISTANCE));
             this.setVelocity(RAISE_VELOCITY);
 
             this.fallbackPos = fallbackTarget.getPosition();
@@ -118,7 +118,7 @@ public final class BomberTower extends PlacedAttackingTower<BomberTowerLevel> {
             } else if (aliveTicks == RAISE_TICKS + FLYING_TICKS) {
                 Pos pos = this.getPosition();
 
-                ServerPacket soundPacket = new SoundEffectPacket(null, SoundEvent.ENTITY_GENERIC_EXPLODE.name(), 20f, Sound.Source.PLAYER,
+                ServerPacket soundPacket = new SoundEffectPacket(SoundEvent.ENTITY_GENERIC_EXPLODE, Sound.Source.PLAYER,
                         pos.blockX(), pos.blockY(), pos.blockZ(), 1f, 1f, ThreadLocalRandom.current().nextLong());
 
                 ParticlePacket particlePacket = new ParticlePacket(
@@ -135,13 +135,13 @@ public final class BomberTower extends PlacedAttackingTower<BomberTowerLevel> {
     }
 
     public Vec calculateLaunchVec(@NotNull Point current, @NotNull Point target) {
-        double x = target.x() - current.x();
-        double z = target.z() - current.z();
-        double y = target.y() - current.y();
+        double xd = target.x() - current.x();
+        double zd = target.z() - current.z();
+        double yd = target.y() - current.y();
 
-        double xVel = findVelocity(x, -DRAG_PER_TICK, FLYING_TICKS);
-        double zVel = findVelocity(z, -DRAG_PER_TICK, FLYING_TICKS);
-        double yVel = findVelocity(y, -GRAVITY_PER_TICK, FLYING_TICKS);
+        double xVel = findVelocity(xd, AIR_RESISTANCE - 1, FLYING_TICKS);
+        double yVel = findVelocity(yd, -GRAVITY, FLYING_TICKS);
+        double zVel = findVelocity(zd, AIR_RESISTANCE - 1, FLYING_TICKS);
         return new Vec(xVel, yVel, zVel);
     }
 

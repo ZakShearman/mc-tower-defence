@@ -238,12 +238,12 @@ public final class GameHandler {
 
                     if (Environment.isProduction()) {
                         KurushimiMinestomUtils.sendToLobby(MinecraftServer.getConnectionManager().getOnlinePlayers(), () -> {
-                            this.kubernetesModule.getSdk().shutdown(AgonesSDKProto.Empty.getDefaultInstance(), new IgnoredStreamObserver<>());
+                            this.kubernetesModule.getAgonesSdk().shutdown(AgonesSDKProto.Empty.getDefaultInstance(), new IgnoredStreamObserver<>());
                         }, () -> {
                             for (Player player : MinecraftServer.getConnectionManager().getOnlinePlayers()) {
                                 player.kick(Component.text("Server shutting down"));
                             }
-                            this.kubernetesModule.getSdk().shutdown(AgonesSDKProto.Empty.getDefaultInstance(), new IgnoredStreamObserver<>());
+                            this.kubernetesModule.getAgonesSdk().shutdown(AgonesSDKProto.Empty.getDefaultInstance(), new IgnoredStreamObserver<>());
                         });
                     }
                 })

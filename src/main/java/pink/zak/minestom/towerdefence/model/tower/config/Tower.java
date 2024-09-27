@@ -2,10 +2,6 @@ package pink.zak.minestom.towerdefence.model.tower.config;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -13,6 +9,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.instance.block.Block;
+import net.minestom.server.item.ItemComponent;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import org.jetbrains.annotations.NotNull;
@@ -22,6 +19,11 @@ import pink.zak.minestom.towerdefence.model.tower.placed.PlacedTower;
 import pink.zak.minestom.towerdefence.utils.ItemUtils;
 import pink.zak.minestom.towerdefence.utils.StringUtils;
 import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 
 public class Tower {
     private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
@@ -58,10 +60,10 @@ public class Tower {
                 .toList();
 
         this.baseItem = this.item.with(builder -> {
-            builder.displayName(MINI_MESSAGE.deserialize(BASE_ITEM_DISPLAY_NAME,
+            builder.set(ItemComponent.CUSTOM_NAME, MINI_MESSAGE.deserialize(BASE_ITEM_DISPLAY_NAME,
                     Placeholder.unparsed("tower_name", this.name),
-                    Placeholder.unparsed("tower_cost", String.valueOf(this.levels.get(1).getCost())))
-            );
+                    Placeholder.unparsed("tower_cost", String.valueOf(this.levels.get(1).getCost()))
+            ));
 
             List<Component> description = new ArrayList<>();
             description.add(Component.empty());
@@ -71,7 +73,7 @@ public class Tower {
                     .append(Component.text(this.type.getSize().getFormattedName(), NamedTextColor.YELLOW))
                     .decoration(TextDecoration.ITALIC, false));
 
-            builder.lore(description);
+            builder.set(ItemComponent.LORE, description);
         });
     }
 

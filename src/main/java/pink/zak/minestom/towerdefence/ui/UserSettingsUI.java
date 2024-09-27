@@ -1,42 +1,44 @@
 package pink.zak.minestom.towerdefence.ui;
 
-import java.util.ArrayList;
-import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minestom.server.color.Color;
 import net.minestom.server.inventory.Inventory;
 import net.minestom.server.inventory.InventoryType;
-import net.minestom.server.item.ItemHideFlag;
+import net.minestom.server.item.ItemComponent;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
-import net.minestom.server.item.metadata.PotionMeta;
+import net.minestom.server.item.component.PotionContents;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.model.user.TDPlayer;
 import pink.zak.minestom.towerdefence.model.user.settings.FlySpeed;
 import pink.zak.minestom.towerdefence.model.user.settings.HealthDisplayMode;
 import pink.zak.minestom.towerdefence.model.user.settings.ParticleThickness;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public final class UserSettingsUI extends Inventory {
 
     public static final @NotNull ItemStack HOTBAR_ITEM = ItemStack.builder(Material.COMMAND_BLOCK_MINECART)
-            .displayName(Component.text("User Settings", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
+            .set(ItemComponent.CUSTOM_NAME, Component.text("User Settings", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
             .build();
 
     private static final @NotNull Component MENU_TITLE = Component.text("User Settings", NamedTextColor.DARK_GRAY);
     private static final @NotNull ItemStack BASE_DAMAGE_INDICATORS_ITEM = ItemStack.builder(Material.OAK_SIGN)
-            .displayName(Component.text("Show Damage Indicators", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false))
+            .set(ItemComponent.CUSTOM_NAME, Component.text("Show Damage Indicators", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false))
             .build();
     private static final @NotNull ItemStack BASE_HEATH_DISPLAY_ITEM = ItemStack.builder(Material.POTION)
-            .displayName(Component.text("Health Display Mode", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false))
-            .meta(PotionMeta.class, meta -> meta.color(new Color(NamedTextColor.RED)).hideFlag(ItemHideFlag.HIDE_POTION_EFFECTS))
+            .set(ItemComponent.CUSTOM_NAME, Component.text("Health Display Mode", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false))
+            .set(ItemComponent.POTION_CONTENTS, new PotionContents(null, new Color(NamedTextColor.RED), List.of()))
+            .set(ItemComponent.HIDE_TOOLTIP)
             .build();
     private static final @NotNull ItemStack BASE_FLIGHT_SPEED_ITEM = ItemStack.builder(Material.FEATHER)
-            .displayName(Component.text("Fly Speed", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false))
+            .set(ItemComponent.CUSTOM_NAME, Component.text("Fly Speed", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false))
             .build();
     private static final @NotNull ItemStack BASE_PARTICLE_THICKNESS_ITEM = ItemStack.builder(Material.REDSTONE)
-            .displayName(Component.text("Particle Thickness", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false))
+            .set(ItemComponent.CUSTOM_NAME, Component.text("Particle Thickness", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false))
             .build();
 
     private final @NotNull TDPlayer player;

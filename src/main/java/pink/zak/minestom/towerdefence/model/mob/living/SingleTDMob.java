@@ -1,8 +1,5 @@
 package pink.zak.minestom.towerdefence.model.mob.living;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.entity.Entity;
 import net.minestom.server.entity.EntityCreature;
@@ -13,6 +10,10 @@ import net.minestom.server.network.packet.server.LazyPacket;
 import net.minestom.server.network.packet.server.play.EntityHeadLookPacket;
 import net.minestom.server.network.packet.server.play.EntityMetaDataPacket;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class SingleTDMob extends EntityCreature implements LivingTDMob {
     private final int level;
@@ -25,6 +26,11 @@ public class SingleTDMob extends EntityCreature implements LivingTDMob {
     @Override
     public int getLevel() {
         return this.level;
+    }
+
+    @Override
+    public float getMaxHealth() {
+        return 0; // todo idk what this is meant to be??
     }
 
     @Override

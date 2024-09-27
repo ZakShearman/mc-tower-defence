@@ -8,7 +8,6 @@ import net.minestom.server.item.Material;
 import net.minestom.server.network.packet.server.SendablePacket;
 import net.minestom.server.network.packet.server.play.ParticlePacket;
 import net.minestom.server.particle.Particle;
-import net.minestom.server.particle.data.DustParticleData;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.enums.TowerSize;
 import pink.zak.minestom.towerdefence.enums.TowerType;
@@ -91,7 +90,7 @@ public final class TowerOutliner {
         if (material != null && material.name().contains("slab")) offset += 0.5;
 
         return new ParticlePacket(
-                Particle.DUST.withData(new DustParticleData(color, 1)),
+                Particle.DUST.withColor(color).withScale(1),
                 point.x(), point.y() + offset, point.z(),
                 0, 0, 0,
                 1f, 1

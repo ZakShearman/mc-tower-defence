@@ -1,24 +1,15 @@
 package pink.zak.minestom.towerdefence.model.mob.living;
 
-import java.time.temporal.ChronoUnit;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.concurrent.ThreadLocalRandom;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.MinecraftServer;
-import net.minestom.server.attribute.Attribute;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.entity.Entity;
 import net.minestom.server.entity.EntityType;
 import net.minestom.server.entity.Metadata;
 import net.minestom.server.entity.Player;
-import net.minestom.server.entity.damage.DamageType;
+import net.minestom.server.entity.attribute.Attribute;
+import net.minestom.server.entity.damage.Damage;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.network.packet.server.play.EntityAnimationPacket;
 import net.minestom.server.network.packet.server.play.EntityHeadLookPacket;
@@ -48,6 +39,16 @@ import pink.zak.minestom.towerdefence.model.tower.placed.types.NecromancerTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.utils.DirectionUtil;
 import pink.zak.minestom.towerdefence.utils.TDEnvUtils;
+
+import java.time.temporal.ChronoUnit;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class SingleEnemyTDMob extends SingleTDMob implements LivingTDEnemyMob {
     protected final MobHandler mobHandler;
@@ -108,7 +109,7 @@ public class SingleEnemyTDMob extends SingleTDMob implements LivingTDEnemyMob {
 
         this.currentCornerLengthModifier = this.getRandomLengthModifier();
 
-        this.getAttribute(Attribute.MAX_HEALTH).setBaseValue(this.level.getHealth());
+        this.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(this.level.getHealth());
         this.health = this.level.getHealth();
 
         this.setCustomNameVisible(true);
@@ -251,7 +252,7 @@ public class SingleEnemyTDMob extends SingleTDMob implements LivingTDEnemyMob {
         if (sound != null) {
             Sound.Source soundSource = Sound.Source.PLAYER;
 
-            SoundEffectPacket damageSoundPacket = new SoundEffectPacket(sound, null, soundSource, this.getPosition(), 1.0f, 1.0f, 0);
+            SoundEffectPacket damageSoundPacket = new SoundEffectPacket(sound, soundSource, this.getPosition(), 1.0f, 1.0f, 0);
             this.sendPacketToViewersAndSelf(damageSoundPacket);
         }
 
@@ -268,7 +269,7 @@ public class SingleEnemyTDMob extends SingleTDMob implements LivingTDEnemyMob {
     }
 
     @Override
-    public boolean damage(@NotNull DamageType type, float value) {
+    public boolean damage(@NotNull Damage damage) {
         throw new UnsupportedOperationException("Use damage(DamageSource, float) instead");
     }
 

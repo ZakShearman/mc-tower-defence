@@ -1,15 +1,12 @@
 package pink.zak.minestom.towerdefence.model.tower.config;
 
 import com.google.gson.JsonObject;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.BiFunction;
 import net.hollowcube.schem.Schematic;
 import net.hollowcube.schem.SchematicReader;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.minestom.server.item.ItemComponent;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import org.jetbrains.annotations.NotNull;
@@ -17,6 +14,11 @@ import pink.zak.minestom.towerdefence.statdiff.Diffable;
 import pink.zak.minestom.towerdefence.statdiff.StatDiffCollection;
 import pink.zak.minestom.towerdefence.statdiff.types.IntStatDiff;
 import pink.zak.minestom.towerdefence.utils.NumberUtils;
+
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.BiFunction;
 
 public class TowerLevel implements Diffable<TowerLevel>, Comparable<TowerLevel> {
     private static final BiFunction<String, String, Path> SCHEMATIC_PATH_FUNCTION = (towerName, level) ->
@@ -40,16 +42,16 @@ public class TowerLevel implements Diffable<TowerLevel>, Comparable<TowerLevel> 
         this.range = jsonObject.get("range").getAsInt();
 
         Path schematicPath = SCHEMATIC_PATH_FUNCTION.apply(towerName, String.valueOf(this.level));
-        this.schematic = SchematicReader.read(schematicPath);
+        this.schematic = new SchematicReader().read(schematicPath);
     }
 
     private ItemStack createOwnedUpgradeItem() {
         return ItemStack.builder(Material.GREEN_STAINED_GLASS_PANE)
-                .displayName(MiniMessage.miniMessage().deserialize(UPGRADE_ITEM_NAME.formatted("green"),
+                .set(ItemComponent.CUSTOM_NAME, MiniMessage.miniMessage().deserialize(UPGRADE_ITEM_NAME.formatted("green"),
                         Placeholder.unparsed("tower_name", this.towerName),
                         Placeholder.unparsed("level_numeral", NumberUtils.toRomanNumerals(this.level)),
                         Placeholder.unparsed("cost", String.valueOf(this.cost))))
-                .lore(this.createStatLore())
+                .set(ItemComponent.LORE, this.createStatLore())
                 .build();
     }
 
@@ -73,7 +75,7 @@ public class TowerLevel implements Diffable<TowerLevel>, Comparable<TowerLevel> 
         String itemName = UPGRADE_ITEM_NAME.formatted(canAfford ? "gold" : "red");
 
         return ItemStack.builder(canAfford ? Material.ORANGE_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS_PANE)
-                .displayName(MiniMessage.miniMessage().deserialize(itemName,
+                .set(ItemComponent.CUSTOM_NAME, MiniMessage.miniMessage().deserialize(itemName,
                         Placeholder.unparsed("tower_name", this.towerName),
                         Placeholder.unparsed("level_numeral", NumberUtils.toRomanNumerals(this.level)),
                         Placeholder.unparsed("cost", String.valueOf(cost))))

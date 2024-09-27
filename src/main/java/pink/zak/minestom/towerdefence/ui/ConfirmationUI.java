@@ -1,7 +1,6 @@
 package pink.zak.minestom.towerdefence.ui;
 
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
-import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -9,19 +8,22 @@ import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Player;
 import net.minestom.server.inventory.Inventory;
 import net.minestom.server.inventory.InventoryType;
+import net.minestom.server.item.ItemComponent;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+
 public final class ConfirmationUI extends Inventory {
 
     private static final @NotNull Component TITLE = Component.text("Are you sure?", NamedTextColor.DARK_GRAY);
     private static final @NotNull ItemStack CONFIRM_ITEM = ItemStack.builder(Material.GREEN_STAINED_GLASS_PANE)
-            .displayName(Component.text("Confirm", NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false))
+            .set(ItemComponent.CUSTOM_NAME, Component.text("Confirm", NamedTextColor.GREEN).decoration(TextDecoration.ITALIC, false))
             .build();
     private static final @NotNull ItemStack CANCEL_ITEM = ItemStack.builder(Material.RED_STAINED_GLASS_PANE)
-            .displayName(Component.text("Cancel", NamedTextColor.RED).decoration(TextDecoration.ITALIC, false))
+            .set(ItemComponent.CUSTOM_NAME, Component.text("Cancel", NamedTextColor.RED).decoration(TextDecoration.ITALIC, false))
             .build();
 
     private final @NotNull Player player;

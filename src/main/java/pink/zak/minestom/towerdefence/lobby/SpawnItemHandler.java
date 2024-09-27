@@ -15,6 +15,7 @@ import net.minestom.server.event.player.PlayerSpawnEvent;
 import net.minestom.server.event.player.PlayerUseItemEvent;
 import net.minestom.server.event.player.PlayerUseItemOnBlockEvent;
 import net.minestom.server.inventory.click.ClickType;
+import net.minestom.server.item.ItemComponent;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 import pink.zak.minestom.towerdefence.api.event.player.PlayerTeamSwitchEvent;
@@ -105,13 +106,14 @@ public class SpawnItemHandler {
     private synchronized void updateTeamItem(Team team) {
         Material material;
         String name;
-        List<? extends Component> lore;
+        List<Component> lore;
         if (team == Team.BLUE) {
             material = Material.BLUE_WOOL;
             name = "Blue Team (" + this.lobbyManager.getTeamSize(Team.BLUE).get() + "/6)";
             lore = this.lobbyManager.getLobbyPlayers().stream()
                     .filter(lobbyPlayer -> lobbyPlayer.getTeam() == Team.BLUE)
                     .map(lobbyPlayer -> Component.text("  - " + lobbyPlayer.getPlayer().getUsername(), Style.style(NamedTextColor.AQUA, TextDecoration.ITALIC.withState(TextDecoration.State.FALSE))))
+                    .map(c -> (Component) c)
                     .toList();
         } else {
             material = Material.RED_WOOL;
@@ -119,12 +121,13 @@ public class SpawnItemHandler {
             lore = this.lobbyManager.getLobbyPlayers().stream()
                     .filter(lobbyPlayer -> lobbyPlayer.getTeam() == Team.RED)
                     .map(lobbyPlayer -> Component.text("  - " + lobbyPlayer.getPlayer().getUsername(), Style.style(NamedTextColor.RED, TextDecoration.ITALIC.withState(TextDecoration.State.FALSE))))
+                    .map(c -> (Component) c)
                     .toList();
         }
 
         ItemStack teamItem = ItemStack.builder(material)
-                .displayName(Component.text(name, team.getColor()).decoration(TextDecoration.ITALIC, false))
-                .lore(lore)
+                .set(ItemComponent.CUSTOM_NAME, Component.text(name, team.getColor()).decoration(TextDecoration.ITALIC, false))
+                .set(ItemComponent.LORE, lore)
                 .build();
 
         if (team == Team.BLUE)

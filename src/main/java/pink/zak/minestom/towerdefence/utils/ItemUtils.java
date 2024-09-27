@@ -4,12 +4,14 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.minestom.server.entity.PlayerSkin;
+import net.minestom.server.item.ItemComponent;
 import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
-import net.minestom.server.item.metadata.PlayerHeadMeta;
+import net.minestom.server.item.component.HeadProfile;
 import net.minestom.server.utils.mojang.MojangUtils;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -21,25 +23,23 @@ public class ItemUtils {
         ItemStack.Builder builder = ItemStack.builder(material);
 
         if (material == Material.PLAYER_HEAD) {
-            PlayerHeadMeta.Builder metaBuilder = new PlayerHeadMeta.Builder();
+            HeadProfile profile = null;
 
             if (jsonObject.has("owner-uuid")) {
                 String uuid = jsonObject.get("owner-uuid").getAsString();
-                metaBuilder.skullOwner(UUID.fromString(uuid));
-                metaBuilder.playerSkin(PlayerSkin.fromUuid(uuid)); // is this necessary?
+                profile = new HeadProfile(null, UUID.fromString(uuid), List.of());
             } else if (jsonObject.has("owner-username")) {
-                String uuid = MojangUtils.fromUsername(jsonObject.get("owner-username").getAsString()).get("id").getAsString();
-                metaBuilder.skullOwner(UUID.fromString(uuid));
-                metaBuilder.playerSkin(PlayerSkin.fromUuid(uuid)); // is this necessary?
+                String username = MojangUtils.fromUsername(jsonObject.get("owner-username").getAsString()).get("id").getAsString();
+                profile = new HeadProfile(username, null, List.of());
             } else if (jsonObject.has("texture")) {
-                metaBuilder.skullOwner(UUID.randomUUID());
-                metaBuilder.playerSkin(new PlayerSkin(jsonObject.get("texture").getAsString(), null));
-                builder.meta(metaBuilder.build());
+                profile = new HeadProfile(new PlayerSkin(jsonObject.get("texture").getAsString(), null));
             }
+
+            if (profile != null) builder.set(ItemComponent.PROFILE, profile);
         }
 
         if (jsonObject.has("displayName"))
-            builder.displayName(StringUtils.parseMessage(jsonObject.get("displayName").getAsString(), tagResolver));
+            builder.set(ItemComponent.CUSTOM_NAME, StringUtils.parseMessage(jsonObject.get("displayName").getAsString(), tagResolver));
 
         if (jsonObject.has("lore"))
             builder.lore(StringUtils.parseMessages(
@@ -53,17 +53,5 @@ public class ItemUtils {
             builder.amount(jsonObject.get("amount").getAsInt());
 
         return builder.build();
-    }
-
-    public static ItemStack withMaterial(ItemStack itemStack, Material material) {
-        return withMaterialBuilder(itemStack, material).build();
-    }
-
-    public static ItemStack.Builder withMaterialBuilder(ItemStack itemStack, Material material) {
-        return ItemStack.builder(material)
-                .displayName(itemStack.getDisplayName())
-                .lore(itemStack.getLore())
-                .amount(itemStack.amount())
-                .meta(itemStack.meta());
     }
 }

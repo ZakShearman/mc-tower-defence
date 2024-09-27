@@ -4,7 +4,6 @@ import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Vec;
 import net.minestom.server.entity.Entity;
 import net.minestom.server.entity.EntityType;
-import net.minestom.server.timer.ExecutionType;
 import net.minestom.server.timer.TaskSchedule;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,7 +19,7 @@ public class Projectile extends Entity {
         // remove arrows after 15 seconds
         MinecraftServer.getSchedulerManager().scheduleTask(() -> {
             if (!this.isRemoved()) this.remove();
-        }, TaskSchedule.seconds(15), TaskSchedule.stop(), ExecutionType.ASYNC);
+        }, TaskSchedule.seconds(15), TaskSchedule.stop());
     }
 
     @Override
