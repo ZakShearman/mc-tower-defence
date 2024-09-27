@@ -16,7 +16,7 @@ import pink.zak.minestom.towerdefence.queue.MobQueue;
 import pink.zak.minestom.towerdefence.upgrade.UpgradeHandler;
 
 public final class GameUser {
-    public static final int DEFAULT_COINS = 1_000_000_000;
+    public static final int DEFAULT_COINS = 2_000;
     public static final int DEFAULT_INCOME_RATE = 50;
 
     private final @NotNull TDPlayer player; // todo in the future we should allow re-joining a game so this will not be final.

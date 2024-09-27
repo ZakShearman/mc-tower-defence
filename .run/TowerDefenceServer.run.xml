@@ -7,7 +7,7 @@
       <env name="ENABLE_TEST_MODE" value="true" />
     </envs>
     <option name="MAIN_CLASS_NAME" value="pink.zak.minestom.towerdefence.TowerDefenceServer" />
-    <module name="pink.zak.minestom.towerdefence.main" />
+    <module name="towerdefence.main" />
     <option name="WORKING_DIRECTORY" value="run" />
     <extension name="coverage">
       <pattern>

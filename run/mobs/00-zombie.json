@@ -10,9 +10,9 @@
   "levels": [
     {
       "level": 1,
-      "sendCost": 35,
+      "sendCost": 40,
       "sendIncomeIncrease": 2,
-      "health": 5,
+      "health": 6,
       "damage": 1,
       "movementSpeed": 2,
       "unlockCost": -1,
