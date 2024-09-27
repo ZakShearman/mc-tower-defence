@@ -1,12 +1,7 @@
 package pink.zak.minestom.towerdefence.model.user;
 
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.IntUnaryOperator;
 import net.minestom.server.MinecraftServer;
-import net.minestom.server.coordinate.Point;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import pink.zak.minestom.towerdefence.api.event.player.PlayerCoinChangeEvent;
 import pink.zak.minestom.towerdefence.api.event.player.PlayerIncomeChangeEvent;
 import pink.zak.minestom.towerdefence.enums.Team;
@@ -14,6 +9,10 @@ import pink.zak.minestom.towerdefence.game.MobHandler;
 import pink.zak.minestom.towerdefence.model.mob.config.EnemyMob;
 import pink.zak.minestom.towerdefence.queue.MobQueue;
 import pink.zak.minestom.towerdefence.upgrade.UpgradeHandler;
+
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.IntUnaryOperator;
 
 public final class GameUser {
     public static final int DEFAULT_COINS = 2_000;

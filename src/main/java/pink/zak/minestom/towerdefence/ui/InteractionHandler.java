@@ -46,7 +46,7 @@ public final class InteractionHandler {
                 TowerType towerType = item.getTag(TowerPlaceUI.TOWER_TYPE);
                 if (towerType == null) continue;
 
-                Point targetBlockPos = player.getTargetBlockPosition(TowerPlaceUI.TOWER_PLACE_DISTANCE);
+                Point targetBlockPos = player.getTargetBlockPosition(TowerPlaceUI.TOWER_PLACE_REACH);
                 if (targetBlockPos == null) continue;
 
                 if (player.getInstance().getBlock(targetBlockPos).hasTag(PlacedTower.ID_TAG)) continue;

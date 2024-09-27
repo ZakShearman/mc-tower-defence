@@ -1,12 +1,5 @@
 package pink.zak.minestom.towerdefence.model.tower;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Pos;
@@ -24,6 +17,14 @@ import pink.zak.minestom.towerdefence.model.tower.placed.PlacedTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.utils.Result;
 import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 public final class TowerManager {
 
@@ -43,6 +44,7 @@ public final class TowerManager {
         // check if the user can afford the tower
         TowerLevel level = tower.getLevel(1);
         int cost = level.getCost();
+//        Audiences.all().sendMessage(Component.text("%s tried to place tower %s at cost %s. Has %s coins".formatted(user.getPlayer().getUsername(), tower.getName(), cost, user.getCoins())));
         if (user.getCoins() < cost) return Result.failure(TowerPlaceFailureReason.CAN_NOT_AFFORD);
 
         // check if the tower is in a valid position
@@ -58,6 +60,7 @@ public final class TowerManager {
                 this.determineDirection(position, user.getTeam())
         );
         this.getTowers(user.getTeam()).add(placedTower);
+        user.updateCoins(current -> current - cost);
 
         MinecraftServer.getGlobalEventHandler().call(new PlayerTowerPlaceEvent(tower, placedTower, user));
 

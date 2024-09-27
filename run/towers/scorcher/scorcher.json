@@ -1,0 +1,13 @@
+{
+  "type": "SCORCHER",
+  "name": "scorcher",
+  "guiSlot": 17,
+
+  "item": {
+    "material": "minecraft:fire_charge"
+  },
+
+  "description": [
+    "<i:false><yellow>TODO"
+  ]
+}

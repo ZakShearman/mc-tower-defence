@@ -97,6 +97,8 @@ public interface LivingTDEnemyMob extends LivingTDMob, Taggable, DamagePredictab
 
     float damage(DamageSource damageSource, float damage);
 
+    void setOnFire(boolean onFire);
+
     default void remove() {
         if (this.getAttackTask() != null)
             this.getAttackTask().cancel();

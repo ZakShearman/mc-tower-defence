@@ -2,7 +2,7 @@
   "commonName": "Zombie",
   "guiSlot": 0,
   "flying": false,
-  "sendTime": 500,
+  "sendTime": 1000,
   "ignoredEffects": ["POISONED"],
   "item": {
     "material": "minecraft:zombie_head"

@@ -260,6 +260,11 @@ public class SingleEnemyTDMob extends SingleTDMob implements LivingTDEnemyMob {
     }
 
     @Override
+    public void setOnFire(boolean onFire) {
+        this.entityMeta.setOnFire(onFire);
+    }
+
+    @Override
     public void updateCustomName() {
         for (Player player : this.getViewers()) {
             Component value = this.createNameComponent(player);

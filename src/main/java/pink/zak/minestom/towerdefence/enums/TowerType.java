@@ -20,7 +20,8 @@ public enum TowerType {
     CHARITY(TowerSize.FIVE, Tower::new, CharityTowerLevel::new),
     EARTHQUAKE(TowerSize.THREE, AttackingTower::new, EarthquakeTowerLevel::new),
     LIGHTNING(TowerSize.THREE, AttackingTower::new, LightningTowerLevel::new),
-    NECROMANCER(TowerSize.FIVE, AttackingTower::new, NecromancerTowerLevel::new);
+    NECROMANCER(TowerSize.FIVE, AttackingTower::new, NecromancerTowerLevel::new),
+    SCORCHER(TowerSize.THREE, AttackingTower::new, ScorcherTowerLevel::new);
 
     private final @NotNull TowerSize size;
     private final @NotNull BiFunction<JsonObject, Map<Integer, JsonObject>, ? extends Tower> towerFunction;

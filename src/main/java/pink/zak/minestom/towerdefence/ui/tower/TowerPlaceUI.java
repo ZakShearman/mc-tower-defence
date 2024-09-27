@@ -21,7 +21,7 @@ import java.util.List;
 
 public final class TowerPlaceUI extends Inventory {
 
-    public static final int TOWER_PLACE_DISTANCE = 24;
+    public static final int TOWER_PLACE_REACH = 24;
 
     public static final @NotNull Tag<Boolean> UI_TAG = Tag.Boolean("tower_place_ui");
     public static final @NotNull Tag<TowerType> TOWER_TYPE = Tag.Byte("tower_type").map(b -> TowerType.values()[b], t -> (byte) t.ordinal());

@@ -62,7 +62,7 @@ public class Tower {
         this.baseItem = this.item.with(builder -> {
             builder.set(ItemComponent.CUSTOM_NAME, MINI_MESSAGE.deserialize(BASE_ITEM_DISPLAY_NAME,
                     Placeholder.unparsed("tower_name", this.name),
-                    Placeholder.unparsed("tower_cost", String.valueOf(this.levels.get(1).getCost()))
+                    Placeholder.unparsed("tower_cost", String.valueOf(this.getLevel(1).getCost()))
             ));
 
             List<Component> description = new ArrayList<>();

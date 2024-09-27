@@ -1,7 +1,5 @@
 package pink.zak.minestom.towerdefence.model.tower.placed;
 
-import java.util.Set;
-import java.util.stream.Collectors;
 import net.hollowcube.schem.Rotation;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.instance.block.Block;
@@ -20,12 +18,16 @@ import pink.zak.minestom.towerdefence.model.tower.placed.types.CharityTower;
 import pink.zak.minestom.towerdefence.model.tower.placed.types.EarthquakeTower;
 import pink.zak.minestom.towerdefence.model.tower.placed.types.LightningTower;
 import pink.zak.minestom.towerdefence.model.tower.placed.types.NecromancerTower;
+import pink.zak.minestom.towerdefence.model.tower.placed.types.ScorcherTower;
 import pink.zak.minestom.towerdefence.model.tower.placed.types.archer.ArcherTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.ui.tower.TowerManagementUI;
 import pink.zak.minestom.towerdefence.utils.DirectionUtil;
 import pink.zak.minestom.towerdefence.utils.SchemUtils;
 import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public abstract class PlacedTower<T extends TowerLevel> {
     public static final Tag<Integer> ID_TAG = Tag.Integer("towerId");
@@ -66,6 +68,7 @@ public abstract class PlacedTower<T extends TowerLevel> {
             case EARTHQUAKE -> new EarthquakeTower(gameHandler, (AttackingTower) tower, id, owner, basePoint, facing, 1);
             case LIGHTNING -> new LightningTower(gameHandler, (AttackingTower) tower, id, owner, basePoint, facing, 1);
             case NECROMANCER -> new NecromancerTower(gameHandler, (AttackingTower) tower, id, owner, basePoint, facing, 1);
+            case SCORCHER -> new ScorcherTower(gameHandler, (AttackingTower) tower, id, owner, basePoint, facing, 1);
         };
     }
 

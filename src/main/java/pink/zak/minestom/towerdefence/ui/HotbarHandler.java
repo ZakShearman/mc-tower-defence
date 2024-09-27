@@ -85,7 +85,7 @@ public final class HotbarHandler {
             return;
         }
 
-        Point targetBlockPos = player.getTargetBlockPosition(TowerPlaceUI.TOWER_PLACE_DISTANCE);
+        Point targetBlockPos = player.getTargetBlockPosition(TowerPlaceUI.TOWER_PLACE_REACH);
 
         if (targetBlockPos != null) {
             Block targetBlock = targetBlock = player.getInstance().getBlock(targetBlockPos);

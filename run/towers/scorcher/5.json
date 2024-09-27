@@ -1,0 +1,8 @@
+{
+  "level": 5,
+  "cost": 1200,
+  "fireDelay": 30,
+  "damage": 2,
+  "range": 16,
+  "tickDuration": 21
+}
