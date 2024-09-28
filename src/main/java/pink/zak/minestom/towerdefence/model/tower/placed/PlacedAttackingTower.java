@@ -1,8 +1,5 @@
 package pink.zak.minestom.towerdefence.model.tower.placed;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 import net.minestom.server.collision.BoundingBox;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Vec;
@@ -17,6 +14,10 @@ import pink.zak.minestom.towerdefence.model.tower.config.AttackingTower;
 import pink.zak.minestom.towerdefence.model.tower.config.AttackingTowerLevel;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.targetting.Target;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public abstract class PlacedAttackingTower<T extends AttackingTowerLevel> extends PlacedTower<T> implements DamageSource {
 
@@ -52,7 +53,7 @@ public abstract class PlacedAttackingTower<T extends AttackingTowerLevel> extend
         // get mobs attacking the tower's team
         Set<LivingTDEnemyMob> mobs = this.gameHandler.getMobHandler().getMobs(this.owner.getTeam());
 
-        List<LivingTDEnemyMob> targets = new ArrayList<>(mobs.size());
+        List<LivingTDEnemyMob> targets = new ArrayList<>();
         for (LivingTDEnemyMob mob : mobs) {
             // filter out mobs that are already dead
             if (mob.isDead()) continue;
