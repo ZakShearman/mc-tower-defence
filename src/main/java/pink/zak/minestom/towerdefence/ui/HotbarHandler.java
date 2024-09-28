@@ -8,6 +8,7 @@ import net.minestom.server.event.EventFilter;
 import net.minestom.server.event.EventListener;
 import net.minestom.server.event.EventNode;
 import net.minestom.server.event.player.PlayerBlockPlaceEvent;
+import net.minestom.server.event.player.PlayerHandAnimationEvent;
 import net.minestom.server.event.player.PlayerUseItemEvent;
 import net.minestom.server.event.trait.PlayerEvent;
 import net.minestom.server.instance.block.Block;
@@ -65,6 +66,20 @@ public final class HotbarHandler {
                     // assumes it's never in off-hand, it shouldn't be
                     this.handleItemUse(event.getPlayer(), event.getPlayer().getItemInMainHand());
                 }).build());
+
+        this.eventNode.addListener(PlayerHandAnimationEvent.class, event -> {
+            if (event.getHand() == Player.Hand.OFF) return;
+
+            Player player = event.getPlayer();
+            ItemStack itemInHand = player.getItemInHand(event.getHand());
+            if (itemInHand.isAir()) return;
+            if (!itemInHand.hasTag(TowerPlaceUI.UI_TAG)) return;
+
+            GameUser user = this.gameHandler.getGameUser(player);
+            if (user == null) throw new IllegalStateException("Player is not associated with a game user");
+
+            player.openInventory(new TowerPlaceUI(user, this.towerStorage));
+        });
     }
 
     private void handleItemUse(@NotNull Player p, @NotNull ItemStack usedItem) {
