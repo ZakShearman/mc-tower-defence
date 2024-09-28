@@ -4,5 +4,5 @@ import net.minestom.server.event.Event;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 
-public record PlayerCoinChangeEvent(@NotNull GameUser user, int coins) implements Event {
+public record PlayerCoinChangeEvent(@NotNull GameUser user, long coins) implements Event {
 }

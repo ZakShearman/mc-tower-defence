@@ -12,10 +12,12 @@ import pink.zak.minestom.towerdefence.upgrade.UpgradeHandler;
 
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.IntUnaryOperator;
+import java.util.function.LongUnaryOperator;
 
 public final class GameUser {
-    public static final int DEFAULT_COINS = 2_000;
+    public static final int DEFAULT_COINS = 2_000_000_000;
     public static final int DEFAULT_INCOME_RATE = 50;
 
     private final @NotNull TDPlayer player; // todo in the future we should allow re-joining a game so this will not be final.
@@ -23,7 +25,7 @@ public final class GameUser {
     private final @NotNull MobQueue queue;
     private final @NotNull UpgradeHandler upgradeHandler;
 
-    private final @NotNull AtomicInteger coins = new AtomicInteger(DEFAULT_COINS);
+    private final @NotNull AtomicLong coins = new AtomicLong(DEFAULT_COINS);
 
     // incomeRate is the amount of coins the player gets per 10 seconds.
     private final @NotNull AtomicInteger incomeRate = new AtomicInteger(DEFAULT_INCOME_RATE);
@@ -44,7 +46,7 @@ public final class GameUser {
         return this.team;
     }
 
-    public int getCoins() {
+    public long getCoins() {
         return this.coins.get();
     }
 
@@ -52,8 +54,8 @@ public final class GameUser {
         return this.upgradeHandler;
     }
 
-    public int updateCoins(@NotNull IntUnaryOperator intOperator) {
-        int newCoins = this.coins.updateAndGet(intOperator);
+    public long updateCoins(@NotNull LongUnaryOperator intOperator) {
+        long newCoins = this.coins.updateAndGet(intOperator);
         MinecraftServer.getGlobalEventHandler().call(new PlayerCoinChangeEvent(this, newCoins));
         return newCoins;
     }
