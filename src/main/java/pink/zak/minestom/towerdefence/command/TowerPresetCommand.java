@@ -10,6 +10,7 @@ import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.CommandContext;
 import net.minestom.server.command.builder.arguments.ArgumentLiteral;
 import net.minestom.server.command.builder.arguments.ArgumentWord;
+import net.minestom.server.command.builder.suggestion.SuggestionEntry;
 import net.minestom.server.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -21,13 +22,20 @@ import pink.zak.minestom.towerdefence.model.tower.placed.PlacedTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.storage.TowerStorage;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Set;
 
 public class TowerPresetCommand extends Command {
     private static final Logger LOGGER = LoggerFactory.getLogger(TowerPresetCommand.class);
     private static final Gson GSON = new Gson();
+
+    private static final List<SuggestionEntry> RESOURCE_ENTRIES = TowerPresetCommand.loadResourceEntries();
 
     private final @NotNull GameHandler gameHandler;
     private final @NotNull TowerManager towerManager;
@@ -42,9 +50,16 @@ public class TowerPresetCommand extends Command {
         ArgumentLiteral saveArg = new ArgumentLiteral("save");
         ArgumentLiteral loadArg = new ArgumentLiteral("load");
         ArgumentWord presetIdArg = new ArgumentWord("presetId");
+        ArgumentWord presetIdLoadArg = new ArgumentWord("presetId");
+        presetIdLoadArg.setSuggestionCallback((sender, context, suggestion) -> {
+            String input = context.get("presetId");
+
+            this.getFileSystemEntries().forEach(suggestion::addEntry);
+            RESOURCE_ENTRIES.forEach(suggestion::addEntry);
+        });
 
         this.addSyntax(this::executeSave, saveArg, presetIdArg);
-        this.addSyntax(this::executeLoad, loadArg, presetIdArg);
+        this.addSyntax(this::executeLoad, loadArg, presetIdLoadArg);
     }
 
     private void executeSave(CommandSender sender, CommandContext context) {
@@ -89,16 +104,28 @@ public class TowerPresetCommand extends Command {
         }
 
         String presetName = context.get("presetId");
+        boolean isResource = RESOURCE_ENTRIES.stream().anyMatch(entry -> entry.getEntry().equals(presetName));
         String fileName = presetName + ".json";
-        Path path = Path.of("towerPresets", fileName);
-        if (!Files.exists(path)) {
-            sender.sendMessage("Tower preset does not exist.");
-            return;
-        }
 
         JsonArray json;
         try {
-            json = GSON.fromJson(Files.newBufferedReader(path), JsonArray.class);
+            if (isResource) {
+                try (Reader reader = new InputStreamReader(TowerPresetCommand.class.getClassLoader().getResourceAsStream("towerPresets/" + fileName))) {
+                    json = GSON.fromJson(reader, JsonArray.class);
+                }
+            } else {
+                Path path = Path.of("towerPresets", fileName);
+                if (!Files.exists(path)) {
+                    sender.sendMessage("Tower preset does not exist.");
+                    return;
+                }
+
+                try (Reader reader = Files.newBufferedReader(path)) {
+                    json = GSON.fromJson(reader, JsonArray.class);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         } catch (Exception e) {
             LOGGER.error("Failed to load tower preset", e);
             sender.sendMessage("Failed to load tower preset.");
@@ -111,5 +138,36 @@ public class TowerPresetCommand extends Command {
         this.towerManager.removeAllTowers(user.getTeam());
         preset.placeTowers(this.towerStorage, this.towerManager, user);
         sender.sendMessage(Component.text("Loaded preset %s with %s towers.".formatted(presetName, preset.getTowers().size()), NamedTextColor.GREEN));
+    }
+
+    private static List<SuggestionEntry> loadResourceEntries() {
+        URL resource = TowerPresetCommand.class.getClassLoader().getResource("towerPresets");
+        if (resource == null) return List.of();
+
+        try (var stream = Files.walk(Path.of(resource.toURI()))) {
+            return stream
+                    .filter(Files::isRegularFile)
+                    .map(Path::getFileName)
+                    .map(Path::toString)
+                    .map(fileName -> fileName.substring(0, fileName.lastIndexOf('.')))
+                    .map(SuggestionEntry::new)
+                    .toList();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private List<SuggestionEntry> getFileSystemEntries() {
+        try (var stream = Files.walk(Path.of("towerPresets"))) {
+            return stream
+                    .filter(Files::isRegularFile)
+                    .map(Path::getFileName)
+                    .map(Path::toString)
+                    .map(fileName -> fileName.substring(0, fileName.lastIndexOf('.')))
+                    .map(SuggestionEntry::new)
+                    .toList();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
