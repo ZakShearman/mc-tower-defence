@@ -26,6 +26,7 @@ import pink.zak.minestom.towerdefence.TowerDefenceModule;
 import pink.zak.minestom.towerdefence.actionbar.ActionBarHandler;
 import pink.zak.minestom.towerdefence.agones.GameStateManager;
 import pink.zak.minestom.towerdefence.api.event.game.CastleDamageEvent;
+import pink.zak.minestom.towerdefence.command.TowerPresetCommand;
 import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.game.handlers.NecromancerDamageListener;
@@ -131,6 +132,9 @@ public final class GameHandler {
                     .repeat(30, ChronoUnit.SECONDS)
                     .schedule();
         }
+
+        MinecraftServer.getCommandManager().register(new TowerPresetCommand(this, this.module.getTowerStorage()));
+        MinecraftServer.getConnectionManager().getOnlinePlayers().forEach(player -> player.refreshCommands());
 
         /*EnemyMob enemyMob = this.plugin.getMobStorage().getEnemyMob(EntityType.LLAMA);
         EnemyMobLevel enemyMobLevel = enemyMob.level(1);

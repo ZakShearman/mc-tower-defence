@@ -20,7 +20,7 @@ import pink.zak.minestom.towerdefence.enums.GameState;
 import pink.zak.minestom.towerdefence.enums.TowerType;
 import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.model.tower.TowerManager;
-import pink.zak.minestom.towerdefence.model.tower.TowerPlaceFailureReason;
+import pink.zak.minestom.towerdefence.model.tower.TowerPlaceResult;
 import pink.zak.minestom.towerdefence.model.tower.config.Tower;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
@@ -30,7 +30,6 @@ import pink.zak.minestom.towerdefence.storage.TowerStorage;
 import pink.zak.minestom.towerdefence.ui.spawner.TroopSpawnerUI;
 import pink.zak.minestom.towerdefence.ui.tower.TowerManagementUI;
 import pink.zak.minestom.towerdefence.ui.tower.TowerPlaceUI;
-import pink.zak.minestom.towerdefence.utils.Result;
 import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;
 
 import java.util.Set;
@@ -135,10 +134,10 @@ public final class HotbarHandler {
     private void handleTowerPlaceClick(@NotNull TowerType towerType, @NotNull Player player, @NotNull GameUser gameUser, @NotNull Point clickedBlock) {
         Tower tower = this.towerStorage.getTower(towerType);
 
-        Result<TowerPlaceFailureReason> result = (this.towerManager.placeTower(tower, clickedBlock.add(0.5, 0.5, 0.5), gameUser));
-        if (!(result instanceof Result.Failure<TowerPlaceFailureReason> failure)) return;
+        TowerPlaceResult result = (this.towerManager.placeTower(tower, clickedBlock.add(0.5, 0.5, 0.5), gameUser));
+        if (result.isSuccessful()) return;
 
-        player.sendMessage(Component.text(switch (failure.reason()) {
+        player.sendMessage(Component.text(switch (result.failureReason()) {
             case CAN_NOT_AFFORD -> "You can not afford this tower.";
             case AREA_NOT_CLEAR -> "The area is not clear.";
         }, NamedTextColor.RED));
