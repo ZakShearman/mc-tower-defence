@@ -39,6 +39,7 @@ public abstract class PlacedTower<T extends TowerLevel> {
     protected final int id;
     protected final @NotNull Point basePoint;
     protected final @NotNull Direction facing;
+    protected final @NotNull Rotation rotation;
     protected final @NotNull GameUser owner;
 
     protected @NotNull T level;
@@ -51,6 +52,7 @@ public abstract class PlacedTower<T extends TowerLevel> {
         this.id = id;
         this.basePoint = basePoint;
         this.facing = facing;
+        this.rotation = Rotation.values()[DirectionUtil.fromDirection(facing).getTurns()];
         this.owner = owner;
 
         this.level = (T) configuration.getLevel(level);
@@ -106,10 +108,7 @@ public abstract class PlacedTower<T extends TowerLevel> {
     // todo re-investigate using a batch to apply in the future
     // it was buggy last time it was tried
     private void placeLevel() {
-        int turns = DirectionUtil.fromDirection(this.facing).getTurns();
-        Rotation rotation = Rotation.values()[turns];
-
-        this.level.getSchematic().apply(rotation, (relativePoint, block) -> {
+        this.level.getSchematic().apply(this.rotation, (relativePoint, block) -> {
             // Add the ID_TAG with the tower's ID to each block
             block = block.withTag(ID_TAG, this.id);
 
@@ -130,11 +129,8 @@ public abstract class PlacedTower<T extends TowerLevel> {
     }
 
     private void removeNonUpdatedBlocks(TowerLevel oldLevel, TowerLevel newLevel) {
-        int turns = DirectionUtil.fromDirection(this.facing).getTurns();
-        Rotation rotation = Rotation.values()[turns];
-
-        Set<Point> oldRelativePoints = SchemUtils.getRelativeBlockPoints(rotation, oldLevel.getSchematic());
-        Set<Point> newRelativePoints = SchemUtils.getRelativeBlockPoints(rotation, newLevel.getSchematic());
+        Set<Point> oldRelativePoints = SchemUtils.getRelativeBlockPoints(this.rotation, oldLevel.getSchematic());
+        Set<Point> newRelativePoints = SchemUtils.getRelativeBlockPoints(this.rotation, newLevel.getSchematic());
 
         TowerDefenceInstance instance = this.gameHandler.getInstance();
         for (Point relativePoint : oldRelativePoints) {
@@ -148,7 +144,7 @@ public abstract class PlacedTower<T extends TowerLevel> {
         Set<Point> relativePositions = this.getConfiguration().getLevels().stream()
                 .filter(level -> level.asInteger() <= this.level.asInteger())
                 .map(TowerLevel::getSchematic)
-                .map(schem -> SchemUtils.getRelativeBlockPoints(Rotation.NONE, schem))
+                .map(schem -> SchemUtils.getRelativeBlockPoints(this.rotation, schem))
                 .flatMap(Set::stream)
                 .collect(Collectors.toSet());
 
