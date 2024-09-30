@@ -10,6 +10,7 @@ import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.CommandContext;
 import net.minestom.server.command.builder.arguments.ArgumentLiteral;
 import net.minestom.server.command.builder.arguments.ArgumentWord;
+import net.minestom.server.command.builder.condition.Conditions;
 import net.minestom.server.command.builder.suggestion.SuggestionEntry;
 import net.minestom.server.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -49,24 +50,27 @@ public class TowerPresetCommand extends Command {
 
         ArgumentLiteral saveArg = new ArgumentLiteral("save");
         ArgumentLiteral loadArg = new ArgumentLiteral("load");
+        ArgumentLiteral deleteArg = new ArgumentLiteral("delete");
         ArgumentWord presetIdArg = new ArgumentWord("presetId");
         ArgumentWord presetIdLoadArg = new ArgumentWord("presetId");
         presetIdLoadArg.setSuggestionCallback((sender, context, suggestion) -> {
-            String input = context.get("presetId");
-
             this.getFileSystemEntries().forEach(suggestion::addEntry);
             RESOURCE_ENTRIES.forEach(suggestion::addEntry);
         });
+        ArgumentWord presetIdDeleteArg = new ArgumentWord("presetId");
+        presetIdDeleteArg.setSuggestionCallback((sender, context, suggestion) -> {
+            this.getFileSystemEntries().forEach(suggestion::addEntry);
+        });
+
+        this.setCondition(Conditions::playerOnly);
 
         this.addSyntax(this::executeSave, saveArg, presetIdArg);
         this.addSyntax(this::executeLoad, loadArg, presetIdLoadArg);
+        this.addSyntax(this::executeDelete, deleteArg, presetIdDeleteArg);
     }
 
     private void executeSave(CommandSender sender, CommandContext context) {
-        if (!(sender instanceof Player player)) {
-            sender.sendMessage("You must be a player to use this command.");
-            return;
-        }
+        if (!(sender instanceof Player player)) return;
 
         String fileName = context.get("presetId") + ".json";
         Path path = Path.of("towerPresets", fileName);
@@ -98,10 +102,7 @@ public class TowerPresetCommand extends Command {
     }
 
     private void executeLoad(CommandSender sender, CommandContext context) {
-        if (!(sender instanceof Player player)) {
-            sender.sendMessage("You must be a player to use this command.");
-            return;
-        }
+        if (!(sender instanceof Player player)) return;
 
         String presetName = context.get("presetId");
         boolean isResource = RESOURCE_ENTRIES.stream().anyMatch(entry -> entry.getEntry().equals(presetName));
@@ -138,6 +139,33 @@ public class TowerPresetCommand extends Command {
         this.towerManager.removeAllTowers(user.getTeam());
         preset.placeTowers(this.towerStorage, this.towerManager, user);
         sender.sendMessage(Component.text("Loaded preset %s with %s towers.".formatted(presetName, preset.getTowers().size()), NamedTextColor.GREEN));
+    }
+
+    private void executeDelete(CommandSender sender, CommandContext context) {
+        if (!(sender instanceof Player player)) return;
+
+        String presetName = context.get("presetId");
+        boolean isResource = RESOURCE_ENTRIES.stream().anyMatch(entry -> entry.getEntry().equals(presetName));
+        String fileName = presetName + ".json";
+
+        if (isResource) {
+            sender.sendMessage("Cannot delete resource presets.");
+            return;
+        }
+
+        Path path = Path.of("towerPresets", fileName);
+        if (!Files.exists(path)) {
+            sender.sendMessage("Tower preset does not exist.");
+            return;
+        }
+
+        try {
+            Files.delete(path);
+            sender.sendMessage("Deleted tower preset.");
+        } catch (Exception e) {
+            LOGGER.error("Failed to delete tower preset", e);
+            sender.sendMessage("Failed to delete tower preset.");
+        }
     }
 
     private static List<SuggestionEntry> loadResourceEntries() {
