@@ -32,7 +32,7 @@ public final class UserSettingsUI extends Inventory {
     private static final @NotNull ItemStack BASE_HEATH_DISPLAY_ITEM = ItemStack.builder(Material.POTION)
             .set(ItemComponent.CUSTOM_NAME, Component.text("Health Display Mode", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false))
             .set(ItemComponent.POTION_CONTENTS, new PotionContents(null, new Color(NamedTextColor.RED), List.of()))
-            .set(ItemComponent.HIDE_TOOLTIP)
+            .set(ItemComponent.HIDE_ADDITIONAL_TOOLTIP)
             .build();
     private static final @NotNull ItemStack BASE_FLIGHT_SPEED_ITEM = ItemStack.builder(Material.FEATHER)
             .set(ItemComponent.CUSTOM_NAME, Component.text("Fly Speed", NamedTextColor.AQUA).decoration(TextDecoration.ITALIC, false))
