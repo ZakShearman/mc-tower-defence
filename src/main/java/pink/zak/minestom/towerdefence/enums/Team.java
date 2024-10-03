@@ -1,6 +1,5 @@
 package pink.zak.minestom.towerdefence.enums;
 
-import dev.emortal.minestom.core.Environment;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import org.jetbrains.annotations.NotNull;
@@ -29,6 +28,10 @@ public enum Team {
 
     public byte getId() {
         return this.id;
+    }
+
+    public String friendlyName() {
+        return this.name().substring(0, 1).toUpperCase() + this.name().substring(1).toLowerCase();
     }
 
 }
