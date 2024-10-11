@@ -24,7 +24,7 @@ dependencies {
     }
 
     implementation("net.minestom:minestom-snapshots:d0754f2a15")
-    implementation("dev.emortal.api:common-proto-sdk:2584fd2")
+    implementation("dev.emortal.api:common-proto-sdk:9152087")
 
     implementation("dev.hollowcube:schem:1.2.0")
     // Polar world format
