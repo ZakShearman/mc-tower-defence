@@ -19,7 +19,7 @@ repositories {
 }
 
 dependencies {
-    implementation("dev.emortal.minestom:core:80be174") {
+    implementation("dev.emortal.minestom:core:8276459") {
         exclude(group = "net.minestom", module = "minestom-snapshots")
     }
 
