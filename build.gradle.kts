@@ -23,7 +23,7 @@ dependencies {
         exclude(group = "net.minestom", module = "minestom-snapshots")
     }
 
-    implementation("net.minestom:minestom-snapshots:d0754f2a15")
+    implementation("net.minestom:minestom-snapshots:7320437640")
     implementation("dev.emortal.api:common-proto-sdk:2584fd2")
 
     implementation("dev.hollowcube:schem:1.2.0")
