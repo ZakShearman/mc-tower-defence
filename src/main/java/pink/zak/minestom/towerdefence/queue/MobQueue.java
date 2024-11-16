@@ -16,7 +16,9 @@ import pink.zak.minestom.towerdefence.game.MobHandler;
 import pink.zak.minestom.towerdefence.model.mob.config.EnemyMob;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.utils.Result;
+import pink.zak.minestom.towerdefence.utils.TDEnvUtils;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -24,8 +26,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
 
 public final class MobQueue {
-
-    private static final int MAX_QUEUE_TIME = 45_000; // 45 seconds
     private static final @NotNull ItemStack BASE_QUEUE_ITEM = ItemStack.builder(Material.BUNDLE)
             .set(ItemComponent.CUSTOM_NAME, Component.text("Current Queue", NamedTextColor.YELLOW).decoration(TextDecoration.ITALIC, false))
             .build();
@@ -43,7 +43,11 @@ public final class MobQueue {
         this.mobHandler = mobHandler;
         this.user = user;
 
-        this.task = MinecraftServer.getSchedulerManager().buildTask(this::tick)
+        this.task = MinecraftServer.getSchedulerManager().buildTask(() -> {
+                    for (int i = 0; i < TDEnvUtils.QUEUE_MOB_TICKS_PER_TICK; i++) {
+                        this.tick();
+                    }
+                })
                 .repeat(TaskSchedule.nextTick())
                 .schedule();
     }
@@ -61,7 +65,7 @@ public final class MobQueue {
         }
 
         // check if we can send the mob
-        if (System.currentTimeMillis() < this.nextSpawnTime) return;
+//        if (System.currentTimeMillis() < this.nextSpawnTime) return;
 
         // send the mob
         this.mobHandler.spawnMob(this.currentlySpawning, this.user);
@@ -71,36 +75,41 @@ public final class MobQueue {
         this.callUpdateEvent();
     }
 
-    private int currentQueueTime() {
+    private long currentQueueTime() {
         return this.queue.stream()
-                .mapToInt(mob -> mob.mob().getSendTime())
+                .mapToLong(mob -> mob.mob().getSendTime())
                 .sum();
     }
 
-    public boolean canQueue(@NotNull EnemyMob mob) {
-        return this.currentQueueTime() + mob.getSendTime() <= MAX_QUEUE_TIME;
+    public boolean canQueue(@NotNull EnemyMob mob, long count) {
+        return this.currentQueueTime() + (mob.getSendTime() * count) <= TDEnvUtils.QUEUE_MAX_TIME;
     }
 
-    public @NotNull Result<QueueFailureReason> queue(@NotNull EnemyMob mob) {
+    public @NotNull Result<QueueFailureReason> queue(@NotNull EnemyMob mob, long count) {
         return this.user.getUpgradeHandler().getLevel(mob)
-                .map(level -> this.queue(new QueuedEnemyMob(mob, level)))
+                .map(level -> this.queue(new QueuedEnemyMob(mob, level), count))
                 .orElse(Result.failure(QueueFailureReason.NOT_UNLOCKED));
     }
 
-    public @NotNull Result<QueueFailureReason> queue(@NotNull QueuedEnemyMob mob) {
+    public @NotNull Result<QueueFailureReason> queue(@NotNull QueuedEnemyMob mob, long count) {
         // check if user has access to mob at specified level
-        if (!this.user.getUpgradeHandler().has(mob.mob(), mob.level())) return Result.failure(QueueFailureReason.NOT_UNLOCKED);
+        if (!this.user.getUpgradeHandler().has(mob.mob(), mob.level()))
+            return Result.failure(QueueFailureReason.NOT_UNLOCKED);
 
         // check if user can afford
-        int cost = mob.level().getSendCost();
+        long cost = mob.level().getSendCost() * count;
         if (this.user.getCoins() < cost) return Result.failure(QueueFailureReason.CAN_NOT_AFFORD);
 
         // check if possible to queue
-        if (!this.canQueue(mob.mob())) return Result.failure(QueueFailureReason.QUEUE_FULL);
+        if (!this.canQueue(mob.mob(), count)) return Result.failure(QueueFailureReason.QUEUE_FULL);
 
         // charge the user and queue
         this.user.updateCoins(current -> current - cost);
-        this.queue.add(mob);
+        if (count == 1) {
+            this.queue.add(mob);
+        } else {
+            this.queue.addAll(Collections.nCopies((int) count, mob));
+        }
 
         // broadcast the queue event
         this.callUpdateEvent();

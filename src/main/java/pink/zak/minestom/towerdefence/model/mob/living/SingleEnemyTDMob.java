@@ -96,7 +96,7 @@ public class SingleEnemyTDMob extends SingleTDMob implements LivingTDEnemyMob {
         this.enemyMob = enemyMob;
         this.level = enemyMob.getLevel(level);
 
-        if (!TDEnvUtils.ENABLE_TEST_MODE) this.team = gameUser.getTeam() == Team.RED ? Team.BLUE : Team.RED;
+        if (!TDEnvUtils.SEND_AGAINST_SELF) this.team = gameUser.getTeam() == Team.RED ? Team.BLUE : Team.RED;
         else this.team = gameUser.getTeam();
 
         this.sender = gameUser;

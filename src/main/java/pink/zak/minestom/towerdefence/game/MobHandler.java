@@ -1,17 +1,18 @@
 package pink.zak.minestom.towerdefence.game;
 
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.TowerDefenceModule;
 import pink.zak.minestom.towerdefence.cache.DamageIndicatorCache;
 import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
-import pink.zak.minestom.towerdefence.queue.QueuedEnemyMob;
 import pink.zak.minestom.towerdefence.model.mob.living.LivingTDEnemyMob;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
+import pink.zak.minestom.towerdefence.queue.QueuedEnemyMob;
 import pink.zak.minestom.towerdefence.utils.TDEnvUtils;
 import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;
+
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class MobHandler {
     public static DamageIndicatorCache DAMAGE_INDICATOR_CACHE; // todo spend time to not use static here.
@@ -42,7 +43,7 @@ public class MobHandler {
 
         // assign mob to a team
         Team team;
-        if (!TDEnvUtils.ENABLE_TEST_MODE) team = user.getTeam() == Team.RED ? Team.BLUE : Team.RED;
+        if (!TDEnvUtils.SEND_AGAINST_SELF) team = user.getTeam() == Team.RED ? Team.BLUE : Team.RED;
         else team = user.getTeam();
         this.getMobs(team).add(mob);
 

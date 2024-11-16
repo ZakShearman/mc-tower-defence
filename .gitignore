@@ -9,6 +9,7 @@
 !/run/mobs/
 !/run/precalculated
 !/run/towers
+!/run/.env.example
 
 *.iml
 *.ipr

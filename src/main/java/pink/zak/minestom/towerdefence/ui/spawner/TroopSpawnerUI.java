@@ -30,6 +30,7 @@ import pink.zak.minestom.towerdefence.ui.ConfirmationUI;
 import pink.zak.minestom.towerdefence.upgrade.MobUpgradeFailureReason;
 import pink.zak.minestom.towerdefence.upgrade.UpgradeHandler;
 import pink.zak.minestom.towerdefence.utils.Result;
+import pink.zak.minestom.towerdefence.utils.TDEnvUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -197,7 +198,7 @@ public final class TroopSpawnerUI extends Inventory {
     }
 
     private void attemptToSendMob(@NotNull EnemyMob mob) {
-        Result<QueueFailureReason> result = this.gameUser.getQueue().queue(mob);
+        Result<QueueFailureReason> result = this.gameUser.getQueue().queue(mob, TDEnvUtils.QUEUE_MOB_MULTIPLIER);
         if (!(result instanceof Result.Failure<QueueFailureReason> failure)) return;
 
         TDPlayer player = this.gameUser.getPlayer();

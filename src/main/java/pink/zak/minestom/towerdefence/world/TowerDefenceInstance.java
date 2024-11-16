@@ -3,7 +3,6 @@ package pink.zak.minestom.towerdefence.world;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import dev.emortal.minestom.core.Environment;
 import net.hollowcube.polar.PolarLoader;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.instance.Chunk;
@@ -20,6 +19,7 @@ import pink.zak.minestom.towerdefence.enums.Team;
 import pink.zak.minestom.towerdefence.model.map.PathCorner;
 import pink.zak.minestom.towerdefence.model.map.TowerMap;
 import pink.zak.minestom.towerdefence.utils.FileUtils;
+import pink.zak.minestom.towerdefence.utils.TDEnvUtils;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -102,10 +102,10 @@ public class TowerDefenceInstance extends InstanceContainer {
                 current = current.add(direction.normalX(), direction.normalY(), direction.normalZ());
                 Block block = this.getBlock(current);
 
-                Block newBlock = (Environment.isProduction() || System.getenv("TD_PROD_PATH") != null ? block : Block.BEDROCK)
+                Block newBlock = (TDEnvUtils.DEBUG_PATH ? Block.BEDROCK : block)
                         .withTag(TOWER_PATH_TAG, team.name());
 
-                this.setBlock(current.withY(current.y() - 1), newBlock);
+                this.setBlock(current.withY(current.y()), newBlock);
             }
         }
     }
