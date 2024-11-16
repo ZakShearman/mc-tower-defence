@@ -1,8 +1,7 @@
 package pink.zak.minestom.towerdefence.actionbar;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.event.Event;
 import net.minestom.server.event.EventNode;
@@ -13,13 +12,8 @@ import pink.zak.minestom.towerdefence.api.event.player.PlayerCoinChangeEvent;
 import pink.zak.minestom.towerdefence.api.event.player.PlayerIncomeChangeEvent;
 import pink.zak.minestom.towerdefence.game.GameHandler;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
-import pink.zak.minestom.towerdefence.utils.StringUtils;
 
 public class ActionBarHandler {
-    private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
-
-    private static final String ACTION_BAR_CONTENT = "<gold>⛃ <coins> (<income>/6s) <gray>| <team_color>❤ <castle_health>";
-
     private final @NotNull GameHandler gameHandler;
 
     public ActionBarHandler(@NotNull GameHandler gameHandler, @NotNull EventNode<Event> eventNode) {
@@ -45,11 +39,15 @@ public class ActionBarHandler {
     private @NotNull Component createActionBar(@NotNull GameUser user) {
         int castleHealth = this.gameHandler.getCastleHealth(user.getTeam());
 
-        return MINI_MESSAGE.deserialize(ACTION_BAR_CONTENT,
-                Placeholder.unparsed("coins", StringUtils.commaSeparateNumber(user.getCoins())),
-                Placeholder.unparsed("income", (user.getIncomeRate() > 0 ? "+" : "") + StringUtils.commaSeparateNumber(user.getIncomeRate())),
-                Placeholder.parsed("team_color", "<%s>".formatted(user.getTeam().getMiniMessageColor())),
-                Placeholder.unparsed("castle_health", StringUtils.commaSeparateNumber(castleHealth))
-        );
+        return Component.text()
+                .append(Component.text("⛃ ", NamedTextColor.GOLD))
+                .append(Component.text(user.getCoins(), NamedTextColor.GOLD))
+                .append(Component.text(" (", NamedTextColor.GOLD))
+                .append(Component.text(user.getIncomeRate(), NamedTextColor.GOLD))
+                .append(Component.text("/6s) ", NamedTextColor.GOLD))
+                .append(Component.text("| ", NamedTextColor.GRAY))
+                .append(Component.text("❤ ", user.getTeam().getColor()))
+                .append(Component.text(castleHealth, user.getTeam().getColor()))
+                .build();
     }
 }
