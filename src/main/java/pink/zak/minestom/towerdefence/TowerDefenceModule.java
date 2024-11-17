@@ -8,12 +8,19 @@ import dev.emortal.minestom.core.module.MinestomModule;
 import dev.emortal.minestom.core.module.kubernetes.KubernetesModule;
 import dev.emortal.minestom.core.module.messaging.MessagingModule;
 import io.github.cdimascio.dotenv.Dotenv;
+import net.kyori.adventure.text.Component;
 import net.minestom.server.MinecraftServer;
+import net.minestom.server.adventure.audience.Audiences;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.event.Event;
 import net.minestom.server.event.EventNode;
 import net.minestom.server.event.player.AsyncPlayerConfigurationEvent;
+import net.minestom.server.event.server.ServerTickMonitorEvent;
 import net.minestom.server.extras.lan.OpenToLAN;
+import net.minestom.server.monitoring.BenchmarkManager;
+import net.minestom.server.monitoring.TickMonitor;
+import net.minestom.server.utils.MathUtils;
+import net.minestom.server.utils.time.TimeUnit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pink.zak.minestom.towerdefence.agones.GameStateManager;
@@ -27,6 +34,8 @@ import pink.zak.minestom.towerdefence.storage.TowerStorage;
 import pink.zak.minestom.towerdefence.world.TowerDefenceInstance;
 import pink.zak.minestom.towerdefence.world.WorldLoader;
 
+import java.time.Duration;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
 @ModuleData(name = "towerdefence", dependencies = {@Dependency(name = "kubernetes"), @Dependency(name = "messaging", required = false)})
@@ -48,11 +57,35 @@ public class TowerDefenceModule extends MinestomModule {
 
     private GameHandler gameHandler;
 
+    private final AtomicReference<TickMonitor> LAST_TICK = new AtomicReference<>();
+
     protected TowerDefenceModule(@NotNull ModuleEnvironment environment) {
         super(environment);
 
         this.kubernetesModule = super.getModule(KubernetesModule.class);
         this.messagingModule = super.getOptionalModule(MessagingModule.class);
+
+        MinecraftServer.getBenchmarkManager().enable(Duration.of(10, TimeUnit.SECOND));
+
+        MinecraftServer.getGlobalEventHandler().addListener(ServerTickMonitorEvent.class, event -> LAST_TICK.set(event.getTickMonitor()));
+
+        BenchmarkManager benchmarkManager = MinecraftServer.getBenchmarkManager();
+        MinecraftServer.getSchedulerManager().buildTask(() -> {
+            if (LAST_TICK.get() == null || MinecraftServer.getConnectionManager().getOnlinePlayerCount() == 0)
+                return;
+
+            long ramUsage = benchmarkManager.getUsedMemory();
+            ramUsage /= 1e6; // bytes to MB
+
+            TickMonitor tickMonitor = LAST_TICK.get();
+            final Component header = Component.text("RAM USAGE: " + ramUsage + " MB")
+                    .append(Component.newline())
+                    .append(Component.text("TICK TIME: " + MathUtils.round(tickMonitor.getTickTime(), 2) + "ms"))
+                    .append(Component.newline())
+                    .append(Component.text("ACQ TIME: " + MathUtils.round(tickMonitor.getAcquisitionTime(), 2) + "ms"));
+            final Component footer = benchmarkManager.getCpuMonitoringMessage();
+            Audiences.players().sendPlayerListHeaderAndFooter(header, footer);
+        }).repeat(10, TimeUnit.SERVER_TICK).schedule();
     }
 
     @Override

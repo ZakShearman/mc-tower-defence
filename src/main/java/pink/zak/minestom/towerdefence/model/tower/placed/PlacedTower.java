@@ -105,8 +105,7 @@ public abstract class PlacedTower<T extends TowerLevel> {
         this.placeLevel();
     }
 
-    // todo re-investigate using a batch to apply in the future
-    // it was buggy last time it was tried
+    // todo re-investigate using a batch to apply in the future, it was buggy last time it was tried
     private void placeLevel() {
         this.level.getSchematic().apply(this.rotation, (relativePoint, block) -> {
             // Add the ID_TAG with the tower's ID to each block

@@ -21,6 +21,9 @@ public class SingleTDMob extends EntityCreature implements LivingTDMob {
     public SingleTDMob(@NotNull EntityType entityType, int level) {
         super(entityType);
         this.level = level;
+
+        this.setNoGravity(true);
+        this.hasPhysics = false;
     }
 
     @Override

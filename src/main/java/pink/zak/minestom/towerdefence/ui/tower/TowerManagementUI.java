@@ -5,7 +5,9 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.minestom.server.MinecraftServer;
+import net.minestom.server.adventure.audience.Audiences;
 import net.minestom.server.coordinate.Point;
+import net.minestom.server.instance.Chunk;
 import net.minestom.server.inventory.Inventory;
 import net.minestom.server.inventory.InventoryType;
 import net.minestom.server.inventory.click.ClickType;
@@ -21,10 +23,12 @@ import org.jetbrains.annotations.NotNull;
 import pink.zak.minestom.towerdefence.model.tower.TowerManager;
 import pink.zak.minestom.towerdefence.model.tower.config.Tower;
 import pink.zak.minestom.towerdefence.model.tower.config.TowerLevel;
+import pink.zak.minestom.towerdefence.model.tower.placed.PlacedAttackingTower;
 import pink.zak.minestom.towerdefence.model.tower.placed.PlacedTower;
 import pink.zak.minestom.towerdefence.model.user.GameUser;
 import pink.zak.minestom.towerdefence.model.user.TDPlayer;
 
+import java.awt.*;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -132,23 +136,38 @@ public final class TowerManagementUI extends Inventory {
     }
 
     private void showTowerRadius(@NotNull ClickType clickType) {
-        Set<SendablePacket> packets = clickType == ClickType.LEFT_CLICK ? createRadiusPackets(this.tower, Collections.emptySet()) : new HashSet<>();
+        Audiences.all().sendMessage(Component.text("Showing tower radius: %s".formatted(clickType), NamedTextColor.RED));
+        Set<SendablePacket> packets = switch (clickType) {
+            case LEFT_CLICK -> createRadiusPackets(this.tower, Collections.emptySet());
+            case RIGHT_CLICK -> {
+                Set<SendablePacket> clickPackets = new HashSet<>();
 
-        if (clickType == ClickType.RIGHT_CLICK) {
-            Set<PlacedTower<?>> towers = this.towerManager.getTowers(this.user.getTeam()).stream()
-                    .filter(tower -> tower.getConfiguration().getType().equals(this.tower.getConfiguration().getType()))
-                    .collect(Collectors.toUnmodifiableSet());
+                Set<PlacedTower<?>> towers = this.towerManager.getTowers(this.user.getTeam()).stream()
+                        .filter(tower -> tower.getConfiguration().getType().equals(this.tower.getConfiguration().getType()))
+                        .collect(Collectors.toUnmodifiableSet());
 
-            for (PlacedTower<?> tower : towers) {
-                Set<PlacedTower<?>> otherTowers = new HashSet<>(towers);
-                otherTowers.remove(tower);
-                packets.addAll(createRadiusPackets(tower, otherTowers));
+                for (PlacedTower<?> tower : towers) {
+                    Set<PlacedTower<?>> otherTowers = new HashSet<>(towers);
+                    otherTowers.remove(tower);
+                    clickPackets.addAll(createRadiusPackets(tower, otherTowers));
+                }
+
+                yield clickPackets;
             }
-        }
+            case START_SHIFT_CLICK, SHIFT_CLICK -> {
+                if (this.tower instanceof PlacedAttackingTower<?> attackingTower) {
+                    yield createChunkRadiusPackets(attackingTower);
+                } else {
+                    yield Collections.emptySet();
+                }
+            }
+            default -> Collections.emptySet();
+        };
+
 
         Task task = MinecraftServer.getSchedulerManager()
                 .buildTask(() -> this.user.getPlayer().sendPackets(packets))
-                .repeat(750, TimeUnit.MILLISECOND)
+                .repeat(250, TimeUnit.MILLISECOND)
                 .schedule();
 
         MinecraftServer.getSchedulerManager()
@@ -175,6 +194,7 @@ public final class TowerManagementUI extends Inventory {
                 }
             }
 
+
             packets.add(
                     new ParticlePacket(
                             Particle.DUST.withColor(NamedTextColor.RED).withScale(1),
@@ -182,6 +202,51 @@ public final class TowerManagementUI extends Inventory {
                             0, 0, 0, 0.1f, 1
                     )
             );
+        }
+
+        return packets;
+    }
+
+    public static @NotNull Set<SendablePacket> createChunkRadiusPackets(@NotNull PlacedAttackingTower<?> tower) {
+        List<List<Chunk>> inRangeChunks = tower.getInRangeChunks();
+        Audiences.all().sendMessage(Component.text("Drawing in range chunks: %s".formatted(inRangeChunks), NamedTextColor.RED));
+
+        Set<SendablePacket> packets = new HashSet<>();
+
+        for (int i = 0; i < inRangeChunks.size(); i++) {
+            List<Chunk> chunks = inRangeChunks.get(i);
+//            float hue = (i * 0.1f) % 1.0f; // Rotate hue based on ring index
+//            float saturation = 0.8f; // Keep saturation high for vibrant colors
+//            float brightness = 0.9f; // Keep brightness high for visible colors
+//            Color color = Color.getHSBColor(hue, saturation, brightness);
+//            net.minestom.server.color.Color minestomColor = new net.minestom.server.color.Color(color.getRed(), color.getGreen(), color.getBlue());
+
+
+            for (Chunk chunk : chunks) {
+                // A chunk is a square so we want to fill the entire chunk with particles
+                int chunkX = chunk.getChunkX();
+                int chunkZ = chunk.getChunkZ();
+
+                float hue = (chunkX * 0.5f + chunkZ * 0.5f) % 1.0f; // Use chunk coordinates to determine hue
+                float saturation = 0.8f; // High saturation for vivid colors
+                float brightness = 0.9f; // High brightness for better visibility
+
+                // Convert HSB to RGB color
+                Color color = Color.getHSBColor(hue, saturation, brightness);
+                net.minestom.server.color.Color minestomColor = new net.minestom.server.color.Color(color.getRed(), color.getGreen(), color.getBlue());
+
+                for (double x = 0; x < 16; x += 0.3) {
+                    for (double z = 0; z < 16; z += 0.3) {
+                        packets.add(
+                                new ParticlePacket(
+                                        Particle.DUST.withColor(minestomColor).withScale(1),
+                                        chunkX * 16 + x, tower.getBasePoint().y() + 1.5, chunkZ * 16 + z,
+                                        0, 0, 0, 0.1f, 1
+                                )
+                        );
+                    }
+                }
+            }
         }
 
         return packets;
