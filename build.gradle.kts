@@ -30,7 +30,7 @@ dependencies {
     // Polar world format
     implementation("dev.hollowcube:polar:1.11.3")
 
-    implementation("io.github.cdimascio:dotenv-java:3.0.2")
+    implementation("io.github.cdimascio:dotenv-java:3.1.0")
     implementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
 }
 
