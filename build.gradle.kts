@@ -31,7 +31,7 @@ dependencies {
     implementation("dev.hollowcube:polar:1.11.3")
 
     implementation("io.github.cdimascio:dotenv-java:3.0.2")
-    implementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
+    implementation("com.github.ben-manes.caffeine:caffeine:3.2.4")
 }
 
 java {
